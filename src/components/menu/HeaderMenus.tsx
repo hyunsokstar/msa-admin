@@ -1,9 +1,10 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { HEADER_MENU_ITEMS } from '@/constants/menu';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card } from '@/components/ui/card';
+import AuthMenus from './AuthMenus';
 
 export default function HeaderMenus() {
     const [openMenu, setOpenMenu] = useState<string | null>(null);
@@ -16,12 +17,25 @@ export default function HeaderMenus() {
         }, 200);
     };
 
+    const handleClickOutside = (event: MouseEvent) => {
+        if (!(event.target as HTMLElement).closest('.menu-item')) {
+            setOpenMenu(null);
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener('click', handleClickOutside);
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, []);
+
     return (
         <Card className="bg-white/80 backdrop-blur-sm border-none shadow-sm">
-            <nav className="relative px-4 py-2">
+            <nav className="relative px-4 py-2 flex justify-between items-center">
                 <ul className="flex space-x-6">
                     {HEADER_MENU_ITEMS.map((menu) => (
-                        <li key={menu.key} className="relative">
+                        <li key={menu.key} className="relative menu-item">
                             <button
                                 onClick={() => setOpenMenu(openMenu === menu.key ? null : menu.key)}
                                 className={`
@@ -84,6 +98,8 @@ export default function HeaderMenus() {
                         </li>
                     ))}
                 </ul>
+                {/* 오른쪽 끝에 AuthMenus 추가 */}
+                <AuthMenus />
             </nav>
         </Card>
     );
