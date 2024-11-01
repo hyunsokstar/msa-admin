@@ -1,3 +1,5 @@
+// src\components\HeaderMenus.tsx
+
 "use client";
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -33,6 +35,12 @@ export default function HeaderMenus() {
     return (
         <Card className="bg-white/80 backdrop-blur-sm border-none shadow-sm">
             <nav className="relative px-4 py-2 flex justify-between items-center">
+                <img
+                    src="/logo.svg"
+                    alt="Dankkum Logo"
+                    className="w-16 h-auto" // 로고 사이즈를 w-16으로 설정
+                />
+
                 <ul className="flex space-x-6">
                     {HEADER_MENU_ITEMS.map((menu) => (
                         <li key={menu.key} className="relative menu-item">
@@ -60,7 +68,7 @@ export default function HeaderMenus() {
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -10 }}
                                         transition={{ duration: 0.2 }}
-                                        className="absolute left-0 mt-2 z-50"
+                                        className="absolute left-0 mt-3 z-50" // mt-3으로 간격 추가
                                     >
                                         <Card className="w-56 bg-white/95 backdrop-blur-sm border border-gray-100 shadow-lg">
                                             <ul className="py-1">
@@ -70,6 +78,7 @@ export default function HeaderMenus() {
                                                         initial={{ x: -20, opacity: 0 }}
                                                         animate={{ x: 0, opacity: 1 }}
                                                         transition={{ duration: 0.2 }}
+                                                        className="py-1.5" // 메뉴 간 간격 추가
                                                     >
                                                         <button
                                                             onClick={() => handleMenuClick(menu.key, subItem.key)}

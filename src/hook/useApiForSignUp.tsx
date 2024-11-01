@@ -1,70 +1,61 @@
-// src/hooks/useApiForSignUp.ts
-import { useMutation, UseMutationResult } from '@tanstack/react-query';
+// src/hooks/useApiForSignUp.ts (Custom Hook)
+import { useMutation } from '@tanstack/react-query';
 import { AuthCredentials, AuthApiResponse, AuthApiError } from '@/types/typeForAuth';
 import { apiForSignUpUser } from '@/api/apiForAuth';
-import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
+import { useState } from 'react';
+import { z } from 'zod';
 
-interface UseApiForSignUpOptions {
-    onSuccessRedirect?: string;
-    requiresEmailConfirmation?: boolean;
-}
+const signUpSchema = z.object({
+    email: z.string().email('Invalid email address'),
+    password: z.string().min(6, 'Password must be at least 6 characters'),
+    confirmPassword: z.string()
+}).refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+});
 
-export const useApiForSignUp = (
-    options: UseApiForSignUpOptions = {}
-): UseMutationResult<AuthApiResponse, AuthApiError, AuthCredentials> => {
+export type SignUpFormData = z.infer<typeof signUpSchema>;
+
+export const useSignUp = () => {
     const router = useRouter();
-    const {
-        onSuccessRedirect = '/login',
-        requiresEmailConfirmation = true
-    } = options;
+    const [validationErrors, setValidationErrors] = useState<Partial<Record<keyof SignUpFormData, string>>>({});
 
-    return useMutation({
-        mutationFn: apiForSignUpUser,
-        onSuccess: (data) => {
-            if (requiresEmailConfirmation) {
-                toast.success('Sign-up successful! Please check your email to confirm your account.');
-            } else {
-                toast.success('Sign-up successful!');
-                router.push(onSuccessRedirect);
-            }
-            return data;
+    const signUpMutation = useMutation({
+        mutationFn: async (credentials: AuthCredentials) => {
+            const result = await apiForSignUpUser(credentials);
+            return result;
+        },
+        onSuccess: () => {
+            toast.success('Sign up successful! Please check your email for verification.');
+            router.push('/auth/verify-email');
         },
         onError: (error: AuthApiError) => {
-            let errorMessage = 'An error occurred during sign-up';
-
-            // Supabase 특정 에러 처리
-            if (error.message === 'User already registered') {
-                errorMessage = 'This email is already registered. Please try logging in.';
-            } else if (error.message.includes('Password')) {
-                errorMessage = 'Password must be at least 6 characters long.';
-            } else {
-                errorMessage = error.message;
-            }
-
-            toast.error(`Sign-up failed: ${errorMessage}`);
-            throw error;
+            toast.error(error.message);
         },
     });
-};
 
-// 사용하기 쉬운 래퍼 훅
-export const useApiForAuth = () => {
-    const signUpMutation = useApiForSignUp();
-
-    const handleSignUp = async (credentials: AuthCredentials) => {
+    const validateForm = (data: SignUpFormData) => {
         try {
-            await signUpMutation.mutateAsync(credentials);
+            signUpSchema.parse(data);
+            setValidationErrors({});
+            return true;
         } catch (error) {
-            console.error('Sign-up error:', error);
+            if (error instanceof z.ZodError) {
+                const errors = Object.fromEntries(
+                    error.errors.map((err) => [err.path[0], err.message])
+                );
+                setValidationErrors(errors);
+            }
+            return false;
         }
     };
 
     return {
-        signUp: handleSignUp,
+        signUp: signUpMutation.mutateAsync,
         isLoading: signUpMutation.isPending,
-        isError: signUpMutation.isError,
-        error: signUpMutation.error,
-        isSuccess: signUpMutation.isSuccess,
+        validationErrors,
+        validateForm,
     };
 };

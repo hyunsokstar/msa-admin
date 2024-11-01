@@ -33,24 +33,3 @@ export const useApiForLogin = (
         },
     });
 };
-
-// 사용 예시
-export const useApiForAuth = () => {
-    const loginMutation = useApiForLogin();
-
-    const handleLogin = async (credentials: AuthCredentials) => {
-        try {
-            await loginMutation.mutateAsync(credentials);
-        } catch (error) {
-            console.error('Login error:', error);
-        }
-    };
-
-    return {
-        login: handleLogin,
-        isLoading: loginMutation.status === 'pending',
-        isError: loginMutation.isError,
-        error: loginMutation.error,
-        isSuccess: loginMutation.isSuccess,
-    };
-};
