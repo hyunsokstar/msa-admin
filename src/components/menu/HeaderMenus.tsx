@@ -8,15 +8,14 @@ import { Card } from '@/components/ui/card';
 import AuthMenus from './AuthMenus';
 import useApiForGetMenusData from '@/hook/useApiForGetMenusData';
 
-
 export default function HeaderMenus() {
     const [openMenu, setOpenMenu] = useState<string | null>(null);
     const router = useRouter();
     const { data: menuItems, isLoading, isError } = useApiForGetMenusData();
     console.log('menuItems:', menuItems);
 
-    const handleMenuClick = (parentKey: string, subKey: string) => {
-        router.push(`/${parentKey}/${subKey}`);
+    const handleMenuClick = (path: string) => {
+        router.push(path);
         setTimeout(() => {
             setOpenMenu(null);
         }, 200);
@@ -120,7 +119,7 @@ export default function HeaderMenus() {
                                                         className="py-1.5"
                                                     >
                                                         <button
-                                                            onClick={() => handleMenuClick(String(menu.key), String(subItem.key))}
+                                                            onClick={() => handleMenuClick(subItem.path || '')}
                                                             className="
                                                                 px-4 py-2.5 w-full text-left text-sm
                                                                 transition-all duration-200
