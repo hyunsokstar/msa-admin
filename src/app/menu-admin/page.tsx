@@ -1,6 +1,6 @@
 // src/components/MenuAdmin.tsx
 "use client";
-import { MenuItemType } from '@/constants/menu';
+import { MenuItemType } from '@/api/apiForMenu';
 import useApiForGetMenusData from '@/hook/useApiForGetMenusData';
 import React, { useState, useEffect } from 'react';
 
