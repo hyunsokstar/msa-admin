@@ -1,15 +1,10 @@
-import React from 'react'
+import CommonSideMenu from "@/components/menu/CommonSideMenu";
+import Counter from "@/components/TestComponent/Counter";
 
-interface Props {
-
-}
-
-const TeacheList = (props: Props) => {
+export default function TeacherListPage() {
     return (
         <div>
-            TeacheListPage
+            <Counter />
         </div>
     )
 }
-
-export default TeacheList

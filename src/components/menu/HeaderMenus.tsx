@@ -1,4 +1,3 @@
-// src/components/HeaderMenus.tsx
 "use client";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -6,15 +5,19 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import AuthMenus from './AuthMenus';
 import useApiForGetMenusData from '@/hook/useApiForGetMenusData';
+import { useMenuStore } from '@/store/useMenuStore';
 import { MenuItemType } from '@/api/apiForMenu';
 
 export default function HeaderMenus() {
     const [openMenus, setOpenMenus] = useState<Set<string>>(new Set());
     const router = useRouter();
     const { data: menuItems, isLoading, isError } = useApiForGetMenusData();
+    const { updateSideMenus } = useMenuStore();
 
-    const handleMenuClick = (path: string) => {
+    const handleMenuClick = (path: string, menuId: number) => {
         if (path) {
+            // Zustand store 업데이트 후 라우팅
+            updateSideMenus(menuId.toString());
             router.push(`/${path}`);
             setOpenMenus(new Set());
         }
@@ -70,7 +73,6 @@ export default function HeaderMenus() {
         const fullPath = currentPath ? `${currentPath}/${menu.path}` : menu.path;
         const isOpen = openMenus.has(fullPath);
 
-        // depth가 0일 때는 아래로, 1 이상일 때는 오른쪽으로 펼쳐짐
         const position = depth === 0 ? "top-full left-0 mt-2" : "left-full top-0 ml-2";
         const motionInitial = depth === 0 ? { opacity: 0, y: -10 } : { opacity: 0, x: -10 };
         const motionAnimate = depth === 0 ? { opacity: 1, y: 0 } : { opacity: 1, x: 0 };
@@ -98,7 +100,7 @@ export default function HeaderMenus() {
                                             onMouseLeave={() => handleMouseLeave(subPath)}
                                         >
                                             <button
-                                                onClick={() => handleMenuClick(subPath)}
+                                                onClick={() => handleMenuClick(subPath, subMenu.id)}
                                                 className="w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-blue-50/50 text-gray-700 hover:text-blue-600 transition-colors duration-150"
                                             >
                                                 {subMenu.name}
@@ -133,7 +135,7 @@ export default function HeaderMenus() {
                             onMouseLeave={() => handleMouseLeave(currentPath)}
                         >
                             <button
-                                onClick={() => handleMenuClick(menu.path)}
+                                onClick={() => handleMenuClick(menu.path, menu.id)}
                                 className="px-4 py-2 text-sm font-medium rounded-lg hover:bg-blue-50/50 text-gray-700 hover:text-blue-600 transition-all duration-300 ease-in-out"
                             >
                                 {menu.name}
