@@ -1,3 +1,4 @@
+// src/components/HeaderMenus.tsx
 "use client";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -63,30 +64,32 @@ export default function HeaderMenus() {
         );
     }
 
-    const renderSubMenuItems = (menu: MenuItemType, currentPath: string, depth: number = 0) => {
+    const renderSubMenuItems = (menu: MenuItemType, currentPath: string = '', depth: number = 0) => {
         if (!menu.items || menu.items.length === 0) return null;
 
-        const isFirstLevel = depth === 0;
-        const position = isFirstLevel
-            ? "left-0 top-full mt-2"
-            : "left-full top-0 ml-2";
+        const fullPath = currentPath ? `${currentPath}/${menu.path}` : menu.path;
+        const isOpen = openMenus.has(fullPath);
 
-        const isOpen = openMenus.has(currentPath);
+        // depth가 0일 때는 아래로, 1 이상일 때는 오른쪽으로 펼쳐짐
+        const position = depth === 0 ? "top-full left-0 mt-2" : "left-full top-0 ml-2";
+        const motionInitial = depth === 0 ? { opacity: 0, y: -10 } : { opacity: 0, x: -10 };
+        const motionAnimate = depth === 0 ? { opacity: 1, y: 0 } : { opacity: 1, x: 0 };
+        const motionExit = depth === 0 ? { opacity: 0, y: -10 } : { opacity: 0, x: -10 };
 
         return (
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        initial={isFirstLevel ? { opacity: 0, y: -10 } : { opacity: 0, x: -10 }}
-                        animate={isFirstLevel ? { opacity: 1, y: 0 } : { opacity: 1, x: 0 }}
-                        exit={isFirstLevel ? { opacity: 0, y: -10 } : { opacity: 0, x: -10 }}
+                        initial={motionInitial}
+                        animate={motionAnimate}
+                        exit={motionExit}
                         transition={{ duration: 0.15 }}
                         className={`absolute ${position} z-50`}
                     >
                         <Card className="bg-white/95 backdrop-blur-sm border border-gray-100 shadow-lg mt-1.5">
                             <ul className="py-2 min-w-[200px]">
                                 {menu.items.map((subMenu) => {
-                                    const subPath = `${currentPath}/${subMenu.path}`;
+                                    const subPath = `${fullPath}/${subMenu.path}`;
                                     return (
                                         <li
                                             key={subPath}
@@ -95,23 +98,15 @@ export default function HeaderMenus() {
                                             onMouseLeave={() => handleMouseLeave(subPath)}
                                         >
                                             <button
-                                                onClick={() => {
-                                                    if (!subMenu.items?.length) {
-                                                        handleMenuClick(subMenu.path || '');
-                                                    }
-                                                }}
-                                                className={`w-full text-left px-4 py-2 text-sm rounded-lg
-                                                    ${openMenus.has(subPath)
-                                                        ? 'bg-blue-50 text-blue-600'
-                                                        : 'hover:bg-blue-50/50 text-gray-700 hover:text-blue-600'}
-                                                    transition-colors duration-150`}
+                                                onClick={() => handleMenuClick(subPath)}
+                                                className="w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-blue-50/50 text-gray-700 hover:text-blue-600 transition-colors duration-150"
                                             >
                                                 {subMenu.name}
                                                 {subMenu.items?.length > 0 && (
                                                     <span className="float-right">›</span>
                                                 )}
                                             </button>
-                                            {renderSubMenuItems(subMenu, subPath, depth + 1)}
+                                            {renderSubMenuItems(subMenu, fullPath, depth + 1)}
                                         </li>
                                     );
                                 })}
@@ -127,7 +122,7 @@ export default function HeaderMenus() {
         return (
             <ul className="flex space-x-6">
                 {items.map((menu) => {
-                    const currentPath = `/${menu.path}`;
+                    const currentPath = menu.path;
                     const isOpen = openMenus.has(currentPath);
 
                     return (
@@ -138,24 +133,15 @@ export default function HeaderMenus() {
                             onMouseLeave={() => handleMouseLeave(currentPath)}
                         >
                             <button
-                                onClick={() => {
-                                    if (!menu.items?.length) {
-                                        handleMenuClick(menu.path || '');
-                                    }
-                                }}
-                                className={`px-4 py-2 text-sm font-medium rounded-lg
-                                    transition-all duration-300 ease-in-out
-                                    relative overflow-hidden
-                                    ${isOpen
-                                        ? 'bg-blue-50 text-blue-600'
-                                        : 'hover:bg-blue-50/50 text-gray-700 hover:text-blue-600'}`}
+                                onClick={() => handleMenuClick(menu.path)}
+                                className="px-4 py-2 text-sm font-medium rounded-lg hover:bg-blue-50/50 text-gray-700 hover:text-blue-600 transition-all duration-300 ease-in-out"
                             >
                                 {menu.name}
                                 {menu.items?.length > 0 && (
                                     <span className="ml-1">▼</span>
                                 )}
                             </button>
-                            {renderSubMenuItems(menu, currentPath, 0)}
+                            {renderSubMenuItems(menu, '', 0)}
                         </li>
                     );
                 })}
@@ -175,4 +161,3 @@ export default function HeaderMenus() {
         </Card>
     );
 }
-

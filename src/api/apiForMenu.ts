@@ -3,6 +3,7 @@ import getSupabase from '@/lib/supabaseClient';
 
 // MenuItemType 타입 선언
 export type MenuItemType = {
+    id: number;
     name: string;
     path: string;
     sort_order: number;
@@ -34,48 +35,27 @@ export async function apiForGetMenusData(): Promise<MenuItemType[] | null> {
             return null;
         }
 
-        // 전체 경로 생성 함수
-        const buildFullPath = (item: any, menuMap: { [key: number]: any }): string => {
-            const paths: string[] = [];
-            let currentItem = item;
+        console.log("Fetched raw data from Supabase:", data);
 
-            while (currentItem) {
-                if (currentItem.path) {
-                    paths.unshift(currentItem.path);
-                }
-                currentItem = currentItem.parent_id ? menuMap[currentItem.parent_id] : null;
-            }
-
-            return paths.join('/');
-        };
-
-        // 메뉴 항목을 먼저 맵에 저장
-        const menuMap: { [key: number]: any } = {};
+        // 메뉴 항목을 매핑하여 id를 기준으로 접근할 수 있게 만듭니다.
+        const menuMap: { [key: number]: MenuItemType } = {};
         data.forEach((item) => {
-            menuMap[item.id] = item;
-        });
-
-        // MenuItemType 형태로 변환하고 전체 경로 생성
-        const transformToMenuType = (item: any): MenuItemType => ({
-            name: item.name,
-            path: buildFullPath(item, menuMap),
-            sort_order: item.sort_order,
-            items: [],
-        });
-
-        // 메뉴 맵 생성 (MenuItemType 형태로)
-        const menuItemMap: { [key: number]: MenuItemType } = {};
-        data.forEach((item) => {
-            menuItemMap[item.id] = transformToMenuType(item);
+            menuMap[item.id] = {
+                id: item.id,
+                name: item.name,
+                path: item.path,
+                sort_order: item.sort_order,
+                items: []
+            };
         });
 
         // 부모-자식 관계 설정
         const rootMenus: MenuItemType[] = [];
         data.forEach((item) => {
-            if (item.parent_id) {
-                menuItemMap[item.parent_id].items.push(menuItemMap[item.id]);
-            } else {
-                rootMenus.push(menuItemMap[item.id]);
+            if (item.parent_id && menuMap[item.parent_id]) {
+                menuMap[item.parent_id].items.push(menuMap[item.id]);
+            } else if (!item.parent_id) {
+                rootMenus.push(menuMap[item.id]);
             }
         });
 
