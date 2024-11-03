@@ -3,9 +3,9 @@ import getSupabase from '@/lib/supabaseClient';
 
 // MenuItemType 타입 선언
 export type MenuItemType = {
-    key: string | number;
     name: string;
-    path?: string;
+    path: string;
+    sort_order: number;
     items: MenuItemType[];
 };
 
@@ -22,7 +22,7 @@ export async function apiForGetMenusData(): Promise<MenuItemType[] | null> {
             .from('menus')
             .select('*')
             .order('parent_id', { ascending: true })
-            .order('order', { ascending: true });
+            .order('sort_order', { ascending: true });
 
         if (error) {
             console.error('메뉴 데이터를 가져오는 중 오류 발생:', error);
@@ -34,26 +34,48 @@ export async function apiForGetMenusData(): Promise<MenuItemType[] | null> {
             return null;
         }
 
-        // 트리 구조로 변환하기 위해 부모-자식 관계로 데이터를 가공
-        const menuMap: { [key: number]: MenuItemType } = {};
-        const rootMenus: MenuItemType[] = [];
+        // 전체 경로 생성 함수
+        const buildFullPath = (item: any, menuMap: { [key: number]: any }): string => {
+            const paths: string[] = [];
+            let currentItem = item;
 
-        // 메뉴 항목을 먼저 맵에 저장하여 참조하기 쉽게 만든다
+            while (currentItem) {
+                if (currentItem.path) {
+                    paths.unshift(currentItem.path);
+                }
+                currentItem = currentItem.parent_id ? menuMap[currentItem.parent_id] : null;
+            }
+
+            return paths.join('/');
+        };
+
+        // 메뉴 항목을 먼저 맵에 저장
+        const menuMap: { [key: number]: any } = {};
         data.forEach((item) => {
-            menuMap[item.id] = {
-                key: item.id,
-                name: item.name,
-                path: item.path,
-                items: [],
-            };
+            menuMap[item.id] = item;
         });
 
-        // 각 항목을 순회하며 부모-자식 관계를 형성한다
+        // MenuItemType 형태로 변환하고 전체 경로 생성
+        const transformToMenuType = (item: any): MenuItemType => ({
+            name: item.name,
+            path: buildFullPath(item, menuMap),
+            sort_order: item.sort_order,
+            items: [],
+        });
+
+        // 메뉴 맵 생성 (MenuItemType 형태로)
+        const menuItemMap: { [key: number]: MenuItemType } = {};
+        data.forEach((item) => {
+            menuItemMap[item.id] = transformToMenuType(item);
+        });
+
+        // 부모-자식 관계 설정
+        const rootMenus: MenuItemType[] = [];
         data.forEach((item) => {
             if (item.parent_id) {
-                menuMap[item.parent_id]?.items.push(menuMap[item.id]);
+                menuItemMap[item.parent_id].items.push(menuItemMap[item.id]);
             } else {
-                rootMenus.push(menuMap[item.id]);
+                rootMenus.push(menuItemMap[item.id]);
             }
         });
 

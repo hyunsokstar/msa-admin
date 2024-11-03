@@ -1,48 +1,45 @@
-// src/components/HeaderMenus.tsx
-
 "use client";
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import AuthMenus from './AuthMenus';
 import useApiForGetMenusData from '@/hook/useApiForGetMenusData';
+import { MenuItemType } from '@/api/apiForMenu';
 
 export default function HeaderMenus() {
-    const [openMenu, setOpenMenu] = useState<string | null>(null);
+    const [openMenus, setOpenMenus] = useState<Set<string>>(new Set());
     const router = useRouter();
     const { data: menuItems, isLoading, isError } = useApiForGetMenusData();
-    console.log('menuItems:', menuItems);
 
     const handleMenuClick = (path: string) => {
-        router.push(path);
-        setTimeout(() => {
-            setOpenMenu(null);
-        }, 200);
-    };
-
-    const handleClickOutside = (event: MouseEvent) => {
-        if (!(event.target as HTMLElement).closest('.menu-item')) {
-            setOpenMenu(null);
+        if (path) {
+            router.push(`/${path}`);
+            setOpenMenus(new Set());
         }
     };
 
-    useEffect(() => {
-        document.addEventListener('click', handleClickOutside);
-        return () => {
-            document.removeEventListener('click', handleClickOutside);
-        };
-    }, []);
+    const handleMouseEnter = (menuPath: string) => {
+        setOpenMenus(prev => {
+            const newSet = new Set(prev);
+            newSet.add(menuPath);
+            return newSet;
+        });
+    };
+
+    const handleMouseLeave = (menuPath: string) => {
+        setOpenMenus(prev => {
+            const newSet = new Set(prev);
+            newSet.delete(menuPath);
+            return newSet;
+        });
+    };
 
     if (isLoading) {
         return (
             <Card className="bg-white/80 backdrop-blur-sm border-none shadow-sm">
                 <nav className="relative px-4 py-2 flex justify-between items-center">
-                    <img
-                        src="/logo.svg"
-                        alt="Dankkum Logo"
-                        className="w-16 h-auto"
-                    />
+                    <img src="/logo.svg" alt="Dankkum Logo" className="w-16 h-auto" />
                     <div className="flex space-x-6 animate-pulse">
                         {[1, 2, 3].map((i) => (
                             <div key={i} className="h-8 w-24 bg-gray-200 rounded-lg" />
@@ -58,11 +55,7 @@ export default function HeaderMenus() {
         return (
             <Card className="bg-white/80 backdrop-blur-sm border-none shadow-sm">
                 <nav className="relative px-4 py-2 flex justify-between items-center">
-                    <img
-                        src="/logo.svg"
-                        alt="Dankkum Logo"
-                        className="w-16 h-auto"
-                    />
+                    <img src="/logo.svg" alt="Dankkum Logo" className="w-16 h-auto" />
                     <div className="text-red-500">메뉴를 불러오는데 실패했습니다.</div>
                     <AuthMenus />
                 </nav>
@@ -70,83 +63,116 @@ export default function HeaderMenus() {
         );
     }
 
+    const renderSubMenuItems = (menu: MenuItemType, currentPath: string, depth: number = 0) => {
+        if (!menu.items || menu.items.length === 0) return null;
+
+        const isFirstLevel = depth === 0;
+        const position = isFirstLevel
+            ? "left-0 top-full mt-2"
+            : "left-full top-0 ml-2";
+
+        const isOpen = openMenus.has(currentPath);
+
+        return (
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        initial={isFirstLevel ? { opacity: 0, y: -10 } : { opacity: 0, x: -10 }}
+                        animate={isFirstLevel ? { opacity: 1, y: 0 } : { opacity: 1, x: 0 }}
+                        exit={isFirstLevel ? { opacity: 0, y: -10 } : { opacity: 0, x: -10 }}
+                        transition={{ duration: 0.15 }}
+                        className={`absolute ${position} z-50`}
+                    >
+                        <Card className="bg-white/95 backdrop-blur-sm border border-gray-100 shadow-lg mt-1.5">
+                            <ul className="py-2 min-w-[200px]">
+                                {menu.items.map((subMenu) => {
+                                    const subPath = `${currentPath}/${subMenu.path}`;
+                                    return (
+                                        <li
+                                            key={subPath}
+                                            className="relative px-2"
+                                            onMouseEnter={() => handleMouseEnter(subPath)}
+                                            onMouseLeave={() => handleMouseLeave(subPath)}
+                                        >
+                                            <button
+                                                onClick={() => {
+                                                    if (!subMenu.items?.length) {
+                                                        handleMenuClick(subMenu.path || '');
+                                                    }
+                                                }}
+                                                className={`w-full text-left px-4 py-2 text-sm rounded-lg
+                                                    ${openMenus.has(subPath)
+                                                        ? 'bg-blue-50 text-blue-600'
+                                                        : 'hover:bg-blue-50/50 text-gray-700 hover:text-blue-600'}
+                                                    transition-colors duration-150`}
+                                            >
+                                                {subMenu.name}
+                                                {subMenu.items?.length > 0 && (
+                                                    <span className="float-right">›</span>
+                                                )}
+                                            </button>
+                                            {renderSubMenuItems(subMenu, subPath, depth + 1)}
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        </Card>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        );
+    };
+
+    const renderMenuItems = (items: MenuItemType[]) => {
+        return (
+            <ul className="flex space-x-6">
+                {items.map((menu) => {
+                    const currentPath = `/${menu.path}`;
+                    const isOpen = openMenus.has(currentPath);
+
+                    return (
+                        <li
+                            key={currentPath}
+                            className="relative menu-item"
+                            onMouseEnter={() => handleMouseEnter(currentPath)}
+                            onMouseLeave={() => handleMouseLeave(currentPath)}
+                        >
+                            <button
+                                onClick={() => {
+                                    if (!menu.items?.length) {
+                                        handleMenuClick(menu.path || '');
+                                    }
+                                }}
+                                className={`px-4 py-2 text-sm font-medium rounded-lg
+                                    transition-all duration-300 ease-in-out
+                                    relative overflow-hidden
+                                    ${isOpen
+                                        ? 'bg-blue-50 text-blue-600'
+                                        : 'hover:bg-blue-50/50 text-gray-700 hover:text-blue-600'}`}
+                            >
+                                {menu.name}
+                                {menu.items?.length > 0 && (
+                                    <span className="ml-1">▼</span>
+                                )}
+                            </button>
+                            {renderSubMenuItems(menu, currentPath, 0)}
+                        </li>
+                    );
+                })}
+            </ul>
+        );
+    };
+
     return (
         <Card className="bg-white/80 backdrop-blur-sm border-none shadow-sm">
             <nav className="relative px-4 py-2 flex justify-between items-center">
-                <img
-                    src="/logo.svg"
-                    alt="Dankkum Logo"
-                    className="w-16 h-auto"
-                />
-
-                <ul className="flex space-x-6">
-                    {menuItems.map((menu) => (
-                        <li key={menu.key} className="relative menu-item">
-                            <button
-                                onClick={() => setOpenMenu(openMenu === menu.key ? null : String(menu.key))}
-                                className={`
-                                    px-4 py-2 text-sm font-medium rounded-lg
-                                    transition-all duration-300 ease-in-out
-                                    relative overflow-hidden
-                                    ${openMenu === String(menu.key)
-                                        ? 'bg-blue-50 text-blue-600'
-                                        : 'hover:bg-blue-50/50 text-gray-700 hover:text-blue-600'}
-                                    before:absolute before:inset-0 before:w-full before:h-full 
-                                    before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent
-                                    before:translate-x-[-100%] hover:before:translate-x-[100%]
-                                    before:transition-transform before:duration-500
-                                `}
-                            >
-                                {menu.name}
-                            </button>
-                            <AnimatePresence>
-                                {openMenu === String(menu.key) && menu.items && menu.items.length > 0 && (
-                                    <motion.div
-                                        initial={{ opacity: 0, y: -10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -10 }}
-                                        transition={{ duration: 0.2 }}
-                                        className="absolute left-0 mt-3 z-50"
-                                    >
-                                        <Card className="w-56 bg-white/95 backdrop-blur-sm border border-gray-100 shadow-lg">
-                                            <ul className="py-1">
-                                                {menu.items.map((subItem) => (
-                                                    <motion.li
-                                                        key={subItem.key}
-                                                        initial={{ x: -20, opacity: 0 }}
-                                                        animate={{ x: 0, opacity: 1 }}
-                                                        transition={{ duration: 0.2 }}
-                                                        className="py-1.5"
-                                                    >
-                                                        <button
-                                                            onClick={() => handleMenuClick(subItem.path || '')}
-                                                            className="
-                                                                px-4 py-2.5 w-full text-left text-sm
-                                                                transition-all duration-200
-                                                                text-gray-600 hover:text-blue-600
-                                                                hover:bg-blue-50/50
-                                                                relative group
-                                                            "
-                                                        >
-                                                            <span className="relative z-10">{subItem.name}</span>
-                                                            <motion.div
-                                                                className="absolute inset-0 bg-blue-50/0 group-hover:bg-blue-50/50
-                                                                    transition-all duration-300"
-                                                                layoutId={`highlight-${subItem.key}`}
-                                                            />
-                                                        </button>
-                                                    </motion.li>
-                                                ))}
-                                            </ul>
-                                        </Card>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </li>
-                    ))}
-                </ul>
+                <img src="/logo.svg" alt="Dankkum Logo" className="w-16 h-auto" />
+                <div className="flex space-x-6">
+                    {renderMenuItems(menuItems)}
+                </div>
                 <AuthMenus />
             </nav>
         </Card>
     );
 }
+
