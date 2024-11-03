@@ -10,6 +10,37 @@ export type MenuItemType = {
     items: MenuItemType[];
 };
 
+/**
+ * 메뉴 ID로 삭제 (Cascade 삭제)
+ * @param menuId 삭제할 메뉴의 ID
+ * @returns 성공 여부
+ */
+export async function apiForDeleteMenuForMenuId(menuId: number): Promise<boolean> {
+    const supabase = getSupabase();
+
+    if (!supabase) {
+        console.error("Supabase 클라이언트를 초기화하지 못했습니다.");
+        return false;
+    }
+
+    try {
+        const { error } = await supabase
+            .from('menus')
+            .delete()
+            .eq('id', menuId);
+
+        if (error) {
+            console.error('메뉴 삭제 중 오류 발생:', error);
+            return false;
+        }
+
+        return true;
+    } catch (error) {
+        console.error('메뉴 삭제 중 예외 발생:', error);
+        return false;
+    }
+}
+
 export async function apiForGetMenusData(): Promise<MenuItemType[] | null> {
     const supabase = getSupabase();
 

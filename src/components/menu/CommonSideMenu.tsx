@@ -63,7 +63,7 @@ const CommonSideMenu = () => {
         const isExpanded = expandedMenus.has(menu.id.toString());
         const hasChildren = menu.items && menu.items.length > 0;
         const isActive = currentMenuId === menu.id.toString();
-        const paddingLeft = depth * 16;
+        const paddingLeft = depth * 24; // depth에 따라 인덴트를 늘림
 
         return (
             <div key={fullPath} className="w-full">
