@@ -73,6 +73,7 @@ export async function apiForGetMenusData(): Promise<MenuItemType[] | null> {
         const menuMap: { [key: number]: MenuItemType } = {};
         data.forEach((item) => {
             menuMap[item.id] = {
+                key: (key: any) => { },
                 id: item.id,
                 name: item.name,
                 path: item.path,
@@ -99,3 +100,32 @@ export async function apiForGetMenusData(): Promise<MenuItemType[] | null> {
 }
 
 export default apiForGetMenusData;
+
+// api/apiForMenu.ts에 삭제 함수 추가
+export const apiForDeleteMenu = async (menuId: number): Promise<boolean> => {
+    console.log('API 호출 시작:', menuId);
+    const supabase = getSupabase();
+
+    if (!supabase) {
+        console.error("Supabase 클라이언트를 초기화하지 못했습니다.");
+        return false;
+    }
+
+    try {
+        const { error } = await supabase
+            .from('menus')
+            .delete()
+            .eq('id', menuId);
+
+        if (error) {
+            console.error('Supabase 에러:', error);
+            throw error;
+        }
+
+        console.log('삭제 완료:', menuId);
+        return true;
+    } catch (error) {
+        console.error('메뉴 삭제 중 오류 발생:', error);
+        return false;
+    }
+};

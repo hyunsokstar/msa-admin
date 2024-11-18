@@ -10,19 +10,32 @@ function TldrawWithButtons() {
     return (
         <div
             style={{
-                position: 'relative',
-                width: '100%',
-                height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
+                height: '900px', // 고정된 높이 설정
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                overflow: 'hidden', // 오버플로우 처리
             }}
         >
-            <div style={{ flex: 1 }}>
+            <div style={{
+                flex: 1,
+                minHeight: 0, // flexbox 오버플로우 버그 수정
+            }}>
                 <Tldraw
                     onMount={(editor) => {
                         editorRef.current = editor;
                     }}
                 />
+            </div>
+            <div style={{
+                padding: '10px',
+                background: 'white',
+                borderTop: '1px solid #ddd',
+                display: 'flex',
+                justifyContent: 'center',
+                gap: '10px',
+            }}>
                 <EditorContent editorRef={editorRef} />
             </div>
         </div>
@@ -91,21 +104,7 @@ function EditorContent({ editorRef }: { editorRef: React.RefObject<any> }) {
     }, [editorRef]);
 
     return (
-        <div
-            style={{
-                position: 'fixed',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                padding: '10px',
-                background: 'white',
-                borderTop: '1px solid #ddd',
-                display: 'flex',
-                justifyContent: 'center',
-                gap: '10px',
-                zIndex: 1000,
-            }}
-        >
+        <>
             <button
                 onClick={handleExport}
                 style={{
@@ -130,13 +129,17 @@ function EditorContent({ editorRef }: { editorRef: React.RefObject<any> }) {
             >
                 이미지 전송
             </button>
-        </div>
+        </>
     );
 }
 
 export default function ImageCommentComponent() {
     return (
-        <div style={{ position: 'relative', width: '100%', height: '90vh', padding: '10px' }}>
+        <div style={{
+            padding: '20px',
+            maxWidth: '1200px',
+            margin: '0 auto'
+        }}>
             <TldrawWithButtons />
         </div>
     );
