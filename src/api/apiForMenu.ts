@@ -3,6 +3,7 @@ import getSupabase from '@/lib/supabaseClient';
 
 // MenuItemType 타입 선언
 export type MenuItemType = {
+    key(key: any): void;
     id: number;
     name: string;
     path: string;

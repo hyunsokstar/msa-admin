@@ -25,7 +25,7 @@ const MenuAdmin = (props: Props) => {
     const renderMenuItems = (menuItems: MenuItemType[]) => {
         return (
             <ul className="pl-4 border-l-2 border-gray-300">
-                {menuItems.map((menu) => (
+                {menuItems.map((menu: any) => (
                     <li key={menu.key} className="my-2">
                         <div className="flex items-center gap-2 cursor-pointer" onClick={() => toggleExpand(menu.key)}>
                             {menu.items.length > 0 && (
