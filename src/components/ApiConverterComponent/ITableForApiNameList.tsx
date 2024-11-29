@@ -59,7 +59,7 @@ const ITableForApiNameList: React.FC<ITableForApiNameListProps> = ({ onSelect, o
                                 )}
                             </Toggle>
                             <Button
-                                variant="primary"
+                                variant="outline"
                                 className={`flex items-center gap-2 py-2 px-4 rounded-md transition-colors duration-150 ${
                                     apiName.is_completed
                                         ? 'bg-green-500 hover:bg-green-600'
