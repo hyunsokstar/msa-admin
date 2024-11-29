@@ -1,7 +1,8 @@
 // 파일 경로: /src/hooks/useApiForGetApiNames.ts
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
-import apiForGetApiNames, { ApiNameType } from '@/api/apiForApiConverter';
+import {ApiNameType} from "@/types/typeForApiConverter";
+import apiForGetApiNames from "@/api/apiForApiConverter";
 
 /**
  * api_names 데이터를 가져오는 Custom Hook
