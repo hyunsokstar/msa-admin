@@ -18,7 +18,7 @@ export const useApiForGetMenusData = () => {
                 }
                 setMenus(data);
                 setError(null);
-                toast.success('Menus data loaded successfully');
+                // toast.success('Menus data loaded successfully');
                 return data;
             } catch (error) {
                 const errorMessage = error instanceof Error ? error.message : 'An error occurred while fetching menu data';
