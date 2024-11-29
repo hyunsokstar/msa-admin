@@ -67,7 +67,7 @@ export async function apiForGetMenusData(): Promise<MenuItemType[] | null> {
             return null;
         }
 
-        console.log("Fetched raw data from Supabase:", data);
+        // console.log("Fetched raw data from Supabase:", data);
 
         // 메뉴 항목을 매핑하여 id를 기준으로 접근할 수 있게 만듭니다.
         const menuMap: { [key: number]: MenuItemType } = {};
