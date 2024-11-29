@@ -32,7 +32,7 @@ const ITableForApiNameList: React.FC<ITableForApiNameListProps> = ({ onSelect, o
                         className="py-4 px-2 flex items-center justify-between hover:bg-gray-50 transition-colors duration-150 rounded-lg"
                     >
                         <div>
-                            <div className="text-base font-semibold text-gray-900">{apiName.title}</div>
+                            <div className="text-base font-semibold text-gray-900">{apiName.title} ({apiName.method})</div>
                             <div className="text-sm text-gray-600">{apiName.url}</div>
                             <div className="text-sm text-gray-500">{apiName.description}</div>
                         </div>

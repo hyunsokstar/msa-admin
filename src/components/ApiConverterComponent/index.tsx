@@ -1,12 +1,9 @@
-// 파일 경로: /components/ApiConverterComponent.tsx
 "use client";
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Copy, Check, ArrowRight } from 'lucide-react';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Copy, Check } from 'lucide-react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ITableForApiNameList from '@/components/ApiConverterComponent/ITableForApiNameList';
@@ -80,10 +77,10 @@ const ApiConverterComponent = () => {
             return;
         }
 
-        const apiName = formData.apiName1.charAt(0).toUpperCase() + formData.apiName1.slice(1);
+        const apiName = formData.apiName1.charAt(0) + formData.apiName1.slice(1);
 
         const code1 = `${formData.apiName1}: {
-  method: ApiMethod.${formData.apiMethod.toUpperCase()},
+  method: ApiMethod.${formData.apiMethod},
   endpoint: '${formData.apiUrl}',
   authenticated: true
 },`;
@@ -101,15 +98,12 @@ const ApiConverterComponent = () => {
         setGeneratedCode3(code3);
         setGeneratedCode4(code4);
 
-        // 코드 생성 후 성공 메시지 표시
         toast.success('코드가 성공적으로 생성되었습니다!');
     };
 
     const copyToClipboard = async (text: string, codeKey: keyof typeof copyStates) => {
         await navigator.clipboard.writeText(text);
         setCopyStates(prev => ({ ...prev, [codeKey]: true }));
-
-        // 복사 성공 메시지 표시
         toast.success('코드가 클립보드에 복사되었습니다!');
 
         setTimeout(() => {
@@ -126,39 +120,26 @@ const ApiConverterComponent = () => {
         code: string;
         codeKey: keyof typeof copyStates;
     }) => (
-        <div className="relative group">
-            <div className="font-medium mb-2 flex items-center gap-2">
-                <span>{title}</span>
-                {code && (
-                    <ArrowRight className="h-4 w-4 text-gray-400" />
-                )}
-            </div>
-            <div className="bg-gray-100 p-4 rounded-lg relative transition-all duration-200 group-hover:bg-gray-200">
-                <pre className="whitespace-pre-wrap text-sm font-mono">{code}</pre>
-                {code && (
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className={`absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200
-                                        ${copyStates[codeKey] ? 'text-green-500' : 'text-gray-500 hover:text-gray-700'}`}
-                                    onClick={() => copyToClipboard(code, codeKey)}
-                                >
-                                    {copyStates[codeKey] ? (
-                                        <Check className="h-4 w-4" />
-                                    ) : (
-                                        <Copy className="h-4 w-4" />
-                                    )}
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>{copyStates[codeKey] ? '복사됨' : '복사하기'}</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-                )}
+        <div className="mb-4">
+            <div className="font-medium mb-2">{title}</div>
+            <div className="bg-gray-100 p-4 rounded-lg relative">
+                <div className="flex justify-between items-start">
+                    <pre className="whitespace-pre-wrap text-sm font-mono pr-12">{code}</pre>
+                    {code && (
+                        <Button
+                            variant="secondary"
+                            size="sm"
+                            className={`ml-2 h-8 ${copyStates[codeKey] ? 'bg-green-100' : 'bg-gray-200'}`}
+                            onClick={() => copyToClipboard(code, codeKey)}
+                        >
+                            {copyStates[codeKey] ? (
+                                <Check className="h-4 w-4 text-green-600" />
+                            ) : (
+                                <Copy className="h-4 w-4 text-gray-600" />
+                            )}
+                        </Button>
+                    )}
+                </div>
             </div>
         </div>
     );
@@ -166,7 +147,7 @@ const ApiConverterComponent = () => {
     return (
         <div className="w-full max-w-7xl p-4 space-y-4 grid grid-cols-2 gap-4">
             <div className="border-r pr-4">
-                <ToastContainer /> {/* ToastContainer 추가 */}
+                <ToastContainer />
                 <Card className="border-gray-200 shadow-sm">
                     <CardHeader>
                         <CardTitle className="text-lg font-semibold">API 코드 생성기</CardTitle>
@@ -179,7 +160,7 @@ const ApiConverterComponent = () => {
                                     name="apiName1"
                                     value={formData.apiName1}
                                     onChange={handleInputChange}
-                                    className="flex-1 focus-visible:ring-2 focus-visible:ring-offset-2"
+                                    className="flex-1"
                                     placeholder="createPost"
                                 />
                             </div>
@@ -190,7 +171,7 @@ const ApiConverterComponent = () => {
                                     name="apiUrl"
                                     value={formData.apiUrl}
                                     onChange={handleInputChange}
-                                    className="flex-1 focus-visible:ring-2 focus-visible:ring-offset-2"
+                                    className="flex-1"
                                 />
                             </div>
 
@@ -200,14 +181,14 @@ const ApiConverterComponent = () => {
                                     name="apiMethod"
                                     value={formData.apiMethod}
                                     onChange={handleInputChange}
-                                    className="flex-1 focus-visible:ring-2 focus-visible:ring-offset-2"
-                                    placeholder="GET"
+                                    className="flex-1"
+                                    placeholder="Get"
                                 />
                             </div>
 
                             <Button
                                 onClick={generateCode}
-                                className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white transition-all duration-200"
+                                className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white"
                             >
                                 api 함수 및 타입으로 변환
                             </Button>
