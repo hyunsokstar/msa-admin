@@ -1,4 +1,4 @@
-// src/hooks/useApiForSignUp.ts (Custom Hook)
+// src/hooks/useApiForSignUp.ts
 import { useMutation } from '@tanstack/react-query';
 import { AuthCredentials, AuthApiResponse, AuthApiError } from '@/types/typeForAuth';
 import { apiForSignUpUser } from '@/api/apiForAuth';
@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { useState } from 'react';
 import { z } from 'zod';
 
+// 유효성 검사 스키마 정의
 const signUpSchema = z.object({
     email: z.string().email('Invalid email address'),
     password: z.string().min(6, 'Password must be at least 6 characters'),
@@ -16,11 +17,19 @@ const signUpSchema = z.object({
     path: ["confirmPassword"],
 });
 
+// 타입 정의
 export type SignUpFormData = z.infer<typeof signUpSchema>;
+
+// 유효성 검사 에러 타입 명시적 정의
+export type ValidationErrors = {
+    email?: string;
+    password?: string;
+    confirmPassword?: string;
+};
 
 export const useSignUp = () => {
     const router = useRouter();
-    const [validationErrors, setValidationErrors] = useState<Partial<Record<keyof SignUpFormData, string>>>({});
+    const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
 
     const signUpMutation = useMutation({
         mutationFn: async (credentials: AuthCredentials) => {
@@ -43,9 +52,10 @@ export const useSignUp = () => {
             return true;
         } catch (error) {
             if (error instanceof z.ZodError) {
-                const errors = Object.fromEntries(
-                    error.errors.map((err) => [err.path[0], err.message])
-                );
+                const errors = error.errors.reduce((acc, err) => ({
+                    ...acc,
+                    [err.path[0]]: err.message
+                }), {} as ValidationErrors);
                 setValidationErrors(errors);
             }
             return false;

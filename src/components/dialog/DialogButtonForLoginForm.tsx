@@ -11,17 +11,20 @@ import {
     DialogHeader,
     DialogTitle,
     DialogDescription,
+    DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Mail, Lock, LogIn } from 'lucide-react';
+import { Mail, Lock, LogIn, X, Eye, EyeOff } from 'lucide-react';
+import { FaGoogle, FaFacebook, FaComment } from 'react-icons/fa'; // React-icons 로고 추가
 import { useApiForLogin } from '@/hook/useApiForLogin';
 
 const DialogButtonForLogin: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
     // useApiForLogin 훅 사용
     const loginMutation = useApiForLogin();
@@ -31,138 +34,166 @@ const DialogButtonForLogin: React.FC = () => {
         loginMutation.mutate({ email, password });
     };
 
+    const togglePasswordVisibility = () => {
+        setShowPassword((prev) => !prev);
+    };
+
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button
-                    variant="outline"
-                    className="text-sm font-medium bg-white hover:bg-gray-50"
-                >
+                <Button variant="outline" className="text-sm font-medium px-6 py-2">
                     <LogIn className="w-4 h-4 mr-2" />
-                    Sign In
+                    로그인
                 </Button>
             </DialogTrigger>
-            <DialogContent className="p-0 bg-white w-[800px] max-w-[90vw]">
-                <div className="flex flex-col md:flex-row w-full min-h-[500px]">
-                    {/* Left Section: Image Box */}
-                    <div className="w-full md:w-1/2 bg-gray-50 flex items-center justify-center p-8 border-r border-gray-200">
-                        <div className="max-w-[200px] w-full">
+            <DialogContent className="p-0 bg-white w-[800px] max-w-[90vw] rounded-lg shadow-2xl">
+                {/* 닫기 버튼 */}
+                <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none">
+                    <X className="h-4 w-4" />
+                    <span className="sr-only">Close</span>
+                </DialogClose>
+
+                <div className="flex flex-col md:flex-row w-full min-h-[550px]">
+                    {/* 왼쪽: 이미지 섹션 */}
+                    <div className="w-full md:w-1/2 flex flex-col">
+                        {/* 상단 영역 */}
+                        <div className="h-1/2 flex items-center justify-center">
                             <img
-                                src="/dankkum_logo.png"
+                                src="/bigman.webp"
                                 alt="Dankkum Logo"
-                                className="w-full h-auto"
+                                className="w-full h-full object-cover"
                             />
+                        </div>
+                        {/* 하단 텍스트 영역 */}
+                        <div className="bg-[#4171d6] h-1/2 flex flex-col items-center justify-center p-8 text-white">
+                            <p className="text-blue-100 text-center leading-relaxed">
+                                로그인 후에 업무 관리의 <br/> 신세계를 경험 하세요 !
+                            </p>
                         </div>
                     </div>
 
-                    {/* Right Section: Login Form */}
+                    {/* 오른쪽: 로그인 폼 섹션 */}
                     <div className="w-full md:w-1/2 p-8">
-                        <DialogHeader className="space-y-2 mb-6">
-                            <DialogTitle className="text-2xl font-semibold text-gray-900">
-                                Welcome Back
-                            </DialogTitle>
-                            <DialogDescription className="text-gray-500">
-                                Please login to your account
-                            </DialogDescription>
-                        </DialogHeader>
+                        <form onSubmit={(e) => e.preventDefault()} className="h-full flex flex-col">
+                            <DialogHeader className="mb-6">
+                                <DialogTitle className="text-2xl font-bold text-gray-900">
+                                    로그인
+                                </DialogTitle>
+                            </DialogHeader>
 
-                        <div className="space-y-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="email" className="text-gray-700">
-                                    Email
-                                </Label>
-                                <div className="relative">
-                                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
-                                    <Input
-                                        id="email"
-                                        type="email"
-                                        placeholder="name@example.com"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        className="pl-9 bg-gray-50 border-gray-200 focus:bg-white"
-                                    />
+                            <div className="space-y-4">
+                                {/* 이메일 입력 */}
+                                <div className="flex items-center space-x-4">
+                                    <div className="w-10 flex justify-center">
+                                        <Mail className="w-5 h-5 text-gray-400" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <Input
+                                            type="email"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            className="w-full py-2 border-gray-200 rounded-lg"
+                                            placeholder="이메일을 입력해주세요"
+                                            disabled={loginMutation.isPending}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div className="space-y-2">
-                                <Label htmlFor="password" className="text-gray-700">
-                                    Password
-                                </Label>
-                                <div className="relative">
-                                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
-                                    <Input
-                                        id="password"
-                                        type="password"
-                                        placeholder="••••••••"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        className="pl-9 bg-gray-50 border-gray-200 focus:bg-white"
-                                    />
+                                {/* 비밀번호 입력 */}
+                                <div className="flex items-center space-x-4">
+                                    <div className="w-10 flex justify-center">
+                                        <Lock className="w-5 h-5 text-gray-400" />
+                                    </div>
+                                    <div className="flex-1 relative">
+                                        <Input
+                                            type={showPassword ? "text" : "password"}
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            className="w-full py-2 border-gray-200 rounded-lg"
+                                            placeholder="비밀번호를 입력해주세요"
+                                            disabled={loginMutation.isPending}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={togglePasswordVisibility}
+                                            className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                                        >
+                                            {showPassword ? (
+                                                <EyeOff className="w-5 h-5 text-gray-400" />
+                                            ) : (
+                                                <Eye className="w-5 h-5 text-gray-400" />
+                                            )}
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center space-x-2">
-                                    <Checkbox id="remember" />
-                                    <Label
-                                        htmlFor="remember"
-                                        className="text-sm text-gray-600 leading-none"
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center space-x-2">
+                                        <Checkbox id="remember" />
+                                        <Label
+                                            htmlFor="remember"
+                                            className="text-sm text-gray-600 leading-none"
+                                        >
+                                            로그인 상태 유지
+                                        </Label>
+                                    </div>
+                                    <Button
+                                        variant="link"
+                                        className="text-sm text-blue-500 hover:text-blue-600 p-0"
                                     >
-                                        Remember me
-                                    </Label>
+                                        비밀번호를 잊으셨나요?
+                                    </Button>
                                 </div>
+
                                 <Button
-                                    variant="link"
-                                    className="text-sm text-blue-500 hover:text-blue-600 p-0"
+                                    onClick={handleLogin}
+                                    className="w-full bg-[#4171d6] hover:bg-blue-700 text-white py-2 mt-6 rounded-lg transition-colors"
+                                    disabled={loginMutation.isPending}
                                 >
-                                    Forgot password?
+                                    {loginMutation.isPending ? '로그인 중...' : '로그인'}
                                 </Button>
                             </div>
 
-                            <Button
-                                onClick={handleLogin}
-                                className="w-full bg-blue-500 hover:bg-blue-600 text-white mt-6"
-                                disabled={loginMutation.isPending}
-                            >
-                                {loginMutation.isPending ? 'Logging in...' : 'Sign In'}
-                            </Button>
-
-                            <div className="relative my-4">
-                                <div className="absolute inset-0 flex items-center">
-                                    <div className="w-full border-t border-gray-200"></div>
+                            {/* 소셜 로그인 섹션 */}
+                            <div className="mt-8">
+                                <div className="relative">
+                                    <div className="absolute inset-0 flex items-center">
+                                        <div className="w-full border-t border-gray-200" />
+                                    </div>
+                                    <div className="relative flex justify-center text-sm">
+                                        <span className="bg-white px-2 text-gray-500">또는</span>
+                                    </div>
                                 </div>
-                                <div className="relative flex justify-center text-xs">
-                                    <span className="px-2 bg-white text-gray-500">
-                                        OR CONTINUE WITH
-                                    </span>
+
+                                <div className="mt-6 flex justify-center space-x-4">
+                                    {/* Google 로그인 버튼 */}
+                                    <button className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50 transition-colors">
+                                        <FaGoogle className="w-5 h-5 text-[#EA4335]" />
+                                    </button>
+                                    {/* Kakao 로그인 버튼 */}
+                                    <button className="w-10 h-10 flex items-center justify-center rounded-full bg-[#FEE500] hover:bg-[#FDD800] transition-colors">
+                                        <FaComment className="w-5 h-5 text-[#3C1E1E]" />
+                                    </button>
+                                    {/* Naver 로그인 버튼 */}
+                                    <button className="w-10 h-10 flex items-center justify-center rounded-full bg-[#03C75A] hover:bg-[#02B551] transition-colors">
+                                        <FaFacebook className="w-5 h-5 text-white" />
+                                    </button>
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
-                                <Button
-                                    variant="outline"
-                                    className="w-full bg-white hover:bg-gray-50 text-gray-600"
-                                >
-                                    Google
-                                </Button>
-                                <Button
-                                    variant="outline"
-                                    className="w-full bg-white hover:bg-gray-50 text-gray-600"
-                                >
-                                    Facebook
-                                </Button>
+                            <div className="mt-6 text-center">
+                                <p className="text-sm text-gray-600">
+                                    계정이 없으신가요?{' '}
+                                    <Button
+                                        type="button"
+                                        variant="link"
+                                        className="text-[#4171d6] hover:text-blue-700 p-0 font-medium"
+                                    >
+                                        회원가입
+                                    </Button>
+                                </p>
                             </div>
-
-                            <p className="text-center text-sm text-gray-500">
-                                Don't have an account?{' '}
-                                <Button
-                                    variant="link"
-                                    className="text-blue-500 hover:text-blue-600 p-0"
-                                >
-                                    Sign up
-                                </Button>
-                            </p>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </DialogContent>

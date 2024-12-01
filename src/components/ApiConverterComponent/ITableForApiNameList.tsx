@@ -23,8 +23,8 @@ const ITableForApiNameList: React.FC<ITableForApiNameListProps> = ({ onSelect, o
     }
 
     return (
-        <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">API 이름 목록</h3>
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-3">
+            <h3 className="text-lg font-semibold mb-3 text-gray-800">API 이름 목록</h3>
             <div className="divide-y divide-gray-200">
                 {apiNameList?.map((apiName: ApiNameType) => (
                     <div

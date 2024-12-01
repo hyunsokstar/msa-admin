@@ -18,8 +18,8 @@ interface ApiFormData {
 const ApiConverterComponent = () => {
     const [formData, setFormData] = useState<ApiFormData>({
         apiName1: '',
-        apiUrl: '/api/shop/v1/admin/coupon/issue',
-        apiMethod: 'GET'
+        apiUrl: '',
+        apiMethod: ''
     });
 
     const [generatedCode1, setGeneratedCode1] = useState('');
@@ -87,7 +87,7 @@ const ApiConverterComponent = () => {
 
         const code2 = `static ${formData.apiName1}(dto: IRequestDtoFor${apiName})
   : Promise<IResponseDtoFor${apiName}> {
-  return HttpClient.command(api.issueShopCoupon, dto);
+  return HttpClient.${formData.apiMethod === 'Get' ? 'get' : 'command' }(api.${formData.apiName1}, dto);
 }`;
 
         const code3 = `export interface IRequestDtoFor${apiName} {}`;
@@ -145,7 +145,7 @@ const ApiConverterComponent = () => {
     );
 
     return (
-        <div className="w-full max-w-7xl p-4 space-y-4 grid grid-cols-2 gap-4">
+        <div className="w-full max-w-7xl p-4 grid grid-cols-2 gap-4">
             <div className="border-r pr-4">
                 <ToastContainer />
                 <Card className="border-gray-200 shadow-sm">
@@ -172,6 +172,7 @@ const ApiConverterComponent = () => {
                                     value={formData.apiUrl}
                                     onChange={handleInputChange}
                                     className="flex-1"
+                                    placeholder="api url"
                                 />
                             </div>
 
