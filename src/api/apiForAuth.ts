@@ -44,30 +44,6 @@ export const apiForSignUpUser = async ({
     }
 };
 
-// export const apiForLoginUser = async ({
-//                                           email,
-//                                           password
-//                                       }: AuthCredentials): Promise<AuthApiResponse> => {
-//     const supabase = getSupabase();
-//     if (!supabase) throw new Error('Supabase 클라이언트를 초기화하지 못했습니다.');
-//
-//     const { data, error } = await supabase.auth.signInWithPassword({
-//         email,
-//         password,
-//     });
-//
-//     if (error) {
-//         console.error('로그인 실패:', error);
-//         throw error;
-//     }
-//
-//     console.log("로그인 응답 데이터 : ", data)
-//
-//     return data;
-// };
-
-// src/api/apiForAuth.ts
-// src/api/apiForAuth.ts
 // src/api/apiForAuth.ts
 export const apiForLoginUser = async ({
                                           email,
@@ -104,11 +80,14 @@ export const apiForLoginUser = async ({
             throw userError;
         }
         return {
-            ...data,
-            isAdmin: userData.is_admin  // 기본값 설정
+            weakPassword: undefined,
+            session: data.session,
+            isAdmin: userData.is_admin,
+            user: data.user
         };
     }
 
+    throw new Error('사용자 정보가 없습니다.');
 };
 
 export const apiForLogoutUser = async () => {
