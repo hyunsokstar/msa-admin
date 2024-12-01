@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { ApiNameType } from '@/types/typeForApiConverter';
 import { Toggle } from '@/components/ui/toggle';
 import { CheckCircle, Circle } from 'lucide-react';
+import { useUserStore } from '@/store/useUserStore'; // Zustand Store 가져오기
 
 interface ITableForApiNameListProps {
     onSelect: (apiName: string, apiUrl: string, apiMethod: string) => void;
@@ -13,6 +14,9 @@ interface ITableForApiNameListProps {
 
 const ITableForApiNameList: React.FC<ITableForApiNameListProps> = ({ onSelect, onToggleCompletion }) => {
     const { data: apiNameList, isLoading, isError } = useApiForGetApiNames();
+
+    // Zustand에서 현재 로그인된 유저 정보 가져오기
+    const user = useUserStore((state) => state.user);
 
     if (isLoading) {
         return <div className="text-center py-4">Loading...</div>;
@@ -39,7 +43,17 @@ const ITableForApiNameList: React.FC<ITableForApiNameListProps> = ({ onSelect, o
                         <div className="flex items-center gap-4">
                             <Toggle
                                 pressed={apiName.is_completed}
-                                onPressedChange={() => onToggleCompletion(apiName.id, !apiName.is_completed)}
+                                onPressedChange={() => {
+                                    // onToggleCompletion 실행 전에 유저 정보 출력
+                                    if (user) {
+                                        console.log(`현재 로그인 유저: ${user.email}`);
+                                    } else {
+                                        console.log('로그인된 사용자가 없습니다.');
+                                    }
+
+                                    // 완료/비완료 상태 토글 함수 호출
+                                    onToggleCompletion(apiName.id, !apiName.is_completed);
+                                }}
                                 className={`flex items-center gap-2 rounded-md px-3 py-2 transition-colors duration-150 ${
                                     apiName.is_completed
                                         ? 'bg-green-100 hover:bg-green-200 text-green-700'

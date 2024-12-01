@@ -1,21 +1,25 @@
 // src/components/AuthMenus.tsx
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
+import React, {useEffect, useState} from 'react';
+import {Button} from '@/components/ui/button';
 import DialogButtonForLogin from '../dialog/DialogButtonForLoginForm';
 import DialogButtonForSignUp from '../dialog/DialogButtonForSignUp';
 import getSupabase from '@/lib/supabaseClient';
+import {ExtendedUser, useUserStore} from "@/store/useUserStore";
+import {User} from "@supabase/auth-js";
 
 // 로그인한 유저 정보 타입 정의 (필요시 확장 가능)
 interface UserProfile {
     email: string | null;
     userId: string;
+    is_admin?: boolean;
 }
 
 const AuthMenus: React.FC = () => {
     const [user, setUser] = useState<UserProfile | null>(null);
     const supabase = getSupabase();
+    const setAuth = useUserStore((state) => state.setAuth);
 
     useEffect(() => {
         if (!supabase) return;
@@ -23,17 +27,49 @@ const AuthMenus: React.FC = () => {
         // 초기 유저 정보 로드
         const loadUser = async () => {
             const {
-                data: { user },
-            } = await supabase.auth.getUser();
+                data: { session },
+            } = await supabase.auth.getSession();
 
-            if (user) {
-                setUser({
-                    email: user.email ?? null,
-                    userId: user.id,
-                });
-            } else {
-                setUser(null);
+            if(session?.user) {
+                // todo: public.users 의 해당 유저 정보도 가져오기
+                console.log("publicUser 호출 check ")
+                const { data: publicUser, error }
+                    = await supabase
+                    .from('users')
+                    .select('is_admin') // 필요한 필드 선택
+                    .eq('id', session.user.id) // auth.users의 id를 기준으로 필터링
+                    .single();
+
+                if (error) {
+                    console.error('Error fetching user:', error);
+                    return;
+                }
+
+                console.log("public.user : " , publicUser)
+
+                if (publicUser) {
+                    const {is_admin} = publicUser;
+
+                    console.log("is_admin ?? : ", is_admin)
+
+                    setUser({
+                        email: session.user.email ?? null,
+                        userId: session.user.id ?? '',
+                        is_admin: is_admin
+                    });
+
+                    const extendedUser: ExtendedUser = {
+                        ...session.user,
+                        is_admin: is_admin,
+                    };
+
+                    setAuth(extendedUser, session);
+
+
+                }
+
             }
+
         };
 
         loadUser();

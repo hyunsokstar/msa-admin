@@ -1,7 +1,8 @@
 // src/api/apiForAuth.ts
 import getSupabase from '@/lib/supabaseClient';
 import { AuthCredentials, AuthApiResponse, UserProfile } from '@/types/typeForAuth';
-import {Session} from "@supabase/supabase-js";
+import {Session, WeakPassword} from "@supabase/supabase-js";
+import {User} from "@supabase/auth-js";
 
 export const apiForSignUpUser = async ({
                                            email,
@@ -10,44 +11,73 @@ export const apiForSignUpUser = async ({
     const supabase = getSupabase();
     if (!supabase) throw new Error('Supabase 클라이언트를 초기화하지 못했습니다.');
 
-    // 1. 먼저 Supabase Auth로 회원가입
-    const { data: authData, error: signUpError } = await supabase.auth.signUp({
-        email,
-        password,
-    });
+    try {
+        // 1. auth.users에 회원가입
+        const { data: authData, error: signUpError } = await supabase.auth.signUp({
+            email,
+            password,
+        });
 
-    if (signUpError) {
-        console.error('회원가입 실패:', signUpError);
-        throw signUpError;
-    }
+        if (signUpError) throw signUpError;
 
-    // 2. Auth 회원가입이 성공하면 추가 프로필 정보를 저장
-    if (authData.user) {
-        const userProfile: Partial<UserProfile> = {
-            user_id: authData.user.id,
-            email: email,
-            created_at: new Date().toISOString(),
-        };
+        // 2. public.users에 사용자 정보 저장
+        if (authData.user) {
+            const { error: profileError } = await supabase
+                .from('users')
+                .insert({
+                    id: authData.user.id,
+                    email: email,
+                    is_admin: false
+                });
 
-        const { error: profileError } = await supabase
-            .from('users')  // 'public.users' 대신 'users'만 사용
-            .insert([userProfile]);
-
-        if (profileError) {
-            console.error('사용자 프로필 생성 실패:', profileError);
-            // Auth에서 생성된 사용자 삭제 시도
-            await supabase.auth.admin.deleteUser(authData.user.id);
-            throw profileError;
+            if (profileError) {
+                console.error('사용자 데이터 저장 실패:', profileError);
+                await supabase.auth.admin.deleteUser(authData.user.id);
+                throw profileError;
+            }
         }
-    }
 
-    return authData;
+        return authData;
+    } catch (error) {
+        console.error('회원가입 프로세스 실패:', error);
+        throw error;
+    }
 };
 
+// export const apiForLoginUser = async ({
+//                                           email,
+//                                           password
+//                                       }: AuthCredentials): Promise<AuthApiResponse> => {
+//     const supabase = getSupabase();
+//     if (!supabase) throw new Error('Supabase 클라이언트를 초기화하지 못했습니다.');
+//
+//     const { data, error } = await supabase.auth.signInWithPassword({
+//         email,
+//         password,
+//     });
+//
+//     if (error) {
+//         console.error('로그인 실패:', error);
+//         throw error;
+//     }
+//
+//     console.log("로그인 응답 데이터 : ", data)
+//
+//     return data;
+// };
+
+// src/api/apiForAuth.ts
+// src/api/apiForAuth.ts
+// src/api/apiForAuth.ts
 export const apiForLoginUser = async ({
                                           email,
                                           password
-                                      }: AuthCredentials): Promise<AuthApiResponse> => {
+                                      }: AuthCredentials): Promise<{
+    weakPassword?: WeakPassword;
+    session: Session;
+    isAdmin: boolean;
+    user: User
+}> => {
     const supabase = getSupabase();
     if (!supabase) throw new Error('Supabase 클라이언트를 초기화하지 못했습니다.');
 
@@ -61,7 +91,32 @@ export const apiForLoginUser = async ({
         throw error;
     }
 
-    return data;
+    // public.users에서 is_admin 정보 가져오기
+    if (data.user) {
+        const { data: userData, error: userError } = await supabase
+            .from('users')
+            .select('is_admin')
+            .eq('id', data.user.id)
+            .single();
+
+        if (userError) {
+            console.error('사용자 정보 조회 실패:', userError);
+            throw userError;
+        }
+        return {
+            ...data,
+            isAdmin: userData.is_admin  // 기본값 설정
+        };
+    }
+
+};
+
+export const apiForLogoutUser = async () => {
+    const supabase = getSupabase();
+    if (!supabase) throw new Error('Supabase 클라이언트를 초기화하지 못했습니다.');
+
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
 };
 
 export const logoutUser = async (): Promise<void> => {

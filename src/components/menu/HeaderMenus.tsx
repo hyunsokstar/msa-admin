@@ -7,7 +7,6 @@ import AuthMenus from './AuthMenus';
 import useApiForGetMenusData from '@/hook/useApiForGetMenusData';
 import { useMenuStore } from '@/store/useMenuStore';
 import { MenuItemType } from '@/api/apiForMenu';
-import DialogButtonForCreateMenuData from '../dialog/DialogButtonForCreateMenuData';
 
 export default function HeaderMenus() {
     const [openMenus, setOpenMenus] = useState<Set<string>>(new Set());
@@ -160,9 +159,6 @@ export default function HeaderMenus() {
                     {renderMenuItems(menuItems)}
                 </div>
 
-                <div>
-                    <DialogButtonForCreateMenuData />
-                </div>
                 <AuthMenus />
 
             </nav>

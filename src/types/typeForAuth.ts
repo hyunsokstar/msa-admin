@@ -1,23 +1,20 @@
 // src/types/typeForAuth.ts
-import { AuthError, AuthResponse, User, Session } from '@supabase/supabase-js';
+import { AuthError, AuthResponse } from '@supabase/supabase-js';
 
 export interface AuthCredentials {
     email: string;
     password: string;
 }
 
-export interface AuthState {
-    user: User | null;
-    session: Session | null;
-}
+// AuthApiResponse에 isAdmin 필드 추가
+export type AuthApiResponse = AuthResponse['data'] & {
+    isAdmin?: boolean;
+};
 
-export type AuthApiResponse = AuthResponse['data'];
 export type AuthApiError = AuthError;
 
-// 사용자 프로필 타입 추가
+// UserProfile 타입 수정
 export interface UserProfile {
-    user_id: string;
-    email: string;
-    created_at: string;
-    updated_at?: string;
+    email: string | null;
+    isAdmin: boolean;
 }

@@ -38,7 +38,7 @@ export const useSignUp = () => {
         },
         onSuccess: () => {
             toast.success('Sign up successful! Please check your email for verification.');
-            router.push('/auth/verify-email');
+            // router.push('/auth/verify-email');
         },
         onError: (error: AuthApiError) => {
             toast.error(error.message);

@@ -1,34 +1,31 @@
-// src/hooks/useApiForAuth.ts
 import { useMutation, UseMutationResult } from '@tanstack/react-query';
 import { AuthCredentials, AuthApiResponse, AuthApiError } from '@/types/typeForAuth';
-import { apiForLoginUser } from '@/api/apiForAuth';
+import { apiForLoginUser, apiForLogoutUser } from '@/api/apiForAuth';
 import { toast } from 'react-toastify';
-import { useRouter } from 'next/navigation';
+import {ExtendedUser, useUserStore} from '@/store/useUserStore';
 
-interface UseApiForLoginOptions {
-    onSuccessRedirect?: string;
-}
-
-export const useApiForLogin = (
-    options: UseApiForLoginOptions = {}
-): UseMutationResult<AuthApiResponse, AuthApiError, AuthCredentials> => {
-    const router = useRouter();
-    const { onSuccessRedirect = '/dashboard' } = options;
+export const useApiForLogin = (): UseMutationResult<AuthApiResponse, AuthApiError, AuthCredentials> => {
+    const setAuth = useUserStore((state) => state.setAuth);
 
     return useMutation({
         mutationFn: apiForLoginUser,
         onSuccess: (data) => {
-            toast.success('Login successful! Redirecting to dashboard...');
-            router.push(onSuccessRedirect);
+            console.log("로그인 응답 데이터 data : ", data);
 
-            // 추가적인 성공 처리 (예: 전역 상태 업데이트)
+            if (data.user && data.session) {
+                const extendedUser: ExtendedUser = {
+                    ...data.user,
+                    is_admin: data.isAdmin ?? false
+                };
+
+                setAuth(extendedUser, data.session);
+                toast.success('로그인 성공!');
+            }
             return data;
         },
         onError: (error: AuthApiError) => {
-            const errorMessage = error.message || 'An error occurred during login';
-            toast.error(`Login failed: ${errorMessage}`);
-
-            // 추가적인 에러 처리
+            const errorMessage = error.message || '로그인 중 오류가 발생했습니다';
+            toast.error(`로그인 실패: ${errorMessage}`);
             throw error;
         },
     });
