@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { MessageCircle, Send, X } from 'lucide-react';
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
+import axios from 'axios';
 
 interface IDialogButtonForQuestionForChatbotAboutApiTypeProps {
     initialContent?: string;
@@ -17,12 +18,26 @@ const IDialogButtonForQuestionForChatbotAboutApiType: React.FC<IDialogButtonForQ
     const [selectedImages, setSelectedImages] = useState<string[]>([]);
     const [chatResponse, setChatResponse] = useState('');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if (isDialogOpen) {
             setQuestion(initialContent || '');
         }
     }, [isDialogOpen, initialContent]);
+
+    // base64 to File 변환 함수
+    const dataURLtoFile = (dataurl: string, filename: string): File => {
+        const arr = dataurl.split(',');
+        const mime = arr[0].match(/:(.*?);/)?.[1] || 'image/png';
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new File([u8arr], filename, { type: mime });
+    };
 
     const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
@@ -49,7 +64,6 @@ const IDialogButtonForQuestionForChatbotAboutApiType: React.FC<IDialogButtonForQ
 
         setSelectedImages(prev => [...prev, ...newImages]);
         
-        // Reset input value to allow selecting the same file again
         if (e.target) {
             e.target.value = '';
         }
@@ -59,8 +73,43 @@ const IDialogButtonForQuestionForChatbotAboutApiType: React.FC<IDialogButtonForQ
         setSelectedImages(prev => prev.filter((_, i) => i !== index));
     };
 
-    const handleSubmit = () => {
-        setChatResponse('챗봇 응답이 여기에 표시됩니다...');
+    const handleSubmit = async () => {
+        try {
+            setIsLoading(true);
+            setChatResponse('답변을 생성하고 있습니다...');
+
+            // FormData 생성
+            const formData = new FormData();
+            formData.append('promptText', question);
+
+            // 선택된 이미지들을 File 객체로 변환하여 추가
+            selectedImages.forEach((image, index) => {
+                const file = dataURLtoFile(image, `image${index}.png`);
+                formData.append('files', file);
+            });
+
+            // API 요청
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                body: formData,
+            });
+
+            console.log("Api response:", response);
+            
+
+            if (!response.ok) {
+                throw new Error('API request failed');
+            }
+
+            const data = await response.json();
+            setChatResponse(data.answer);
+
+        } catch (error) {
+            console.error('Error sending request:', error);
+            setChatResponse('죄송합니다. 요청 처리 중 오류가 발생했습니다.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -75,6 +124,7 @@ const IDialogButtonForQuestionForChatbotAboutApiType: React.FC<IDialogButtonForQ
                 </Button>
             </DialogTrigger>
             <DialogContent className="max-w-7xl w-full h-[90vh] p-0 bg-white shadow-2xl border-0">
+                {/* ... (이전 코드와 동일) ... */}
                 <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
                 <div className="relative flex h-full bg-white rounded-lg overflow-hidden">
                     {/* Left Section */}
@@ -149,14 +199,21 @@ const IDialogButtonForQuestionForChatbotAboutApiType: React.FC<IDialogButtonForQ
                             <Button 
                                 className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                                 onClick={handleSubmit}
+                                disabled={isLoading || !question.trim()}
                             >
-                                <Send className="w-4 h-4 mr-2" />
-                                챗봇에게 질문하기
+                                {isLoading ? (
+                                    <span>처리중...</span>
+                                ) : (
+                                    <>
+                                        <Send className="w-4 h-4 mr-2" />
+                                        챗봇에게 질문하기
+                                    </>
+                                )}
                             </Button>
                         </div>
 
                         <Card className="flex-grow p-4 bg-gray-50">
-                            <div className="h-full overflow-auto">
+                            <div className="h-full overflow-auto whitespace-pre-wrap">
                                 {chatResponse || '챗봇 응답이 여기에 표시됩니다.'}
                             </div>
                         </Card>
