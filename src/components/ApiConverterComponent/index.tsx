@@ -1,13 +1,14 @@
+// src/components/ApiConverterComponent.tsx
 "use client";
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Copy, Check, Code2, RefreshCw } from 'lucide-react';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import ITableForApiNameList from '@/components/ApiConverterComponent/ITableForApiNameList';
 import useApiForUpdateIsCompletedForApiNames from "@/hook/useApiForUpdateIsCompletedForApiNames";
+import ICodeBlockForApiUtil from '@/components/ApiConverterComponent/ICodeBlockForApiUtil';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface ApiFormData {
     apiName1: string;
@@ -115,38 +116,6 @@ const ApiConverterComponent = () => {
         }
     };
 
-    const CodeBlock = ({ title, code, codeKey }: { title: string; code: string; codeKey: keyof typeof copyStates }) => (
-        <div className="mb-6 bg-white rounded-lg shadow-sm border border-gray-100">
-            <div className="flex justify-between items-center p-3 border-b border-gray-100 bg-gray-50">
-                <div className="font-medium text-gray-700 flex items-center gap-2">
-                    <Code2 className="h-4 w-4 text-blue-500" />
-                    {title}
-                </div>
-                {code && (
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        className={`h-8 hover:bg-gray-100 transition-colors ${
-                            copyStates[codeKey] ? 'text-green-500' : 'text-gray-500'
-                        }`}
-                        onClick={() => copyToClipboard(code, codeKey)}
-                    >
-                        {copyStates[codeKey] ? (
-                            <Check className="h-4 w-4" />
-                        ) : (
-                            <Copy className="h-4 w-4" />
-                        )}
-                    </Button>
-                )}
-            </div>
-            <div className="p-4 bg-gray-50/50 rounded-b-lg">
-                <pre className="whitespace-pre-wrap text-sm font-mono text-gray-800 overflow-x-auto">
-                    {code || '코드가 생성되지 않았습니다.'}
-                </pre>
-            </div>
-        </div>
-    );
-
     return (
         <div className="w-full min-h-screen bg-gray-50 p-6">
             <div className="flex gap-6 h-full">
@@ -161,11 +130,7 @@ const ApiConverterComponent = () => {
                         <CardContent className="p-6">
                             <div className="space-y-6">
                                 <div className="space-y-4">
-                                    {[
-                                        { name: 'apiName1', label: 'API 이름', placeholder: 'createPost' },
-                                        { name: 'apiUrl', label: 'API URL', placeholder: '/api/posts' },
-                                        { name: 'apiMethod', label: 'Method', placeholder: 'Get' }
-                                    ].map(({ name, label, placeholder }) => (
+                                    {[{ name: 'apiName1', label: 'API 이름', placeholder: 'createPost' }, { name: 'apiUrl', label: 'API URL', placeholder: '/api/posts' }, { name: 'apiMethod', label: 'Method', placeholder: 'Get' }].map(({ name, label, placeholder }) => (
                                         <div key={name} className="flex items-center gap-4">
                                             <label className="w-28 text-sm font-medium text-gray-600">
                                                 {label}:
@@ -189,17 +154,21 @@ const ApiConverterComponent = () => {
                                 </div>
 
                                 <div className="space-y-4 mt-8">
-                                    {[
-                                        { title: 'API 정의', code: generatedCode1, key: 'code1' },
-                                        { title: '메서드 정의', code: generatedCode2, key: 'code2' },
-                                        { title: '요청 타입 정의', code: generatedCode3, key: 'code3' },
-                                        { title: '응답 타입 정의', code: generatedCode4, key: 'code4' }
+                                {
+                                    [
+                                        { title: '요청 타입 정의', code: generatedCode3, key: 'code3', hasDialogButtonForChatbot: true }, 
+                                        { title: '응답 타입 정의', code: generatedCode4, key: 'code4', hasDialogButtonForChatbot: true },
+                                        { title: 'API 정의', code: generatedCode1, key: 'code1', hasDialogButtonForChatbot: false }, 
+                                        { title: '메서드 정의', code: generatedCode2, key: 'code2', hasDialogButtonForChatbot: false }
                                     ].map((block) => (
-                                        <CodeBlock
+                                        <ICodeBlockForApiUtil
                                             key={block.key}
                                             title={block.title}
                                             code={block.code}
                                             codeKey={block.key as keyof typeof copyStates}
+                                            copyToClipboard={(text, key) => copyToClipboard(text, key as keyof typeof copyStates)}
+                                            copyStates={copyStates}
+                                            hasDialogButtonForChatbot={block.hasDialogButtonForChatbot}
                                         />
                                     ))}
                                 </div>
@@ -219,18 +188,6 @@ const ApiConverterComponent = () => {
                     />
                 </div>
             </div>
-            <ToastContainer
-                position="bottom-right"
-                theme="colored"
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={true}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
         </div>
     );
 };

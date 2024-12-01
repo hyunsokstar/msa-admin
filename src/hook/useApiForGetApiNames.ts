@@ -17,7 +17,6 @@ export const useApiForGetApiNames = () => {
                 if (!data) {
                     throw new Error('API 이름 데이터를 찾을 수 없습니다.');
                 }
-                toast.success('API 이름 데이터를 성공적으로 가져왔습니다.');
                 return data;
             } catch (error) {
                 const errorMessage = error instanceof Error ? error.message : 'API 이름 데이터를 가져오는 중 오류가 발생했습니다.';
