@@ -94,7 +94,7 @@ const IAnswerBoxForQuestion: React.FC<IAnswerBoxForQuestionProps> = ({ response 
                     {copied ? "복사됨" : "복사"}
                 </Button>
             </div>
-            <div className="h-[65vh] w-full overflow-y-scroll whitespace-pre-wrap border-t border-gray-200 p-1">
+            <div className="h-[77vh] w-full overflow-y-scroll whitespace-pre-wrap border-t border-gray-200 p-1">
                 {renderContent()}
             </div>
         </Card>

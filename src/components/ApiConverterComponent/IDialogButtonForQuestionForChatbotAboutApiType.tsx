@@ -107,6 +107,22 @@ const IDialogButtonForQuestionForChatbotAboutApiType: React.FC<IDialogButtonForQ
         };
     }, [handlePaste]);
 
+    const openImageInNewWindow = (imageUrl: string) => {
+        const newWindow = window.open('');
+        if (newWindow) {
+            newWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Image Preview</title>
+                    </head>
+                    <body style="margin: 0; display: flex; justify-content: center; align-items: center; background: #f5f5f5;">
+                        <img src="${imageUrl}" style="max-width: 100%; max-height: 100vh; object-fit: contain;" />
+                    </body>
+                </html>
+            `);
+        }
+    };
+
     const handleSubmit = async () => {
         try {
             setIsLoading(true);
@@ -151,14 +167,14 @@ const IDialogButtonForQuestionForChatbotAboutApiType: React.FC<IDialogButtonForQ
                     <MessageCircle className="h-4 w-4" />
                 </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-7xl w-full h-[90vh] p-0 bg-white shadow-2xl border-0">
+            <DialogContent className="max-w-full w-full h-[98vh] p-0 bg-white shadow-2xl border-0">
                 <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
                 <div className="relative flex h-full bg-white rounded-lg overflow-hidden">
                     {/* Left Section */}
                     <div className="w-1/2 p-6 border-r border-gray-200 flex flex-col bg-white">
-                        <div className="mb-4">
+                        <div className="mb-2">
                             <Textarea
-                                placeholder="API 관련 질문을 입력하세요..."
+                                placeholder="질문을 입력하세요..."
                                 className="w-full h-32 resize-none bg-white"
                                 value={question}
                                 onChange={(e) => setQuestion(e.target.value)}
@@ -166,7 +182,7 @@ const IDialogButtonForQuestionForChatbotAboutApiType: React.FC<IDialogButtonForQ
                         </div>
                         
                         <div className="flex-grow flex flex-col overflow-hidden">
-                            <div className="mb-4 space-y-2">
+                            <div className="mb-2 space-y-2">
                                 <input
                                     type="file"
                                     accept="image/*"
@@ -211,11 +227,12 @@ const IDialogButtonForQuestionForChatbotAboutApiType: React.FC<IDialogButtonForQ
                                             key={index} 
                                             className="relative aspect-square group border border-gray-200 rounded-lg overflow-hidden"
                                         >
-                                                <img
-                                                    src={image}
-                                                    alt={`Selected ${index + 1}`}
-                                                    className="w-full h-full object-contain cursor-pointer"
-                                                />
+                                            <img
+                                                src={image}
+                                                alt={`Selected ${index + 1}`}
+                                                className="w-full h-full object-contain"
+                                                onClick={() => openImageInNewWindow(image)}
+                                            />
                                             <button
                                                 onClick={() => handleRemoveImage(index)}
                                                 className="absolute top-2 right-2 p-1 bg-white rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200"
