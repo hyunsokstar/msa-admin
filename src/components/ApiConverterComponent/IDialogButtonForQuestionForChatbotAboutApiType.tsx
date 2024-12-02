@@ -1,6 +1,5 @@
-// src/components/ApiConverterComponent/IDialogButtonForQuestionForChatbotAboutApiType.tsx
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { MessageCircle, Send, X } from 'lucide-react';
@@ -19,6 +18,7 @@ const IDialogButtonForQuestionForChatbotAboutApiType: React.FC<IDialogButtonForQ
     const [chatResponse, setChatResponse] = useState('');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isPasteMode, setIsPasteMode] = useState(false);
 
     useEffect(() => {
         if (isDialogOpen) {
@@ -73,29 +73,57 @@ const IDialogButtonForQuestionForChatbotAboutApiType: React.FC<IDialogButtonForQ
         setSelectedImages(prev => prev.filter((_, i) => i !== index));
     };
 
+    const handlePaste = useCallback(async (e: ClipboardEvent) => {
+        if (!isPasteMode) return;
+        
+        const items = e.clipboardData?.items;
+        if (!items) return;
+
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            if (item.type.indexOf('image') !== -1) {
+                const file = item.getAsFile();
+                if (file) {
+                    const reader = new FileReader();
+                    try {
+                        const dataUrl = await new Promise<string>((resolve, reject) => {
+                            reader.onload = () => resolve(reader.result as string);
+                            reader.onerror = reject;
+                            reader.readAsDataURL(file);
+                        });
+                        setSelectedImages(prev => [...prev, dataUrl]);
+                    } catch (error) {
+                        console.error('Error reading pasted image:', error);
+                    }
+                }
+            }
+        }
+    }, [isPasteMode]);
+
+    useEffect(() => {
+        document.addEventListener('paste', handlePaste);
+        return () => {
+            document.removeEventListener('paste', handlePaste);
+        };
+    }, [handlePaste]);
+
     const handleSubmit = async () => {
         try {
             setIsLoading(true);
             setChatResponse('답변을 생성하고 있습니다...');
 
-            // FormData 생성
             const formData = new FormData();
             formData.append('promptText', question);
 
-            // 선택된 이미지들을 File 객체로 변환하여 추가
             selectedImages.forEach((image, index) => {
                 const file = dataURLtoFile(image, `image${index}.png`);
                 formData.append('files', file);
             });
 
-            // API 요청
             const response = await fetch('/api/chat', {
                 method: 'POST',
                 body: formData,
             });
-
-            console.log("Api response:", response);
-            
 
             if (!response.ok) {
                 throw new Error('API request failed');
@@ -128,7 +156,7 @@ const IDialogButtonForQuestionForChatbotAboutApiType: React.FC<IDialogButtonForQ
                 <div className="relative flex h-full bg-white rounded-lg overflow-hidden">
                     {/* Left Section */}
                     <div className="w-1/2 p-6 border-r border-gray-200 flex flex-col bg-white">
-                        <div className="mb-4">
+                        <div className="mb-2">
                             <Textarea
                                 placeholder="API 관련 질문을 입력하세요..."
                                 className="w-full h-32 resize-none bg-white"
@@ -138,7 +166,7 @@ const IDialogButtonForQuestionForChatbotAboutApiType: React.FC<IDialogButtonForQ
                         </div>
                         
                         <div className="flex-grow flex flex-col overflow-hidden">
-                            <div className="mb-4">
+                            <div className="mb-4 space-y-2">
                                 <input
                                     type="file"
                                     accept="image/*"
@@ -147,19 +175,37 @@ const IDialogButtonForQuestionForChatbotAboutApiType: React.FC<IDialogButtonForQ
                                     className="hidden"
                                     id="image-upload"
                                 />
-                                <label htmlFor="image-upload">
-                                    <Button 
-                                        variant="outline" 
-                                        className="w-full bg-white hover:bg-gray-50"
-                                        asChild
+                                <div className="flex gap-2">
+                                    <label htmlFor="image-upload" className="flex-1">
+                                        <Button 
+                                            variant="outline" 
+                                            className="w-full bg-white hover:bg-gray-50"
+                                            asChild
+                                        >
+                                            <span>이미지 선택</span>
+                                        </Button>
+                                    </label>
+                                    <Button
+                                        variant="outline"
+                                        className={`flex-1 ${
+                                            isPasteMode 
+                                                ? 'bg-red-50 border-red-500 text-red-700 hover:bg-red-100' 
+                                                : 'bg-white hover:bg-gray-50'
+                                        }`}
+                                        onClick={() => setIsPasteMode(!isPasteMode)}
                                     >
-                                        <span>이미지 선택</span>
+                                        {isPasteMode ? '붙여넣기 모드 켜짐' : '붙여넣기 모드 끄기'}
                                     </Button>
-                                </label>
+                                </div>
                             </div>
+
                             
-                            <div className="flex-grow overflow-auto">
-                                <div className="grid grid-cols-3 gap-4 p-2">
+                            <div 
+                                className={`flex-grow overflow-auto border-2 rounded-lg p-4 ${
+                                    isPasteMode ? 'border-red-500 border-dashed' : 'border-gray-300 border-dashed'
+                                }`}
+                            >
+                                <div className="grid grid-cols-2 gap-4">
                                     {selectedImages.map((image, index) => (
                                         <div 
                                             key={index} 
@@ -179,22 +225,29 @@ const IDialogButtonForQuestionForChatbotAboutApiType: React.FC<IDialogButtonForQ
                                         </div>
                                     ))}
                                 </div>
+                                {selectedImages.length === 0 && (
+                                    <div className="text-center text-gray-500 p-8">
+                                        {isPasteMode 
+                                            ? '이미지를 붙여넣으세요 (Ctrl+V)'
+                                            : '이미지를 선택하거나 붙여넣기 모드를 활성화하세요'}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
 
                     {/* Right Section */}
                     <div className="w-1/2 p-6 flex flex-col bg-white">
-                        <DialogHeader className="mb-4">
-                            <DialogTitle className="text-2xl font-bold text-gray-800">
+                        <DialogHeader className="mb-0">
+                            {/* <DialogTitle className="text-2xl font-bold text-gray-800">
                                 API 타입에 대한 문의
-                            </DialogTitle>
-                            <p className="text-sm text-gray-600 mt-2">
+                            </DialogTitle> */}
+                            {/* <p className="text-sm text-gray-600 mt-2">
                                 API 타입에 대해 궁금한 점이 있으시면 왼쪽에 문의 내용을 작성해 주세요.
-                            </p>
+                            </p> */}
                         </DialogHeader>
 
-                        <div className="mb-4">
+                        <div className="mb-2">
                             <Button 
                                 className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                                 onClick={handleSubmit}
