@@ -1,18 +1,13 @@
-// /src/app/api/chat/route.ts
 import { NextResponse } from 'next/server';
 import axios from 'axios';
 
 export async function POST(req: Request) {
     const formData = await req.formData();
-    const files = formData.getAll('files') as File[];  // 'files'로 변경
+    const files = formData.getAll('files') as File[];
     const promptText = formData.get('promptText') as string;
 
-    if (!files.length) {
-        return NextResponse.json({ message: 'No files provided' }, { status: 400 });
-    }
-
     try {
-        // Process all files to base64
+        // Process files to base64 if they exist
         const imageContents = await Promise.all(
             files.map(async (file) => {
                 const fileBuffer = await file.arrayBuffer();
@@ -28,13 +23,13 @@ export async function POST(req: Request) {
             })
         );
 
-        // Construct message content with text and all images
+        // Construct message content with text and images (if any)
         const messageContent = [
             {
                 type: 'text',
                 text: promptText
             },
-            ...imageContents
+            ...(files.length > 0 ? imageContents : [])
         ];
 
         const response = await axios.post(
@@ -52,7 +47,7 @@ export async function POST(req: Request) {
             {
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-api-key': process.env.ANTHROPIC_API_KEY,  // NEXT_PUBLIC_ 제거
+                    'x-api-key': process.env.ANTHROPIC_API_KEY,
                     'anthropic-version': '2023-06-01'
                 }
             }

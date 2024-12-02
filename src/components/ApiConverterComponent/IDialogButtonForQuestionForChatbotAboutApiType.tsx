@@ -1,11 +1,11 @@
+// src/components/ApiConverterComponent/IDialogButtonForQuestionForChatbotAboutApiType.tsx
 "use client";
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { MessageCircle, Send, X } from 'lucide-react';
 import { Textarea } from "@/components/ui/textarea";
-import { Card } from "@/components/ui/card";
-import axios from 'axios';
+import IAnswerBoxForQuestion from '@/components/ApiConverterComponent/IAnswerBoxForQuestion';
 
 interface IDialogButtonForQuestionForChatbotAboutApiTypeProps {
     initialContent?: string;
@@ -124,7 +124,6 @@ const IDialogButtonForQuestionForChatbotAboutApiType: React.FC<IDialogButtonForQ
                 </Button>
             </DialogTrigger>
             <DialogContent className="max-w-7xl w-full h-[90vh] p-0 bg-white shadow-2xl border-0">
-                {/* ... (이전 코드와 동일) ... */}
                 <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
                 <div className="relative flex h-full bg-white rounded-lg overflow-hidden">
                     {/* Left Section */}
@@ -212,11 +211,7 @@ const IDialogButtonForQuestionForChatbotAboutApiType: React.FC<IDialogButtonForQ
                             </Button>
                         </div>
 
-                        <Card className="flex-grow p-4 bg-gray-50">
-                            <div className="h-full overflow-auto whitespace-pre-wrap">
-                                {chatResponse || '챗봇 응답이 여기에 표시됩니다.'}
-                            </div>
-                        </Card>
+                        <IAnswerBoxForQuestion response={chatResponse} />
                     </div>
                 </div>
             </DialogContent>
