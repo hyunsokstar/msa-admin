@@ -1,5 +1,3 @@
-// src/components/IDialogButtonForCreateCodeFormatTransformer.tsx
-
 import React, { useState } from 'react';
 import {
   Dialog,
@@ -10,9 +8,9 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Plus } from 'lucide-react';
 import { useApiForCreateCodeTransformFormat } from '@/hook/useApiForCreateCodeTransformFormat';
+import MonacoEditor from '@monaco-editor/react';
 
 interface FormState {
   name: string;
@@ -33,15 +31,19 @@ const IDialogButtonForCreateCodeFormatTransformer = () => {
   const createMutation = useApiForCreateCodeTransformFormat();
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleCodeChange = (value: string | undefined) => {
+    setFormData(prev => ({ ...prev, trans_format: value || '' }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       await createMutation.mutateAsync(formData);
       setFormData({
@@ -67,7 +69,7 @@ const IDialogButtonForCreateCodeFormatTransformer = () => {
           변환 포맷 추가
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] bg-white">
+      <DialogContent className="sm:max-w-[800px] bg-white">
         <DialogHeader>
           <DialogTitle>새 변환 포맷 추가</DialogTitle>
         </DialogHeader>
@@ -82,13 +84,16 @@ const IDialogButtonForCreateCodeFormatTransformer = () => {
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium">변환 포맷( name, method, endpoint )</label>
-            <Textarea
-              name="trans_format"
+            <label className="text-sm font-medium">변환 포맷 (name, method, endpoint)</label>
+            <MonacoEditor
+              height="150px"
+              language="typescript"
               value={formData.trans_format}
-              onChange={handleInputChange}
-              placeholder="export interface IRequestDtoFor${name} {}"
-              rows={3}
+              onChange={handleCodeChange}
+              options={{
+                minimap: { enabled: false },
+                scrollBeyondLastLine: false,
+              }}
             />
           </div>
           <div className="space-y-2">
