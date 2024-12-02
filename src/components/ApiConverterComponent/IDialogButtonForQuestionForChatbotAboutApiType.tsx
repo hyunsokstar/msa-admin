@@ -156,7 +156,7 @@ const IDialogButtonForQuestionForChatbotAboutApiType: React.FC<IDialogButtonForQ
                 <div className="relative flex h-full bg-white rounded-lg overflow-hidden">
                     {/* Left Section */}
                     <div className="w-1/2 p-6 border-r border-gray-200 flex flex-col bg-white">
-                        <div className="mb-2">
+                        <div className="mb-4">
                             <Textarea
                                 placeholder="API 관련 질문을 입력하세요..."
                                 className="w-full h-32 resize-none bg-white"
@@ -211,11 +211,11 @@ const IDialogButtonForQuestionForChatbotAboutApiType: React.FC<IDialogButtonForQ
                                             key={index} 
                                             className="relative aspect-square group border border-gray-200 rounded-lg overflow-hidden"
                                         >
-                                            <img
-                                                src={image}
-                                                alt={`Selected ${index + 1}`}
-                                                className="w-full h-full object-cover"
-                                            />
+                                                <img
+                                                    src={image}
+                                                    alt={`Selected ${index + 1}`}
+                                                    className="w-full h-full object-contain cursor-pointer"
+                                                />
                                             <button
                                                 onClick={() => handleRemoveImage(index)}
                                                 className="absolute top-2 right-2 p-1 bg-white rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200"
@@ -239,15 +239,11 @@ const IDialogButtonForQuestionForChatbotAboutApiType: React.FC<IDialogButtonForQ
                     {/* Right Section */}
                     <div className="w-1/2 p-6 flex flex-col bg-white">
                         <DialogHeader className="mb-0">
-                            {/* <DialogTitle className="text-2xl font-bold text-gray-800">
-                                API 타입에 대한 문의
-                            </DialogTitle> */}
-                            {/* <p className="text-sm text-gray-600 mt-2">
-                                API 타입에 대해 궁금한 점이 있으시면 왼쪽에 문의 내용을 작성해 주세요.
-                            </p> */}
+                            <DialogTitle className="text-2xl font-bold text-gray-800">
+                            </DialogTitle>
                         </DialogHeader>
 
-                        <div className="mb-2">
+                        <div className="mb-4">
                             <Button 
                                 className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                                 onClick={handleSubmit}
