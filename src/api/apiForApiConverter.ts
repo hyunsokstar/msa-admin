@@ -72,4 +72,36 @@ export async function apiForUpdateIsCompletedForApiNames(id: number, isCompleted
     }
 }
 
+/**
+ * api_names 테이블에 새로운 API를 추가하는 함수
+ * @param apiName 생성할 API 데이터
+ * @returns 생성된 API 데이터 또는 null
+ */
+export async function apiForCreateApiName(apiName: Omit<ApiNameType, 'id'>): Promise<ApiNameType | null> {
+    const supabase = getSupabase();
+
+    if (!supabase) {
+        console.error("Supabase 클라이언트를 초기화하지 못했습니다.");
+        return null;
+    }
+
+    try {
+        const { data, error } = await supabase
+            .from('api_names')
+            .insert(apiName)
+            .select()
+            .single();
+
+        if (error) {
+            console.error('API 이름 추가 중 오류 발생:', error);
+            return null;
+        }
+
+        return data;
+    } catch (error) {
+        console.error('API 이름 추가 중 예외 발생:', error);
+        return null;
+    }
+}
+
 export default apiForGetApiNames;

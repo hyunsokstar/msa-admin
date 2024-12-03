@@ -1,5 +1,6 @@
 // 파일 경로: /components/ITableForApiNameList.tsx
 "use client";
+
 import React from 'react';
 import useApiForGetApiNames from '@/hook/useApiForGetApiNames';
 import { Button } from '@/components/ui/button';
@@ -8,6 +9,7 @@ import { Toggle } from '@/components/ui/toggle';
 import { CheckCircle, Circle } from 'lucide-react';
 import { useUserStore } from '@/store/useUserStore'; // Zustand Store 가져오기
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import IDialogButtonForCreateApiName from '../dialog/IDialogButtonForCreateApiName';
 
 interface ITableForApiNameListProps {
     onSelect: (apiName: string, apiUrl: string, apiMethod: string) => void;
@@ -30,7 +32,13 @@ const ITableForApiNameList: React.FC<ITableForApiNameListProps> = ({ onSelect, o
 
     return (
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-3">
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">API 이름 목록</h3>
+            {/* 헤더 영역에 새 API 생성 버튼 추가 */}
+            <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-800">API 이름 목록</h3>
+                {/* 새 API 생성 버튼 */}
+                <IDialogButtonForCreateApiName />
+            </div>
+
             <Table className="w-full text-left">
                 <TableHeader>
                     <TableRow className="bg-gray-100">
