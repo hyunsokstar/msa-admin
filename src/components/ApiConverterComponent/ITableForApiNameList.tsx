@@ -1,4 +1,4 @@
-// 파일 경로: /components/ITableForApiNameList.tsx
+// components/ITableForApiNameList.tsx
 "use client";
 
 import React from 'react';
@@ -7,9 +7,10 @@ import { Button } from '@/components/ui/button';
 import { ApiNameType } from '@/types/typeForApiConverter';
 import { Toggle } from '@/components/ui/toggle';
 import { CheckCircle, Circle } from 'lucide-react';
-import { useUserStore } from '@/store/useUserStore'; // Zustand Store 가져오기
+import { useUserStore } from '@/store/useUserStore';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import IDialogButtonForCreateApiName from '../dialog/IDialogButtonForCreateApiName';
+import IDialogButtonForDeleteApiName from '../dialog/IDialogButtonForDeleteApiName';
 
 interface ITableForApiNameListProps {
     onSelect: (apiName: string, apiUrl: string, apiMethod: string) => void;
@@ -18,8 +19,6 @@ interface ITableForApiNameListProps {
 
 const ITableForApiNameList: React.FC<ITableForApiNameListProps> = ({ onSelect, onToggleCompletion }) => {
     const { data: apiNameList, isLoading, isError } = useApiForGetApiNames();
-
-    // Zustand에서 현재 로그인된 유저 정보 가져오기
     const user = useUserStore((state) => state.user);
 
     if (isLoading) {
@@ -32,10 +31,8 @@ const ITableForApiNameList: React.FC<ITableForApiNameListProps> = ({ onSelect, o
 
     return (
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-3">
-            {/* 헤더 영역에 새 API 생성 버튼 추가 */}
             <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-800">API 이름 목록</h3>
-                {/* 새 API 생성 버튼 */}
                 <IDialogButtonForCreateApiName />
             </div>
 
@@ -61,14 +58,11 @@ const ITableForApiNameList: React.FC<ITableForApiNameListProps> = ({ onSelect, o
                                 <Toggle
                                     pressed={apiName.is_completed}
                                     onPressedChange={() => {
-                                        // onToggleCompletion 실행 전에 유저 정보 출력
                                         if (user) {
                                             console.log(`현재 로그인 유저: ${user.email}`);
                                         } else {
                                             console.log('로그인된 사용자가 없습니다.');
                                         }
-
-                                        // 완료/비완료 상태 토글 함수 호출
                                         onToggleCompletion(apiName.id, !apiName.is_completed);
                                     }}
                                     className={`flex items-center gap-2 rounded-md px-3 py-2 transition-colors duration-150 ${
@@ -91,17 +85,23 @@ const ITableForApiNameList: React.FC<ITableForApiNameListProps> = ({ onSelect, o
                                 </Toggle>
                             </TableCell>
                             <TableCell className="py-4 px-4 text-center">
-                                <Button
-                                    variant="outline"
-                                    className={`flex items-center gap-2 py-2 px-4 rounded-md transition-colors duration-150 ${
-                                        apiName.is_completed
-                                            ? 'bg-green-500 hover:bg-green-600'
-                                            : 'bg-indigo-600 hover:bg-indigo-700'
-                                    } text-white`}
-                                    onClick={() => onSelect(apiName.title, apiName.url, apiName.method)}
-                                >
-                                    선택
-                                </Button>
+                                <div className="flex items-center justify-center gap-2">
+                                    <Button
+                                        variant="outline"
+                                        className={`flex items-center gap-2 py-2 px-4 rounded-md transition-colors duration-150 ${
+                                            apiName.is_completed
+                                                ? 'bg-green-500 hover:bg-green-600'
+                                                : 'bg-indigo-600 hover:bg-indigo-700'
+                                        } text-white`}
+                                        onClick={() => onSelect(apiName.title, apiName.url, apiName.method)}
+                                    >
+                                        선택
+                                    </Button>
+                                    <IDialogButtonForDeleteApiName 
+                                        id={apiName.id}
+                                        apiName={apiName.title}
+                                    />
+                                </div>
                             </TableCell>
                         </TableRow>
                     ))}

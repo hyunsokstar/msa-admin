@@ -2,6 +2,32 @@
 import getSupabase from '@/lib/supabaseClient';
 import { ApiNameType } from "@/types/typeForApiConverter";
 
+// api_names 에 대해 삭제 요청 with id
+export const apiForDeleteApiName = async (id: number): Promise<boolean> => {
+    try {
+        const supabase = getSupabase();
+        if (!supabase) {
+            console.error("Supabase 클라이언트를 초기화하지 못했습니다.");
+            return false;
+        }
+
+        const { error } = await supabase
+            .from('api_names')
+            .delete()
+            .eq('id', id);
+
+        if (error) {
+            console.error('API 이름 삭제 중 에러 발생:', error.message);
+            return false;
+        }
+
+        return true;
+    } catch (error) {
+        console.error('API 이름 삭제 중 예외 발생:', error);
+        return false;
+    }
+};
+
 /**
  * api_names 테이블에서 API 목록을 가져오는 함수
  * @returns API 목록 배열 또는 null
