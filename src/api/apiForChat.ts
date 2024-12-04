@@ -12,9 +12,18 @@ export async function apiForChatRoomList(): Promise<IChatRoom[] | null> {
   }
 
   try {
+    // rooms 테이블과 users 테이블을 join하여 방장 정보도 함께 가져옴
     const { data, error } = await supabase
       .from('rooms')
-      .select('*');
+      .select(`
+        *,
+        owner:users!owner_id (
+          id,
+          full_name,
+          email,
+          profile_image_url
+        )
+      `);
 
     if (error) {
       console.error('채팅방 목록을 가져오는 데 실패했습니다:', error);

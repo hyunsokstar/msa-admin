@@ -105,11 +105,11 @@ export default function ChatPage() {
                       <span className="text-sm text-muted-foreground">
                         생성일: {new Date(room.created_at).toLocaleDateString()}
                       </span>
-                      {room.created_by && (
+                      {room.created_at && (
                         <>
                           <span className="text-muted-foreground">•</span>
                           <span className="text-sm text-muted-foreground">
-                            생성자: {room.created_by}
+                            생성자: {room.owner?.email || "알 수 없음"}
                           </span>
                         </>
                       )}
