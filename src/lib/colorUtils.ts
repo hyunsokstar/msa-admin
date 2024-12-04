@@ -26,8 +26,8 @@ export const getPriorityColor = (priority: string) => {
     }
 };
 
-export const getCategoryColor = (category: string) => {
-    switch (category) {
+export const getCategoryColor = (category1: string) => {
+    switch (category1) {
         case "shop":
             return "bg-purple-100 text-purple-800";
         case "cms":

@@ -53,10 +53,10 @@ const ISearchFormForIssueList: React.FC<SearchFormProps> = ({ onFilterChange }) 
               <SelectValue placeholder="Filter by Status" />
             </SelectTrigger>
             <SelectContent className="bg-white border border-gray-300 rounded-md shadow-lg">
-              <SelectItem value="All">All Status</SelectItem>
-              <SelectItem value="Open">Open</SelectItem>
-              <SelectItem value="In Progress">In Progress</SelectItem>
-              <SelectItem value="Closed">Closed</SelectItem>
+              <SelectItem value="All" className="hover:bg-indigo-100 transition duration-200 ease-in-out">All Status</SelectItem>
+              <SelectItem value="Open" className="hover:bg-indigo-100 transition duration-200 ease-in-out">Open</SelectItem>
+              <SelectItem value="In Progress" className="hover:bg-indigo-100 transition duration-200 ease-in-out">In Progress</SelectItem>
+              <SelectItem value="Closed" className="hover:bg-indigo-100 transition duration-200 ease-in-out">Closed</SelectItem>
             </SelectContent>
           </Select>
 
@@ -69,27 +69,26 @@ const ISearchFormForIssueList: React.FC<SearchFormProps> = ({ onFilterChange }) 
               <SelectValue placeholder="Filter by Priority" />
             </SelectTrigger>
             <SelectContent className="bg-white border border-gray-300 rounded-md shadow-lg">
-              <SelectItem value="All">All Priority</SelectItem>
-              <SelectItem value="High">High</SelectItem>
-              <SelectItem value="Medium">Medium</SelectItem>
-              <SelectItem value="Low">Low</SelectItem>
+              <SelectItem value="All" className="hover:bg-indigo-100 transition duration-200 ease-in-out">All Priority</SelectItem>
+              <SelectItem value="High" className="hover:bg-indigo-100 transition duration-200 ease-in-out">High</SelectItem>
+              <SelectItem value="Medium" className="hover:bg-indigo-100 transition duration-200 ease-in-out">Medium</SelectItem>
+              <SelectItem value="Low" className="hover:bg-indigo-100 transition duration-200 ease-in-out">Low</SelectItem>
             </SelectContent>
           </Select>
 
-          {/* Filter by Category */}
           <Select
-            onValueChange={(value) => handleFilterChange('category', value)}
-            value={filter.category ?? "All"}
+            onValueChange={(value) => handleFilterChange('category1', value)}
+            value={filter.category1 ?? "All"}
           >
             <SelectTrigger className="border border-gray-300 px-4 py-2 rounded-md hover:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200 ease-in-out">
               <SelectValue placeholder="Filter by Category" />
             </SelectTrigger>
             <SelectContent className="bg-white border border-gray-300 rounded-md shadow-lg">
-              <SelectItem value="All">All Categories</SelectItem>
-              <SelectItem value="shop">Shop</SelectItem>
-              <SelectItem value="lms">LMS</SelectItem>
-              <SelectItem value="cms">CMS</SelectItem>
-              <SelectItem value="user">User</SelectItem>
+              <SelectItem value="All" className="hover:bg-indigo-100 transition duration-200 ease-in-out">All Categories</SelectItem>
+              <SelectItem value="shop" className="hover:bg-indigo-100 transition duration-200 ease-in-out">Shop</SelectItem>
+              <SelectItem value="lms" className="hover:bg-indigo-100 transition duration-200 ease-in-out">LMS</SelectItem>
+              <SelectItem value="cms" className="hover:bg-indigo-100 transition duration-200 ease-in-out">CMS</SelectItem>
+              <SelectItem value="user" className="hover:bg-indigo-100 transition duration-200 ease-in-out">User</SelectItem>
             </SelectContent>
           </Select>
 
@@ -102,10 +101,10 @@ const ISearchFormForIssueList: React.FC<SearchFormProps> = ({ onFilterChange }) 
               <SelectValue placeholder="Filter by Type" />
             </SelectTrigger>
             <SelectContent className="bg-white border border-gray-300 rounded-md shadow-lg">
-              <SelectItem value="All">All Types</SelectItem>
-              <SelectItem value="Bug">Bug</SelectItem>
-              <SelectItem value="Feature">Feature</SelectItem>
-              <SelectItem value="Enhancement">Enhancement</SelectItem>
+              <SelectItem value="All" className="hover:bg-indigo-100 transition duration-200 ease-in-out">All Types</SelectItem>
+              <SelectItem value="Bug" className="hover:bg-indigo-100 transition duration-200 ease-in-out">Bug</SelectItem>
+              <SelectItem value="Feature" className="hover:bg-indigo-100 transition duration-200 ease-in-out">Feature</SelectItem>
+              <SelectItem value="Enhancement" className="hover:bg-indigo-100 transition duration-200 ease-in-out">Enhancement</SelectItem>
             </SelectContent>
           </Select>
 

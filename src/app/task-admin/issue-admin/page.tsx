@@ -3,7 +3,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
 import {
     Table,
     TableBody,
@@ -20,6 +19,8 @@ import ISearchFormForIssueList from "@/components/searchform/ISearchFormForIssue
 import IDialogButtonForRegisterIssue from "@/components/dialog/IDialogButtonForRegisterIssue";
 import { useUserStore } from "@/store/useUserStore";
 import { getCategoryColor, getPriorityColor, getStatusColor } from "@/lib/colorUtils";
+import Link from "next/link";
+import { ExternalLink } from "lucide-react";
 
 const IssueAdminPage = () => {
     const [filter, setFilter] = useState<IssueFilter>({});
@@ -86,9 +87,11 @@ const IssueAdminPage = () => {
                             <TableRow>
                                 <TableHead className="w-16 bg-gray-200">ID</TableHead>
                                 <TableHead className="bg-gray-200">Title</TableHead>
+                                <TableHead className="bg-gray-200">page_url</TableHead>
                                 <TableHead className="bg-gray-200">Status</TableHead>
                                 <TableHead className="bg-gray-200">Priority</TableHead>
-                                <TableHead className="bg-gray-200">Category</TableHead>
+                                <TableHead className="bg-gray-200">Category1</TableHead>
+                                <TableHead className="bg-gray-200">Category2</TableHead>
                                 <TableHead className="bg-gray-200">Manager</TableHead>
                                 <TableHead className="bg-gray-200">Created At</TableHead>
                             </TableRow>
@@ -98,6 +101,14 @@ const IssueAdminPage = () => {
                                 <TableRow key={issue.id}>
                                     <TableCell>{issue.id}</TableCell>
                                     <TableCell className="font-medium">{issue.title}</TableCell>
+                                    <TableCell className="font-medium">
+                                        {issue.page_url && (
+                                            <Link href={issue.page_url} target="_blank" rel="noopener noreferrer">
+                                                <ExternalLink />
+                                            </Link>
+                                        )}
+
+                                    </TableCell>
                                     <TableCell>
                                         <Badge variant="secondary" className={getStatusColor(issue.status)}>
                                             {issue.status}
@@ -109,8 +120,13 @@ const IssueAdminPage = () => {
                                         </Badge>
                                     </TableCell>
                                     <TableCell>
-                                        <Badge variant="secondary" className={getCategoryColor(issue.category)}>
-                                            {issue.category}
+                                        <Badge variant="secondary" className={getCategoryColor(issue.category1)}>
+                                            {issue.category1}
+                                        </Badge>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Badge variant="secondary" >
+                                            {issue.category2}
                                         </Badge>
                                     </TableCell>
                                     <TableCell>{issue.manager?.email || "N/A"}</TableCell>

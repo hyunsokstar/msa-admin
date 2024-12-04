@@ -10,29 +10,7 @@ interface ApiForTaskIssue {
 }
 
 const apiForTaskIssue: ApiForTaskIssue = {
-    // getAllIssues: async (filter?: IssueFilter): Promise<Issue[]> => {
-    //     const supabase = getSupabase();
-    //     if (!supabase) {
-    //         throw new Error('Supabase client is not initialized');
-    //     }
-        
-    //     let query = supabase.from('issues').select('*, manager:users(email)');
 
-    //     if (filter) {
-    //         if (filter.status) query = query.eq('status', filter.status);
-    //         if (filter.priority) query = query.eq('priority', filter.priority);
-    //         if (filter.category) query = query.eq('category', filter.category);
-    //         if (filter.type) query = query.eq('type', filter.type);
-    //     }
-
-    //     const { data, error } = await query.order('created_at', { ascending: false });
-
-    //     if (error) {
-    //         throw new Error(error.message);
-    //     }
-
-    //     return data as Issue[];
-    // },
 
     getAllIssues: async (filter?: IssueFilter): Promise<Issue[]> => {
         const supabase = getSupabase();
@@ -46,7 +24,7 @@ const apiForTaskIssue: ApiForTaskIssue = {
         if (filter) {
         if (filter.status && filter.status !== 'All') query = query.eq('status', filter.status);
         if (filter.priority && filter.priority !== 'All') query = query.eq('priority', filter.priority);
-        if (filter.category && filter.category !== 'All') query = query.eq('category', filter.category);
+        if (filter.category1 && filter.category1 !== 'All') query = query.eq('category1', filter.category1);
         if (filter.type && filter.type !== 'All') query = query.eq('type', filter.type);
         if (filter.keyword && filter.keyword.trim() !== '') {
             query = query.ilike('title', `%${filter.keyword}%`);

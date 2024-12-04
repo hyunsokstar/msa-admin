@@ -18,7 +18,8 @@ export interface Issue {
     manager: IssueManager;
     type: IssueType;
     page_url?: string;
-    category: SystemCategory;
+    category1: SystemCategory;
+    category2: string;
     created_at: string;
     updated_at: string;
 }
@@ -30,7 +31,8 @@ export interface CreateIssueDto {
     manager: string;
     type: IssueType;
     page_url?: string;
-    category: SystemCategory;
+    category1: string;
+    category2?: string;
 }
 
 export interface UpdateIssueDto extends Partial<CreateIssueDto> {
@@ -40,7 +42,8 @@ export interface UpdateIssueDto extends Partial<CreateIssueDto> {
 export interface IssueFilter {
     status?: IssueStatus;
     priority?: PriorityLevel;
-    category?: SystemCategory;
+    category1?: SystemCategory;
+    category2?: string;
     type?: IssueType;
     keyword?: string;
 }
