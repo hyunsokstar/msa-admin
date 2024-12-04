@@ -1,4 +1,4 @@
-// src/app/task-admin/issue-admin/page.tsx
+// src/app/task-admin/issue-admin/page.tsx 업데이트
 
 "use client";
 
@@ -21,6 +21,8 @@ import { useUserStore } from "@/store/useUserStore";
 import { getCategoryColor, getPriorityColor, getStatusColor } from "@/lib/colorUtils";
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
+import IDialogButtonForDeleteTaskIssue from "@/components/dialog/IDialogButtonForDeleteTaskIssue";
+import IDialogButtonForUpdateTaskIssue from "@/components/dialog/IDialogButtonForUpdateTaskIssue";
 
 const IssueAdminPage = () => {
     const [filter, setFilter] = useState<IssueFilter>({});
@@ -93,7 +95,8 @@ const IssueAdminPage = () => {
                                 <TableHead className="bg-gray-200">Category1</TableHead>
                                 <TableHead className="bg-gray-200">Category2</TableHead>
                                 <TableHead className="bg-gray-200">Manager</TableHead>
-                                <TableHead className="bg-gray-200">Created At</TableHead>
+                                {/* <TableHead className="bg-gray-200">Created At</TableHead> */}
+                                <TableHead className="bg-gray-200">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -107,7 +110,6 @@ const IssueAdminPage = () => {
                                                 <ExternalLink />
                                             </Link>
                                         )}
-
                                     </TableCell>
                                     <TableCell>
                                         <Badge variant="secondary" className={getStatusColor(issue.status)}>
@@ -130,7 +132,7 @@ const IssueAdminPage = () => {
                                         </Badge>
                                     </TableCell>
                                     <TableCell>{issue.manager?.email || "N/A"}</TableCell>
-                                    <TableCell>
+                                    {/* <TableCell>
                                         {new Date(issue.created_at).toLocaleDateString("ko-KR", {
                                             year: "numeric",
                                             month: "2-digit",
@@ -138,6 +140,17 @@ const IssueAdminPage = () => {
                                             hour: "2-digit",
                                             minute: "2-digit",
                                         })}
+                                    </TableCell> */}
+                                    <TableCell>
+                                        
+                                        <IDialogButtonForUpdateTaskIssue 
+                                            issue={issue}                                            
+                                        />
+                                        <IDialogButtonForDeleteTaskIssue
+                                            issueId={issue.id}
+                                            issueTitle={issue.title}
+                                            filter={filter}
+                                        />
                                     </TableCell>
                                 </TableRow>
                             ))}

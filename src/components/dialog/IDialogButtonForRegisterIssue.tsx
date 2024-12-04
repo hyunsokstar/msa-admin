@@ -90,7 +90,7 @@ const IDialogButtonForRegisterIssue = ({ isDisabled }: DialogButtonProps) => {
           신규 이슈 등록
         </Button>
       </DialogTrigger>
-      <DialogContent className="bg-white border shadow-lg w-[50vw] max-w-none h-[90vh] overflow-y-auto">
+      <DialogContent className="bg-white border shadow-lg w-[50vw] max-w-none overflow-y-auto">
         <DialogTitle className="text-lg font-semibold text-gray-900">신규 이슈 등록</DialogTitle>
 
         {!isAuthenticated ? (

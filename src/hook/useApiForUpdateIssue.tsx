@@ -2,7 +2,7 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
-import { UpdateIssueDto, Issue } from '@/types/typeForTaskIssue';
+import { UpdateIssueDto, Issue, IssueFilter } from '@/types/typeForTaskIssue';
 import apiForTaskIssue from '@/api/apiForTaskIssue';
 
 interface UpdateIssueVariables {
@@ -10,7 +10,7 @@ interface UpdateIssueVariables {
     data: UpdateIssueDto;
 }
 
-export const useApiForUpdateIssue = () => {
+export const useApiForUpdateIssue = (filter: IssueFilter | undefined) => {
     const queryClient = useQueryClient();
 
     return useMutation<Issue, Error, UpdateIssueVariables>({

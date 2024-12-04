@@ -1,32 +1,42 @@
+// src/components/form/update/IRegisterFormForUpdateIssue.tsx
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { CreateIssueDto, PriorityLevel, SystemCategory, IssueType } from "@/types/typeForTaskIssue";
+import { Issue, UpdateIssueDto, PriorityLevel, SystemCategory, IssueType, IssueStatus } from "@/types/typeForTaskIssue";
+import { DialogClose } from '@/components/ui/dialog';
 
-interface IFormForCreateIssueProps {
-  defaultValues: CreateIssueDto;
+interface IFormForUpdateIssueProps {
+  defaultValues: Issue;
   userEmail: string;
-  onSubmit: (data: CreateIssueDto) => void;
+  onSubmit: (data: UpdateIssueDto) => void;
+  isUpdating: boolean;
 }
 
-const IRegisterFormForCreateIssue = ({ defaultValues, userEmail, onSubmit }: IFormForCreateIssueProps) => {
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm<CreateIssueDto>({
-    defaultValues
+const IRegisterFormForUpdateIssue = ({ defaultValues, userEmail, onSubmit, isUpdating }: IFormForUpdateIssueProps) => {
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm<UpdateIssueDto>({
+    defaultValues: {
+      title: defaultValues.title,
+      description: defaultValues.description,
+      priority: defaultValues.priority,
+      type: defaultValues.type,
+      category1: defaultValues.category1,
+      category2: defaultValues.category2,
+      page_url: defaultValues.page_url,
+      status: defaultValues.status
+    }
   });
 
-  // Custom handler for select inputs since they can't use register directly
-  const handleSelectChange = (field: keyof CreateIssueDto, value: string) => {
+  const handleSelectChange = (field: keyof UpdateIssueDto, value: string) => {
     setValue(field, value);
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col mt-6 space-y-6 h-full">
       <div className="flex space-x-6 h-full">
-        {/* 왼쪽 섹션: 타이틀 및 설명 */}
+        {/* 왼쪽 섹션 */}
         <div className="w-1/2 flex flex-col space-y-4 pr-4 border-r border-gray-300">
-          {/* Title */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700">제목</label>
             <Input
@@ -38,7 +48,6 @@ const IRegisterFormForCreateIssue = ({ defaultValues, userEmail, onSubmit }: IFo
             )}
           </div>
 
-          {/* Description */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700">설명</label>
             <textarea
@@ -48,7 +57,6 @@ const IRegisterFormForCreateIssue = ({ defaultValues, userEmail, onSubmit }: IFo
             />
           </div>
 
-          {/* Page URL */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700">페이지 URL</label>
             <Input
@@ -64,14 +72,14 @@ const IRegisterFormForCreateIssue = ({ defaultValues, userEmail, onSubmit }: IFo
               onValueChange={(value) => handleSelectChange('category1', value as SystemCategory)}
               defaultValue={defaultValues.category1}
             >
-              <SelectTrigger className="w-full bg-white border-gray-300 hover:border-indigo-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50">
+              <SelectTrigger className="w-full bg-white border-gray-300">
                 <SelectValue placeholder="카테고리 선택" />
               </SelectTrigger>
-              <SelectContent className="bg-white border border-gray-200 shadow-lg">
-                <SelectItem value="shop" className="hover:bg-indigo-50 cursor-pointer py-2">SHOP</SelectItem>
-                <SelectItem value="lms" className="hover:bg-indigo-50 cursor-pointer py-2">LMS</SelectItem>
-                <SelectItem value="cms" className="hover:bg-indigo-50 cursor-pointer py-2">CMS</SelectItem>
-                <SelectItem value="user" className="hover:bg-indigo-50 cursor-pointer py-2">USER</SelectItem>
+              <SelectContent>
+                <SelectItem value="shop">SHOP</SelectItem>
+                <SelectItem value="lms">LMS</SelectItem>
+                <SelectItem value="cms">CMS</SelectItem>
+                <SelectItem value="user">USER</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -82,49 +90,62 @@ const IRegisterFormForCreateIssue = ({ defaultValues, userEmail, onSubmit }: IFo
               {...register('category2')}
               placeholder="카테고리2 (선택 사항)"
             />
-          </div>          
-
+          </div>
         </div>
 
-        {/* 오른쪽 섹션: 셀렉트 박스 */}
+        {/* 오른쪽 섹션 */}
         <div className="w-1/2 flex flex-col space-y-4 pl-4">
-          {/* Priority */}
+          <div className="flex items-center space-x-4">
+            <label className="w-1/3 text-sm font-medium text-gray-700">상태</label>
+            <Select
+              onValueChange={(value) => handleSelectChange('status', value as IssueStatus)}
+              defaultValue={defaultValues.status}
+            >
+              <SelectTrigger className="w-full bg-white border-gray-300">
+                <SelectValue placeholder="상태 선택" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Open">대기</SelectItem>
+                <SelectItem value="In Progress">진행중</SelectItem>
+                <SelectItem value="Closed">완료</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="flex items-center space-x-4">
             <label className="w-1/3 text-sm font-medium text-gray-700">우선순위</label>
             <Select
               onValueChange={(value) => handleSelectChange('priority', value as PriorityLevel)}
               defaultValue={defaultValues.priority}
             >
-              <SelectTrigger className="w-full bg-white border-gray-300 hover:border-indigo-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50">
+              <SelectTrigger className="w-full bg-white border-gray-300">
                 <SelectValue placeholder="우선순위 선택" />
               </SelectTrigger>
-              <SelectContent className="bg-white border border-gray-200 shadow-lg">
-                <SelectItem value="High" className="hover:bg-indigo-50 cursor-pointer py-2">높음</SelectItem>
-                <SelectItem value="Medium" className="hover:bg-indigo-50 cursor-pointer py-2">중간</SelectItem>
-                <SelectItem value="Low" className="hover:bg-indigo-50 cursor-pointer py-2">낮음</SelectItem>
+              <SelectContent>
+                <SelectItem value="High">높음</SelectItem>
+                <SelectItem value="Medium">중간</SelectItem>
+                <SelectItem value="Low">낮음</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          {/* Type */}
           <div className="flex items-center space-x-4">
             <label className="w-1/3 text-sm font-medium text-gray-700">유형</label>
             <Select
               onValueChange={(value) => handleSelectChange('type', value as IssueType)}
               defaultValue={defaultValues.type}
             >
-              <SelectTrigger className="w-full bg-white border-gray-300 hover:border-indigo-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50">
+              <SelectTrigger className="w-full bg-white border-gray-300">
                 <SelectValue placeholder="유형 선택" />
               </SelectTrigger>
-              <SelectContent className="bg-white border border-gray-200 shadow-lg">
-                <SelectItem value="Bug" className="hover:bg-indigo-50 cursor-pointer py-2">버그</SelectItem>
-                <SelectItem value="Feature" className="hover:bg-indigo-50 cursor-pointer py-2">기능</SelectItem>
-                <SelectItem value="Enhancement" className="hover:bg-indigo-50 cursor-pointer py-2">개선</SelectItem>
+              <SelectContent>
+                <SelectItem value="Bug">버그</SelectItem>
+                <SelectItem value="Feature">기능</SelectItem>
+                <SelectItem value="Enhancement">개선</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          {/* manager - 읽기 전용 */}
           <div className="flex items-center space-x-4">
             <label className="w-1/3 text-sm font-medium text-gray-700">담당자</label>
             <Input
@@ -138,16 +159,22 @@ const IRegisterFormForCreateIssue = ({ defaultValues, userEmail, onSubmit }: IFo
       </div>
 
       {/* Buttons */}
-      <div className="flex justify-end gap-2 mt-6">
-        <Button type="button" variant="outline" className="text-gray-700">
-          취소
-        </Button>
-        <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white">
-          등록하기
+      <div className="flex justify-end gap-2 pt-4 border-t">
+        <DialogClose asChild>
+          <Button type="button" variant="outline" className="text-gray-700">
+            취소
+          </Button>
+        </DialogClose>
+        <Button 
+          type="submit" 
+          className="bg-indigo-600 hover:bg-indigo-700 text-white"
+          disabled={isUpdating}
+        >
+          {isUpdating ? '수정 중...' : '수정하기'}
         </Button>
       </div>
     </form>
   );
 };
 
-export default IRegisterFormForCreateIssue;
+export default IRegisterFormForUpdateIssue;

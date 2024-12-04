@@ -11,7 +11,6 @@ interface ApiForTaskIssue {
 
 const apiForTaskIssue: ApiForTaskIssue = {
 
-
     getAllIssues: async (filter?: IssueFilter): Promise<Issue[]> => {
         const supabase = getSupabase();
         if (!supabase) {
@@ -99,6 +98,9 @@ const apiForTaskIssue: ApiForTaskIssue = {
     },
 
     deleteIssue: async (id: number): Promise<void> => {
+        console.log("이슈 삭세 id check : ", id);
+        
+
         const supabase = getSupabase();
         if (!supabase) {
             throw new Error('Supabase client is not initialized');
