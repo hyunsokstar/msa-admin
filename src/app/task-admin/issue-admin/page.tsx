@@ -115,7 +115,7 @@ const IssueAdminPage = () => {
             <ISearchFormForIssueList onFilterChange={handleFilterChange} />
 
             <div className="flex">
-                <IDialogButtonForRegisterIssue onIssueRegister={handleIssueRegister} />
+                <IDialogButtonForRegisterIssue />
             </div>
 
             {/* 이슈 테이블 */}
