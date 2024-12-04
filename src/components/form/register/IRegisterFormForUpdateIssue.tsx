@@ -72,14 +72,14 @@ const IRegisterFormForUpdateIssue = ({ defaultValues, userEmail, onSubmit, isUpd
               onValueChange={(value) => handleSelectChange('category1', value as SystemCategory)}
               defaultValue={defaultValues.category1}
             >
-              <SelectTrigger className="w-full bg-white border-gray-300">
+              <SelectTrigger className="w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 <SelectValue placeholder="카테고리 선택" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="shop">SHOP</SelectItem>
-                <SelectItem value="lms">LMS</SelectItem>
-                <SelectItem value="cms">CMS</SelectItem>
-                <SelectItem value="user">USER</SelectItem>
+              <SelectContent className="bg-white border border-gray-300 rounded-md shadow-lg">
+                <SelectItem value="shop" className="cursor-pointer hover:bg-indigo-100 px-4 py-2">SHOP</SelectItem>
+                <SelectItem value="lms" className="cursor-pointer hover:bg-indigo-100 px-4 py-2">LMS</SelectItem>
+                <SelectItem value="cms" className="cursor-pointer hover:bg-indigo-100 px-4 py-2">CMS</SelectItem>
+                <SelectItem value="user" className="cursor-pointer hover:bg-indigo-100 px-4 py-2">USER</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -101,13 +101,13 @@ const IRegisterFormForUpdateIssue = ({ defaultValues, userEmail, onSubmit, isUpd
               onValueChange={(value) => handleSelectChange('status', value as IssueStatus)}
               defaultValue={defaultValues.status}
             >
-              <SelectTrigger className="w-full bg-white border-gray-300">
+              <SelectTrigger className="w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 <SelectValue placeholder="상태 선택" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Open">대기</SelectItem>
-                <SelectItem value="In Progress">진행중</SelectItem>
-                <SelectItem value="Closed">완료</SelectItem>
+              <SelectContent className="bg-white border border-gray-300 rounded-md shadow-lg">
+                <SelectItem value="Open" className="cursor-pointer hover:bg-indigo-100 px-4 py-2">대기</SelectItem>
+                <SelectItem value="In Progress" className="cursor-pointer hover:bg-indigo-100 px-4 py-2">진행중</SelectItem>
+                <SelectItem value="Closed" className="cursor-pointer hover:bg-indigo-100 px-4 py-2">완료</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -118,13 +118,13 @@ const IRegisterFormForUpdateIssue = ({ defaultValues, userEmail, onSubmit, isUpd
               onValueChange={(value) => handleSelectChange('priority', value as PriorityLevel)}
               defaultValue={defaultValues.priority}
             >
-              <SelectTrigger className="w-full bg-white border-gray-300">
+              <SelectTrigger className="w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 <SelectValue placeholder="우선순위 선택" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="High">높음</SelectItem>
-                <SelectItem value="Medium">중간</SelectItem>
-                <SelectItem value="Low">낮음</SelectItem>
+              <SelectContent className="bg-white border border-gray-300 rounded-md shadow-lg">
+                <SelectItem value="High" className="cursor-pointer hover:bg-indigo-100 px-4 py-2">높음</SelectItem>
+                <SelectItem value="Medium" className="cursor-pointer hover:bg-indigo-100 px-4 py-2">중간</SelectItem>
+                <SelectItem value="Low" className="cursor-pointer hover:bg-indigo-100 px-4 py-2">낮음</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -135,13 +135,13 @@ const IRegisterFormForUpdateIssue = ({ defaultValues, userEmail, onSubmit, isUpd
               onValueChange={(value) => handleSelectChange('type', value as IssueType)}
               defaultValue={defaultValues.type}
             >
-              <SelectTrigger className="w-full bg-white border-gray-300">
+              <SelectTrigger className="w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 <SelectValue placeholder="유형 선택" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Bug">버그</SelectItem>
-                <SelectItem value="Feature">기능</SelectItem>
-                <SelectItem value="Enhancement">개선</SelectItem>
+              <SelectContent className="bg-white border border-gray-300 rounded-md shadow-lg">
+                <SelectItem value="Bug" className="cursor-pointer hover:bg-indigo-100 px-4 py-2">버그</SelectItem>
+                <SelectItem value="Feature" className="cursor-pointer hover:bg-indigo-100 px-4 py-2">기능</SelectItem>
+                <SelectItem value="Enhancement" className="cursor-pointer hover:bg-indigo-100 px-4 py-2">개선</SelectItem>
               </SelectContent>
             </Select>
           </div>
