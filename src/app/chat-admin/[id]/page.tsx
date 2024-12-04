@@ -62,7 +62,7 @@ export default function ChatRoomPage({ params }: { params: Promise<{ id: string 
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)]">
       {/* 채팅방 헤더 - 실제 API 데이터 활용 */}
-      <div className="border-b p-4 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="border-b p-4 bg-background/95 supports-[backdrop-filter]:bg-background/60">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-semibold flex items-center gap-2">

@@ -90,11 +90,11 @@ export default function ChatPage() {
             </div>
           ) : (
             filteredRooms?.map((room) => (
-<Card
-  key={room.id}
-  className="p-4 hover:bg-accent/50 transition-colors cursor-pointer"
-  onClick={() => router.push(`/chat/${room.id}`)}
->
+              <Card
+                key={room.id}
+                className="p-4 hover:bg-accent/50 transition-colors cursor-pointer"
+                onClick={() => router.push(`/chat-admin/${room.id}`)}
+              >
                 <div className="flex items-start space-x-4">
                   <div className="bg-primary/10 p-3 rounded-full">
                     <MessageSquare className="h-6 w-6 text-primary" />
