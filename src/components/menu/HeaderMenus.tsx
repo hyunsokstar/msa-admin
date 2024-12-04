@@ -135,8 +135,19 @@ export default function HeaderMenus() {
                             onMouseLeave={() => handleMouseLeave(currentPath)}
                         >
                             <button
-                                onClick={() => handleMenuClick(menu.path, menu.id)}
-                                className="px-4 py-2 text-sm font-medium rounded-lg hover:bg-blue-50/50 text-gray-700 hover:text-blue-600 transition-all duration-300 ease-in-out"
+                                onClick={() => {
+                                    if (menu.items?.length > 0) {
+                                        // 클릭할 수 없도록 조건 추가
+                                        return;
+                                    }
+                                    handleMenuClick(menu.path, menu.id);
+                                }}
+                                className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 ease-in-out ${
+                                    menu.items?.length > 0
+                                        ? 'cursor-default text-gray-500'
+                                        : 'hover:bg-blue-50/50 text-gray-700 hover:text-blue-600'
+                                }`}
+                                disabled={menu.items?.length > 0} // 하위 메뉴가 있을 경우 버튼을 비활성화
                             >
                                 {menu.name}
                                 {menu.items?.length > 0 && (
@@ -160,7 +171,6 @@ export default function HeaderMenus() {
                 </div>
 
                 <AuthMenus />
-
             </nav>
         </Card>
     );
