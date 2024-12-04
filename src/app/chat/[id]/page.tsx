@@ -77,7 +77,6 @@ export default function ChatRoomPage({ params }: { params: Promise<{ id: string 
                 {room?.owner ? (
                   <span className="flex items-center gap-2">
                     <Avatar className="h-5 w-5">
-                      <AvatarImage src={room.owner.profile_image || ''} />
                       <AvatarFallback>{room.owner.full_name?.[0] || 'U'}</AvatarFallback>
                     </Avatar>
                     {room.owner.full_name || room.owner.email || '방장'}
