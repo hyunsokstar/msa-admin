@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useUserStore } from '@/store/useUserStore';
 import { Card, CardContent } from "@/components/ui/card";
@@ -25,6 +25,9 @@ const IDialogButtonForRegisterIssue = ({ isDisabled }: DialogButtonProps) => {
     manager: "",
     type: "Bug",
     category1: "shop",
+    ref_img_url1: "",
+    ref_img_url2: "",
+    ref_img_url3: "",
   });
 
   useEffect(() => {
@@ -65,10 +68,6 @@ const IDialogButtonForRegisterIssue = ({ isDisabled }: DialogButtonProps) => {
     } catch (error) {
       console.error('Issue creation failed:', error);
     }
-  };
-
-  const handleLogin = () => {
-    router.push('/auth/login');
   };
 
   const LoginRequired = () => (

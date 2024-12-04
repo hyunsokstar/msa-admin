@@ -20,6 +20,7 @@ import { ExternalLink } from "lucide-react";
 import IDialogButtonForDeleteTaskIssue from "@/components/dialog/IDialogButtonForDeleteTaskIssue";
 import IDialogButtonForUpdateTaskIssue from "@/components/dialog/IDialogButtonForUpdateTaskIssue";
 import { CustomBadge } from "@/components/bedge/CustomBadge";
+import ISquareForShowImage from "@/components/dialog/display/ISquareForShowImage";
 
 const IssueAdminPage = () => {
     const [filter, setFilter] = useState<IssueFilter>({});
@@ -79,6 +80,7 @@ const IssueAdminPage = () => {
                             <TableRow>
                                 <TableHead className="w-16 bg-gray-200">ID</TableHead>
                                 <TableHead className="bg-gray-200">Title</TableHead>
+                                <TableHead className="bg-gray-200">참고 이미지</TableHead>
                                 <TableHead className="bg-gray-200">page_url</TableHead>
                                 <TableHead className="bg-gray-200">Status</TableHead>
                                 <TableHead className="bg-gray-200">Type</TableHead>
@@ -94,6 +96,13 @@ const IssueAdminPage = () => {
                                 <TableRow key={issue.id}>
                                     <TableCell>{issue.id}</TableCell>
                                     <TableCell className="font-medium">{issue.title}</TableCell>
+                                    <TableCell className="font-medium">
+                                        <ISquareForShowImage imageUrls={{
+                                            url1: issue.ref_img_url1,
+                                            url2: issue.ref_img_url2,
+                                            url3: issue.ref_img_url3
+                                        }} />
+                                        </TableCell>
                                     <TableCell className="font-medium">
                                         {issue.page_url && (
                                             <Link href={issue.page_url} target="_blank" rel="noopener noreferrer">
