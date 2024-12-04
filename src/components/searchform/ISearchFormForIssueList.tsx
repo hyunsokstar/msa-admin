@@ -116,6 +116,8 @@ const ISearchFormForIssueList: React.FC<SearchFormProps> = ({ onFilterChange }) 
               value={filter.keyword ?? ""}
               onChange={(e) => handleFilterChange('keyword', e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              // 엔터 치면 handleSearch 함수 호출
+              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
             />
           </div>
         </div>

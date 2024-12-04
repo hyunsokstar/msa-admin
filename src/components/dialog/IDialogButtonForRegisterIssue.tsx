@@ -6,11 +6,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { CreateIssueDto, PriorityLevel, SystemCategory, IssueType } from "@/types/typeForTaskIssue";
 import { useUserStore } from '@/store/useUserStore';
 import { Card, CardContent } from "@/components/ui/card";
-import { LogIn } from 'lucide-react';
 import useApiForCreateIssue from '@/hook/useApiForCreateIssue';
 import { useRouter } from 'next/navigation';
 
-const IDialogButtonForRegisterIssue = () => {
+interface DialogButtonProps {
+  isDisabled: boolean;
+}
+
+const IDialogButtonForRegisterIssue = ({isDisabled}: DialogButtonProps) => {
   const router = useRouter();
   const { user, isAuthenticated } = useUserStore();
   const createIssueMutation = useApiForCreateIssue();
@@ -79,20 +82,7 @@ const IDialogButtonForRegisterIssue = () => {
   const LoginRequired = () => (
     <Card className="w-full max-w-md mx-auto mt-8">
       <CardContent className="flex flex-col items-center justify-center p-6 space-y-4">
-        <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center">
-          <LogIn className="w-8 h-8 text-indigo-600" />
-        </div>
-        <h3 className="text-xl font-semibold text-gray-900">로그인이 필요합니다</h3>
-        <p className="text-gray-500 text-center">
-          이슈를 등록하기 위해서는 먼저 로그인이 필요합니다.
-        </p>
-        <Button 
-          variant="default" 
-          className="bg-indigo-600 hover:bg-indigo-700 text-white w-full"
-          onClick={handleLogin}
-        >
-          로그인 하러가기
-        </Button>
+        로그인 후 이슈를 등록할 수 있습니다.
       </CardContent>
     </Card>
   );
@@ -100,7 +90,9 @@ const IDialogButtonForRegisterIssue = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="default" className="bg-indigo-600 hover:bg-indigo-700 text-white">
+        <Button variant="default" className="bg-indigo-600 hover:bg-indigo-700 text-white"
+          disabled={isDisabled}
+        >
           신규 이슈 등록
         </Button>
       </DialogTrigger>

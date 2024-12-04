@@ -18,52 +18,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { IssueFilter, CreateIssueDto } from "@/types/typeForTaskIssue";
 import ISearchFormForIssueList from "@/components/searchform/ISearchFormForIssueList";
 import IDialogButtonForRegisterIssue from "@/components/dialog/IDialogButtonForRegisterIssue";
-
-// 상태, 우선순위 및 카테고리에 따라 색상 선택 함수
-const getStatusColor = (status: string) => {
-    switch (status) {
-        case "Open":
-            return "bg-green-100 text-green-800";
-        case "In Progress":
-            return "bg-blue-100 text-blue-800";
-        case "Closed":
-            return "bg-gray-100 text-gray-800";
-        default:
-            return "bg-gray-100 text-gray-800";
-    }
-};
-
-const getPriorityColor = (priority: string) => {
-    switch (priority) {
-        case "High":
-            return "bg-red-100 text-red-800";
-        case "Medium":
-            return "bg-yellow-100 text-yellow-800";
-        case "Low":
-            return "bg-blue-100 text-blue-800";
-        default:
-            return "bg-gray-100 text-gray-800";
-    }
-};
-
-const getCategoryColor = (category: string) => {
-    switch (category) {
-        case "shop":
-            return "bg-purple-100 text-purple-800";
-        case "cms":
-            return "bg-emerald-100 text-emerald-800";
-        case "lms":
-            return "bg-indigo-100 text-indigo-800";
-        case "user":
-            return "bg-orange-100 text-orange-800";
-        default:
-            return "bg-gray-100 text-gray-800";
-    }
-};
+import { useUserStore } from "@/store/useUserStore";
+import { getCategoryColor, getPriorityColor, getStatusColor } from "@/lib/colorUtils";
 
 const IssueAdminPage = () => {
     const [filter, setFilter] = useState<IssueFilter>({});
     const { data: issues, isLoading, error } = useApiForGetAllIssueList(filter);
+    const { isAuthenticated } = useUserStore();
 
     // 필터가 변경될 때 호출되는 핸들러
     const handleFilterChange = (newFilter: IssueFilter) => {
@@ -110,12 +71,11 @@ const IssueAdminPage = () => {
 
     return (
         <div className="p-6 space-y-6">
-
             {/* 필터 검색 폼 */}
             <ISearchFormForIssueList onFilterChange={handleFilterChange} />
 
             <div className="flex">
-                <IDialogButtonForRegisterIssue />
+                <IDialogButtonForRegisterIssue isDisabled={!isAuthenticated} />
             </div>
 
             {/* 이슈 테이블 */}
