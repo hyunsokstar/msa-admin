@@ -19,10 +19,15 @@ const IDialogButtonForUpdateTaskIssue = ({ issue, filter }: DialogButtonProps) =
   const [open, setOpen] = useState(false);
 
   const handleSubmit = async (data: UpdateIssueDto) => {
-    if (!user?.id) {
-      toast.error("사용자 정보가 없습니다. 다시 로그인해주세요.");
-      return;
-    }
+
+    console.log("사용자 정보 수정 요청:", data);
+
+    // if (!user?.id) {
+    //   console.log("사용자 정보가 없습니다.");
+    //   toast.error("사용자 정보가 없습니다. 다시 로그인해주세요.");
+    //   return;
+    // }
+
     try {
       await updateIssueMutation.mutateAsync({
           id: issue.id,
