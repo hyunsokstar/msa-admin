@@ -2,6 +2,7 @@
 import ImageUploader from '@/components/file-uploader/ImageUploader'
 import React, { useState } from 'react'
 import { Input } from '@/components/ui/input';
+import ImageUploader2 from '@/components/file-uploader/ImageUploader2';
 
 const ImageUploadTestPage = () => {
   const [uploadedUrl, setUploadedUrl] = useState<string>('');
@@ -40,6 +41,11 @@ const ImageUploadTestPage = () => {
           </div>
         </div>
       )}
+
+      <br />
+
+      <ImageUploader2 />
+
     </div>
   )
 }
