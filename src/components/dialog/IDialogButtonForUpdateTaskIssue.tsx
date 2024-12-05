@@ -1,3 +1,4 @@
+// IDialogButtonForUpdateTaskIssue.tsx
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -19,19 +20,12 @@ const IDialogButtonForUpdateTaskIssue = ({ issue, filter }: DialogButtonProps) =
   const [open, setOpen] = useState(false);
 
   const handleSubmit = async (data: UpdateIssueDto) => {
-
     console.log("사용자 정보 수정 요청:", data);
-
-    // if (!user?.id) {
-    //   console.log("사용자 정보가 없습니다.");
-    //   toast.error("사용자 정보가 없습니다. 다시 로그인해주세요.");
-    //   return;
-    // }
 
     try {
       await updateIssueMutation.mutateAsync({
-          id: issue.id,
-          data:data
+        id: issue.id,
+        data: data
       });
       toast.success("이슈가 성공적으로 수정되었습니다.");
       setOpen(false);
@@ -57,29 +51,26 @@ const IDialogButtonForUpdateTaskIssue = ({ issue, filter }: DialogButtonProps) =
           min-w-[80vw]
           md:min-w-[70vw] 
           lg:min-w-[1200px] 
-          h-[80vh]
+          h-[90vh]
           bg-white 
           border 
           shadow-lg 
           p-0
-          overflow-hidden
+          flex
+          flex-col
         "
       >
-        <div className="flex flex-col h-full">
-          <DialogTitle className="text-xl font-semibold text-gray-900 p-6 border-b">
-            이슈 수정
-          </DialogTitle>
-          
-          <div className="flex-1 overflow-y-auto p-6 mb-2">
-            <IRegisterFormForUpdateIssue 
-              defaultValues={issue}
-              userEmail={user?.email || ''}
-              onSubmit={handleSubmit}
-              isUpdating={updateIssueMutation.isPending}
-            />
-          </div>
-
-          
+        <DialogTitle className="text-xl font-semibold text-gray-900 p-6 border-b shrink-0">
+          이슈 수정
+        </DialogTitle>
+        
+        <div className="flex-1 overflow-hidden">
+          <IRegisterFormForUpdateIssue 
+            defaultValues={issue}
+            userEmail={issue?.manager.email || ''}
+            onSubmit={handleSubmit}
+            isUpdating={updateIssueMutation.isPending}
+          />
         </div>
       </DialogContent>
     </Dialog>

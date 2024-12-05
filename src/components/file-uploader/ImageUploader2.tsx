@@ -14,14 +14,22 @@ import { cn } from "@/lib/utils";
 interface ImageUploader2Props {
   onUploadComplete?: (fileUrl: string) => void;
   maxWidth?: string;
+  isUpdate?: boolean;
+  initialImage?: string;
 }
 
-const ImageUploader2 = ({ onUploadComplete, maxWidth = "max-w-4xl" }: ImageUploader2Props) => {
+const ImageUploader2 = ({ 
+  onUploadComplete, 
+  maxWidth = "max-w-4xl",
+  isUpdate = false,
+  initialImage
+}: ImageUploader2Props) => {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(initialImage || null);
   const [isDragging, setIsDragging] = useState(false);
   const [isPreviewVisible, setIsPreviewVisible] = useState(true);
+  const [hasChanged, setHasChanged] = useState(false);
 
   const simulateProgress = () => {
     setUploadProgress(0);
@@ -46,6 +54,7 @@ const ImageUploader2 = ({ onUploadComplete, maxWidth = "max-w-4xl" }: ImageUploa
     // Create preview
     const objectUrl = URL.createObjectURL(file);
     setPreviewUrl(objectUrl);
+    setHasChanged(true);
 
     try {
       // 1. Get presigned URL
@@ -79,7 +88,13 @@ const ImageUploader2 = ({ onUploadComplete, maxWidth = "max-w-4xl" }: ImageUploa
       }
     } catch (error) {
       console.error("파일 업로드 오류:", error);
-      setPreviewUrl(null);
+      // In update mode, revert to initial image on error
+      if (isUpdate) {
+        setPreviewUrl(initialImage ?? null);
+        setHasChanged(false);
+      } else {
+        setPreviewUrl(null);
+      }
       alert("파일 업로드에 실패했습니다");
     } finally {
       clearInterval(progressInterval);
@@ -111,7 +126,12 @@ const ImageUploader2 = ({ onUploadComplete, maxWidth = "max-w-4xl" }: ImageUploa
   }, []);
 
   const clearPreview = () => {
+    if (isUpdate && initialImage && !hasChanged) {
+      // In update mode, don't allow clearing if no new image was uploaded
+      return;
+    }
     setPreviewUrl(null);
+    setHasChanged(true);
   };
 
   const openInNewTab = () => {
@@ -195,14 +215,16 @@ const ImageUploader2 = ({ onUploadComplete, maxWidth = "max-w-4xl" }: ImageUploa
                 >
                   <Maximize2 className="w-3 h-3" />
                 </Button>
-                <Button
-                  variant="destructive"
-                  size="icon"
-                  onClick={clearPreview}
-                  className="shadow-sm h-7 w-7"
-                >
-                  <X className="w-3 h-3" />
-                </Button>
+                {(!isUpdate || hasChanged) && (
+                  <Button
+                    variant="destructive"
+                    size="icon"
+                    onClick={clearPreview}
+                    className="shadow-sm h-7 w-7"
+                  >
+                    <X className="w-3 h-3" />
+                  </Button>
+                )}
               </div>
             </div>
 
@@ -245,7 +267,7 @@ const ImageUploader2 = ({ onUploadComplete, maxWidth = "max-w-4xl" }: ImageUploa
         <div className="flex flex-col items-center justify-center w-full h-full p-2 text-center">
           <Upload className="w-8 h-8 mb-2 text-gray-400" />
           <p className="text-xs font-medium text-gray-700">
-            이미지를 드래그하거나 클릭
+            {isUpdate ? "이미지 변경하기" : "이미지를 드래그하거나 클릭"}
           </p>
           <p className="text-[10px] text-gray-500">PNG, JPG (최대 10MB)</p>
         </div>
