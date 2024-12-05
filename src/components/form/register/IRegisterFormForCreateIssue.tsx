@@ -5,7 +5,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { CreateIssueDto, PriorityLevel, SystemCategory, IssueType } from "@/types/typeForTaskIssue";
 import ImageUploader2 from '@/components/file-uploader/ImageUploader2';
-import ImageUploader from '@/components/file-uploader/ImageUploader';
 
 interface IFormForCreateIssueProps {
   defaultValues: CreateIssueDto;
@@ -153,11 +152,7 @@ const IRegisterFormForCreateIssue = ({ defaultValues, userEmail, onSubmit }: IFo
           </div>
 
           {/* Reference Images */}
-
-          <div>
-            <ImageUploader onUploadComplete={handleImageUpload(1)}/>
-          </div>
-
+          
           <div className="space-y-3">
             {[1, 2, 3].map((num) => (
               <div key={num} className="space-y-1.5">
