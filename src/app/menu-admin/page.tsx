@@ -14,6 +14,7 @@ import {
   DndContext,
   DragEndEvent,
   DragOverlay,
+  DragStartEvent,
   PointerSensor,
   closestCenter,
   useSensor,
@@ -104,6 +105,50 @@ interface SortableMenuItemProps {
   onSuccess: () => void;
 }
 
+const DragOverlayContent = ({ menu, depth }: { menu: MenuItemType; depth: number }) => {
+  const depthColor = DEPTH_COLORS[depth as keyof typeof DEPTH_COLORS] || DEPTH_COLORS[2];
+
+  return (
+    <div 
+      className={`
+        mb-1.5 
+        rounded-md 
+        bg-white 
+        shadow-lg
+        border border-blue-200
+        scale-[1.01]
+        opacity-95
+        transition-transform
+        duration-150
+      `}
+    >
+      <div className="flex items-center p-2.5">
+        <div className="flex-none w-[28px] mr-2">
+          {menu.items.length > 0 && (
+            <ChevronRight className="w-3 h-3" style={{ color: depthColor }} />
+          )}
+        </div>
+
+        <div className="flex items-center gap-2 flex-1">
+          <FolderIcon 
+            className="w-4 h-4" 
+            style={{ color: depthColor }} 
+          />
+          
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-medium truncate" style={{ color: depthColor }}>
+              {menu.name}
+            </div>
+            <div className="text-xs text-gray-400 mt-0.5">
+              {menu.path}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const SortableMenuItem: React.FC<SortableMenuItemProps> = ({
   menu,
   depth,
@@ -121,12 +166,15 @@ const SortableMenuItem: React.FC<SortableMenuItemProps> = ({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: menu.id });
+  } = useSortable({ 
+    id: menu.id,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
+    transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
+    position: 'relative' as const,
+    zIndex: isDragging ? 50 : 0,
   };
 
   const depthColor = DEPTH_COLORS[depth as keyof typeof DEPTH_COLORS] || DEPTH_COLORS[2];
@@ -140,32 +188,42 @@ const SortableMenuItem: React.FC<SortableMenuItemProps> = ({
           rounded-md 
           bg-white 
           transition-all
+          duration-200
           hover:bg-gray-50
           border border-gray-100
-          ${isDragging ? 'shadow-lg' : 'shadow-sm'}
+          transform-gpu
+          ${isDragging 
+            ? 'shadow-md border-blue-100 scale-[1.01]' 
+            : 'shadow-sm hover:shadow'
+          }
         `}
       >
         <div className="flex items-center p-2.5">
-          {/* 토글 버튼 영역을 완전히 분리 */}
           <div className="flex-none w-[28px] mr-2">
             {menu.items.length > 0 ? (
               <button
-                className="p-1 rounded-md hover:bg-gray-100 transition-colors"
+                className={`
+                  p-1 
+                  rounded-md 
+                  hover:bg-gray-100 
+                  transition-transform 
+                  duration-200
+                  transform-gpu
+                  ${isExpanded ? 'rotate-0' : '-rotate-90'}
+                `}
                 onClick={() => onToggle(menu.id)}
               >
-                {isExpanded ? (
-                  <ChevronDown className="w-3 h-3" style={{ color: depthColor }} />
-                ) : (
-                  <ChevronRight className="w-3 h-3" style={{ color: depthColor }} />
-                )}
+                <ChevronDown 
+                  className="w-3 h-3 transition-colors" 
+                  style={{ color: depthColor }}
+                />
               </button>
             ) : null}
           </div>
 
-          {/* 드래그 핸들 영역 */}
-          <div {...listeners} className="flex items-center gap-2 flex-1 drag-handle">
+          <div {...listeners} className="flex items-center gap-2 flex-1 cursor-move drag-handle">
             <FolderIcon 
-              className="w-4 h-4" 
+              className="w-4 h-4 transition-transform duration-200" 
               style={{ color: depthColor }} 
             />
             
@@ -210,24 +268,33 @@ const SortableMenuItem: React.FC<SortableMenuItemProps> = ({
         </div>
       </div>
       
-      {/* 하위 메뉴 영역 */}
-      {isExpanded && menu.items.length > 0 && (
-        <div className="ml-6">
-          {menu.items.map((subMenu) => (
-            <SortableMenuItem
-              key={subMenu.id}
-              menu={subMenu}
-              depth={depth + 1}
-              onToggle={onToggle}
-              expandedMenuIds={expandedMenuIds}
-              onDeleteMenu={onDeleteMenu}
-              isAdmin={isAdmin}
-              isDeleting={isDeleting}
-              onSuccess={onSuccess}
-            />
-          ))}
-        </div>
-      )}
+      <div 
+        className={`
+          ml-6 
+          transition-all 
+          duration-200
+          ease-in-out
+          transform-gpu
+          ${isExpanded 
+            ? 'opacity-100 translate-y-0' 
+            : 'opacity-0 -translate-y-2 h-0 overflow-hidden'
+          }
+        `}
+      >
+        {isExpanded && menu.items.length > 0 && menu.items.map((subMenu) => (
+          <SortableMenuItem
+            key={subMenu.id}
+            menu={subMenu}
+            depth={depth + 1}
+            onToggle={onToggle}
+            expandedMenuIds={expandedMenuIds}
+            onDeleteMenu={onDeleteMenu}
+            isAdmin={isAdmin}
+            isDeleting={isDeleting}
+            onSuccess={onSuccess}
+          />
+        ))}
+      </div>
     </div>
   );
 };
@@ -247,14 +314,45 @@ const MenuAdmin = () => {
   const [totalMenuCount, setTotalMenuCount] = useState(0);
   const [expandedCount, setExpandedCount] = useState(0);
   const [activeLevel, setActiveLevel] = useState<number>(1);
+  const [activeId, setActiveId] = useState<number | null>(null);
+  const [activeItem, setActiveItem] = useState<MenuItemType | null>(null);
+  const [activeDepth, setActiveDepth] = useState<number>(0);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
         distance: 8,
+        delay: 0,
+        tolerance: 0,
       },
     })
   );
+
+  const findItem = (items: MenuItemType[], id: number, depth: number = 0): [MenuItemType | null, number] => {
+    for (const item of items) {
+      if (item.id === id) {
+        return [item, depth];
+      }
+      if (item.items.length > 0) {
+        const [found, foundDepth] = findItem(item.items, id, depth + 1);
+        if (found) {
+          return [found, foundDepth];
+        }
+      }
+    }
+    return [null, depth];
+  };
+
+  const handleDragStart = (event: DragStartEvent) => {
+    const id = event.active.id as number;
+    const [item, depth] = findItem(items, id);
+    if (item) {
+      setActiveId(id);
+      setActiveItem(item);
+      setActiveDepth(depth);
+      document.body.style.cursor = 'grabbing';
+    }
+  };
 
   const countVisibleMenus = (items: MenuItemType[], level: number = 1): number => {
     let count = 0;
@@ -335,6 +433,10 @@ const MenuAdmin = () => {
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
+    setActiveId(null);
+    setActiveItem(null);
+    document.body.style.cursor = '';
+
     if (over && active.id !== over.id) {
       setItems((prevItems) => {
         const findItemAndUpdate = (items: MenuItemType[], activeId: number, overId: number): MenuItemType[] => {
@@ -419,7 +521,7 @@ const MenuAdmin = () => {
 
     return (
       <SortableContext items={menuItems.map(item => item.id)} strategy={verticalListSortingStrategy}>
-        <div className={`${depth > 0 ? 'ml-6' : ''}`}>
+        <div className={`${depth > 0 ? 'ml-6' : ''} transition-transform duration-200`}>
           {menuItems.map((menu) => (
             <SortableMenuItem
               key={menu.id}
@@ -438,7 +540,7 @@ const MenuAdmin = () => {
     );
   };
 
-const handleMenuSuccess = () => {
+  const handleMenuSuccess = () => {
     queryClient.invalidateQueries({ queryKey: ['menus'] });
   };
 
@@ -511,11 +613,23 @@ const handleMenuSuccess = () => {
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
+        onDragCancel={() => {
+          setActiveId(null);
+          setActiveItem(null);
+          document.body.style.cursor = '';
+        }}
       >
         <div className="mt-4">
           {items && renderMenuItems(items)}
         </div>
+
+        <DragOverlay>
+          {activeItem && (
+            <DragOverlayContent menu={activeItem} depth={activeDepth} />
+          )}
+        </DragOverlay>
       </DndContext>
     </div>
   );
