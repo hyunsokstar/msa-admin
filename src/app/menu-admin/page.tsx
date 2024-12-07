@@ -3,202 +3,522 @@
 import { MenuItemType } from '@/api/apiForMenu';
 import useApiForGetMenusData from '@/hook/useApiForGetMenusData';
 import React, { useState, useEffect } from 'react';
-import { ChevronRight, ChevronDown, Pencil, Trash2, Plus } from 'lucide-react';
+import { FolderIcon, ChevronRight, ChevronDown, Pencil, Trash2 } from 'lucide-react';
 import DialogButtonForAddMenuForParentMenu from '@/components/dialog/DialogButtonForAddMenuForParentMenu';
 import { useQueryClient } from '@tanstack/react-query';
 import { useApiForDeleteMenu } from '@/hook/useApiForDeleteMenu';
 import { useUserStore } from '@/store/useUserStore';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import {
+  DndContext,
+  DragEndEvent,
+  DragOverlay,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  arrayMove,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+
+const DEPTH_COLORS = {
+  0: '#1a1a1a',  // 진한 회색
+  1: '#404040',  // 중간 회색
+  2: '#666666',  // 연한 회색
+};
+
+interface CollapseControlsProps {
+  onCollapseAll: () => void;
+  onExpandAll: () => void;
+  onCollapseToLevel: (level: number) => void;
+  currentExpandedCount: number;
+  totalCount: number;
+  activeLevel: number;
+}
+
+const CollapseControls: React.FC<CollapseControlsProps> = ({ 
+  onCollapseAll, 
+  onExpandAll, 
+  onCollapseToLevel,
+  currentExpandedCount,
+  totalCount,
+  activeLevel 
+}) => {
+  return (
+    <div className="flex items-center gap-2 mb-6 p-2 bg-gray-50 rounded-lg border border-gray-100">
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={onCollapseAll}
+        className="text-xs font-medium"
+      >
+        접기
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={onExpandAll}
+        className="text-xs font-medium"
+      >
+        펼치기
+      </Button>
+      <div className="h-4 w-px bg-gray-200 mx-2" />
+      <div className="flex gap-1">
+        {[1, 2].map((level) => (
+          <Button
+            key={level}
+            variant={activeLevel === level ? "default" : "ghost"}
+            size="sm"
+            onClick={() => onCollapseToLevel(level)}
+            className={`text-xs font-medium ${
+              activeLevel === level 
+                ? "bg-blue-500 text-white hover:bg-blue-600" 
+                : "text-gray-600"
+            }`}
+          >
+            {`${level}단계`}
+          </Button>
+        ))}
+      </div>
+      <div className="ml-auto text-xs text-gray-500">
+        {currentExpandedCount} / {totalCount}
+      </div>
+    </div>
+  );
+};
+
+interface SortableMenuItemProps {
+  menu: MenuItemType;
+  depth: number;
+  onToggle: (id: number) => void;
+  expandedMenuIds: Set<number>;
+  onDeleteMenu: (id: number, name: string) => void;
+  isAdmin: boolean;
+  isDeleting: boolean;
+  onSuccess: () => void;
+}
+
+const SortableMenuItem: React.FC<SortableMenuItemProps> = ({
+  menu,
+  depth,
+  onToggle,
+  expandedMenuIds,
+  onDeleteMenu,
+  isAdmin,
+  isDeleting,
+  onSuccess
+}) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: menu.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  const depthColor = DEPTH_COLORS[depth as keyof typeof DEPTH_COLORS] || DEPTH_COLORS[2];
+  const isExpanded = expandedMenuIds.has(menu.id);
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes}>
+      <div 
+        className={`
+          mb-1.5 
+          rounded-md 
+          bg-white 
+          transition-all
+          hover:bg-gray-50
+          border border-gray-100
+          ${isDragging ? 'shadow-lg' : 'shadow-sm'}
+        `}
+      >
+        <div className="flex items-center p-2.5">
+          {/* 토글 버튼 영역을 완전히 분리 */}
+          <div className="flex-none w-[28px] mr-2">
+            {menu.items.length > 0 ? (
+              <button
+                className="p-1 rounded-md hover:bg-gray-100 transition-colors"
+                onClick={() => onToggle(menu.id)}
+              >
+                {isExpanded ? (
+                  <ChevronDown className="w-3 h-3" style={{ color: depthColor }} />
+                ) : (
+                  <ChevronRight className="w-3 h-3" style={{ color: depthColor }} />
+                )}
+              </button>
+            ) : null}
+          </div>
+
+          {/* 드래그 핸들 영역 */}
+          <div {...listeners} className="flex items-center gap-2 flex-1 drag-handle">
+            <FolderIcon 
+              className="w-4 h-4" 
+              style={{ color: depthColor }} 
+            />
+            
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-medium truncate" style={{ color: depthColor }}>
+                {menu.name}
+              </div>
+              <div className="text-xs text-gray-400 mt-0.5">
+                {menu.path}
+              </div>
+            </div>
+          </div>
+
+          {isAdmin && (
+            <div className="flex items-center gap-1">
+              <DialogButtonForAddMenuForParentMenu
+                parentId={menu.id}
+                parentMenuName={menu.name}
+                onSuccess={onSuccess}
+              />
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7"
+              >
+                <Pencil className="w-3 h-3 text-gray-400" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className={`h-7 w-7 ${isDeleting ? 'opacity-50' : ''}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDeleteMenu(menu.id, menu.name);
+                }}
+                disabled={isDeleting}
+              >
+                <Trash2 className="w-3 h-3 text-gray-400" />
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+      
+      {/* 하위 메뉴 영역 */}
+      {isExpanded && menu.items.length > 0 && (
+        <div className="ml-6">
+          {menu.items.map((subMenu) => (
+            <SortableMenuItem
+              key={subMenu.id}
+              menu={subMenu}
+              depth={depth + 1}
+              onToggle={onToggle}
+              expandedMenuIds={expandedMenuIds}
+              onDeleteMenu={onDeleteMenu}
+              isAdmin={isAdmin}
+              isDeleting={isDeleting}
+              onSuccess={onSuccess}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const getMenuDepth = (path: string): number => {
+  return path.split('/').filter(Boolean).length;
+};
 
 const MenuAdmin = () => {
-   const { data: menus, isLoading, isError } = useApiForGetMenusData();
-   const { deleteMenu, isDeleting } = useApiForDeleteMenu();
-   const queryClient = useQueryClient();
-   const [expandedMenuIds, setExpandedMenuIds] = useState<Set<number>>(new Set());
-   const { user } = useUserStore();
-   const isAdmin = user?.is_admin ?? false;
+  const { data: menus, isLoading, isError } = useApiForGetMenusData();
+  const { deleteMenu, isDeleting } = useApiForDeleteMenu();
+  const queryClient = useQueryClient();
+  const [expandedMenuIds, setExpandedMenuIds] = useState<Set<number>>(new Set());
+  const { user } = useUserStore();
+  const isAdmin = user?.is_admin ?? false;
+  const [items, setItems] = useState<MenuItemType[]>([]);
+  const [totalMenuCount, setTotalMenuCount] = useState(0);
+  const [expandedCount, setExpandedCount] = useState(0);
+  const [activeLevel, setActiveLevel] = useState<number>(1);
 
-   useEffect(() => {
-       if (menus) {
-           const allIds = new Set<number>();
-           const addIds = (items: MenuItemType[]) => {
-               items.forEach(item => {
-                   allIds.add(item.id);
-                   if (item.items.length > 0) {
-                       addIds(item.items);
-                   }
-               });
-           };
-           addIds(menus);
-           setExpandedMenuIds(allIds);
-       }
-   }, [menus]);
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    })
+  );
 
-   const toggleExpand = (menuId: number) => {
-       setExpandedMenuIds((prev) => {
-           const newSet = new Set(prev);
-           if (newSet.has(menuId)) {
-               newSet.delete(menuId);
-           } else {
-               newSet.add(menuId);
-           }
-           return newSet;
-       });
-   };
+  const countVisibleMenus = (items: MenuItemType[], level: number = 1): number => {
+    let count = 0;
+    items.forEach(item => {
+      if (level <= activeLevel) {
+        count++;
+        if (item.items.length > 0 && expandedMenuIds.has(item.id)) {
+          count += countVisibleMenus(item.items, level + 1);
+        }
+      }
+    });
+    return count;
+  };
 
-   const handleMenuSuccess = () => {
-       queryClient.invalidateQueries({ queryKey: ['menus'] });
-   };
+  useEffect(() => {
+    if (menus) {
+      setItems(menus);
+      const visibleCount = countVisibleMenus(menus);
+      setTotalMenuCount(visibleCount);
+      setExpandedCount(visibleCount);
+    }
+  }, [menus, expandedMenuIds, activeLevel]);
 
-   const handleDeleteMenu = async (menuId: number, menuName: string) => {
-       if (!isAdmin) return;
-       
-       console.log('삭제 시도:', { menuId, menuName });
-       try {
-           await deleteMenu(
-               { menuId, menuName },
-               {
-                   onSuccess: () => {
-                       console.log('삭제 성공:', { menuId, menuName });
-                   },
-                   onError: (error) => {
-                       console.error('삭제 실패:', error);
-                   }
-               }
-           );
-       } catch (error) {
-           console.error('삭제 중 예외 발생:', error);
-       }
-   };
+  const handleCollapseAll = () => {
+    setExpandedMenuIds(new Set());
+    setActiveLevel(1);
+  };
 
-   const renderMenuItems = (menuItems: MenuItemType[], depth = 0) => {
-       return (
-           <ul className={`space-y-2 ${depth > 0 ? 'ml-8' : ''}`}>
-               {menuItems.map((menu) => (
-                   <li
-                       key={menu.id}
-                       className={`
-                           rounded-lg 
-                           ${depth === 0 ? 'border-l-4 border-blue-500 shadow-sm' : ''}
-                           ${depth === 1 ? 'border-l-4 border-indigo-400' : ''}
-                           ${depth === 2 ? 'border-l-4 border-purple-400' : ''}
-                           ${depth === 3 ? 'border-l-4 border-pink-400' : ''}
-                           hover:shadow-md transition-shadow
-                           bg-white
-                       `}
-                   >
-                       <div className={`
-                           flex items-center gap-3 p-3
-                           hover:bg-gray-50 transition-colors
-                           ${depth === 0 ? 'bg-gray-50' : ''}
-                       `}>
-                           <div className="flex items-center gap-2 flex-1">
-                               <button
-                                   onClick={() => toggleExpand(menu.id)}
-                                   className="p-1 hover:bg-gray-200 rounded-full transition-colors"
-                               >
-                                   {menu.items.length > 0 ? (
-                                       expandedMenuIds.has(menu.id)
-                                           ? <ChevronDown className="w-4 h-4 text-gray-600" />
-                                           : <ChevronRight className="w-4 h-4 text-gray-600" />
-                                   ) : (
-                                       <div className="w-4 h-4" />
-                                   )}
-                               </button>
-                               <div className="flex-1">
-                                   <div className="font-medium text-gray-900">
-                                       {menu.name}
-                                   </div>
-                                   <div className="flex items-center gap-3 text-sm text-gray-500 mt-1">
-                                       <code className="px-2 py-0.5 bg-gray-100 rounded text-xs">
-                                           {menu.path}
-                                       </code>
-                                       <span className="w-1 h-1 bg-gray-300 rounded-full" />
-                                       <span>순서: {menu.sort_order}</span>
-                                   </div>
-                               </div>
-                           </div>
-                           {isAdmin && (
-                               <div className="flex items-center gap-1">
-                                   <DialogButtonForAddMenuForParentMenu
-                                       parentId={menu.id}
-                                       parentMenuName={menu.name}
-                                       onSuccess={handleMenuSuccess}
-                                   />
-                                   <Button
-                                       variant="ghost"
-                                       size="icon"
-                                       className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                                       onClick={() => console.log('Edit menu:', menu.id)}
-                                   >
-                                       <Pencil className="w-4 h-4" />
-                                   </Button>
-                                   <Button
-                                       variant="ghost"
-                                       size="icon"
-                                       className={`
-                                           text-red-600 hover:text-red-700 hover:bg-red-50
-                                           ${isDeleting ? 'opacity-50 cursor-not-allowed' : ''}
-                                       `}
-                                       onClick={() => handleDeleteMenu(menu.id, menu.name)}
-                                       disabled={isDeleting}
-                                   >
-                                       <Trash2 className="w-4 h-4" />
-                                   </Button>
-                               </div>
-                           )}
-                       </div>
-                       {expandedMenuIds.has(menu.id) && menu.items.length > 0 && (
-                           <div className="mt-2 mb-3">
-                               {renderMenuItems(menu.items, depth + 1)}
-                           </div>
-                       )}
-                   </li>
-               ))}
-           </ul>
-       );
-   };
+  const handleExpandAll = () => {
+    if (menus) {
+      setActiveLevel(2);
+      const allIds = new Set<number>();
+      const addIds = (items: MenuItemType[]) => {
+        items.forEach(item => {
+          if (getMenuDepth(item.path) <= 2) {
+            allIds.add(item.id);
+            if (item.items.length > 0) {
+              addIds(item.items);
+            }
+          }
+        });
+      };
+      addIds(menus);
+      setExpandedMenuIds(allIds);
+    }
+  };
 
-   if (!isAdmin) {
-       return (
-           <div className="p-6 mt-14">
-               <Alert variant="destructive">
-                   <AlertDescription>
-                       메뉴 관리 페이지는 관리자만 접근할 수 있습니다.
-                   </AlertDescription>
-               </Alert>
-           </div>
-       );
-   }
+  const handleCollapseToLevel = (targetLevel: number) => {
+    if (menus) {
+      setActiveLevel(targetLevel);
+      const newIds = new Set<number>();
+      const addIds = (items: MenuItemType[], currentLevel: number) => {
+        items.forEach(item => {
+          if (currentLevel < targetLevel) {
+            newIds.add(item.id);
+            if (item.items.length > 0) {
+              addIds(item.items, currentLevel + 1);
+            }
+          }
+        });
+      };
+      addIds(menus, 1);
+      setExpandedMenuIds(newIds);
+    }
+  };
 
-   return (
-       <div className="p-6 max-w-6xl mx-auto">
-           <div className="flex justify-between items-center mb-6">
-               <h1 className="text-2xl font-bold text-gray-900">메뉴 관리</h1>
-               {isAdmin && (
-                   <DialogButtonForAddMenuForParentMenu
-                       parentId={null}
-                       parentMenuName=""
-                       onSuccess={handleMenuSuccess}
-                   />
-               )}
-           </div>
-           {isLoading && (
-               <div className="text-center py-8 text-gray-500">
-                   메뉴 불러오는 중...
-               </div>
-           )}
-           {isError && (
-               <div className="text-center py-8 text-red-500 bg-red-50 rounded-lg">
-                   메뉴를 불러오는 중 오류가 발생했습니다. 다시 시도해 주세요.
-               </div>
-           )}
-           <div className="space-y-4">
-               {menus && renderMenuItems(menus)}
-           </div>
-       </div>
-   );
+  const toggleExpand = (menuId: number) => {
+    setExpandedMenuIds(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(menuId)) {
+        newSet.delete(menuId);
+      } else {
+        newSet.add(menuId);
+      }
+      return newSet;
+    });
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      setItems((prevItems) => {
+        const findItemAndUpdate = (items: MenuItemType[], activeId: number, overId: number): MenuItemType[] => {
+          const oldIndex = items.findIndex((item) => item.id === activeId);
+          const newIndex = items.findIndex((item) => item.id === overId);
+          
+          if (oldIndex !== -1 && newIndex !== -1) {
+            const movingMenu = items[oldIndex];
+            const targetMenu = items[newIndex];
+            
+            console.log('메뉴 이동:', {
+              이동메뉴: {
+                id: movingMenu.id,
+                이름: movingMenu.name,
+                이전위치: oldIndex + 1,
+                새위치: newIndex + 1,
+                경로: movingMenu.path
+              },
+              대상메뉴: {
+                id: targetMenu.id,
+                이름: targetMenu.name,
+                경로: targetMenu.path
+              },
+              depth: getMenuDepth(movingMenu.path)
+            });
+            
+            return arrayMove(items, oldIndex, newIndex);
+          }
+          
+          const newItems = items.map(item => ({
+            ...item,
+            items: findItemAndUpdate(item.items, activeId, overId)
+          }));
+
+          const findMovingItem = (items: MenuItemType[]): MenuItemType | undefined => {
+            for (const item of items) {
+              if (item.id === activeId) return item;
+              const found = findMovingItem(item.items);
+              if (found) return found;
+            }
+            return undefined;
+          };
+
+          const findTargetItem = (items: MenuItemType[]): MenuItemType | undefined => {
+            for (const item of items) {
+              if (item.id === overId) return item;
+              const found = findTargetItem(item.items);
+              if (found) return found;
+            }
+            return undefined;
+          };
+
+          const movingItem = findMovingItem(items);
+          const targetItem = findTargetItem(items);
+
+          if (movingItem && targetItem) {
+            console.log('하위 메뉴 이동:', {
+              이동메뉴: {
+                id: movingItem.id,
+                이름: movingItem.name,
+                경로: movingItem.path
+              },
+              대상메뉴: {
+                id: targetItem.id,
+                이름: targetItem.name,
+                경로: targetItem.path
+              },
+              depth: getMenuDepth(movingItem.path)
+            });
+          }
+          
+          return newItems;
+        };
+        
+        return findItemAndUpdate(prevItems, active.id as number, over.id as number);
+      });
+    }
+  };
+
+  const renderMenuItems = (menuItems: MenuItemType[], depth = 0) => {
+    if (depth >= activeLevel) return null;
+
+    return (
+      <SortableContext items={menuItems.map(item => item.id)} strategy={verticalListSortingStrategy}>
+        <div className={`${depth > 0 ? 'ml-6' : ''}`}>
+          {menuItems.map((menu) => (
+            <SortableMenuItem
+              key={menu.id}
+              menu={menu}
+              depth={depth}
+              onToggle={toggleExpand}
+              expandedMenuIds={expandedMenuIds}
+              onDeleteMenu={handleDeleteMenu}
+              isAdmin={isAdmin}
+              isDeleting={isDeleting}
+              onSuccess={handleMenuSuccess}
+            />
+          ))}
+        </div>
+      </SortableContext>
+    );
+  };
+
+const handleMenuSuccess = () => {
+    queryClient.invalidateQueries({ queryKey: ['menus'] });
+  };
+
+  const handleDeleteMenu = async (menuId: number, menuName: string) => {
+    if (!isAdmin) return;
+    
+    try {
+      await deleteMenu(
+        { menuId, menuName },
+        {
+          onSuccess: () => {
+            console.log('삭제 성공:', { menuId, menuName });
+            queryClient.invalidateQueries({ queryKey: ['menus'] });
+          },
+          onError: (error) => {
+            console.error('삭제 실패:', error);
+          }
+        }
+      );
+    } catch (error) {
+      console.error('삭제 중 예외 발생:', error);
+    }
+  };
+
+  if (!isAdmin) {
+    return (
+      <div className="p-6 mt-14">
+        <Alert variant="destructive">
+          <AlertDescription>
+            메뉴 관리 페이지는 관리자만 접근할 수 있습니다.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-6 max-w-6xl mx-auto">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-xl font-semibold text-gray-900">메뉴 관리</h1>
+        {isAdmin && (
+          <DialogButtonForAddMenuForParentMenu
+            parentId={null}
+            parentMenuName=""
+            onSuccess={handleMenuSuccess}
+          />
+        )}
+      </div>
+
+      <CollapseControls
+        onCollapseAll={handleCollapseAll}
+        onExpandAll={handleExpandAll}
+        onCollapseToLevel={handleCollapseToLevel}
+        currentExpandedCount={expandedCount}
+        totalCount={totalMenuCount}
+        activeLevel={activeLevel}
+      />
+
+      {isLoading && (
+        <div className="text-center py-8 text-gray-500 text-sm">
+          메뉴 불러오는 중...
+        </div>
+      )}
+      {isError && (
+        <div className="text-center py-8 text-red-500 bg-red-50 rounded-lg text-sm">
+          메뉴를 불러오는 중 오류가 발생했습니다.
+        </div>
+      )}
+
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <div className="mt-4">
+          {items && renderMenuItems(items)}
+        </div>
+      </DndContext>
+    </div>
+  );
 };
 
 export default MenuAdmin;
