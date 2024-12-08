@@ -154,106 +154,115 @@ useEffect(() => {
     });
   };
 
-  const handleDragEnd = (event: DragEndEvent) => {
+    const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     setActiveId(null);
     setActiveItem(null);
     document.body.style.cursor = '';
 
     if (over && active.id !== over.id) {
-      setItems((prevItems) => {
+        setItems((prevItems) => {
         const findItemAndUpdate = (items: MenuItemType[], activeId: number, overId: number): MenuItemType[] => {
-          const oldIndex = items.findIndex((item) => item.id === activeId);
-          const newIndex = items.findIndex((item) => item.id === overId);
-          
-          if (oldIndex !== -1 && newIndex !== -1) {
-            const movingMenu = items[oldIndex];
-            const targetMenu = items[newIndex];
+            const oldIndex = items.findIndex((item) => item.id === activeId);
+            const newIndex = items.findIndex((item) => item.id === overId);
             
-            console.log('메뉴 이동:', {
-              이동메뉴: {
-                id: movingMenu.id,
-                이름: movingMenu.name,
-                이전위치: oldIndex + 1,
-                새위치: newIndex + 1,
-                경로: movingMenu.path
-              },
-              대상메뉴: {
-                id: targetMenu.id,
-                이름: targetMenu.name,
-                경로: targetMenu.path
-              },
-              depth: getMenuDepth(movingMenu.path)
-            });
+            if (oldIndex !== -1 && newIndex !== -1) {
+            // 위치가 실제로 변경된 경우에만 업데이트 진행
+            if (oldIndex !== newIndex) {
+                const movingMenu = items[oldIndex];
+                const targetMenu = items[newIndex];
+                
+                console.log('메뉴 이동:', {
+                이동메뉴: {
+                    id: movingMenu.id,
+                    이름: movingMenu.name,
+                    이전위치: oldIndex + 1,
+                    새위치: newIndex + 1,
+                    경로: movingMenu.path
+                },
+                대상메뉴: {
+                    id: targetMenu.id,
+                    이름: targetMenu.name,
+                    경로: targetMenu.path
+                },
+                depth: getMenuDepth(movingMenu.path)
+                });
 
-            // DB 업데이트
-            updateMenuOrder({
-              movingMenuId: movingMenu.id,
-              targetMenuId: targetMenu.id,
-              newOrder: newIndex + 1,
-              targetOrder: oldIndex + 1
-            });
+                // DB 업데이트
+                updateMenuOrder({
+                movingMenuId: movingMenu.id,
+                targetMenuId: targetMenu.id,
+                newOrder: newIndex + 1,
+                targetOrder: oldIndex + 1
+                });
+            }
             
             return arrayMove(items, oldIndex, newIndex);
-          }
-          
-          const newItems = items.map(item => ({
+            }
+            
+            const newItems = items.map(item => ({
             ...item,
             items: findItemAndUpdate(item.items, activeId, overId)
-          }));
+            }));
 
-          const findMovingItem = (items: MenuItemType[]): MenuItemType | undefined => {
+            const findMovingItem = (items: MenuItemType[]): MenuItemType | undefined => {
             for (const item of items) {
-              if (item.id === activeId) return item;
-              const found = findMovingItem(item.items);
-              if (found) return found;
+                if (item.id === activeId) return item;
+                const found = findMovingItem(item.items);
+                if (found) return found;
             }
             return undefined;
-          };
+            };
 
-          const findTargetItem = (items: MenuItemType[]): MenuItemType | undefined => {
+            const findTargetItem = (items: MenuItemType[]): MenuItemType | undefined => {
             for (const item of items) {
-              if (item.id === overId) return item;
-              const found = findTargetItem(item.items);
-              if (found) return found;
+                if (item.id === overId) return item;
+                const found = findTargetItem(item.items);
+                if (found) return found;
             }
             return undefined;
-          };
+            };
 
-          const movingItem = findMovingItem(items);
-          const targetItem = findTargetItem(items);
+            const movingItem = findMovingItem(items);
+            const targetItem = findTargetItem(items);
 
-          if (movingItem && targetItem) {
-            console.log('하위 메뉴 이동:', {
-              이동메뉴: {
-                id: movingItem.id,
-                이름: movingItem.name,
-                경로: movingItem.path
-              },
-              대상메뉴: {
-                id: targetItem.id,
-                이름: targetItem.name,
-                경로: targetItem.path
-              },
-              depth: getMenuDepth(movingItem.path)
-            });
+            if (movingItem && targetItem) {
+            const currentIndex = items.indexOf(movingItem);
+            const targetIndex = items.indexOf(targetItem);
 
-            // 하위 메뉴 이동 시에도 DB 업데이트
-            updateMenuOrder({
-              movingMenuId: movingItem.id,
-              targetMenuId: targetItem.id,
-              newOrder: items.indexOf(targetItem) + 1,
-              targetOrder: items.indexOf(movingItem) + 1
-            });
-          }
-          
-          return newItems;
+            // 위치가 실제로 변경된 경우에만 업데이트 진행
+            if (currentIndex !== targetIndex) {
+                console.log('하위 메뉴 이동:', {
+                이동메뉴: {
+                    id: movingItem.id,
+                    이름: movingItem.name,
+                    경로: movingItem.path
+                },
+                대상메뉴: {
+                    id: targetItem.id,
+                    이름: targetItem.name,
+                    경로: targetItem.path
+                },
+                depth: getMenuDepth(movingItem.path)
+                });
+
+                // 하위 메뉴 이동 시에도 DB 업데이트
+                updateMenuOrder({
+                movingMenuId: movingItem.id,
+                targetMenuId: targetItem.id,
+                newOrder: targetIndex + 1,
+                targetOrder: currentIndex + 1
+                });
+            }
+            }
+            
+            return newItems;
         };
         
         return findItemAndUpdate(prevItems, active.id as number, over.id as number);
-      });
+        });
     }
-  };
+    };
 
   const renderMenuItems = (menuItems: MenuItemType[], depth = 0) => {
     if (depth >= activeLevel) return null;

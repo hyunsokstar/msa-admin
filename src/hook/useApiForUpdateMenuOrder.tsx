@@ -49,20 +49,22 @@ export const useApiForUpdateMenuOrder = () => {
                 throw new Error(errorMessage);
             }
         },
-        onSuccess: (data) => {
+        onSuccess: async (data) => {
             // 캐시된 메뉴 데이터 무효화
-            queryClient.invalidateQueries({
+            await queryClient.invalidateQueries({
                 queryKey: ['menusData'],
             });
             
+            console.log('메뉴 순서 변경 성공:', data);  
+
             // 성공 메시지 표시 (상단 가운데, 2초 동안)
-            toast.success(data.message || '메뉴 순서가 변경되었습니다.', {
+            await toast.success('메뉴 순서가 변경되었습니다.', {
                 position: 'top-center' as ToastPosition,
                 autoClose: 2000, // 2초 후 자동 닫힘
-                hideProgressBar: true, // 진행 표시 바 숨김
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: true,
+                // hideProgressBar: true, // 진행 표시 바 숨김
+                // closeOnClick: true,
+                // pauseOnHover: false,
+                // draggable: true,
             });
         },
         onError: (error) => {
