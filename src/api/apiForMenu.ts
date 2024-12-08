@@ -129,3 +129,64 @@ export const apiForDeleteMenu = async (menuId: number): Promise<boolean> => {
         return false;
     }
 };
+
+interface UpdateMenuOrderParams {
+    movingMenuId: number;
+    targetMenuId: number;
+    newOrder: number;
+    targetOrder: number;
+}
+
+export async function apiForUpdateMenuOrder({ 
+    movingMenuId, 
+    targetMenuId,
+    newOrder,
+    targetOrder 
+}: UpdateMenuOrderParams): Promise<boolean> {
+    const supabase = getSupabase();
+
+    if (!supabase) {
+        console.error("Supabase 클라이언트를 초기화하지 못했습니다.");
+        return false;
+    }
+
+    try {
+        // 먼저 두 메뉴의 현재 데이터를 가져옴
+        const { data: menus, error: fetchError } = await supabase
+            .from('menus')
+            .select('*')
+            .in('id', [movingMenuId, targetMenuId]);
+
+        if (fetchError || !menus || menus.length !== 2) {
+            console.error('메뉴 데이터 조회 중 오류 발생:', fetchError);
+            return false;
+        }
+
+        // 각 메뉴의 현재 데이터를 찾음
+        const movingMenu = menus.find(menu => menu.id === movingMenuId);
+        const targetMenu = menus.find(menu => menu.id === targetMenuId);
+
+        if (!movingMenu || !targetMenu) {
+            console.error('메뉴를 찾을 수 없습니다.');
+            return false;
+        }
+
+        // 각 메뉴의 데이터를 유지하면서 sort_order만 업데이트
+        const { error: updateError } = await supabase
+            .from('menus')
+            .upsert([
+                { ...movingMenu, sort_order: newOrder },
+                { ...targetMenu, sort_order: targetOrder }
+            ]);
+
+        if (updateError) {
+            console.error('메뉴 순서 업데이트 중 오류 발생:', updateError);
+            return false;
+        }
+
+        return true;
+    } catch (error) {
+        console.error('메뉴 순서 업데이트 중 예외 발생:', error);
+        return false;
+    }
+}

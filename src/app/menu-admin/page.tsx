@@ -1,15 +1,13 @@
 "use client";
 
+import React, { useState, useEffect } from 'react';
 import { MenuItemType } from '@/api/apiForMenu';
 import useApiForGetMenusData from '@/hook/useApiForGetMenusData';
-import React, { useState, useEffect } from 'react';
-import { FolderIcon, ChevronRight, ChevronDown, Pencil, Trash2 } from 'lucide-react';
 import DialogButtonForAddMenuForParentMenu from '@/components/dialog/DialogButtonForAddMenuForParentMenu';
 import { useQueryClient } from '@tanstack/react-query';
 import { useApiForDeleteMenu } from '@/hook/useApiForDeleteMenu';
 import { useUserStore } from '@/store/useUserStore';
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 import {
   DndContext,
   DragEndEvent,
@@ -25,283 +23,15 @@ import {
   arrayMove,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 
-const DEPTH_COLORS = {
-  0: '#1a1a1a',  // 진한 회색
-  1: '#404040',  // 중간 회색
-  2: '#666666',  // 연한 회색
-};
+import { getMenuDepth } from './DEPTH_COLORS';
+import { CollapseControls } from './CollapseControls';
+import { DragOverlayContent } from './DragOverlayContent';
+import { SortableMenuItem } from './SortableMenuItem';
+import { countVisibleMenus, countTotalMenus } from './MenuUtil';
+import useApiForUpdateMenuOrder from '@/hook/useApiForUpdateMenuOrder';
 
-interface CollapseControlsProps {
-  onCollapseAll: () => void;
-  onExpandAll: () => void;
-  onCollapseToLevel: (level: number) => void;
-  currentExpandedCount: number;
-  totalCount: number;
-  activeLevel: number;
-}
 
-const CollapseControls: React.FC<CollapseControlsProps> = ({ 
-  onCollapseAll, 
-  onExpandAll, 
-  onCollapseToLevel,
-  currentExpandedCount,
-  totalCount,
-  activeLevel 
-}) => {
-  return (
-    <div className="flex items-center gap-2 mb-6 p-2 bg-gray-50 rounded-lg border border-gray-100">
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={onCollapseAll}
-        className="text-xs font-medium"
-      >
-        접기
-      </Button>
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={onExpandAll}
-        className="text-xs font-medium"
-      >
-        펼치기
-      </Button>
-      <div className="h-4 w-px bg-gray-200 mx-2" />
-      <div className="flex gap-1">
-        {[1, 2].map((level) => (
-          <Button
-            key={level}
-            variant={activeLevel === level ? "default" : "ghost"}
-            size="sm"
-            onClick={() => onCollapseToLevel(level)}
-            className={`text-xs font-medium ${
-              activeLevel === level 
-                ? "bg-blue-500 text-white hover:bg-blue-600" 
-                : "text-gray-600"
-            }`}
-          >
-            {`${level}단계`}
-          </Button>
-        ))}
-      </div>
-      <div className="ml-auto text-xs text-gray-500">
-        {currentExpandedCount} / {totalCount}
-      </div>
-    </div>
-  );
-};
-
-interface SortableMenuItemProps {
-  menu: MenuItemType;
-  depth: number;
-  onToggle: (id: number) => void;
-  expandedMenuIds: Set<number>;
-  onDeleteMenu: (id: number, name: string) => void;
-  isAdmin: boolean;
-  isDeleting: boolean;
-  onSuccess: () => void;
-}
-
-const DragOverlayContent = ({ menu, depth }: { menu: MenuItemType; depth: number }) => {
-  const depthColor = DEPTH_COLORS[depth as keyof typeof DEPTH_COLORS] || DEPTH_COLORS[2];
-
-  return (
-    <div 
-      className={`
-        mb-1.5 
-        rounded-md 
-        bg-white 
-        shadow-lg
-        border border-blue-200
-        scale-[1.01]
-        opacity-95
-        transition-transform
-        duration-150
-      `}
-    >
-      <div className="flex items-center p-2.5">
-        <div className="flex-none w-[28px] mr-2">
-          {menu.items.length > 0 && (
-            <ChevronRight className="w-3 h-3" style={{ color: depthColor }} />
-          )}
-        </div>
-
-        <div className="flex items-center gap-2 flex-1">
-          <FolderIcon 
-            className="w-4 h-4" 
-            style={{ color: depthColor }} 
-          />
-          
-          <div className="flex-1 min-w-0">
-            <div className="text-sm font-medium truncate" style={{ color: depthColor }}>
-              {menu.name}
-            </div>
-            <div className="text-xs text-gray-400 mt-0.5">
-              {menu.path}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const SortableMenuItem: React.FC<SortableMenuItemProps> = ({
-  menu,
-  depth,
-  onToggle,
-  expandedMenuIds,
-  onDeleteMenu,
-  isAdmin,
-  isDeleting,
-  onSuccess
-}) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ 
-    id: menu.id,
-  });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition: `all 200ms cubic-bezier(0.4, 0, 0.2, 1)`,
-    position: 'relative' as const,
-    zIndex: isDragging ? 50 : 0,
-  };
-
-  const depthColor = DEPTH_COLORS[depth as keyof typeof DEPTH_COLORS] || DEPTH_COLORS[2];
-  const isExpanded = expandedMenuIds.has(menu.id);
-
-  return (
-    <div ref={setNodeRef} style={style} {...attributes}>
-      <div 
-        className={`
-          mb-1.5 
-          rounded-md 
-          bg-white 
-          transition-all
-          duration-200
-          hover:bg-gray-50
-          border border-gray-100
-          transform-gpu
-          ${isDragging 
-            ? 'shadow-md border-blue-100 scale-[1.01]' 
-            : 'shadow-sm hover:shadow'
-          }
-        `}
-      >
-        <div className="flex items-center p-2.5">
-          <div className="flex-none w-[28px] mr-2">
-            {menu.items.length > 0 ? (
-              <button
-                className={`
-                  p-1 
-                  rounded-md 
-                  hover:bg-gray-100 
-                  transition-transform 
-                  duration-200
-                  transform-gpu
-                  ${isExpanded ? 'rotate-0' : '-rotate-90'}
-                `}
-                onClick={() => onToggle(menu.id)}
-              >
-                <ChevronDown 
-                  className="w-3 h-3 transition-colors" 
-                  style={{ color: depthColor }}
-                />
-              </button>
-            ) : null}
-          </div>
-
-          <div {...listeners} className="flex items-center gap-2 flex-1 cursor-move drag-handle">
-            <FolderIcon 
-              className="w-4 h-4 transition-transform duration-200" 
-              style={{ color: depthColor }} 
-            />
-            
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-medium truncate" style={{ color: depthColor }}>
-                {menu.name}
-              </div>
-              <div className="text-xs text-gray-400 mt-0.5">
-                {menu.path}
-              </div>
-            </div>
-          </div>
-
-          {isAdmin && (
-            <div className="flex items-center gap-1">
-              <DialogButtonForAddMenuForParentMenu
-                parentId={menu.id}
-                parentMenuName={menu.name}
-                onSuccess={onSuccess}
-              />
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-7 w-7"
-              >
-                <Pencil className="w-3 h-3 text-gray-400" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className={`h-7 w-7 ${isDeleting ? 'opacity-50' : ''}`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDeleteMenu(menu.id, menu.name);
-                }}
-                disabled={isDeleting}
-              >
-                <Trash2 className="w-3 h-3 text-gray-400" />
-              </Button>
-            </div>
-          )}
-        </div>
-      </div>
-      
-      <div 
-        className={`
-          ml-6 
-          transition-all 
-          duration-200
-          ease-in-out
-          transform-gpu
-          ${isExpanded 
-            ? 'opacity-100 translate-y-0' 
-            : 'opacity-0 -translate-y-2 h-0 overflow-hidden'
-          }
-        `}
-      >
-        {isExpanded && menu.items.length > 0 && menu.items.map((subMenu) => (
-          <SortableMenuItem
-            key={subMenu.id}
-            menu={subMenu}
-            depth={depth + 1}
-            onToggle={onToggle}
-            expandedMenuIds={expandedMenuIds}
-            onDeleteMenu={onDeleteMenu}
-            isAdmin={isAdmin}
-            isDeleting={isDeleting}
-            onSuccess={onSuccess}
-          />
-        ))}
-      </div>
-    </div>
-  );
-};
-
-const getMenuDepth = (path: string): number => {
-  return path.split('/').filter(Boolean).length;
-};
 
 const MenuAdmin = () => {
   const { data: menus, isLoading, isError } = useApiForGetMenusData();
@@ -317,6 +47,9 @@ const MenuAdmin = () => {
   const [activeId, setActiveId] = useState<number | null>(null);
   const [activeItem, setActiveItem] = useState<MenuItemType | null>(null);
   const [activeDepth, setActiveDepth] = useState<number>(0);
+  const { mutate: updateMenuOrder } = useApiForUpdateMenuOrder();
+
+  
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -354,27 +87,17 @@ const MenuAdmin = () => {
     }
   };
 
-  const countVisibleMenus = (items: MenuItemType[], level: number = 1): number => {
-    let count = 0;
-    items.forEach(item => {
-      if (level <= activeLevel) {
-        count++;
-        if (item.items.length > 0 && expandedMenuIds.has(item.id)) {
-          count += countVisibleMenus(item.items, level + 1);
-        }
-      }
-    });
-    return count;
-  };
 
-  useEffect(() => {
-    if (menus) {
-      setItems(menus);
-      const visibleCount = countVisibleMenus(menus);
-      setTotalMenuCount(visibleCount);
-      setExpandedCount(visibleCount);
-    }
-  }, [menus, expandedMenuIds, activeLevel]);
+
+useEffect(() => {
+  if (menus) {
+    setItems(menus);
+    const total = countTotalMenus(menus);
+    const visible = countVisibleMenus(menus, expandedMenuIds, activeLevel);
+    setTotalMenuCount(total);        // 전체 메뉴 개수로 변경
+    setExpandedCount(visible);       // 보이는 메뉴 개수
+  }
+}, [menus, expandedMenuIds, activeLevel]);
 
   const handleCollapseAll = () => {
     setExpandedMenuIds(new Set());
@@ -462,6 +185,14 @@ const MenuAdmin = () => {
               },
               depth: getMenuDepth(movingMenu.path)
             });
+
+            // DB 업데이트
+            updateMenuOrder({
+              movingMenuId: movingMenu.id,
+              targetMenuId: targetMenu.id,
+              newOrder: newIndex + 1,
+              targetOrder: oldIndex + 1
+            });
             
             return arrayMove(items, oldIndex, newIndex);
           }
@@ -505,6 +236,14 @@ const MenuAdmin = () => {
                 경로: targetItem.path
               },
               depth: getMenuDepth(movingItem.path)
+            });
+
+            // 하위 메뉴 이동 시에도 DB 업데이트
+            updateMenuOrder({
+              movingMenuId: movingItem.id,
+              targetMenuId: targetItem.id,
+              newOrder: items.indexOf(targetItem) + 1,
+              targetOrder: items.indexOf(movingItem) + 1
             });
           }
           

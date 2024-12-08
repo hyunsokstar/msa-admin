@@ -1,141 +1,158 @@
-'use client';
-
 import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { ChevronRight, ChevronDown, Pencil, Trash2 } from 'lucide-react';
+import { FolderIcon, ChevronDown, Pencil, Trash2 } from 'lucide-react';
+import { MenuItemType } from '@/api/apiForMenu';
+import { Button } from "@/components/ui/button";
 import DialogButtonForAddMenuForParentMenu from '@/components/dialog/DialogButtonForAddMenuForParentMenu';
-import { Button } from '@/components/ui/button';
-import { FolderIcon } from 'lucide-react';
+import { DEPTH_COLORS } from './DEPTH_COLORS';
 
-interface SortableMenuItemProps {
-  menu: {
-    id: number;
-    name: string;
-    path: string;
-    sort_order: number;
-    items: any[];
-  };
+export interface SortableMenuItemProps {
+  menu: MenuItemType;
   depth: number;
   onToggle: (id: number) => void;
-  isExpanded: boolean;
+  expandedMenuIds: Set<number>;
   onDeleteMenu: (id: number, name: string) => void;
   isAdmin: boolean;
   isDeleting: boolean;
   onSuccess: () => void;
 }
 
-const DEPTH_COLORS = {
-  0: 'rgb(239, 68, 68)', // 빨강
-  1: 'rgb(249, 115, 22)', // 주황
-  2: 'rgb(234, 179, 8)', // 노랑
-  3: 'rgb(34, 197, 94)', // 초록
-  4: 'rgb(59, 130, 246)', // 파랑
-  5: 'rgb(139, 92, 246)', // 보라
-};
-
-const SortableMenuItem: React.FC<SortableMenuItemProps> = ({
+export const SortableMenuItem: React.FC<SortableMenuItemProps> = ({
   menu,
   depth,
   onToggle,
-  isExpanded,
+  expandedMenuIds,
   onDeleteMenu,
   isAdmin,
   isDeleting,
-  onSuccess,
+  onSuccess
 }) => {
   const {
     attributes,
     listeners,
     setNodeRef,
     transform,
-    transition,
     isDragging,
   } = useSortable({ id: menu.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
+    transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
+    position: 'relative' as const,
+    zIndex: isDragging ? 50 : 0,
   };
 
-  const depthColor = DEPTH_COLORS[depth as keyof typeof DEPTH_COLORS] || DEPTH_COLORS[5];
+  const depthColor = DEPTH_COLORS[depth as keyof typeof DEPTH_COLORS] || DEPTH_COLORS[2];
+  const isExpanded = expandedMenuIds.has(menu.id);
 
   return (
     <div ref={setNodeRef} style={style} {...attributes}>
-      <div className="mb-2">
-        <div
-          className={`rounded-lg bg-white hover:shadow-md transition-all border-l-4 ${
-            isDragging ? 'shadow-lg' : 'shadow-sm'
-          }`}
-          style={{ borderLeftColor: depthColor }}
-        >
-          <div className="flex items-center gap-2 p-3 hover:bg-gray-50">
-            <button
-              className="p-1 hover:bg-gray-200 rounded-full"
-              onClick={() => onToggle(menu.id)}
-            >
-              {menu.items.length > 0 ? (
-                isExpanded ? (
-                  <ChevronDown className="w-4 h-4 text-gray-600" />
-                ) : (
-                  <ChevronRight className="w-4 h-4 text-gray-600" />
-                )
-              ) : (
-                <div className="w-4 h-4" />
-              )}
-            </button>
-
-            <div
-              {...listeners}
-              className="flex items-center gap-2 flex-1 cursor-grab active:cursor-grabbing"
-            >
-              <FolderIcon className="w-5 h-5" style={{ color: depthColor }} />
-              <div className="flex-1">
-                <div className="font-medium text-gray-900">{menu.name}</div>
-                <div className="flex items-center gap-3 text-sm text-gray-500 mt-1">
-                  <code className="px-2 py-0.5 bg-gray-100 rounded text-xs">
-                    {menu.path}
-                  </code>
-                  <span className="w-1 h-1 bg-gray-300 rounded-full" />
-                  <span>순서: {menu.sort_order}</span>
-                </div>
-              </div>
-            </div>
-
-            {isAdmin && (
-              <div className="flex items-center gap-1">
-                <DialogButtonForAddMenuForParentMenu
-                  parentId={menu.id}
-                  parentMenuName={menu.name}
-                  onSuccess={onSuccess}
+      <div className={`
+        mb-1.5 
+        rounded-md 
+        bg-white 
+        transition-all
+        duration-200
+        hover:bg-gray-50
+        border border-gray-100
+        transform-gpu
+        ${isDragging ? 'shadow-md border-blue-100 scale-[1.01]' : 'shadow-sm hover:shadow'}
+      `}>
+        <div className="flex items-center p-2.5">
+          <div className="flex-none w-[28px] mr-2">
+            {menu.items.length > 0 && (
+              <button
+                className={`
+                  p-1 
+                  rounded-md 
+                  hover:bg-gray-100 
+                  transition-transform 
+                  duration-200
+                  transform-gpu
+                  ${isExpanded ? 'rotate-0' : '-rotate-90'}
+                `}
+                onClick={() => onToggle(menu.id)}
+              >
+                <ChevronDown 
+                  className="w-3 h-3 transition-colors" 
+                  style={{ color: depthColor }}
                 />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                  onClick={() => console.log('Edit menu:', menu.id)}
-                >
-                  <Pencil className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className={`text-red-600 hover:text-red-700 hover:bg-red-50 ${
-                    isDeleting ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
-                  onClick={() => onDeleteMenu(menu.id, menu.name)}
-                  disabled={isDeleting}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </div>
+              </button>
             )}
           </div>
+
+          <div {...listeners} className="flex items-center gap-2 flex-1 cursor-grab drag-handle hover:cursor-grab active:cursor-grabbing">
+            <FolderIcon 
+              className="w-4 h-4 transition-transform duration-200" 
+              style={{ color: depthColor }} 
+            />
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-medium truncate" style={{ color: depthColor }}>
+                {menu.name}
+              </div>
+              <div className="text-xs text-gray-400 mt-0.5">
+                {menu.path}
+              </div>
+            </div>
+          </div>
+
+          {isAdmin && (
+            <div className="flex items-center gap-1">
+              <DialogButtonForAddMenuForParentMenu
+                parentId={menu.id}
+                parentMenuName={menu.name}
+                onSuccess={onSuccess}
+              />
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7"
+              >
+                <Pencil className="w-3 h-3 text-gray-400" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className={`h-7 w-7 ${isDeleting ? 'opacity-50' : ''}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDeleteMenu(menu.id, menu.name);
+                }}
+                disabled={isDeleting}
+              >
+                <Trash2 className="w-3 h-3 text-gray-400" />
+              </Button>
+            </div>
+          )}
         </div>
+      </div>
+      
+      <div className={`
+        ml-6 
+        transition-all 
+        duration-200
+        ease-in-out
+        transform-gpu
+        ${isExpanded 
+          ? 'opacity-100 translate-y-0' 
+          : 'opacity-0 -translate-y-2 h-0 overflow-hidden'
+        }
+      `}>
+        {isExpanded && menu.items.length > 0 && menu.items.map((subMenu) => (
+          <SortableMenuItem
+            key={subMenu.id}
+            menu={subMenu}
+            depth={depth + 1}
+            onToggle={onToggle}
+            expandedMenuIds={expandedMenuIds}
+            onDeleteMenu={onDeleteMenu}
+            isAdmin={isAdmin}
+            isDeleting={isDeleting}
+            onSuccess={onSuccess}
+          />
+        ))}
       </div>
     </div>
   );
 };
-
-export default SortableMenuItem;
