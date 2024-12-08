@@ -210,7 +210,7 @@ const IRegisterFormForUpdateIssue = ({ defaultValues, userEmail, onSubmit, isUpd
                     {users?.map((user) => (
                       <SelectItem 
                         key={user.id} 
-                        value={user.id}
+                        value={user.id ?? ''}
                         className={selectItemStyles}
                       >
                         {user.email}
