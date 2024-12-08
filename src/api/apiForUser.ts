@@ -1,4 +1,5 @@
 // src/api/apiForUserList.ts
+import { deleteUserAction } from '@/app/actions/deleteUser';
 import getSupabase from '@/lib/supabaseClient';
 import { User, CreateUserDto, UpdateUserDto, UserFilter } from '@/types/typeForUser';
 
@@ -97,19 +98,13 @@ const apiForUserList: ApiForUserList = {
     },
 
     deleteUser: async (id: string): Promise<void> => {
-        const supabase = getSupabase();
-        if (!supabase) {
-            throw new Error('Supabase client is not initialized');
-        }
-
-        const { error } = await supabase
-            .from('users')
-            .delete()
-            .eq('id', id);
-
-        if (error) {
-            throw new Error(error.message);
-        }
+    try {
+        // Server Action 호출
+        await deleteUserAction(id);
+    } catch (error) {
+        console.error('Failed to delete user:', error);
+        throw error;
+    }
     },
 
     getOnlineUsers: async (): Promise<User[]> => {
