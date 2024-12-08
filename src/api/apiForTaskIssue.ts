@@ -1,5 +1,6 @@
 import getSupabase from '@/lib/supabaseClient';
 import { Issue, CreateIssueDto, UpdateIssueDto, IssueFilter } from '@/types/typeForTaskIssue';
+import { UserSelectInfo } from '@/types/typeForUser';
 
 interface ApiForTaskIssue {
     getAllIssues: (filter?: IssueFilter) => Promise<Issue[]>;
@@ -17,7 +18,12 @@ const apiForTaskIssue: ApiForTaskIssue = {
         throw new Error('Supabase client is not initialized');
         }
 
-        let query = supabase.from('issues').select('*, manager:users(email)');
+        // let query = supabase.from('issues').select('*, manager:users(email)');
+        let query = supabase.from('issues').select(`
+            *,
+            manager_user:users!fk_issues_manager(id, email),
+            executor_user:users!issues_executor_fkey(id, email)
+        `);
 
         // 필터가 있다면 해당 조건들을 적용
         if (filter) {
@@ -99,7 +105,6 @@ const apiForTaskIssue: ApiForTaskIssue = {
 
     deleteIssue: async (id: number): Promise<void> => {
         console.log("이슈 삭세 id check : ", id);
-        
 
         const supabase = getSupabase();
         if (!supabase) {
@@ -115,6 +120,7 @@ const apiForTaskIssue: ApiForTaskIssue = {
             throw new Error(error.message);
         }
     }
+    
 };
 
 export default apiForTaskIssue;

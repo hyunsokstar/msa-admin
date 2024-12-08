@@ -1,7 +1,7 @@
 // src/api/apiForUserList.ts
 import { deleteUserAction } from '@/app/actions/deleteUser';
 import getSupabase from '@/lib/supabaseClient';
-import { User, CreateUserDto, UpdateUserDto, UserFilter } from '@/types/typeForUser';
+import { User, CreateUserDto, UpdateUserDto, UserFilter, UserSelectInfo } from '@/types/typeForUser';
 
 interface ApiForUserList {
     getAllUsers: (filter?: UserFilter) => Promise<User[]>;
@@ -10,6 +10,8 @@ interface ApiForUserList {
     updateUser: (id: string, updateData: UpdateUserDto) => Promise<User>;
     deleteUser: (id: string) => Promise<void>;
     getOnlineUsers: () => Promise<User[]>;
+    getUsersInfoForSelectBox: () => Promise<UserSelectInfo[]>;
+
 }
 
 const apiForUserList: ApiForUserList = {
@@ -124,7 +126,28 @@ const apiForUserList: ApiForUserList = {
         }
 
         return data as User[];
+    },
+
+    // apiForUsersInfoForSelectBox
+    getUsersInfoForSelectBox: async (): Promise<UserSelectInfo[]> => {
+        const supabase = getSupabase();
+        if (!supabase) {
+            throw new Error('Supabase client is not initialized');
+        }
+
+        const { data, error } = await supabase
+            .from('users')
+            .select('id, email, profile_image_url')
+            .order('email');
+
+        if (error) {
+            throw new Error(error.message);
+        }
+
+        return data as unknown as UserSelectInfo[];
     }
+
+
 };
 
 export default apiForUserList;

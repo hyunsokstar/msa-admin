@@ -81,13 +81,10 @@ const IssueAdminPage = () => {
                                 <TableHead className="w-16 bg-gray-200">ID</TableHead>
                                 <TableHead className="bg-gray-200">Title</TableHead>
                                 <TableHead className="bg-gray-200">참고 이미지</TableHead>
-                                <TableHead className="bg-gray-200">page_url</TableHead>
-                                <TableHead className="bg-gray-200">Status</TableHead>
-                                <TableHead className="bg-gray-200">Type</TableHead>
-                                <TableHead className="bg-gray-200">priority</TableHead>
-                                <TableHead className="bg-gray-200">Category1</TableHead>
-                                <TableHead className="bg-gray-200">Category2</TableHead>
-                                <TableHead className="bg-gray-200">Manager</TableHead>
+                                <TableHead className="bg-gray-200">Status/Type/Priority</TableHead>
+                                <TableHead className="bg-gray-200">Categories</TableHead>
+                                <TableHead className="bg-gray-200">Assignees</TableHead>
+                                <TableHead className="bg-gray-200">Page URL</TableHead>
                                 <TableHead className="bg-gray-200">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -102,7 +99,48 @@ const IssueAdminPage = () => {
                                             url2: issue.ref_img_url2,
                                             url3: issue.ref_img_url3
                                         }} />
-                                        </TableCell>
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="flex flex-col gap-2">
+                                            <CustomBadge
+                                                variant="status"
+                                                value={issue.status}
+                                            />
+                                            <CustomBadge
+                                                variant="type"
+                                                value={issue.type}
+                                            />
+                                            <CustomBadge
+                                                variant="priority"
+                                                value={issue.priority}
+                                            />
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="flex flex-col gap-2">
+                                            <CustomBadge
+                                                variant="category"
+                                                value={issue.category1}
+                                            />
+                                            {issue.category2 && (
+                                                <CustomBadge
+                                                    value={issue.category2}
+                                                />
+                                            )}
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="flex flex-col gap-2">
+                                            <div className="text-sm">
+                                                <span className="font-semibold">Manager:</span>{' '}
+                                                {issue.manager_user?.email || 'N/A'}
+                                            </div>
+                                            <div className="text-sm">
+                                                <span className="font-semibold">Executor:</span>{' '}
+                                                {issue.executor_user?.email || 'N/A'}
+                                            </div>
+                                        </div>
+                                    </TableCell>
                                     <TableCell className="font-medium">
                                         {issue.page_url && (
                                             <Link href={issue.page_url} target="_blank" rel="noopener noreferrer">
@@ -110,36 +148,6 @@ const IssueAdminPage = () => {
                                             </Link>
                                         )}
                                     </TableCell>
-                                    <TableCell>
-                                        <CustomBadge
-                                            variant="status"
-                                            value={issue.status}
-                                        />
-                                    </TableCell>
-                                    <TableCell>
-                                        <CustomBadge
-                                            variant="type"
-                                            value={issue.type}
-                                        />
-                                    </TableCell>
-                                    <TableCell>
-                                        <CustomBadge
-                                            variant="priority"
-                                            value={issue.priority}
-                                        />
-                                    </TableCell>
-                                    <TableCell>
-                                        <CustomBadge
-                                            variant="category"
-                                            value={issue.category1}
-                                        />
-                                    </TableCell>
-                                    <TableCell>
-                                        <CustomBadge
-                                            value={issue.category2}
-                                        />
-                                    </TableCell>
-                                    <TableCell>{issue.manager?.email || "N/A"}</TableCell>
                                     <TableCell className="space-x-2">
                                         <IDialogButtonForUpdateTaskIssue 
                                             issue={issue}                                            

@@ -67,7 +67,7 @@ const IDialogButtonForUpdateTaskIssue = ({ issue, filter }: DialogButtonProps) =
         <div className="flex-1 overflow-hidden">
           <IRegisterFormForUpdateIssue 
             defaultValues={issue}
-            userEmail={issue?.manager.email || ''}
+            userEmail={issue?.manager_user.email || ''}
             onSubmit={handleSubmit}
             isUpdating={updateIssueMutation.isPending}
           />

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Issue, UpdateIssueDto, PriorityLevel, SystemCategory, IssueType, IssueStatus } from "@/types/typeForTaskIssue";
 import { DialogClose } from '@/components/ui/dialog';
 import ImageUploader2 from '@/components/file-uploader/ImageUploader2';
+import useApiForUsersInfoForSelectBox from '@/hook/useApiForUsersInfoForSelectBox';
 
 interface IFormForUpdateIssueProps {
   defaultValues: Issue;
@@ -28,10 +29,14 @@ const IRegisterFormForUpdateIssue = ({ defaultValues, userEmail, onSubmit, isUpd
     }
   });
 
+  const { data: users, isLoading: isLoadingUsers } = useApiForUsersInfoForSelectBox();
+  console.log('users:', users);
+  
+
   console.log('defaultValues:', defaultValues);
 
-  const handleSelectChange = (field: keyof UpdateIssueDto, value: string) => {
-    setValue(field, value);
+  const handleSelectChange = (field: keyof UpdateIssueDto, value: string | null) => {
+    setValue(field, value ?? undefined);
   };
 
   const handleImageUpload = (imageNumber: number) => (fileUrl: string) => {
@@ -189,6 +194,32 @@ const IRegisterFormForUpdateIssue = ({ defaultValues, userEmail, onSubmit, isUpd
                   className="flex-1 h-9 bg-gray-100"
                 />
               </div>
+
+              {/* Executor */}
+              <div className="flex items-center space-x-4">
+                <label className="text-sm font-medium text-gray-700 w-24">실행자</label>
+                <Select
+                  onValueChange={(value) => handleSelectChange('executor', value === 'none' ? null : value)}
+                  defaultValue={defaultValues.executor || 'none'}
+                >
+                  <SelectTrigger className={selectTriggerStyles}>
+                    <SelectValue placeholder="실행자 선택" />
+                  </SelectTrigger>
+                  <SelectContent className={selectContentStyles}>
+                    <SelectItem value="none" className={selectItemStyles}>없음</SelectItem>
+                    {users?.map((user) => (
+                      <SelectItem 
+                        key={user.id} 
+                        value={user.id}
+                        className={selectItemStyles}
+                      >
+                        {user.email}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
 
               {/* Reference Images */}
               <div className="space-y-3">

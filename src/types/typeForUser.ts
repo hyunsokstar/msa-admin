@@ -31,3 +31,10 @@ export interface UserFilter {
     email?: string;
     isAdmin?: boolean;
 }
+
+// 상단에 타입 추가
+export interface UserSelectInfo {
+    id:string | null, 
+    email:string, 
+    profile_image_url:string
+}
