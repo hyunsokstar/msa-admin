@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import ClientRootLayout from "@/components/layout/ClientRootLayout";
+import "rc-pagination/assets/index.css"; // 기본 스타일 가져오기
+
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

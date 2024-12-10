@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/table";
 import { useApiForGetAllIssueList } from "@/hook/useApiForGetAllIssueList";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 import { IssueFilter, CreateIssueDto } from "@/types/typeForTaskIssue";
 import ISearchFormForIssueList from "@/components/searchform/ISearchFormForIssueList";
 import IDialogButtonForRegisterIssue from "@/components/dialog/IDialogButtonForRegisterIssue";
@@ -21,18 +22,32 @@ import IDialogButtonForDeleteTaskIssue from "@/components/dialog/IDialogButtonFo
 import IDialogButtonForUpdateTaskIssue from "@/components/dialog/IDialogButtonForUpdateTaskIssue";
 import { CustomBadge } from "@/components/bedge/CustomBadge";
 import ISquareForShowImage from "@/components/dialog/display/ISquareForShowImage";
+import Pagination from "rc-pagination"; // rc-pagination import
+// import "rc-pagination/assets/index.css"; // 기본 스타일 가져오기
 
 const IssueAdminPage = () => {
     const [filter, setFilter] = useState<IssueFilter>({});
-    const { data: issues, isLoading, error } = useApiForGetAllIssueList(filter);
+    const [currentPage, setCurrentPage] = useState(1);
+    const limit = 10; // Items per page
+    const offset = (currentPage - 1) * limit;
+
+    const { data, isLoading, error } = useApiForGetAllIssueList(filter, limit, offset);
+    const { issues, totalIssues, totalCompleted, totalIncomplete } = data || {};
     const { isAuthenticated } = useUserStore();
+
+    console.log("data: ", data);
 
     const handleFilterChange = (newFilter: IssueFilter) => {
         setFilter(newFilter);
+        setCurrentPage(1); // Reset to the first page when filters change
     };
 
     const handleIssueRegister = (issueData: CreateIssueDto) => {
         console.log("New Issue Registered:", issueData);
+    };
+
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
     };
 
     if (isLoading) {
@@ -67,102 +82,100 @@ const IssueAdminPage = () => {
 
     return (
         <div className="p-6 space-y-6">
-            <ISearchFormForIssueList onFilterChange={handleFilterChange} />
+            <ISearchFormForIssueList
+                onFilterChange={handleFilterChange}
+                stats={{
+                    totalCompleted: totalCompleted || 0,
+                    totalIncomplete: totalIncomplete || 0,
+                }}
+            />
 
-            <div className="flex">
+            <div className="flex justify-end">
                 <IDialogButtonForRegisterIssue isDisabled={!isAuthenticated} />
             </div>
 
             <div className="space-y-4">
-                <div className="border rounded-lg">
+                <div className="border rounded-lg overflow-hidden">
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="w-16 bg-gray-200">ID</TableHead>
-                                <TableHead className="bg-gray-200">Title</TableHead>
-                                <TableHead className="bg-gray-200">참고 이미지</TableHead>
-                                <TableHead className="bg-gray-200">Status/Type/Priority</TableHead>
-                                <TableHead className="bg-gray-200">Categories</TableHead>
-                                <TableHead className="bg-gray-200">Assignees</TableHead>
-                                <TableHead className="bg-gray-200">Page URL</TableHead>
-                                <TableHead className="bg-gray-200">Actions</TableHead>
+                                <TableHead>ID</TableHead>
+                                <TableHead>Title</TableHead>
+                                <TableHead>참고 이미지</TableHead>
+                                <TableHead>Status/Type/Priority</TableHead>
+                                <TableHead>Categories</TableHead>
+                                <TableHead>Assignees</TableHead>
+                                <TableHead>Page URL</TableHead>
+                                <TableHead>Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {issues?.map((issue) => (
                                 <TableRow key={issue.id}>
                                     <TableCell>{issue.id}</TableCell>
-                                    <TableCell className="font-medium">{issue.title}</TableCell>
-                                    <TableCell className="font-medium">
-                                        <ISquareForShowImage imageUrls={{
-                                            url1: issue.ref_img_url1,
-                                            url2: issue.ref_img_url2,
-                                            url3: issue.ref_img_url3
-                                        }} />
+                                    <TableCell>{issue.title}</TableCell>
+                                    <TableCell>
+                                        <ISquareForShowImage
+                                            imageUrls={{
+                                                url1: issue.ref_img_url1,
+                                                url2: issue.ref_img_url2,
+                                                url3: issue.ref_img_url3,
+                                            }}
+                                        />
                                     </TableCell>
                                     <TableCell>
-                                        <div className="flex flex-col gap-2">
-                                            <CustomBadge
-                                                variant="status"
-                                                value={issue.status}
-                                            />
-                                            <CustomBadge
-                                                variant="type"
-                                                value={issue.type}
-                                            />
-                                            <CustomBadge
-                                                variant="priority"
-                                                value={issue.priority}
-                                            />
+                                        <div className="flex gap-1">
+                                            <CustomBadge variant="status" value={issue.status} />
+                                            <CustomBadge variant="type" value={issue.type} />
+                                            <CustomBadge variant="priority" value={issue.priority} />
                                         </div>
                                     </TableCell>
                                     <TableCell>
-                                        <div className="flex flex-col gap-2">
-                                            <CustomBadge
-                                                variant="category"
-                                                value={issue.category1}
-                                            />
+                                        <div className="flex gap-1">
+                                            <CustomBadge variant="category" value={issue.category1} />
                                             {issue.category2 && (
-                                                <CustomBadge
-                                                    value={issue.category2}
-                                                />
+                                                <CustomBadge variant="category" value={issue.category2} />
                                             )}
                                         </div>
                                     </TableCell>
                                     <TableCell>
-                                        <div className="flex flex-col gap-2">
-                                            <div className="text-sm">
-                                                <span className="font-semibold">Manager:</span>{' '}
-                                                {issue.manager_user?.email || 'N/A'}
-                                            </div>
-                                            <div className="text-sm">
-                                                <span className="font-semibold">Executor:</span>{' '}
-                                                {issue.executor_user?.email || 'N/A'}
-                                            </div>
+                                        <div className="space-y-1">
+                                            <div>Manager: {issue.manager_user?.email || "N/A"}</div>
+                                            <div>Executor: {issue.executor_user?.email || "N/A"}</div>
                                         </div>
                                     </TableCell>
-                                    <TableCell className="font-medium">
+                                    <TableCell>
                                         {issue.page_url && (
                                             <Link href={issue.page_url} target="_blank" rel="noopener noreferrer">
                                                 <ExternalLink className="h-4 w-4" />
                                             </Link>
                                         )}
                                     </TableCell>
-                                    <TableCell className="space-x-2">
-                                        <IDialogButtonForUpdateTaskIssue 
-                                            issue={issue}                                            
-                                        />
-                                        <IDialogButtonForDeleteTaskIssue
-                                            issueId={issue.id}
-                                            issueTitle={issue.title}
-                                            filter={filter}
-                                        />
+                                    <TableCell>
+                                        <div className="flex space-x-2">
+                                            <IDialogButtonForUpdateTaskIssue issue={issue} />
+                                            <IDialogButtonForDeleteTaskIssue
+                                                issueId={issue.id}
+                                                issueTitle={issue.title}
+                                                filter={filter}
+                                            />
+                                        </div>
                                     </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
                 </div>
+
+                <div className="flex justify-center">
+                    <Pagination
+                        current={currentPage} // currentPage 대신 current
+                        total={totalIssues || 0} // totalItems -> total
+                        pageSize={limit}
+                        onChange={handlePageChange} // onPageChange 대신 onChange
+                    />
+                </div>
+
             </div>
         </div>
     );

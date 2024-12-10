@@ -3,72 +3,112 @@ import { Issue, CreateIssueDto, UpdateIssueDto, IssueFilter } from '@/types/type
 import { UserSelectInfo } from '@/types/typeForUser';
 
 interface ApiForTaskIssue {
-    getAllIssues: (filter?: IssueFilter) => Promise<Issue[]>;
+    getAllIssues: (filter?: IssueFilter, limit?: number, offset?: number) => Promise<{
+        issues: Issue[];
+        totalCompleted: number;
+        totalIncomplete: number;
+        totalIssues: number;
+    }>;    
     getIssueById: (id: number) => Promise<Issue>;
     createIssue: (issueData: CreateIssueDto) => Promise<Issue>;
     updateIssue: (id: number, updateData: UpdateIssueDto) => Promise<Issue>;
     deleteIssue: (id: number) => Promise<void>;
 }
 
+// Helper function to apply filters
+const applyFilters = (query: any, filter?: IssueFilter) => {
+    let filterConditions: any = {};
+    
+    if (filter) {
+        if (filter.status && filter.status !== 'All') filterConditions.status = filter.status;
+        if (filter.priority && filter.priority !== 'All') filterConditions.priority = filter.priority;
+        if (filter.category1 && filter.category1 !== 'All') filterConditions.category1 = filter.category1;
+        if (filter.type && filter.type !== 'All') filterConditions.type = filter.type;
+        if (filter.executor && filter.executor.trim() !== '') filterConditions.executor = filter.executor;
+    }
+
+    query = query.match(filterConditions);
+
+    // Apply keyword filter separately since it needs ilike
+    if (filter?.keyword && filter.keyword.trim() !== '') {
+        query = query.ilike('title', `%${filter.keyword}%`);
+    }
+
+    return query;
+};
+
 const apiForTaskIssue: ApiForTaskIssue = {
-
-    getAllIssues: async (filter?: IssueFilter): Promise<Issue[]> => {
+    getAllIssues: async (filter?: IssueFilter, limit = 10, offset = 0) => {
         const supabase = getSupabase();
-        if (!supabase) {
-        throw new Error('Supabase client is not initialized');
-        }
+        if (!supabase) throw new Error('Supabase client is not initialized');
 
-        // let query = supabase.from('issues').select('*, manager:users(email)');
-        let query = supabase.from('issues').select(`
-            *,
-            manager_user:users!fk_issues_manager(id, email),
-            executor_user:users!issues_executor_fkey(id, email)
-        `);
+        // 메인 데이터 쿼리 준비
+        let mainQuery = supabase
+            .from('issues')
+            .select(`
+                *,
+                manager_user:users!fk_issues_manager(id, email),
+                executor_user:users!issues_executor_fkey(id, email)
+            `, { count: 'exact' });  // count 옵션 추가
 
-        // 필터가 있다면 해당 조건들을 적용
+        // 필터 조건 적용
         if (filter) {
-        if (filter.status && filter.status !== 'All') query = query.eq('status', filter.status);
-        if (filter.priority && filter.priority !== 'All') query = query.eq('priority', filter.priority);
-        if (filter.category1 && filter.category1 !== 'All') query = query.eq('category1', filter.category1);
-        if (filter.type && filter.type !== 'All') query = query.eq('type', filter.type);
-        if (filter.keyword && filter.keyword.trim() !== '') {
-            query = query.ilike('title', `%${filter.keyword}%`);
-        }
-        }        
-
-        const { data, error } = await query.order('created_at', { ascending: false });
-
-        if (error) {
-            throw new Error(error.message);
+            if (filter.status && filter.status !== 'All') mainQuery = mainQuery.eq('status', filter.status);
+            if (filter.priority && filter.priority !== 'All') mainQuery = mainQuery.eq('priority', filter.priority);
+            if (filter.category1 && filter.category1 !== 'All') mainQuery = mainQuery.eq('category1', filter.category1);
+            if (filter.type && filter.type !== 'All') mainQuery = mainQuery.eq('type', filter.type);
+            if (filter.keyword && filter.keyword.trim() !== '') {
+                mainQuery = mainQuery.ilike('title', `%${filter.keyword}%`);
+            }
+            if (filter.executor && filter.executor.trim() !== '') mainQuery = mainQuery.eq('executor', filter.executor);
         }
 
-        return data as Issue[];
+        // 페이징 적용
+        mainQuery = mainQuery
+            .range(offset, offset + limit - 1)
+            .order('created_at', { ascending: false });
+
+        try {
+            const { data, error, count } = await mainQuery;
+            if (error) throw new Error(error.message);
+
+            // 완료/미완료 이슈 카운트는 데이터에서 직접 계산
+            const totalCompleted = data?.filter(issue => issue.status === 'Closed').length || 0;
+            const totalIncomplete = data?.filter(issue => issue.status !== 'Closed').length || 0;
+
+            return {
+                issues: data || [],
+                totalCompleted,
+                totalIncomplete,
+                totalIssues: count || 0  // count 값 사용
+            };
+        } catch (error) {
+            console.error('Error fetching issues:', error);
+            throw error;
+        }
     },
 
     getIssueById: async (id: number): Promise<Issue> => {
         const supabase = getSupabase();
-        if (!supabase) {
-            throw new Error('Supabase client is not initialized');
-        }
+        if (!supabase) throw new Error('Supabase client is not initialized');
 
         const { data, error } = await supabase
             .from('issues')
-            .select('*')
+            .select(`
+                *,
+                manager_user:users!fk_issues_manager(id, email),
+                executor_user:users!issues_executor_fkey(id, email)
+            `)
             .eq('id', id)
             .single();
 
-        if (error) {
-            throw new Error(error.message);
-        }
-
+        if (error) throw new Error(error.message);
         return data as Issue;
     },
 
     createIssue: async (issueData: CreateIssueDto): Promise<Issue> => {
         const supabase = getSupabase();
-        if (!supabase) {
-            throw new Error('Supabase client is not initialized');
-        }
+        if (!supabase) throw new Error('Supabase client is not initialized');
 
         const { data, error } = await supabase
             .from('issues')
@@ -76,18 +116,13 @@ const apiForTaskIssue: ApiForTaskIssue = {
             .select()
             .single();
 
-        if (error) {
-            throw new Error(error.message);
-        }
-
+        if (error) throw new Error(error.message);
         return data as Issue;
     },
 
     updateIssue: async (id: number, updateData: UpdateIssueDto): Promise<Issue> => {
         const supabase = getSupabase();
-        if (!supabase) {
-            throw new Error('Supabase client is not initialized');
-        }
+        if (!supabase) throw new Error('Supabase client is not initialized');
 
         const { data, error } = await supabase
             .from('issues')
@@ -96,31 +131,21 @@ const apiForTaskIssue: ApiForTaskIssue = {
             .select()
             .single();
 
-        if (error) {
-            throw new Error(error.message);
-        }
-
+        if (error) throw new Error(error.message);
         return data as Issue;
     },
 
     deleteIssue: async (id: number): Promise<void> => {
-        console.log("이슈 삭세 id check : ", id);
-
         const supabase = getSupabase();
-        if (!supabase) {
-            throw new Error('Supabase client is not initialized');
-        }
+        if (!supabase) throw new Error('Supabase client is not initialized');
 
         const { error } = await supabase
             .from('issues')
             .delete()
             .eq('id', id);
 
-        if (error) {
-            throw new Error(error.message);
-        }
+        if (error) throw new Error(error.message);
     }
-    
 };
 
 export default apiForTaskIssue;

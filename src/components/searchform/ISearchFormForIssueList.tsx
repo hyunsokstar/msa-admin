@@ -1,31 +1,42 @@
-import React from 'react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { IssueFilter } from '@/types/typeForTaskIssue';
+import { IssueFilter } from "@/types/typeForTaskIssue";
+import useApiForUsersInfoForSelectBox from "@/hook/useApiForUsersInfoForSelectBox";
+import IFormSelectBox from "../form-select/IFormSelectBox";
+import FormSelectBoxForAllUserListWithApi from "../form-select/FormSelectBoxForAllUserListWithApi";
+import { Bar } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 interface SearchFormProps {
   onFilterChange: (filter: IssueFilter) => void;
+  stats: { totalCompleted: number; totalIncomplete: number };
 }
 
-const ISearchFormForIssueList: React.FC<SearchFormProps> = ({ onFilterChange }) => {
+const ISearchFormForIssueList: React.FC<SearchFormProps> = ({
+  onFilterChange,
+  stats,
+}) => {
   const [filter, setFilter] = React.useState<IssueFilter>({});
+  const { data: users } = useApiForUsersInfoForSelectBox();
 
-  // 필터 변경 함수
   const handleFilterChange = (key: keyof IssueFilter, value: string | undefined) => {
     const newFilter = {
       ...filter,
       [key]: value === "All" ? undefined : value,
     };
 
-    // Remove undefined values to prevent invalid filters
     Object.keys(newFilter).forEach((key) => {
       if (newFilter[key as keyof IssueFilter] === undefined) {
         delete newFilter[key as keyof IssueFilter];
@@ -35,100 +46,123 @@ const ISearchFormForIssueList: React.FC<SearchFormProps> = ({ onFilterChange }) 
     setFilter(newFilter);
   };
 
-  // 검색 버튼을 클릭했을 때 API 호출
   const handleSearch = () => {
     onFilterChange(filter);
   };
 
+  // Chart data
+  const chartData = {
+    labels: ["Completed", "Incomplete"],
+    datasets: [
+      {
+        label: "Issues",
+        data: [stats.totalCompleted, stats.totalIncomplete],
+        backgroundColor: ["#4caf50", "#f44336"],
+      },
+    ],
+  };
+
+const chartOptions = {
+  responsive: true,
+  plugins: {
+    legend: {
+      display: false, // 범례(라벨) 숨기기
+    },
+    title: {
+      display: true,
+      text: "Issue Statistics",
+    },
+  },
+};
+
+
   return (
     <Card className="mb-6 shadow-lg border border-gray-300 rounded-lg">
       <CardContent className="pt-6 pb-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-4">
-          {/* Filter by Status */}
-          <Select
-            onValueChange={(value) => handleFilterChange('status', value)}
-            value={filter.status ?? "All"}
-          >
-            <SelectTrigger className="border border-gray-300 px-4 py-2 rounded-md hover:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200 ease-in-out">
-              <SelectValue placeholder="Filter by Status" />
-            </SelectTrigger>
-            <SelectContent className="bg-white border border-gray-300 rounded-md shadow-lg">
-              <SelectItem value="All" className="hover:bg-indigo-100 transition duration-200 ease-in-out">All Status</SelectItem>
-              <SelectItem value="Open" className="hover:bg-indigo-100 transition duration-200 ease-in-out">Open</SelectItem>
-              <SelectItem value="In Progress" className="hover:bg-indigo-100 transition duration-200 ease-in-out">In Progress</SelectItem>
-              <SelectItem value="Closed" className="hover:bg-indigo-100 transition duration-200 ease-in-out">Closed</SelectItem>
-            </SelectContent>
-          </Select>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+          {/* Left: Filters */}
+          <div className="grid grid-cols-1 gap-4">
+            <IFormSelectBox
+              label="Status"
+              placeholder="Filter by Status"
+              options={[
+                { value: "All", label: "All Status" },
+                { value: "Open", label: "Open" },
+                { value: "In Progress", label: "In Progress" },
+                { value: "Closed", label: "Closed" },
+              ]}
+              value={filter.status ?? "All"}
+              onChange={(value) => handleFilterChange("status", value)}
+            />
 
-          {/* Filter by Priority */}
-          <Select
-            onValueChange={(value) => handleFilterChange('priority', value)}
-            value={filter.priority ?? "All"}
-          >
-            <SelectTrigger className="border border-gray-300 px-4 py-2 rounded-md hover:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200 ease-in-out">
-              <SelectValue placeholder="Filter by Priority" />
-            </SelectTrigger>
-            <SelectContent className="bg-white border border-gray-300 rounded-md shadow-lg">
-              <SelectItem value="All" className="hover:bg-indigo-100 transition duration-200 ease-in-out">All Priority</SelectItem>
-              <SelectItem value="High" className="hover:bg-indigo-100 transition duration-200 ease-in-out">High</SelectItem>
-              <SelectItem value="Medium" className="hover:bg-indigo-100 transition duration-200 ease-in-out">Medium</SelectItem>
-              <SelectItem value="Low" className="hover:bg-indigo-100 transition duration-200 ease-in-out">Low</SelectItem>
-            </SelectContent>
-          </Select>
+            <IFormSelectBox
+              label="Priority"
+              placeholder="Filter by Priority"
+              options={[
+                { value: "All", label: "All Priority" },
+                { value: "High", label: "High" },
+                { value: "Medium", label: "Medium" },
+                { value: "Low", label: "Low" },
+              ]}
+              value={filter.priority ?? "All"}
+              onChange={(value) => handleFilterChange("priority", value)}
+            />
 
-          <Select
-            onValueChange={(value) => handleFilterChange('category1', value)}
-            value={filter.category1 ?? "All"}
-          >
-            <SelectTrigger className="border border-gray-300 px-4 py-2 rounded-md hover:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200 ease-in-out">
-              <SelectValue placeholder="Filter by Category" />
-            </SelectTrigger>
-            <SelectContent className="bg-white border border-gray-300 rounded-md shadow-lg">
-              <SelectItem value="All" className="hover:bg-indigo-100 transition duration-200 ease-in-out">All Categories</SelectItem>
-              <SelectItem value="shop" className="hover:bg-indigo-100 transition duration-200 ease-in-out">Shop</SelectItem>
-              <SelectItem value="lms" className="hover:bg-indigo-100 transition duration-200 ease-in-out">LMS</SelectItem>
-              <SelectItem value="cms" className="hover:bg-indigo-100 transition duration-200 ease-in-out">CMS</SelectItem>
-              <SelectItem value="user" className="hover:bg-indigo-100 transition duration-200 ease-in-out">User</SelectItem>
-            </SelectContent>
-          </Select>
+            <IFormSelectBox
+              label="Category"
+              placeholder="Filter by Category"
+              options={[
+                { value: "All", label: "All Categories" },
+                { value: "shop", label: "Shop" },
+                { value: "lms", label: "LMS" },
+                { value: "cms", label: "CMS" },
+                { value: "user", label: "User" },
+              ]}
+              value={filter.category1 ?? "All"}
+              onChange={(value) => handleFilterChange("category1", value)}
+            />
 
-          {/* Filter by Type */}
-          <Select
-            onValueChange={(value) => handleFilterChange('type', value)}
-            value={filter.type ?? "All"}
-          >
-            <SelectTrigger className="border border-gray-300 px-4 py-2 rounded-md hover:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200 ease-in-out">
-              <SelectValue placeholder="Filter by Type" />
-            </SelectTrigger>
-            <SelectContent className="bg-white border border-gray-300 rounded-md shadow-lg">
-              <SelectItem value="All" className="hover:bg-indigo-100 transition duration-200 ease-in-out">All Types</SelectItem>
-              <SelectItem value="Bug" className="hover:bg-indigo-100 transition duration-200 ease-in-out">Bug</SelectItem>
-              <SelectItem value="Feature" className="hover:bg-indigo-100 transition duration-200 ease-in-out">Feature</SelectItem>
-              <SelectItem value="Enhancement" className="hover:bg-indigo-100 transition duration-200 ease-in-out">Enhancement</SelectItem>
-            </SelectContent>
-          </Select>
+            <IFormSelectBox
+              label="Type"
+              placeholder="Filter by Type"
+              options={[
+                { value: "All", label: "All Types" },
+                { value: "Bug", label: "Bug" },
+                { value: "Feature", label: "Feature" },
+                { value: "Enhancement", label: "Enhancement" },
+              ]}
+              value={filter.type ?? "All"}
+              onChange={(value) => handleFilterChange("type", value)}
+            />
+          </div>
 
-          {/* Search by Title/Description */}
-          <div className="col-span-1 md:col-span-4">
+          {/* Center: Other Inputs */}
+          <div className="flex flex-col gap-4">
+            <FormSelectBoxForAllUserListWithApi
+              onChange={(value) => handleFilterChange("executor", value ?? undefined)}
+            />
             <Input
               placeholder="Search by Title or Description"
               value={filter.keyword ?? ""}
-              onChange={(e) => handleFilterChange('keyword', e.target.value)}
+              onChange={(e) => handleFilterChange("keyword", e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              // 엔터 치면 handleSearch 함수 호출
-              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             />
+            <Button
+              onClick={handleSearch}
+              className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-md shadow-lg transition-all duration-200 ease-in-out"
+            >
+              Search
+            </Button>
           </div>
-        </div>
 
-        {/* Search Button */}
-        <div className="flex justify-end">
-          <Button
-            onClick={handleSearch}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-md shadow-lg transition-all duration-200 ease-in-out"
-          >
-            Search
-          </Button>
+          {/* Right: Statistics */}
+          <div className="flex items-center justify-center mx-auto">
+            <div className="w-full">
+              {/* <h3 className="text-lg font-bold text-center mb-4">Statistics</h3> */}
+              <Bar data={chartData} options={chartOptions} />
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>
