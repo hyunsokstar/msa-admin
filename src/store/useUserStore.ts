@@ -5,6 +5,7 @@ import { persist, devtools } from "zustand/middleware";
 
 export interface ExtendedUser extends User {
     is_admin?: boolean;
+    profile_image_url?: string;
 }
 
 interface UserState {

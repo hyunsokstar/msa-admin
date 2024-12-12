@@ -39,7 +39,7 @@ const IssueAdminPage = () => {
 
     const handleFilterChange = (newFilter: IssueFilter) => {
         setFilter(newFilter);
-        setCurrentPage(1); // Reset to the first page when filters change
+        setCurrentPage(1);
     };
 
     const handleIssueRegister = (issueData: CreateIssueDto) => {

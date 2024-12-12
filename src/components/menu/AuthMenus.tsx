@@ -1,19 +1,27 @@
-// src/components/AuthMenus.tsx
 'use client';
 
-import React, {useEffect, useState} from 'react';
-import {Button} from '@/components/ui/button';
+import React, { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { ShieldCheck } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import DialogButtonForLogin from '../dialog/DialogButtonForLoginForm';
 import DialogButtonForSignUp from '../dialog/DialogButtonForSignUp';
 import getSupabase from '@/lib/supabaseClient';
-import {ExtendedUser, useUserStore} from "@/store/useUserStore";
-import {User} from "@supabase/auth-js";
+import { ExtendedUser, useUserStore } from "@/store/useUserStore";
+import { User } from "@supabase/auth-js";
 
-// 로그인한 유저 정보 타입 정의 (필요시 확장 가능)
 interface UserProfile {
     email: string | null;
     userId: string;
     is_admin?: boolean;
+    profile_image_url?: string;
+    full_name?: string;
 }
 
 const AuthMenus: React.FC = () => {
@@ -24,20 +32,17 @@ const AuthMenus: React.FC = () => {
     useEffect(() => {
         if (!supabase) return;
 
-        // 초기 유저 정보 로드
         const loadUser = async () => {
             const {
                 data: { session },
             } = await supabase.auth.getSession();
 
-            if(session?.user) {
-                // todo: public.users 의 해당 유저 정보도 가져오기
-                console.log("publicUser 호출 check ")
+            if (session?.user) {
                 const { data: publicUser, error }
                     = await supabase
                     .from('users')
-                    .select('is_admin') // 필요한 필드 선택
-                    .eq('id', session.user.id) // auth.users의 id를 기준으로 필터링
+                    .select('*')
+                    .eq('id', session.user.id)
                     .single();
 
                 if (error) {
@@ -45,65 +50,109 @@ const AuthMenus: React.FC = () => {
                     return;
                 }
 
-                console.log("public.user : " , publicUser)
-
                 if (publicUser) {
-                    const {is_admin} = publicUser;
-
-                    console.log("is_admin ?? : ", is_admin)
+                    const { is_admin, profile_image_url, full_name } = publicUser;
 
                     setUser({
                         email: session.user.email ?? null,
                         userId: session.user.id ?? '',
-                        is_admin: is_admin
+                        is_admin: is_admin,
+                        profile_image_url: profile_image_url,
+                        full_name: full_name
                     });
 
                     const extendedUser: ExtendedUser = {
                         ...session.user,
                         is_admin: is_admin,
+                        profile_image_url: profile_image_url,
                     };
 
                     setAuth(extendedUser, session);
-
-
                 }
-
             }
-
         };
 
         loadUser();
 
-        // 인증 상태 변경 감지
         const { data: authListener } = supabase.auth.onAuthStateChange(
-            (_event, session) => {
+            async (_event, session) => {
                 if (session?.user) {
-                    // 로그인 되었을 때 유저 정보 저장
-                    setUser({
-                        email: session.user.email ?? null,
-                        userId: session.user.id,
-                    });
+                    const { data: publicUser, error } = await supabase
+                        .from('users')
+                        .select('*')
+                        .eq('id', session.user.id)
+                        .single();
+
+                    if (!error && publicUser) {
+                        setUser({
+                            email: session.user.email ?? null,
+                            userId: session.user.id,
+                            is_admin: publicUser.is_admin,
+                            profile_image_url: publicUser.profile_image_url,
+                            full_name: publicUser.full_name
+                        });
+                    }
                 } else {
-                    // 로그아웃 되었을 때 유저 정보 제거
                     setUser(null);
                 }
             }
         );
 
-        // 클린업 함수로 이벤트 리스너 해제
         return () => {
             authListener?.subscription.unsubscribe();
         };
     }, [supabase]);
 
+    const getInitials = (name?: string) => {
+        if (!name) return '';
+        return name.split(' ')
+            .map(part => part[0])
+            .join('')
+            .toUpperCase();
+    };
+
     return (
         <div className="flex items-center space-x-4">
             {user ? (
-                // 로그인한 경우 유저 정보 표시
                 <div className="flex items-center space-x-4">
-                    <span className="text-gray-700 font-medium">
-                        안녕하세요, {user.email} 님!
-                    </span>
+                    <div className="flex items-center gap-2">
+                        <Avatar className="h-10 w-10">
+                            {user.profile_image_url ? (
+                                <AvatarImage
+                                    src={user.profile_image_url}
+                                    alt={user.full_name ?? user.email ?? ''}
+                                />
+                            ) : null}
+                            <AvatarFallback className="bg-primary text-primary-foreground">
+                                {getInitials(user.full_name) || user.email?.[0].toUpperCase()}
+                            </AvatarFallback>
+                        </Avatar>
+                        <div className="flex flex-col">
+                            <span className="text-sm font-medium flex items-center gap-1">
+                                {user.full_name ?? user.email}
+                                {user.is_admin && (
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <ShieldCheck 
+                                                    className="h-4 w-4 text-primary"
+                                                    aria-label="관리자"
+                                                />
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                <p>관리자</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
+                                )}
+                            </span>
+                            {user.full_name && (
+                                <span className="text-xs text-muted-foreground">
+                                    {user.email}
+                                </span>
+                            )}
+                        </div>
+                    </div>
                     <Button
                         variant="outline"
                         onClick={async () => {
@@ -111,12 +160,12 @@ const AuthMenus: React.FC = () => {
                                 await supabase.auth.signOut();
                             }
                         }}
+                        size="sm"
                     >
                         로그아웃
                     </Button>
                 </div>
             ) : (
-                // 로그인하지 않은 경우 로그인/회원가입 버튼 표시
                 <>
                     <DialogButtonForLogin />
                     <DialogButtonForSignUp />
