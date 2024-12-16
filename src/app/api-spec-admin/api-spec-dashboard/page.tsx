@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { Search, BookOpen, LayoutDashboard, Shield, ShoppingCart, Users, PlayCircle } from 'lucide-react';
+import { Search, BookOpen, LayoutDashboard, Shield, ShoppingCart, Users, PlayCircle, Layout } from 'lucide-react';
 import { useApiForDashboard } from '@/hook/useApiForDashboard';
 import { useApiForSearch } from '@/hook/useApiForSearch';
 import { DialogButtonForApiTest } from './DialogButtonForApiTest';
@@ -33,13 +33,14 @@ const getMethodColor = (method: string) => {
 };
 
 const MSADashboard = () => {
- const services = [
-   { id: 'LMS', name: 'LMS', icon: BookOpen, color: 'bg-blue-500' },
-   { id: 'CMS', name: 'CMS', icon: LayoutDashboard, color: 'bg-purple-500' },
-   { id: 'ADMIN', name: 'Admin', icon: Shield, color: 'bg-red-500' },
-   { id: 'SHOPPING_MALL', name: 'Shopping Mall', icon: ShoppingCart, color: 'bg-green-500' },
-   { id: 'USER', name: 'User', icon: Users, color: 'bg-yellow-500' }
- ];
+const services = [
+  { id: 'LMS', name: 'LMS', icon: BookOpen, color: 'bg-blue-500' },
+  { id: 'CMS', name: 'CMS', icon: LayoutDashboard, color: 'bg-purple-500' },
+  { id: 'ADMIN', name: 'Admin', icon: Shield, color: 'bg-red-500' },
+  { id: 'SHOPPING_MALL', name: 'Shopping Mall', icon: ShoppingCart, color: 'bg-green-500' },
+  { id: 'USER', name: 'User', icon: Users, color: 'bg-yellow-500' },
+  { id: 'BOARD', name: 'Board', icon: Layout, color: 'bg-indigo-500' }  // 추가된 부분
+];
 
  const [selectedService, setSelectedService] = useState(services[0].id);
  const { data, isLoading, error } = useApiForDashboard();
