@@ -37,15 +37,24 @@ export const apiForGetFreeBoardList = async ({
   };
 };
 
+// src/api/apiForFreeBoard.ts
+
 export const apiForCreateFreeBoard = async (data: ICreateFreeBoardDto) => {
+  // Get current authenticated user
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  
+  if (authError) throw new Error(authError.message);
+  if (!user) throw new Error('User not authenticated');
+
   const { data: result, error } = await supabase
     .from('free_board')
-    .insert([
-      {
-        title: data.title,
-        content: data.content
-      }
-    ])
+    .insert({
+      title: data.title,
+      content: data.content,
+      writer_id: user.id,  // Add writer_id from authenticated user
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    })
     .select()
     .single();
 

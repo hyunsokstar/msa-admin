@@ -13,6 +13,9 @@ export const useApiForCreateFreeBoard = () => {
       try {
         const result = await apiForCreateFreeBoard(postData);
         toast.success('게시글이 성공적으로 생성되었습니다.');
+        // freeBoardList 를 invalid query
+        queryClient.invalidateQueries({ queryKey: ['freeBoardList'] });
+        
         return result;
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : '게시글 생성 중 오류가 발생했습니다.';
