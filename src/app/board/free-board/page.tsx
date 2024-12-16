@@ -19,6 +19,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import IDialogButtonForFreeBoardDetail from "./IDialogButtonForFreeBoardDetail";
+import IDialogButtonForCreateBoardPosting from "./IDialogButtonForCreateBoardPosting";
 
 const FreeBoard: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -42,6 +43,9 @@ const FreeBoard: React.FC = () => {
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Free Board</h1>
       
+      <div className="flex p-2 justify-end">
+        <IDialogButtonForCreateBoardPosting />
+      </div>
       <div className="border rounded-md">
         <Table>
           <TableHeader>

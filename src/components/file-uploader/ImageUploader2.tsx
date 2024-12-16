@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { 
@@ -30,6 +30,7 @@ const ImageUploader2 = ({
   const [isDragging, setIsDragging] = useState(false);
   const [isPreviewVisible, setIsPreviewVisible] = useState(true);
   const [hasChanged, setHasChanged] = useState(false);
+  const [isLeftBoxSelected, setIsLeftBoxSelected] = useState(false);
 
   const simulateProgress = () => {
     setUploadProgress(0);
@@ -55,6 +56,7 @@ const ImageUploader2 = ({
     const objectUrl = URL.createObjectURL(file);
     setPreviewUrl(objectUrl);
     setHasChanged(true);
+    setIsLeftBoxSelected(false); // 복사 붙여넣기 모드 해제
 
     try {
       // 1. Get presigned URL
@@ -88,7 +90,6 @@ const ImageUploader2 = ({
       }
     } catch (error) {
       console.error("파일 업로드 오류:", error);
-      // In update mode, revert to initial image on error
       if (isUpdate) {
         setPreviewUrl(initialImage ?? null);
         setHasChanged(false);
@@ -104,6 +105,29 @@ const ImageUploader2 = ({
       }, 500);
     }
   };
+
+  // Handle paste events
+  useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      if (!isLeftBoxSelected) return;
+      
+      const items = e.clipboardData?.items;
+      if (!items) return;
+
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          const file = items[i].getAsFile();
+          if (file) {
+            handleFileUpload(file);
+            break;
+          }
+        }
+      }
+    };
+
+    document.addEventListener('paste', handlePaste);
+    return () => document.removeEventListener('paste', handlePaste);
+  }, [isLeftBoxSelected]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -127,11 +151,11 @@ const ImageUploader2 = ({
 
   const clearPreview = () => {
     if (isUpdate && initialImage && !hasChanged) {
-      // In update mode, don't allow clearing if no new image was uploaded
       return;
     }
     setPreviewUrl(null);
     setHasChanged(true);
+    setIsLeftBoxSelected(false); // 복사 붙여넣기 모드 해제
   };
 
   const openInNewTab = () => {
@@ -164,10 +188,22 @@ const ImageUploader2 = ({
     setIsPreviewVisible(!isPreviewVisible);
   };
 
+  const handleLeftBoxDoubleClick = () => {
+    setIsLeftBoxSelected(!isLeftBoxSelected);
+  };
+
   return (
     <div className="flex gap-2 h-32">
       {/* Preview Section */}
-      <Card className="relative overflow-hidden border-2 border-dashed rounded-lg w-1/2 h-full">
+      <Card 
+        className={cn(
+          "relative overflow-hidden rounded-lg w-1/2 h-full",
+          isLeftBoxSelected 
+            ? "border-2 border-dashed border-red-500" 
+            : "border-2 border-dashed border-gray-300",
+        )}
+        onClick={handleLeftBoxDoubleClick}
+      >
         {previewUrl ? (
           <div className="relative w-full h-full group">
             {isUploading && (
