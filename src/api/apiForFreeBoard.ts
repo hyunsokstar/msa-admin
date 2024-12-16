@@ -1,7 +1,7 @@
 // src/api/apiForFreeBoard.ts
 
 import { createClient } from '@supabase/supabase-js';
-import { IRequestDtoForApiForGetFreeBoardList, IResponseDtoForApiForGetFreeBoardList } from '../types/typeForFreeBoard';
+import { ICreateFreeBoardDto, IRequestDtoForApiForGetFreeBoardList, IResponseDtoForApiForGetFreeBoardList } from '../types/typeForFreeBoard';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -35,4 +35,20 @@ export const apiForGetFreeBoardList = async ({
     currentPage: page,
     totalPages: Math.ceil((totalCount || 0) / limit)
   };
+};
+
+export const apiForCreateFreeBoard = async (data: ICreateFreeBoardDto) => {
+  const { data: result, error } = await supabase
+    .from('free_board')
+    .insert([
+      {
+        title: data.title,
+        content: data.content
+      }
+    ])
+    .select()
+    .single();
+
+  if (error) throw new Error(error.message);
+  return result;
 };

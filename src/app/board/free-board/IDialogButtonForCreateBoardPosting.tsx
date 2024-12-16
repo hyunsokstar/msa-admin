@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import useApiForCreateFreeBoard from '@/hook/useApiForCreateFreeBoard';
 
 const formSchema = z.object({
   title: z.string().min(1, '제목을 입력해주세요'),
@@ -30,6 +31,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 const IDialogButtonForCreateBoardPosting: React.FC = () => {
   const [open, setOpen] = React.useState(false);
+  const createPost = useApiForCreateFreeBoard();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -40,9 +42,12 @@ const IDialogButtonForCreateBoardPosting: React.FC = () => {
   });
 
   const onSubmit = (data: FormValues) => {
-    console.log('Form Data:', data);
-    setOpen(false);
-    form.reset();
+    createPost.mutate(data, {
+      onSuccess: () => {
+        setOpen(false);
+        form.reset();
+      }
+    });
   };
 
   return (
@@ -63,7 +68,11 @@ const IDialogButtonForCreateBoardPosting: React.FC = () => {
                 <FormItem>
                   <FormLabel>제목</FormLabel>
                   <FormControl>
-                    <Input placeholder="제목을 입력하세요" {...field} />
+                    <Input 
+                      placeholder="제목을 입력하세요" 
+                      {...field}
+                      disabled={createPost.isPending}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -79,15 +88,20 @@ const IDialogButtonForCreateBoardPosting: React.FC = () => {
                     <Textarea 
                       placeholder="내용을 입력하세요" 
                       className="min-h-[100px]"
-                      {...field} 
+                      {...field}
+                      disabled={createPost.isPending}
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">
-              저장
+            <Button 
+              type="submit" 
+              className="w-full"
+              disabled={createPost.isPending}
+            >
+              {createPost.isPending ? '저장 중...' : '저장'}
             </Button>
           </form>
         </Form>

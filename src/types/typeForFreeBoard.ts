@@ -20,3 +20,8 @@ export interface IResponseDtoForApiForGetFreeBoardList {
   currentPage: number;
   totalPages: number;
 }
+
+export interface ICreateFreeBoardDto {
+  title: string;
+  content: string;
+}
