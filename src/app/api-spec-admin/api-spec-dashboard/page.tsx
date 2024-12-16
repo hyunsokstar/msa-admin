@@ -10,6 +10,7 @@ import { Search, BookOpen, LayoutDashboard, Shield, ShoppingCart, Users, PlayCir
 import { useApiForDashboard } from '@/hook/useApiForDashboard';
 import { useApiForSearch } from '@/hook/useApiForSearch';
 import { DialogButtonForApiTest } from './DialogButtonForApiTest';
+import { DialogButtonForGetApiTest } from './DialogButtonForGetApiTest';
 
 interface ApiSpec {
  id: string;
@@ -107,6 +108,7 @@ const MSADashboard = () => {
                        </Badge>
                      </div>
                      <DialogButtonForApiTest spec = {spec} />
+                     <DialogButtonForGetApiTest spec = {spec} />
                    </div>
                  </DialogTrigger>
                </Dialog>

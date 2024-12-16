@@ -1,33 +1,22 @@
 // src\api\proxy\route.ts
+// app/api/proxy/route.ts
 
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
-    const { endpoint, method, body } = await request.json();
-
-    let apiUrl = endpoint;
-    if (!endpoint.startsWith('http')) {
-      apiUrl = `${process.env.API_BASE_URL}${endpoint}`;
-    }
-
-    console.log('Proxy request to:', apiUrl); // 디버깅용
-
-    const response = await fetch(apiUrl, {
+    const { endpoint, method, body, headers } = await request.json();
+    
+    const response = await fetch(endpoint, {
       method: method,
       headers: {
         'Content-Type': 'application/json',
+        ...headers
       },
-      body: method !== 'GET' && body ? JSON.stringify(body) : undefined
+      body: method !== 'GET' ? JSON.stringify(body) : undefined
     });
 
-    // 응답 타입 확인
-    const contentType = response.headers.get('content-type');
-    console.log('Response content-type:', contentType); // 디버깅용
-
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('API Error Response:', errorText); // 디버깅용
       throw new Error(`API responded with status: ${response.status}`);
     }
 
