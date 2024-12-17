@@ -100,19 +100,30 @@ export async function fetchApiStats(): Promise<Record<string, number> | null> {
 
 // API 스펙 추가
 export async function addApiSpec(apiSpec: Partial<ApiSpec>): Promise<ApiSpec[] | null> {
-  const supabase = getSupabase() as SupabaseClient;
+  console.log('1. Starting addApiSpec with data:', apiSpec);
   
-  const { data, error } = await supabase
-    .from('api_specs')
-    .insert([apiSpec])
-    .select();
+  const supabase = getSupabase() as SupabaseClient;
+  console.log('2. Supabase client created:', !!supabase);
+  
+  try {
+    const { data, error } = await supabase
+      .from('api_specs')
+      .insert([apiSpec])
+      .select();
+    
+    console.log('3. Supabase response:', { data, error });
 
-  if (error) {
-    console.error('Error adding API spec:', error);
-    return null;
+    if (error) {
+      console.error('4. Error adding API spec:', error);
+      return null;
+    }
+
+    console.log('5. Successfully added API spec:', data);
+    return data;
+  } catch (e) {
+    console.error('6. Exception in addApiSpec:', e);
+    throw e;
   }
-
-  return data;
 }
 
 // API 스펙 수정

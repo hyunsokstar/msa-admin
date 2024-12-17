@@ -12,6 +12,8 @@ import { useApiForSearch } from '@/hook/useApiForSearch';
 import { DialogButtonForApiTest } from './DialogButtonForApiTest';
 import { DialogButtonForGetApiTest } from './DialogButtonForGetApiTest';
 import { DialogButtonForPostApiTest } from './DialogButtonForPostApiTest';
+import IDialogButtonForCreateApiName from '@/components/dialog/IDialogButtonForCreateApiName';
+import IDialogButtonForCreateApiSpec from '@/components/dialog/IDialogButtonForCreateApiSpec';
 
 interface ApiSpec {
  id: string;
@@ -89,6 +91,10 @@ const services = [
          />
        </div>
      </div>
+
+    <div className="text-center text-gray-500 py-4">
+      <IDialogButtonForCreateApiSpec />
+    </div>
 
      {/* API 목록 */}
      <Card>
