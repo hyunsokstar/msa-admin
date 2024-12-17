@@ -15,6 +15,7 @@ import { DialogButtonForPostApiTest } from './DialogButtonForPostApiTest';
 import IDialogButtonForCreateApiName from '@/components/dialog/IDialogButtonForCreateApiName';
 import IDialogButtonForCreateApiSpec from '@/components/dialog/IDialogButtonForCreateApiSpec';
 import IDialogButtonForUpdateApiSpec from '@/app/board/free-board/IDialogButtonForUpdateApiSpec';
+import { IDialogButtonForDeleteApiSpec } from '@/app/board/free-board/IDialogButtonForDeleteApiSpec';
 
 interface ApiSpec {
  id: string;
@@ -116,6 +117,7 @@ const services = [
                 </div>
                 <div className="flex items-center gap-2">
                   <IDialogButtonForUpdateApiSpec spec={spec} />
+                  <IDialogButtonForDeleteApiSpec spec={spec} />
                   {spec.method === 'GET' 
                     ? <DialogButtonForGetApiTest spec={spec} /> 
                     : <DialogButtonForPostApiTest spec={spec} />
