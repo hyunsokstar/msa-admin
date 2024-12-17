@@ -154,25 +154,31 @@ export const IDialogButtonForCreateApiSpec: React.FC<IDialogButtonForCreateApiSp
             </RadioGroup>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4">
+            
             <div className="space-y-2">
-              <label className="text-sm font-medium">HTTP 메소드</label>
-              <Select
-                value={formData.method}
-                onValueChange={(value) => handleChange('method', value)}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {['GET', 'POST', 'PUT', 'DELETE', 'PATCH'].map((method) => (
-                    <SelectItem key={method} value={method}>
-                      {method}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                <label className="text-sm font-medium">HTTP 메소드</label>
+                <Select
+                    value={formData.method}
+                    onValueChange={(value) => handleChange('method', value)}
+                >
+                    <SelectTrigger className="w-full border border-gray-300 rounded-md bg-white py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <SelectValue placeholder="메소드를 선택하세요" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white border border-gray-200 rounded-md shadow-md">
+                    {['GET', 'POST', 'PUT', 'DELETE', 'PATCH'].map((method) => (
+                        <SelectItem
+                        key={method}
+                        value={method}
+                        className="hover:bg-gray-100 cursor-pointer px-3 py-2 text-sm text-gray-700 data-[state=checked]:bg-blue-100 data-[state=checked]:text-blue-600"
+                        >
+                        {method}
+                        </SelectItem>
+                    ))}
+                    </SelectContent>
+                </Select>
             </div>
+            
             
             <div className="space-y-2">
               <label className="text-sm font-medium">엔드포인트</label>

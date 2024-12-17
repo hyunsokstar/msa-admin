@@ -91,7 +91,7 @@ const services = [
        </div>
      </div>
 
-    <div className="text-center text-gray-500 py-4">
+    <div className="text-right text-gray-500 py-4">
       <IDialogButtonForCreateApiSpec />
     </div>
 
@@ -114,12 +114,9 @@ const services = [
                          {services.find(s => s.id === spec.service_name)?.name}
                        </Badge>
                      </div>
-                     {/* <DialogButtonForApiTest spec = {spec} /> */}
                      {
                         spec.method === 'GET' ? <DialogButtonForGetApiTest spec = {spec} /> : <DialogButtonForPostApiTest spec = {spec} />
                      }
-                     {/* <DialogButtonForPostApiTest spec = {spec} /> */}
-                     {/* <DialogButtonForGetApiTest spec = {spec} /> */}
                    </div>
                  </DialogTrigger>
                </Dialog>
