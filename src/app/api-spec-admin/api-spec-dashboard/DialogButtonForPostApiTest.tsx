@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { PlayCircle } from 'lucide-react';
+import DialogButtonForAdminLoginAndGetToken from '@/components/dialog/DialogButtonForAdminLoginAndGetToken';
 
 interface ApiSpec {
   id: string;
@@ -89,14 +90,15 @@ export const DialogButtonForPostApiTest = ({ spec }: DialogButtonForPostApiTestP
         
         <div className="flex-1 overflow-auto p-6 space-y-4">
           {/* Bearer Token Input */}
-          <div className="space-y-2">
-            <h3 className="text-sm font-medium">Bearer Token (Optional)</h3>
+          <div className=" flex gap-2 space-y-2">
+            <h3 className="text-sm font-medium">Token (Option)</h3>
             <Input
               value={bearerToken}
               onChange={(e) => setBearerToken(e.target.value)}
               placeholder="Enter JWT token"
               className="font-mono"
             />
+            <DialogButtonForAdminLoginAndGetToken onTokenReceived={setBearerToken} triggerButtonText="Login to get token" />
           </div>
 
           {/* Request Body */}
