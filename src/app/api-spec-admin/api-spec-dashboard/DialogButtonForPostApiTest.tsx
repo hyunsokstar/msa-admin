@@ -25,6 +25,32 @@ export const DialogButtonForPostApiTest = ({ spec }: DialogButtonForPostApiTestP
   const [response, setResponse] = useState('');
   const [loading, setLoading] = useState(false);
   const [bearerToken, setBearerToken] = useState('');
+  const [jsonError, setJsonError] = useState<string>('');
+
+  const validateJSON = (str: string): boolean => {
+    try {
+      JSON.parse(str);
+      setJsonError('');
+      return true;
+    } catch (e) {
+      setJsonError(e instanceof Error ? e.message : 'Invalid JSON format');
+      return false;
+    }
+  };
+
+  const formatRequestBody = (schema: any): string => {
+    try {
+      if (typeof schema === 'string') {
+        // 이미 문자열인 경우 파싱해서 다시 문자열로 변환
+        return JSON.stringify(JSON.parse(schema), null, 2);
+      }
+      // 객체인 경우 문자열로 변환
+      return JSON.stringify(schema, null, 2);
+    } catch (e) {
+      console.error('Failed to format request body:', e);
+      return schema?.toString() || '';
+    }
+  };
 
   useEffect(() => {
     if (spec.endpoint.includes('/auth/login')) {
@@ -34,18 +60,15 @@ export const DialogButtonForPostApiTest = ({ spec }: DialogButtonForPostApiTestP
       };
       setRequestBody(JSON.stringify(defaultBody, null, 2));
     } else if (spec.request_body_schema) {
-      try {
-        const schema = typeof spec.request_body_schema === 'string' 
-          ? JSON.parse(spec.request_body_schema)
-          : spec.request_body_schema;
-        setRequestBody(JSON.stringify(schema.example || {}, null, 2));
-      } catch (e) {
-        console.error('Failed to parse request body schema:', e);
-      }
+      setRequestBody(formatRequestBody(spec.request_body_schema));
     }
   }, [spec]);
 
   const handleTest = async () => {
+    if (!validateJSON(requestBody)) {
+      return;
+    }
+    
     setLoading(true);
     try {
       const response = await fetch('/api/proxy', {
@@ -90,7 +113,7 @@ export const DialogButtonForPostApiTest = ({ spec }: DialogButtonForPostApiTestP
         
         <div className="flex-1 overflow-auto p-6 space-y-4">
           {/* Bearer Token Input */}
-          <div className=" flex gap-2 space-y-2">
+          <div className="flex gap-2 space-y-2">
             <h3 className="text-sm font-medium">Token (Option)</h3>
             <Input
               value={bearerToken}
@@ -98,7 +121,10 @@ export const DialogButtonForPostApiTest = ({ spec }: DialogButtonForPostApiTestP
               placeholder="Enter JWT token"
               className="font-mono"
             />
-            <DialogButtonForAdminLoginAndGetToken onTokenReceived={setBearerToken} triggerButtonText="Login to get token" />
+            <DialogButtonForAdminLoginAndGetToken 
+              onTokenReceived={setBearerToken} 
+              triggerButtonText="Login to get token" 
+            />
           </div>
 
           {/* Request Body */}
@@ -106,11 +132,19 @@ export const DialogButtonForPostApiTest = ({ spec }: DialogButtonForPostApiTestP
             <h3 className="text-sm font-medium">Request Body</h3>
             <Textarea
               value={requestBody}
-              onChange={(e) => setRequestBody(e.target.value)}
+              onChange={(e) => {
+                setRequestBody(e.target.value);
+                validateJSON(e.target.value);
+              }}
               placeholder="Enter request body in JSON format"
-              className="font-mono min-h-[200px]"
+              className={`font-mono min-h-[200px] ${jsonError ? 'border-red-500' : ''}`}
               rows={8}
             />
+            {jsonError && (
+              <p className="text-sm text-red-500 mt-1">
+                {jsonError}
+              </p>
+            )}
           </div>
 
           {/* Response Area */}
@@ -125,7 +159,7 @@ export const DialogButtonForPostApiTest = ({ spec }: DialogButtonForPostApiTestP
         <div className="p-6 border-t">
           <Button 
             onClick={handleTest} 
-            disabled={loading || !requestBody}
+            disabled={loading || !requestBody || Boolean(jsonError)}
             className="w-full"
           >
             {loading ? 'Testing...' : 'Test POST Request'}
@@ -135,3 +169,5 @@ export const DialogButtonForPostApiTest = ({ spec }: DialogButtonForPostApiTestP
     </Dialog>
   );
 };
+
+export default DialogButtonForPostApiTest;
