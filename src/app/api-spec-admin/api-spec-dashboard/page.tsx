@@ -14,6 +14,7 @@ import { DialogButtonForGetApiTest } from './DialogButtonForGetApiTest';
 import { DialogButtonForPostApiTest } from './DialogButtonForPostApiTest';
 import IDialogButtonForCreateApiName from '@/components/dialog/IDialogButtonForCreateApiName';
 import IDialogButtonForCreateApiSpec from '@/components/dialog/IDialogButtonForCreateApiSpec';
+import IDialogButtonForUpdateApiSpec from '@/app/board/free-board/IDialogButtonForUpdateApiSpec';
 
 interface ApiSpec {
  id: string;
@@ -91,45 +92,46 @@ const services = [
        </div>
      </div>
 
-    <div className="text-right text-gray-500 py-4">
+    <div className="text- text-gray-500 py-4">
       <IDialogButtonForCreateApiSpec />
     </div>
 
      {/* API 목록 */}
-     <Card>
-       <CardContent className="pt-6 space-y-4">
-         {filteredSpecs
-           ?.filter(spec => spec.service_name === selectedService)
-           .map(spec => (
-             <div key={spec.id} className="border rounded-lg p-4 hover:bg-gray-50">
-               <Dialog>
-                 <DialogTrigger asChild>
-                   <div className="flex items-center justify-between cursor-pointer">
-                     <div className="flex items-center gap-2">
-                       <Badge className={getMethodColor(spec.method)}>
-                         {spec.method}
-                       </Badge>
-                       <span className="font-mono font-medium">{spec.endpoint}</span>
-                       <Badge variant="outline">
-                         {services.find(s => s.id === spec.service_name)?.name}
-                       </Badge>
-                     </div>
-                     {
-                        spec.method === 'GET' ? <DialogButtonForGetApiTest spec = {spec} /> : <DialogButtonForPostApiTest spec = {spec} />
-                     }
-                   </div>
-                 </DialogTrigger>
-               </Dialog>
-               <p className="text-gray-600 mt-2">{spec.description}</p>
-             </div>
-           ))}
-         {filteredSpecs?.filter(spec => spec.service_name === selectedService).length === 0 && (
-           <div className="text-center text-gray-500 py-4">
-             No APIs found for this service
-           </div>
-         )}
-       </CardContent>
-     </Card>
+     {/* API 목록 */}
+    <Card>
+      <CardContent className="pt-6 space-y-4">
+        {filteredSpecs
+          ?.filter(spec => spec.service_name === selectedService)
+          .map(spec => (
+            <div key={spec.id} className="border rounded-lg p-4 hover:bg-gray-50">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Badge className={getMethodColor(spec.method)}>
+                    {spec.method}
+                  </Badge>
+                  <span className="font-mono font-medium">{spec.endpoint}</span>
+                  <Badge variant="outline">
+                    {services.find(s => s.id === spec.service_name)?.name}
+                  </Badge>
+                </div>
+                <div className="flex items-center gap-2">
+                  <IDialogButtonForUpdateApiSpec spec={spec} />
+                  {spec.method === 'GET' 
+                    ? <DialogButtonForGetApiTest spec={spec} /> 
+                    : <DialogButtonForPostApiTest spec={spec} />
+                  }
+                </div>
+              </div>
+              <p className="text-gray-600 mt-2">{spec.description}</p>
+            </div>
+          ))}
+        {filteredSpecs?.filter(spec => spec.service_name === selectedService).length === 0 && (
+          <div className="text-center text-gray-500 py-4">
+            No APIs found for this service
+          </div>
+        )}
+      </CardContent>
+    </Card>
    </div>
  );
 };
