@@ -39,7 +39,6 @@ const MSADashboard = () => {
 const services = [
   { id: 'LMS', name: 'LMS', icon: BookOpen, color: 'bg-blue-500' },
   { id: 'CMS', name: 'CMS', icon: LayoutDashboard, color: 'bg-purple-500' },
-  { id: 'ADMIN', name: 'Admin', icon: Shield, color: 'bg-red-500' },
   { id: 'SHOPPING_MALL', name: 'Shopping Mall', icon: ShoppingCart, color: 'bg-green-500' },
   { id: 'USER', name: 'User', icon: Users, color: 'bg-yellow-500' },
   { id: 'BOARD', name: 'Board', icon: Layout, color: 'bg-indigo-500' }  // 추가된 부분
@@ -115,9 +114,12 @@ const services = [
                          {services.find(s => s.id === spec.service_name)?.name}
                        </Badge>
                      </div>
-                     <DialogButtonForApiTest spec = {spec} />
-                     <DialogButtonForPostApiTest spec = {spec} />
-                     <DialogButtonForGetApiTest spec = {spec} />
+                     {/* <DialogButtonForApiTest spec = {spec} /> */}
+                     {
+                        spec.method === 'GET' ? <DialogButtonForGetApiTest spec = {spec} /> : <DialogButtonForPostApiTest spec = {spec} />
+                     }
+                     {/* <DialogButtonForPostApiTest spec = {spec} /> */}
+                     {/* <DialogButtonForGetApiTest spec = {spec} /> */}
                    </div>
                  </DialogTrigger>
                </Dialog>

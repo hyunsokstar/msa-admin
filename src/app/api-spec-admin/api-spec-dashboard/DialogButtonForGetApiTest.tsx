@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { PlayCircle } from 'lucide-react';
+import DialogButtonForAdminLoginAndGetToken from '@/components/dialog/DialogButtonForAdminLoginAndGetToken';
 
 interface ApiSpec {
   id: string;
@@ -69,12 +70,16 @@ export const DialogButtonForGetApiTest = ({ spec }: DialogButtonForGetApiTestPro
           {/* Bearer Token Input */}
           <div className="space-y-2">
             <h3 className="text-sm font-medium">Bearer Token</h3>
-            <Input
-              value={bearerToken}
-              onChange={(e) => setBearerToken(e.target.value)}
-              placeholder="Enter JWT token"
-              className="font-mono"
-            />
+
+            <div className='flex gap-2'>
+              <Input
+                value={bearerToken}
+                onChange={(e) => setBearerToken(e.target.value)}
+                placeholder="Enter JWT token"
+                className="font-mono"
+              />
+              <DialogButtonForAdminLoginAndGetToken onTokenReceived={setBearerToken} triggerButtonText="Login to get token" />
+            </div>
           </div>
 
           {/* Response Area */}

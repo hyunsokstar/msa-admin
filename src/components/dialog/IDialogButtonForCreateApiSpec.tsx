@@ -31,7 +31,6 @@ interface IFormData extends Partial<ApiSpec> {
 }
 
 const SERVICE_OPTIONS = [
-  { value: 'ADMIN', label: '관리자' },
   { value: 'CMS', label: 'CMS' },
   { value: 'LMS', label: 'LMS' },
   { value: 'SHOPPING_MALL', label: '쇼핑몰' },
@@ -44,7 +43,7 @@ const INITIAL_FORM_DATA: IFormData = {
   method: 'GET',
   endpoint: '',
   description: '',
-  service_name: 'ADMIN',
+  service_name: 'USER',
   category1: '',
   category2: '',
   auth_required: false,
