@@ -11,6 +11,7 @@ import { useApiForDashboard } from '@/hook/useApiForDashboard';
 import { useApiForSearch } from '@/hook/useApiForSearch';
 import { DialogButtonForApiTest } from './DialogButtonForApiTest';
 import { DialogButtonForGetApiTest } from './DialogButtonForGetApiTest';
+import { DialogButtonForPostApiTest } from './DialogButtonForPostApiTest';
 
 interface ApiSpec {
  id: string;
@@ -109,6 +110,7 @@ const services = [
                        </Badge>
                      </div>
                      <DialogButtonForApiTest spec = {spec} />
+                     <DialogButtonForPostApiTest spec = {spec} />
                      <DialogButtonForGetApiTest spec = {spec} />
                    </div>
                  </DialogTrigger>
