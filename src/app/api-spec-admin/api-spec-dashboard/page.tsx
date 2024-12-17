@@ -15,6 +15,7 @@ import { DialogButtonForPostApiTest } from './DialogButtonForPostApiTest';
 import IDialogButtonForCreateApiName from '@/components/dialog/IDialogButtonForCreateApiName';
 import IDialogButtonForCreateApiSpec from '@/components/dialog/IDialogButtonForCreateApiSpec';
 import IDialogButtonForUpdateApiSpec from '@/app/board/free-board/IDialogButtonForUpdateApiSpec';
+import { IDialogButtonForDeleteApiSpec } from '@/app/board/free-board/IDialogButtonForDeleteApiSpec';
 
 interface ApiSpec {
  id: string;
@@ -53,6 +54,7 @@ const services = [
  if (error) return <div>Error: {error instanceof Error ? error.message : 'An error occurred'}</div>;
 
  return (
+  
    <div className="container mx-auto p-6 space-y-6">
      {/* 서비스 카드 */}
      <div className="grid grid-cols-5 gap-4">
@@ -116,6 +118,7 @@ const services = [
                 </div>
                 <div className="flex items-center gap-2">
                   <IDialogButtonForUpdateApiSpec spec={spec} />
+                  <IDialogButtonForDeleteApiSpec spec={spec} />
                   {spec.method === 'GET' 
                     ? <DialogButtonForGetApiTest spec={spec} /> 
                     : <DialogButtonForPostApiTest spec={spec} />

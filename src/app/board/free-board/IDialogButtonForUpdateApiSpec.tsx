@@ -165,18 +165,11 @@ export const IDialogButtonForUpdateApiSpec: React.FC<IDialogButtonForUpdateApiSp
           <div className="space-y-2">
             <label className="text-sm font-medium">Request Body 스키마</label>
             <Textarea
-              value={formData.request_body_schema ? JSON.stringify(formData.request_body_schema, null, 2) : ''}
-              onChange={(e) => {
-                try {
-                  const parsed = e.target.value ? JSON.parse(e.target.value) : null;
-                  handleChange('request_body_schema', parsed);
-                } catch (error) {
-                  handleChange('request_body_schema', e.target.value);
-                }
-              }}
+              value={formData.request_body_schema || ''}
+              onChange={(e) => handleChange('request_body_schema', e.target.value)}
               placeholder="Request body schema in JSON format"
               rows={5}
-              className="font-mono"
+              className="font-mono whitespace-pre-wrap" // whitespace-pre-wrap 추가
             />
           </div>
 

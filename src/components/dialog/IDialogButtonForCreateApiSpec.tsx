@@ -222,15 +222,15 @@
             </div>
 
             <div className="space-y-2">
-            <label className="text-sm font-medium">Request Body 스키마</label>
-            <Textarea
-                value={formData.request_body_schema || ''}
-                onChange={(e) => handleChange('request_body_schema', e.target.value)}
-                placeholder="Request body schema in JSON format"
-                rows={5}
-                className="font-mono"
-            />
-            </div>            
+                <label className="text-sm font-medium">Request Body 스키마</label>
+                <Textarea
+                    value={formData.request_body_schema || ''}
+                    onChange={(e) => handleChange('request_body_schema', e.target.value)}
+                    placeholder="Request body schema in JSON format"
+                    rows={5}
+                    className="font-mono whitespace-pre-wrap" // whitespace-pre-wrap 추가
+                />
+            </div>          
 
             <div className="flex items-center space-x-2">
                 <Switch
