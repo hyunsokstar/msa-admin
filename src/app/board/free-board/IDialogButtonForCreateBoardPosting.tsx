@@ -1,7 +1,7 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
+import React from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,12 +19,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import useApiForCreateFreeBoard from '@/hook/useApiForCreateFreeBoard';
+import useApiForCreateFreeBoard from "@/hook/useApiForCreateFreeBoard";
+import TiptapEditor from "@/components/rich-editor/TipTabEditor";
 
 const formSchema = z.object({
-  title: z.string().min(1, '제목을 입력해주세요'),
-  content: z.string().min(1, '내용을 입력해주세요'),
+  title: z.string().min(1, "제목을 입력해주세요"),
+  content: z.string().min(1, "내용을 입력해주세요"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -36,9 +36,9 @@ const IDialogButtonForCreateBoardPosting: React.FC = () => {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: '',
-      content: ''
-    }
+      title: "",
+      content: "",
+    },
   });
 
   const onSubmit = (data: FormValues) => {
@@ -46,7 +46,7 @@ const IDialogButtonForCreateBoardPosting: React.FC = () => {
       onSuccess: () => {
         setOpen(false);
         form.reset();
-      }
+      },
     });
   };
 
@@ -55,7 +55,7 @@ const IDialogButtonForCreateBoardPosting: React.FC = () => {
       <DialogTrigger asChild>
         <Button variant="outline">새 글 작성</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] bg-white">
+      <DialogContent className="w-full max-w-[768px] h-screen bg-white">
         <DialogHeader>
           <DialogTitle>게시글 작성</DialogTitle>
         </DialogHeader>
@@ -68,8 +68,8 @@ const IDialogButtonForCreateBoardPosting: React.FC = () => {
                 <FormItem>
                   <FormLabel>제목</FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="제목을 입력하세요" 
+                    <Input
+                      placeholder="제목을 입력하세요"
                       {...field}
                       disabled={createPost.isPending}
                     />
@@ -85,10 +85,9 @@ const IDialogButtonForCreateBoardPosting: React.FC = () => {
                 <FormItem>
                   <FormLabel>내용</FormLabel>
                   <FormControl>
-                    <Textarea 
-                      placeholder="내용을 입력하세요" 
-                      className="min-h-[100px]"
-                      {...field}
+                    <TiptapEditor
+                      value={field.value}
+                      onChange={field.onChange}
                       disabled={createPost.isPending}
                     />
                   </FormControl>
@@ -96,16 +95,13 @@ const IDialogButtonForCreateBoardPosting: React.FC = () => {
                 </FormItem>
               )}
             />
-            <Button 
-              type="submit" 
-              className="w-full"
-              disabled={createPost.isPending}
-            >
-              {createPost.isPending ? '저장 중...' : '저장'}
+            <Button type="submit" className="w-full" disabled={createPost.isPending}>
+              {createPost.isPending ? "저장 중..." : "저장"}
             </Button>
           </form>
         </Form>
       </DialogContent>
+
     </Dialog>
   );
 };
