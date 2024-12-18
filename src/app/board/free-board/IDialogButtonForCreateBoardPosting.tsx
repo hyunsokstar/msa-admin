@@ -86,7 +86,7 @@ const IDialogButtonForCreateBoardPosting: React.FC = () => {
                   <FormLabel>내용</FormLabel>
                   <FormControl>
                     <TiptapEditor
-                      value={field.value}
+                      content={field.value}
                       onChange={field.onChange}
                       disabled={createPost.isPending}
                     />
