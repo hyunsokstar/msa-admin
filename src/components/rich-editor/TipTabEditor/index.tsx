@@ -1,4 +1,3 @@
-// components/TiptapEditor.tsx
 "use client";
 
 import { useEditor, EditorContent } from "@tiptap/react";
@@ -7,9 +6,12 @@ import Image from "@tiptap/extension-image";
 import TextStyle from "@tiptap/extension-text-style";
 import ResizeImage from "tiptap-extension-resize-image";
 import { FontSize } from "./extensions/FontSize";
+import { FontFamily } from "./extensions/FontFamily";
+import TextAlign from "@tiptap/extension-text-align";
+import Underline from "@tiptap/extension-underline";
+import Highlight from "@tiptap/extension-highlight";
 import React from "react";
 import TiptapToolbar from "./TiptapToolbar";
-import { FontFamily } from "./extensions/FontFamily";
 
 interface TiptapEditorProps {
   content: string;
@@ -17,65 +19,27 @@ interface TiptapEditorProps {
   disabled?: boolean;
 }
 
-const TiptapEditor = ({
-  content,
-  onChange,
-  disabled = false,
-}: TiptapEditorProps) => {
-const editor = useEditor({
-  extensions: [
-    StarterKit,
-    TextStyle,
-    FontSize.configure({
-      types: ["textStyle"],
-    }),
-    FontFamily.configure({
-      types: ["textStyle"],
-    }),
-    Image.configure({
-      inline: true,
-    }),
-    ResizeImage,
-  ],
-  content,
-  editable: !disabled,
-  onUpdate: ({ editor }) => {
-    onChange(editor.getHTML());
-  },
-  editorProps: {
-    attributes: {
-      class: "prose prose-sm max-w-none focus:outline-none",
-      style: "padding: 1rem;",
+const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps) => {
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      TextStyle,
+      FontSize.configure({ types: ["textStyle"] }),
+      FontFamily.configure({ types: ["textStyle"] }),
+      TextAlign.configure({ types: ["heading", "paragraph"] }),
+      Underline,
+      Highlight.configure({ multicolor: true }),
+      Image.configure({ inline: true }),
+      ResizeImage,
+    ],
+    content,
+    editable: !disabled,
+    onUpdate: ({ editor }) => {
+      onChange(editor.getHTML());
     },
-  },
-});
+  });
 
-  const addImage = async () => {
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = "image/*";
-
-    fileInput.onchange = async () => {
-      const file = fileInput.files?.[0];
-      if (file) {
-        try {
-          const imageUrl = await uploadImageToS3(file);
-          if (imageUrl && editor) {
-            editor
-              .chain()
-              .focus()
-              .setImage({ src: imageUrl })
-              .run();
-          }
-        } catch (error) {
-          console.error("Image upload failed:", error);
-        }
-      }
-    };
-
-    fileInput.click();
-  };
-
+  // S3 업로드 로직
   const uploadImageToS3 = async (file: File): Promise<string | null> => {
     try {
       const metadataResponse = await fetch("/api/upload", {
@@ -108,6 +72,29 @@ const editor = useEditor({
       console.error("Image upload failed:", error);
       return null;
     }
+  };
+
+  // 이미지 업로드 함수
+  const addImage = async () => {
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+
+    fileInput.onchange = async () => {
+      const file = fileInput.files?.[0];
+      if (file) {
+        try {
+          const imageUrl = await uploadImageToS3(file); // S3 업로드
+          if (imageUrl && editor) {
+            editor.chain().focus().setImage({ src: imageUrl }).run(); // 에디터에 이미지 삽입
+          }
+        } catch (error) {
+          console.error("Image upload failed:", error);
+        }
+      }
+    };
+
+    fileInput.click();
   };
 
   return (

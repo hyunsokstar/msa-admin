@@ -2,6 +2,25 @@
 
 import React from "react";
 import { Editor } from "@tiptap/react";
+import Underline from '@tiptap/extension-underline';
+import Highlight from '@tiptap/extension-highlight';
+import TextAlign from '@tiptap/extension-text-align';
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Bold,
+  Italic,
+  Underline as UnderlineIcon,
+  Strikethrough,
+  HighlighterIcon,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  Undo,
+  Redo,
+  ImagePlus,
+} from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 interface TiptapToolbarProps {
   editor: Editor | null;
@@ -11,98 +30,167 @@ interface TiptapToolbarProps {
 const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
   if (!editor) return null;
 
-  const handleFontSizeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const fontSize = event.target.value;
-    if (fontSize === "default") {
+  const handleFontSizeChange = (value: string) => {
+    if (value === "default") {
       editor.chain().focus().unsetFontSize().run();
     } else {
-      editor.chain().focus().setFontSize(fontSize).run();
+      editor.chain().focus().setFontSize(value).run();
     }
   };
 
-  const handleFontFamilyChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const fontFamily = event.target.value;
-    if (fontFamily === "default") {
+  const handleFontFamilyChange = (value: string) => {
+    if (value === "default") {
       editor.chain().focus().unsetFontFamily().run();
     } else {
-      editor.chain().focus().setFontFamily(fontFamily).run();
+      editor.chain().focus().setFontFamily(value).run();
     }
   };
 
   return (
-    <div className="flex flex-wrap gap-2 border-b p-4 bg-gray-50 rounded-lg shadow-md">
-      {/* Bold Button */}
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().toggleBold().run()}
-        className={`px-4 py-2 rounded-md border text-sm font-medium transition ${
-          editor.isActive("bold")
-            ? "bg-blue-600 text-white hover:bg-blue-700"
-            : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-        }`}
-      >
-        Bold
-      </button>
+    <div className="flex flex-wrap items-center gap-2 border rounded-md p-2 bg-background">
+      <div className="flex items-center gap-1">
+        <Button
+          variant={editor.isActive("bold") ? "default" : "ghost"}
+          size="icon"
+          onClick={() => editor.chain().focus().toggleBold().run()}
+          className="h-8 w-8"
+        >
+          <Bold className="h-4 w-4" />
+        </Button>
+        <Button
+          variant={editor.isActive("italic") ? "default" : "ghost"}
+          size="icon"
+          onClick={() => editor.chain().focus().toggleItalic().run()}
+          className="h-8 w-8"
+        >
+          <Italic className="h-4 w-4" />
+        </Button>
+        <Button
+          variant={editor.isActive("underline") ? "default" : "ghost"}
+          size="icon"
+          onClick={() => editor.chain().focus().toggleUnderline().run()}
+          className="h-8 w-8"
+        >
+          <UnderlineIcon className="h-4 w-4" />
+        </Button>
+        <Button
+          variant={editor.isActive("strike") ? "default" : "ghost"}
+          size="icon"
+          onClick={() => editor.chain().focus().toggleStrike().run()}
+          className="h-8 w-8"
+        >
+          <Strikethrough className="h-4 w-4" />
+        </Button>
+      </div>
 
-      {/* Italic Button */}
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().toggleItalic().run()}
-        className={`px-4 py-2 rounded-md border text-sm font-medium transition ${
-          editor.isActive("italic")
-            ? "bg-blue-600 text-white hover:bg-blue-700"
-            : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-        }`}
-      >
-        Italic
-      </button>
+      <Separator orientation="vertical" className="h-8" />
 
-      {/* Font Size Select */}
-      <select
-        onChange={handleFontSizeChange}
-        value={editor.getAttributes("textStyle").fontSize || "default"}
-        className="px-4 py-2 rounded-md border bg-gray-200 text-gray-700 text-sm hover:bg-gray-300 transition"
-      >
-        <option value="default">기본 크기</option>
-        <option value="0.75rem">12px</option>
-        <option value="0.875rem">14px</option>
-        <option value="1rem">16px</option>
-        <option value="1.125rem">18px</option>
-        <option value="1.25rem">20px</option>
-        <option value="1.5rem">24px</option>
-        <option value="1.875rem">30px</option>
-        <option value="2rem">32px</option>
-        <option value="2.25rem">36px</option>
-        <option value="2.5rem">40px</option>
-        <option value="3rem">48px</option>
-      </select>
+      <div className="flex items-center gap-1">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => editor.chain().focus().toggleHighlight().run()}
+          className="h-8 w-8"
+        >
+          <HighlighterIcon className="h-4 w-4" />
+        </Button>
+        <Button
+          variant={editor.isActive({ textAlign: 'left' }) ? "default" : "ghost"}
+          size="icon"
+          onClick={() => editor.chain().focus().setTextAlign("left").run()}
+          className="h-8 w-8"
+        >
+          <AlignLeft className="h-4 w-4" />
+        </Button>
+        <Button
+          variant={editor.isActive({ textAlign: 'center' }) ? "default" : "ghost"}
+          size="icon"
+          onClick={() => editor.chain().focus().setTextAlign("center").run()}
+          className="h-8 w-8"
+        >
+          <AlignCenter className="h-4 w-4" />
+        </Button>
+        <Button
+          variant={editor.isActive({ textAlign: 'right' }) ? "default" : "ghost"}
+          size="icon"
+          onClick={() => editor.chain().focus().setTextAlign("right").run()}
+          className="h-8 w-8"
+        >
+          <AlignRight className="h-4 w-4" />
+        </Button>
+      </div>
 
-      {/* Font Family Select */}
-      <select
-        onChange={handleFontFamilyChange}
-        className="px-4 py-2 rounded-md border bg-gray-200 text-gray-700 text-sm hover:bg-gray-300 transition"
-      >
-        <option value="default">기본 글꼴</option>
-        <option value="Noto Sans, sans-serif">Noto Sans</option>
-        <option value="Roboto, sans-serif">Roboto</option>
-        <option value="Nanum Gothic, sans-serif">나눔 고딕</option>
-        <option value="Nanum Myeongjo, serif">나눔 명조</option>
-        <option value="Arial, sans-serif">Arial</option>
-        <option value="Courier New, monospace">Courier New</option>
-        <option value="Georgia, serif">Georgia</option>
-        <option value="Times New Roman, serif">Times New Roman</option>
-        <option value="Verdana, sans-serif">Verdana</option>
-        <option value="Trebuchet MS, sans-serif">Trebuchet MS</option>
-      </select>
+      <Separator orientation="vertical" className="h-8" />
 
-      {/* Image Upload Button */}
-      <button
-        type="button"
-        onClick={addImage}
-        className="px-4 py-2 rounded-md border text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition"
-      >
-        이미지 업로드
-      </button>
+      <div className="flex items-center gap-1">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => editor.chain().focus().undo().run()}
+          className="h-8 w-8"
+        >
+          <Undo className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => editor.chain().focus().redo().run()}
+          className="h-8 w-8"
+        >
+          <Redo className="h-4 w-4" />
+        </Button>
+      </div>
+
+      <Separator orientation="vertical" className="h-8" />
+
+      <div className="flex items-center gap-2">
+        <Select
+          onValueChange={handleFontSizeChange}
+          defaultValue="default"
+        >
+          <SelectTrigger className="w-[110px] h-8">
+            <SelectValue placeholder="글자 크기" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="default">기본 크기</SelectItem>
+            <SelectItem value="0.875rem">14px</SelectItem>
+            <SelectItem value="1rem">16px</SelectItem>
+            <SelectItem value="1.125rem">18px</SelectItem>
+            <SelectItem value="1.25rem">20px</SelectItem>
+            <SelectItem value="1.5rem">24px</SelectItem>
+            <SelectItem value="1.875rem">30px</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select
+          onValueChange={handleFontFamilyChange}
+          defaultValue="default"
+        >
+          <SelectTrigger className="w-[130px] h-8">
+            <SelectValue placeholder="글꼴" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="default">기본 서체</SelectItem>
+            <SelectItem value="'Noto Sans KR', sans-serif">Noto Sans</SelectItem>
+            <SelectItem value="'Nanum Gothic', sans-serif">나눔고딕</SelectItem>
+            <SelectItem value="'Nanum Myeongjo', serif">나눔명조</SelectItem>
+            <SelectItem value="'Pretendard', sans-serif">프리텐다드</SelectItem>
+            <SelectItem value="Arial, sans-serif">Arial</SelectItem>
+            <SelectItem value="Georgia, serif">Georgia</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="ml-auto">
+        <Button
+          variant="secondary"
+          onClick={addImage}
+          className="h-8 px-3"
+        >
+          <ImagePlus className="h-4 w-4 mr-2" />
+          이미지
+        </Button>
+      </div>
     </div>
   );
 };
