@@ -99,12 +99,12 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
   };
 
   return (
-    <div className="flex flex-col w-full h-full bg-white">
+    <div className="flex flex-col w-full h-[calc(100vh-200px)] max-h-[600px] bg-white">
       {/* 툴바 */}
       <TiptapToolbar editor={editor} addImage={addImage} />
       {/* 에디터 영역 */}
       <div
-        className="flex-1 relative border-t bg-white overflow-y-auto max-h-[320px]"
+        className="flex-1 relative border-t bg-white overflow-y-auto"
         onClick={() => editor?.commands.focus()} // 클릭 시 에디터 활성화
       >
         <EditorContent editor={editor} className="w-full h-full p-4" />
