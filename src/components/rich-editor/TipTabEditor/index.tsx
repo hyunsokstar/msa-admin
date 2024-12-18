@@ -37,9 +37,13 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
     },
+    editorProps: {
+      attributes: {
+        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl focus:outline-none max-w-none',
+      },
+    },
   });
 
-  // S3 업로드 로직
   const uploadImageToS3 = async (file: File): Promise<string | null> => {
     try {
       const metadataResponse = await fetch("/api/upload", {
@@ -74,7 +78,6 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
     }
   };
 
-  // 이미지 업로드 함수
   const addImage = async () => {
     const fileInput = document.createElement("input");
     fileInput.type = "file";
@@ -84,9 +87,9 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
       const file = fileInput.files?.[0];
       if (file) {
         try {
-          const imageUrl = await uploadImageToS3(file); // S3 업로드
+          const imageUrl = await uploadImageToS3(file);
           if (imageUrl && editor) {
-            editor.chain().focus().setImage({ src: imageUrl }).run(); // 에디터에 이미지 삽입
+            editor.chain().focus().setImage({ src: imageUrl }).run();
           }
         } catch (error) {
           console.error("Image upload failed:", error);
@@ -100,8 +103,16 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
   return (
     <div className="border rounded-md">
       <TiptapToolbar editor={editor} addImage={addImage} />
-      <div className="min-h-[200px]">
-        <EditorContent editor={editor} />
+      <div className="relative">
+        <EditorContent 
+          editor={editor} 
+          className="overflow-y-auto px-4 py-3"
+          style={{
+            minHeight: '15em',
+            height: 'auto',
+            resize: 'vertical'
+          }}
+        />
       </div>
     </div>
   );
