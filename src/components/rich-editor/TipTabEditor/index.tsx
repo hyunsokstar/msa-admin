@@ -5,9 +5,10 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import TextStyle from "@tiptap/extension-text-style";
+import ResizeImage from "tiptap-extension-resize-image";
+import { FontSize } from "./extensions/FontSize";
 import React from "react";
 import TiptapToolbar from "./TiptapToolbar";
-import { FontSize } from "./extensions/FontSize";
 
 interface TiptapEditorProps {
   content: string;
@@ -23,11 +24,14 @@ const TiptapEditor = ({
   const editor = useEditor({
     extensions: [
       StarterKit,
-      Image,
       TextStyle,
       FontSize.configure({
         types: ['textStyle'],
       }),
+      Image.configure({
+        inline: true,
+      }),
+      ResizeImage,
     ],
     content,
     editable: !disabled,
@@ -53,7 +57,11 @@ const TiptapEditor = ({
         try {
           const imageUrl = await uploadImageToS3(file);
           if (imageUrl && editor) {
-            editor.chain().focus().setImage({ src: imageUrl }).run();
+            editor
+              .chain()
+              .focus()
+              .setImage({ src: imageUrl })
+              .run();
           }
         } catch (error) {
           console.error("Image upload failed:", error);
