@@ -9,6 +9,7 @@ import ResizeImage from "tiptap-extension-resize-image";
 import { FontSize } from "./extensions/FontSize";
 import React from "react";
 import TiptapToolbar from "./TiptapToolbar";
+import { FontFamily } from "./extensions/FontFamily";
 
 interface TiptapEditorProps {
   content: string;
@@ -21,30 +22,33 @@ const TiptapEditor = ({
   onChange,
   disabled = false,
 }: TiptapEditorProps) => {
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      TextStyle,
-      FontSize.configure({
-        types: ['textStyle'],
-      }),
-      Image.configure({
-        inline: true,
-      }),
-      ResizeImage,
-    ],
-    content,
-    editable: !disabled,
-    onUpdate: ({ editor }) => {
-      onChange(editor.getHTML());
+const editor = useEditor({
+  extensions: [
+    StarterKit,
+    TextStyle,
+    FontSize.configure({
+      types: ["textStyle"],
+    }),
+    FontFamily.configure({
+      types: ["textStyle"],
+    }),
+    Image.configure({
+      inline: true,
+    }),
+    ResizeImage,
+  ],
+  content,
+  editable: !disabled,
+  onUpdate: ({ editor }) => {
+    onChange(editor.getHTML());
+  },
+  editorProps: {
+    attributes: {
+      class: "prose prose-sm max-w-none focus:outline-none",
+      style: "padding: 1rem;",
     },
-    editorProps: {
-      attributes: {
-        class: "prose prose-sm max-w-none focus:outline-none",
-        style: "padding: 1rem;",
-      },
-    },
-  });
+  },
+});
 
   const addImage = async () => {
     const fileInput = document.createElement("input");
