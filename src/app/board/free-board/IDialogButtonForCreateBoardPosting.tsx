@@ -11,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden"; // Radix UI 숨김 컴포넌트
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import {
   Form,
   FormControl,
@@ -63,15 +63,14 @@ const IDialogButtonForCreateBoardPosting: React.FC = () => {
           새 글 작성
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-full max-w-7xl bg-white p-6 shadow-xl h-full flex flex-col">
-        {/* 숨겨진 DialogTitle (접근성) */}
+      <DialogContent className="w-full max-w-7xl bg-white p-6 shadow-xl flex flex-col h-full">
+        {/* 접근성 지원 - DialogTitle 숨김 처리 */}
         <DialogHeader>
           <DialogTitle>
             <VisuallyHidden>게시글 작성</VisuallyHidden>
           </DialogTitle>
         </DialogHeader>
-
-        <Form {...form} className="flex flex-col flex-1">
+        <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col flex-1 space-y-6"
@@ -102,7 +101,7 @@ const IDialogButtonForCreateBoardPosting: React.FC = () => {
               render={({ field }) => (
                 <FormItem className="flex-1">
                   <FormControl>
-                    <div className="border rounded-lg flex-1 overflow-y-auto max-h-full">
+                    <div className="border rounded-lg flex-1">
                       <TiptapEditor
                         content={field.value}
                         onChange={field.onChange}
@@ -139,7 +138,7 @@ const IDialogButtonForCreateBoardPosting: React.FC = () => {
                   </div>
                 ) : (
                   <>
-                    <Save className="w-4 h-4 mr-2" />
+                    <Save className="w-4 h-4 my-2" />
                     저장
                   </>
                 )}
