@@ -1,13 +1,10 @@
-// components/TiptapEditor.tsx
 "use client";
 
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
-import TextStyle from "@tiptap/extension-text-style";
+import ResizeImage from "tiptap-extension-resize-image";
 import React from "react";
-import TiptapToolbar from "./TiptapToolbar";
-import { FontSize } from "./extensions/FontSize";
 
 interface TiptapEditorProps {
   content: string;
@@ -24,9 +21,9 @@ const TiptapEditor = ({
     extensions: [
       StarterKit,
       Image,
-      TextStyle,
-      FontSize.configure({
-        types: ['textStyle'],
+      ResizeImage.configure({
+        // 이미지 리사이징 관련 설정
+        // keepAspectRatio: true, // 종횡비 유지
       }),
     ],
     content,
@@ -53,7 +50,11 @@ const TiptapEditor = ({
         try {
           const imageUrl = await uploadImageToS3(file);
           if (imageUrl && editor) {
-            editor.chain().focus().setImage({ src: imageUrl }).run();
+            editor
+              .chain()
+              .focus()
+              .setImage({ src: imageUrl })
+              .run();
           }
         } catch (error) {
           console.error("Image upload failed:", error);
@@ -100,7 +101,16 @@ const TiptapEditor = ({
 
   return (
     <div className="border rounded-md">
-      <TiptapToolbar editor={editor} addImage={addImage} />
+      <div className="border-b p-2">
+        <button
+          type="button"
+          onClick={addImage}
+          className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={disabled}
+        >
+          이미지 업로드
+        </button>
+      </div>
       <div className="min-h-[200px]">
         <EditorContent editor={editor} />
       </div>
