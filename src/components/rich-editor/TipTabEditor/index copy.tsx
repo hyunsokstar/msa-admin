@@ -48,6 +48,7 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
 
   const uploadImageToS3 = async (file: File): Promise<string | null> => {
     // 이미지 업로드 로직 (S3 연동)
+    return null; // Implement your S3 upload logic here and return the uploaded image URL
   };
 
   const addImage = async () => {
