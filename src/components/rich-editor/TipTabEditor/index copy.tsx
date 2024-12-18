@@ -4,7 +4,7 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import TextStyle from "@tiptap/extension-text-style";
 import Color from "@tiptap/extension-color"; // 글자 색상 기능
-import Highlight from "@tiptap/extension-highlight"; // 배경색 기능
+import Highlight from "@tiptap/extension-highlight"; // 글자 배경색 기능
 import TextAlign from "@tiptap/extension-text-align";
 import Underline from "@tiptap/extension-underline";
 import Image from "@tiptap/extension-image";
@@ -25,14 +25,14 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
     extensions: [
       StarterKit,
       TextStyle,
-      Color, // 글자 색상
-      Highlight.configure({ multicolor: true }), // 글자 배경색
-      FontSize.configure({ types: ["textStyle"] }),
-      FontFamily.configure({ types: ["textStyle"] }),
-      TextAlign.configure({ types: ["heading", "paragraph"] }),
-      Underline,
-      Image.configure({ inline: true }),
-      ResizeImage,
+      Color, // 글자 색상 기능
+      Highlight.configure({ multicolor: true }), // 글자 배경색 기능
+      FontSize.configure({ types: ["textStyle"] }), // 폰트 크기
+      FontFamily.configure({ types: ["textStyle"] }), // 폰트 서체
+      TextAlign.configure({ types: ["heading", "paragraph"] }), // 텍스트 정렬
+      Underline, // 밑줄
+      Image.configure({ inline: true }), // 이미지
+      ResizeImage, // 이미지 리사이즈
     ],
     content,
     editable: !disabled,
@@ -41,43 +41,13 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
     },
     editorProps: {
       attributes: {
-        class: "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl focus:outline-none max-w-none",
+        class: "prose prose-sm focus:outline-none max-w-none",
       },
     },
   });
 
   const uploadImageToS3 = async (file: File): Promise<string | null> => {
-    try {
-      const metadataResponse = await fetch("/api/upload", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          filename: file.name,
-          contentType: file.type,
-        }),
-      });
-
-      if (!metadataResponse.ok) {
-        throw new Error("Failed to get presigned URL");
-      }
-
-      const { presignedUrl, fileUrl } = await metadataResponse.json();
-
-      await fetch(presignedUrl, {
-        method: "PUT",
-        body: file,
-        headers: {
-          "Content-Type": file.type,
-        },
-      });
-
-      return fileUrl;
-    } catch (error) {
-      console.error("Image upload failed:", error);
-      return null;
-    }
+    // 이미지 업로드 로직 (S3 연동)
   };
 
   const addImage = async () => {
@@ -105,17 +75,11 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
   return (
     <div className="border rounded-md">
       <TiptapToolbar editor={editor} addImage={addImage} />
-      <div className="relative">
-        <EditorContent
-          editor={editor}
-          className="overflow-y-auto px-4 py-3"
-          style={{
-            minHeight: "15em",
-            height: "auto",
-            resize: "vertical",
-          }}
-        />
-      </div>
+      <EditorContent
+        editor={editor}
+        className="overflow-y-auto px-4 py-3"
+        style={{ minHeight: "15em", resize: "vertical" }}
+      />
     </div>
   );
 };

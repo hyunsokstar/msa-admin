@@ -63,7 +63,7 @@ const IDialogButtonForCreateBoardPosting: React.FC = () => {
           새 글 작성
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-full max-w-[900px] bg-white p-6 shadow-xl">
+      <DialogContent className="w-full max-w-7xl bg-white p-6 shadow-xl">
         <DialogHeader className="mb-6">
           <DialogTitle className="text-2xl font-bold text-gray-800">게시글 작성</DialogTitle>
         </DialogHeader>
