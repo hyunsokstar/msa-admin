@@ -3,7 +3,6 @@
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
-import ResizeImage from "tiptap-extension-resize-image";
 import React from "react";
 
 interface TiptapEditorProps {
@@ -18,14 +17,7 @@ const TiptapEditor = ({
   disabled = false,
 }: TiptapEditorProps) => {
   const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Image,
-      ResizeImage.configure({
-        // 이미지 리사이징 관련 설정
-        // keepAspectRatio: true, // 종횡비 유지
-      }),
-    ],
+    extensions: [StarterKit, Image],
     content,
     editable: !disabled,
     onUpdate: ({ editor }) => {
@@ -50,11 +42,7 @@ const TiptapEditor = ({
         try {
           const imageUrl = await uploadImageToS3(file);
           if (imageUrl && editor) {
-            editor
-              .chain()
-              .focus()
-              .setImage({ src: imageUrl })
-              .run();
+            editor.chain().focus().setImage({ src: imageUrl }).run();
           }
         } catch (error) {
           console.error("Image upload failed:", error);
@@ -67,6 +55,7 @@ const TiptapEditor = ({
 
   const uploadImageToS3 = async (file: File): Promise<string | null> => {
     try {
+      // 서버로 파일 메타데이터 전송
       const metadataResponse = await fetch("/api/upload", {
         method: "POST",
         headers: {
@@ -84,6 +73,7 @@ const TiptapEditor = ({
 
       const { presignedUrl, fileUrl } = await metadataResponse.json();
 
+      // presigned URL을 사용해 S3에 업로드
       await fetch(presignedUrl, {
         method: "PUT",
         body: file,
