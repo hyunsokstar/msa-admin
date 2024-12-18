@@ -1,3 +1,5 @@
+"use client";
+
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import TextStyle from "@tiptap/extension-text-style";
@@ -30,7 +32,9 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       Underline,
       Image.configure({ inline: true }),
-      ResizeImage,
+      ResizeImage.configure({
+        // 이미지 리사이징 관련 설정
+      }),
     ],
     content,
     editable: !disabled,
@@ -44,41 +48,7 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
     },
   });
 
-  const uploadImageToS3 = async (file: File): Promise<string | null> => {
-    try {
-      const metadataResponse = await fetch("/api/upload", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          filename: file.name,
-          contentType: file.type,
-        }),
-      });
-
-      if (!metadataResponse.ok) {
-        throw new Error("Failed to get presigned URL");
-      }
-
-      const { presignedUrl, fileUrl } = await metadataResponse.json();
-
-      await fetch(presignedUrl, {
-        method: "PUT",
-        body: file,
-        headers: {
-          "Content-Type": file.type,
-        },
-      });
-
-      return fileUrl;
-    } catch (error) {
-      console.error("Image upload failed:", error);
-      return null;
-    }
-  };
-
-  const addImage = async () => {
+  const addImage = () => {
     const fileInput = document.createElement("input");
     fileInput.type = "file";
     fileInput.accept = "image/*";
@@ -100,19 +70,45 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
     fileInput.click();
   };
 
+  const uploadImageToS3 = async (file: File): Promise<string | null> => {
+    try {
+      const metadataResponse = await fetch("/api/upload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          filename: file.name,
+          contentType: file.type,
+        }),
+      });
+
+      if (!metadataResponse.ok) throw new Error("Failed to get presigned URL");
+
+      const { presignedUrl, fileUrl } = await metadataResponse.json();
+
+      await fetch(presignedUrl, {
+        method: "PUT",
+        body: file,
+        headers: { "Content-Type": file.type },
+      });
+
+      return fileUrl;
+    } catch (error) {
+      console.error("Image upload failed:", error);
+      return null;
+    }
+  };
+
   return (
     <div className="flex flex-col w-full h-full bg-white">
       {/* 툴바 */}
       <TiptapToolbar editor={editor} addImage={addImage} />
+
       {/* 에디터 영역 */}
       <div
-        className="flex-1 relative overflow-y-auto border-t"
-        style={{ minHeight: "300px", maxHeight: "500px" }}
+        className="flex-1 relative overflow-y-auto max-h-[400px] border-t bg-white scrollbar-thin scrollbar-thumb-gray-300"
+        onClick={() => editor?.commands.focus()} // 클릭 시 에디터 활성화
       >
-        <EditorContent
-          editor={editor}
-          className="w-full h-full p-4"
-        />
+        <EditorContent editor={editor} className="w-full h-full p-4" />
       </div>
     </div>
   );

@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Editor } from "@tiptap/react";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import FontSizeAdjuster from "./FontSizeAdjuster";
 import {
   Bold,
   Italic,
@@ -17,7 +18,6 @@ import {
   Redo,
   ImagePlus,
 } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
 
 interface TiptapToolbarProps {
   editor: Editor | null;
@@ -27,6 +27,14 @@ interface TiptapToolbarProps {
 const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
   const [textColor, setTextColor] = useState("#000000");
   const [bgColor, setBgColor] = useState("#ffffff");
+  const [fontSize, setFontSize] = useState(15);
+
+  // 에디터 상태를 동기화하는 useEffect
+  useEffect(() => {
+    if (!editor) return;
+
+    setFontSize(parseInt(editor.getAttributes("textStyle")?.fontSize || "15", 10));
+  }, [editor?.state]);
 
   if (!editor) return null;
 
@@ -45,77 +53,62 @@ const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
   return (
     <div className="flex items-center gap-2 border rounded-md p-2 bg-background">
       {/* 텍스트 포맷팅 */}
-      <Button type="button" onClick={() => editor.chain().focus().toggleBold().run()}><Bold /></Button>
-      <Button type="button" onClick={() => editor.chain().focus().toggleItalic().run()}><Italic /></Button>
-      <Button type="button" onClick={() => editor.chain().focus().toggleUnderline().run()}><UnderlineIcon /></Button>
-      <Button type="button" onClick={() => editor.chain().focus().toggleStrike().run()}><Strikethrough /></Button>
-
+      <Button type="button" onClick={() => editor.chain().focus().toggleBold().run()}>
+        <Bold />
+      </Button>
+      <Button type="button" onClick={() => editor.chain().focus().toggleItalic().run()}>
+        <Italic />
+      </Button>
+      <Button type="button" onClick={() => editor.chain().focus().toggleUnderline().run()}>
+        <UnderlineIcon />
+      </Button>
+      <Button type="button" onClick={() => editor.chain().focus().toggleStrike().run()}>
+        <Strikethrough />
+      </Button>
+      <Separator orientation="vertical" />
       {/* 글자 색상 */}
       <div className="flex items-center">
-        <label>글자색:</label>
-        <input type="color" value={textColor} onChange={handleTextColorChange} />
+        <label className="text-sm mr-1">글자색:</label>
+        <input type="color" value={textColor} onChange={handleTextColorChange} className="w-6 h-6 border p-0" />
       </div>
-
-      {/* 글자 배경색 */}
+      {/* 배경색 */}
       <div className="flex items-center">
-        <label>배경색:</label>
-        <input type="color" value={bgColor} onChange={handleBgColorChange} />
+        <label className="text-sm mr-1">배경색:</label>
+        <input type="color" value={bgColor} onChange={handleBgColorChange} className="w-6 h-6 border p-0" />
       </div>
-
       <Separator orientation="vertical" />
-
+      {/* 글씨 크기 */}
+      <FontSizeAdjuster
+        value={fontSize}
+        onChange={(newSize) => {
+          setFontSize(newSize);
+          editor.chain().focus().setFontSize(`${newSize}px`).run();
+        }}
+      />
+      <Separator orientation="vertical" />
       {/* 정렬 */}
-      <Button type="button" onClick={() => editor.chain().focus().setTextAlign("left").run()}><AlignLeft /></Button>
-      <Button type="button" onClick={() => editor.chain().focus().setTextAlign("center").run()}><AlignCenter /></Button>
-      <Button type="button" onClick={() => editor.chain().focus().setTextAlign("right").run()}><AlignRight /></Button>
-
+      <Button type="button" onClick={() => editor.chain().focus().setTextAlign("left").run()}>
+        <AlignLeft />
+      </Button>
+      <Button type="button" onClick={() => editor.chain().focus().setTextAlign("center").run()}>
+        <AlignCenter />
+      </Button>
+      <Button type="button" onClick={() => editor.chain().focus().setTextAlign("right").run()}>
+        <AlignRight />
+      </Button>
+      <Separator orientation="vertical" />
       {/* 실행 취소 및 다시 실행 */}
-      <Button type="button" onClick={() => editor.chain().focus().undo().run()}><Undo /></Button>
-      <Button type="button" onClick={() => editor.chain().focus().redo().run()}><Redo /></Button>
-
-      {/* 폰트 크기 */}
-      <Select onValueChange={(value) => editor.chain().focus().setFontSize(value).run()} defaultValue="default">
-        <SelectTrigger><SelectValue placeholder="기본 크기" /></SelectTrigger>
-        <SelectContent>
-          <SelectItem value="0.75rem">12px</SelectItem>
-          <SelectItem value="0.875rem">14px</SelectItem>
-          <SelectItem value="1rem">16px</SelectItem>
-          <SelectItem value="1.125rem">18px</SelectItem>
-          <SelectItem value="1.25rem">20px</SelectItem>
-          <SelectItem value="1.375rem">22px</SelectItem>
-          <SelectItem value="1.5rem">24px</SelectItem>
-          <SelectItem value="1.625rem">26px</SelectItem>
-          <SelectItem value="1.75rem">28px</SelectItem>
-          <SelectItem value="1.875rem">30px</SelectItem>
-          <SelectItem value="2rem">32px</SelectItem>
-          <SelectItem value="2.25rem">36px</SelectItem>
-          <SelectItem value="2.5rem">40px</SelectItem>
-          <SelectItem value="2.75rem">44px</SelectItem>
-          <SelectItem value="3rem">48px</SelectItem>
-        </SelectContent>
-      </Select>
-
-      {/* 폰트 서체 */}
-      <Select onValueChange={(value) => editor.chain().focus().setFontFamily(value).run()} defaultValue="default">
-        <SelectTrigger><SelectValue placeholder="기본 서체" /></SelectTrigger>
-        <SelectContent>
-          <SelectItem value="'Arial', sans-serif">Arial</SelectItem>
-          <SelectItem value="'Georgia', serif">Georgia</SelectItem>
-          <SelectItem value="'Times New Roman', serif">Times New Roman</SelectItem>
-          <SelectItem value="'Courier New', monospace">Courier New</SelectItem>
-          <SelectItem value="'Verdana', sans-serif">Verdana</SelectItem>
-          <SelectItem value="'Noto Sans KR', sans-serif">Noto Sans KR</SelectItem>
-          <SelectItem value="'Nanum Gothic', sans-serif">나눔고딕</SelectItem>
-          <SelectItem value="'Nanum Myeongjo', serif">나눔명조</SelectItem>
-          <SelectItem value="'Pretendard', sans-serif">프리텐다드</SelectItem>
-          <SelectItem value="'Gowun Dodum', sans-serif">고운돋움</SelectItem>
-          <SelectItem value="'Gowun Batang', serif">고운바탕</SelectItem>
-          <SelectItem value="'Dokdo', cursive">독도체</SelectItem>
-        </SelectContent>
-      </Select>
-
+      <Button type="button" onClick={() => editor.chain().focus().undo().run()}>
+        <Undo />
+      </Button>
+      <Button type="button" onClick={() => editor.chain().focus().redo().run()}>
+        <Redo />
+      </Button>
+      <Separator orientation="vertical" />
       {/* 이미지 추가 */}
-      <Button type="button" onClick={addImage}><ImagePlus /> 이미지</Button>
+      <Button type="button" onClick={addImage}>
+        <ImagePlus /> 이미지
+      </Button>
     </div>
   );
 };

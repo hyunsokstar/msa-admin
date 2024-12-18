@@ -6,17 +6,17 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogTrigger,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden"; // Radix UI 숨김 컴포넌트
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -55,26 +55,33 @@ const IDialogButtonForCreateBoardPosting: React.FC = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button 
-          variant="default" 
+        <Button
+          variant="default"
           className="bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-200 shadow-md hover:shadow-lg"
         >
           <PlusCircle className="w-4 h-4 mr-2" />
           새 글 작성
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-full max-w-7xl bg-white p-6 shadow-xl">
-        <DialogHeader className="mb-6">
-          <DialogTitle className="text-2xl font-bold text-gray-800">게시글 작성</DialogTitle>
+      <DialogContent className="w-full max-w-7xl bg-white p-6 shadow-xl h-full flex flex-col">
+        {/* 숨겨진 DialogTitle (접근성) */}
+        <DialogHeader>
+          <DialogTitle>
+            <VisuallyHidden>게시글 작성</VisuallyHidden>
+          </DialogTitle>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+
+        <Form {...form} className="flex flex-col flex-1">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col flex-1 space-y-6"
+          >
+            {/* 제목 입력 */}
             <FormField
               control={form.control}
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  {/* <FormLabel className="text-base font-semibold text-gray-700">제목</FormLabel> */}
                   <FormControl>
                     <Input
                       placeholder="제목을 입력하세요"
@@ -87,14 +94,15 @@ const IDialogButtonForCreateBoardPosting: React.FC = () => {
                 </FormItem>
               )}
             />
+
+            {/* 에디터 영역 */}
             <FormField
               control={form.control}
               name="content"
               render={({ field }) => (
                 <FormItem className="flex-1">
-                  {/* <FormLabel className="text-base font-semibold text-gray-700">내용</FormLabel> */}
                   <FormControl>
-                    <div className="min-h-[400px] border rounded-lg overflow-hidden">
+                    <div className="border rounded-lg flex-1 overflow-y-auto max-h-full">
                       <TiptapEditor
                         content={field.value}
                         onChange={field.onChange}
@@ -106,6 +114,8 @@ const IDialogButtonForCreateBoardPosting: React.FC = () => {
                 </FormItem>
               )}
             />
+
+            {/* 버튼 영역 */}
             <DialogFooter className="flex justify-end gap-3 mt-6">
               <Button
                 type="button"
