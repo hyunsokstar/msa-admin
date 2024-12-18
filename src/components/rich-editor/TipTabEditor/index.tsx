@@ -1,10 +1,8 @@
-"use client";
-
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import TextStyle from "@tiptap/extension-text-style";
-import Color from "@tiptap/extension-color"; // 글자 색상 기능
-import Highlight from "@tiptap/extension-highlight"; // 배경색 기능
+import Color from "@tiptap/extension-color";
+import Highlight from "@tiptap/extension-highlight";
 import TextAlign from "@tiptap/extension-text-align";
 import Underline from "@tiptap/extension-underline";
 import Image from "@tiptap/extension-image";
@@ -25,8 +23,8 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
     extensions: [
       StarterKit,
       TextStyle,
-      Color, // 글자 색상
-      Highlight.configure({ multicolor: true }), // 글자 배경색
+      Color,
+      Highlight.configure({ multicolor: true }),
       FontSize.configure({ types: ["textStyle"] }),
       FontFamily.configure({ types: ["textStyle"] }),
       TextAlign.configure({ types: ["heading", "paragraph"] }),
@@ -41,7 +39,7 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
     },
     editorProps: {
       attributes: {
-        class: "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl focus:outline-none max-w-none",
+        class: "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl focus:outline-none max-w-none w-full h-full",
       },
     },
   });
@@ -103,17 +101,17 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
   };
 
   return (
-    <div className="border rounded-md">
+    <div className="flex flex-col w-full h-full bg-white">
+      {/* 툴바 */}
       <TiptapToolbar editor={editor} addImage={addImage} />
-      <div className="relative">
+      {/* 에디터 영역 */}
+      <div
+        className="flex-1 relative overflow-y-auto border-t"
+        style={{ minHeight: "300px", maxHeight: "500px" }}
+      >
         <EditorContent
           editor={editor}
-          className="overflow-y-auto px-4 py-3"
-          style={{
-            minHeight: "15em",
-            height: "auto",
-            resize: "vertical",
-          }}
+          className="w-full h-full p-4"
         />
       </div>
     </div>

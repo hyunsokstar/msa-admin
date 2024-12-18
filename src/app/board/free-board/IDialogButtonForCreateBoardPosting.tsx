@@ -74,7 +74,7 @@ const IDialogButtonForCreateBoardPosting: React.FC = () => {
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base font-semibold text-gray-700">제목</FormLabel>
+                  {/* <FormLabel className="text-base font-semibold text-gray-700">제목</FormLabel> */}
                   <FormControl>
                     <Input
                       placeholder="제목을 입력하세요"
@@ -92,7 +92,7 @@ const IDialogButtonForCreateBoardPosting: React.FC = () => {
               name="content"
               render={({ field }) => (
                 <FormItem className="flex-1">
-                  <FormLabel className="text-base font-semibold text-gray-700">내용</FormLabel>
+                  {/* <FormLabel className="text-base font-semibold text-gray-700">내용</FormLabel> */}
                   <FormControl>
                     <div className="min-h-[400px] border rounded-lg overflow-hidden">
                       <TiptapEditor
