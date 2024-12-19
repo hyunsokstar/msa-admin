@@ -176,7 +176,7 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
         <TiptapToolbar
           editor={editor}
           addImage={addImage}
-          addResizableImage={addResizableImage}
+          // addResizableImage={addResizableImage}
         />
       )}
       <div
