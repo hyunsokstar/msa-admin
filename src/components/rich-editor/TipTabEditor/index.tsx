@@ -85,6 +85,28 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
     fileInput.click();
   };
 
+  const addResizableImage = () => {
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+
+    fileInput.onchange = async () => {
+      const file = fileInput.files?.[0];
+      if (file) {
+        try {
+          const imageUrl = await uploadImageToS3(file);
+          if (imageUrl && editor) {
+            editor.chain().focus().setImage({ src: imageUrl }).run();
+          }
+        } catch (error) {
+          console.error("Image upload failed:", error);
+        }
+      }
+    };
+
+    fileInput.click();
+  };
+
   const uploadImageToS3 = async (file: File): Promise<string | null> => {
     try {
       const metadataResponse = await fetch("/api/upload", {
@@ -115,7 +137,9 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
 
   return (
     <div className="flex flex-col w-full h-[calc(100vh-200px)] max-h-[600px] bg-white">
-      <TiptapToolbar editor={editor} addImage={addImage} />
+      {editor && (
+        <TiptapToolbar editor={editor} addImage={addImage} addResizableImage={addResizableImage} />
+      )}
       <div
         className="flex-1 relative border-t bg-white overflow-y-auto"
         onClick={() => editor?.commands.focus()}

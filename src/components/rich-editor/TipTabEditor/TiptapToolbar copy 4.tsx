@@ -67,11 +67,11 @@ const fontFamilyOptions = [
   { label: "나눔손글씨", value: "Nanum Pen Script", className: nanumPenScript.className },
   { label: "독도체", value: "Dokdo", className: dokdo.className },
   { label: "가을체", value: "Gaegu", className: gaegu.className },
-  { label: "하이 멜로디", value: "Hi Melody", className: hiMelody.className },
-  { label: "싱글 데이", value: "Single Day", className: singleDay.className },
-  { label: "시골 이야기", value: "Poor Story", className: poorStory.className },
-  { label: "윤성체", value: "Yeon Sung", className: yeonSung.className },
-  { label: "주아체", value: "Jua", className: jua.className },
+  { label: "Hi Melody", value: "Hi Melody", className: hiMelody.className },
+  { label: "Single Day", value: "Single Day", className: singleDay.className },
+  { label: "Poor Story", value: "Poor Story", className: poorStory.className },
+  { label: "Yeon Sung", value: "Yeon Sung", className: yeonSung.className },
+  { label: "Jua", value: "Jua", className: jua.className },
 ];
 
 const imageSizeOptions = [
@@ -88,10 +88,9 @@ const imageSizeOptions = [
 interface TiptapToolbarProps {
   editor: Editor;
   addImage: ({ width, height }: { width: number; height: number }) => void;
-  addResizableImage: () => void;
 }
 
-const TiptapToolbar = ({ editor, addImage, addResizableImage }: TiptapToolbarProps) => {
+const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
   const [textColor, setTextColor] = useState("#000000");
   const [bgColor, setBgColor] = useState("#ffffff");
   const [fontSize, setFontSize] = useState(15);
@@ -231,10 +230,7 @@ const TiptapToolbar = ({ editor, addImage, addResizableImage }: TiptapToolbarPro
             className="w-20 px-2 py-1 border rounded"
           />
           <Button type="button" onClick={handleImageUpload}>
-            <ImagePlus /> 이미지(맞춤)
-          </Button>
-          <Button type="button" onClick={addResizableImage}>
-            <ImagePlus /> 이미지 (리사이즈)
+            <ImagePlus /> 이미지
           </Button>
         </div>
       </div>
