@@ -24,7 +24,7 @@ const TableActionsPopover = ({ editor }: TableActionsPopoverProps) => {
     <Popover>
       <PopoverTrigger asChild>
         <Button type="button" variant="ghost">
-          <TableIcon className="mr-2 h-4 w-4" /> 테이블
+          <TableIcon className="mr-2 h-4 w-4" /> 테이블2
         </Button>
       </PopoverTrigger>
       <PopoverContent className="absolute right-0 w-64 p-2 flex flex-wrap gap-2 bg-white shadow-md border rounded-md">
