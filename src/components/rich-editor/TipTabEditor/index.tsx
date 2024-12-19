@@ -27,8 +27,13 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
       TextStyle,
       Color,
       Highlight.configure({ multicolor: true }),
-      FontSize.configure({ types: ["textStyle"] }),
-      FontFamily.configure({ types: ["textStyle"] }),
+      FontSize.configure({
+        types: ["textStyle"],
+      }),
+      FontFamily.configure({
+        types: ["textStyle"],
+        defaultFamily: "sans-serif",
+      }),
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       Underline,
       TiptapImage.configure({ inline: true }),
@@ -48,7 +53,7 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
     },
   });
 
-  const addImage = (size: { width: number; height: number }) => {
+  const addImage = (size?: { width: number; height: number }) => {
     const fileInput = document.createElement("input");
     fileInput.type = "file";
     fileInput.accept = "image/*";
@@ -59,13 +64,16 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
         try {
           const imageUrl = await uploadImageToS3(file);
           if (imageUrl && editor) {
-            const attributes = {
-              src: imageUrl,
-              ...(size.width > 0 && size.height > 0 && {
-                width: size.width,
-                height: size.height,
-              }),
-            };
+            const attributes = size
+              ? {
+                  src: imageUrl,
+                  width: size.width,
+                  height: size.height,
+                  style: `width: ${size.width}px; height: ${size.height}px;`,
+                }
+              : {
+                  src: imageUrl,
+                };
             editor.chain().focus().setImage(attributes).run();
           }
         } catch (error) {
