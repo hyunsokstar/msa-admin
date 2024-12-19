@@ -15,7 +15,7 @@ import { FontSize } from "./extensions/FontSize";
 import { FontFamily } from "./extensions/FontFamily";
 import Video from "./extensions/Video";
 import React from "react";
-import TiptapToolbar from "./TiptapToolbar copy";
+import TiptapToolbar from "./TiptapToolbar";
 
 interface TiptapEditorProps {
   content: string;

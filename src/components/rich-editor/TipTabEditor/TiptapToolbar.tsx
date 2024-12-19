@@ -1,8 +1,7 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Separator } from "@/components/ui/separator";
+import React, { useState } from "react";
+import { Editor } from "@tiptap/react";
 import {
   Bold,
   Italic,
@@ -14,120 +13,173 @@ import {
   Undo,
   Redo,
   ImagePlus,
-  Link as LinkIcon,
-  Video as VideoIcon
+  Table as TableIcon,
+  PaintBucket,
 } from "lucide-react";
-import { Editor } from "@tiptap/react";
-import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import FontSizeAdjuster from "./FontSizeAdjuster";
 import FontFamilySelector from "./FontFamilySelector";
 
 interface TiptapToolbarProps {
-  editor: Editor;
-  addImage?: (props: { width: number; height: number }) => void;
-  addResizableImage?: () => void;
-  addVideo?: () => void;
-  addLink?: () => void;
+  editor: Editor | null;
+  addImage: () => void;
 }
 
-export const TiptapToolbar = ({ 
-  editor, 
-  addImage, 
-  addResizableImage, 
-  addVideo, 
-  addLink 
-}: TiptapToolbarProps) => {
-  const [fontSize, setFontSize] = useState(15);
-  const [imageWidth, setImageWidth] = useState(300);
-  const [imageHeight, setImageHeight] = useState(300);
+const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
+  const [color, setColor] = useState("#000000");
 
   if (!editor) return null;
 
+  const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedColor = e.target.value;
+    setColor(selectedColor);
+    editor.chain().focus().setColor(selectedColor).run();
+  };
+
   return (
     <div className="flex flex-col gap-2 border rounded-md p-2 bg-background">
-      {/* First Row: Text Formatting, Alignment, and Images */}
-      <div className="flex items-center gap-2 justify-between">
-        {/* Left Section: Text Formatting and Alignment */}
-        <div className="flex items-center gap-2">
-          <Button type="button" onClick={() => editor.chain().focus().toggleBold().run()}>
-            <Bold />
+      {/* First Row */}
+      <div className="flex items-center gap-2">
+        {/* Text Formatting */}
+        <div className="flex items-center gap-1">
+          <Button
+            variant={editor.isActive("bold") ? "default" : "ghost"}
+            size="icon"
+            onClick={() => editor.chain().focus().toggleBold().run()}
+            className="h-8 w-8"
+          >
+            <Bold className="h-4 w-4" />
           </Button>
-          <Button type="button" onClick={() => editor.chain().focus().toggleItalic().run()}>
-            <Italic />
+          <Button
+            variant={editor.isActive("italic") ? "default" : "ghost"}
+            size="icon"
+            onClick={() => editor.chain().focus().toggleItalic().run()}
+            className="h-8 w-8"
+          >
+            <Italic className="h-4 w-4" />
           </Button>
-          <Button type="button" onClick={() => editor.chain().focus().toggleUnderline().run()}>
-            <UnderlineIcon />
+          <Button
+            variant={editor.isActive("underline") ? "default" : "ghost"}
+            size="icon"
+            onClick={() => editor.chain().focus().toggleUnderline().run()}
+            className="h-8 w-8"
+          >
+            <UnderlineIcon className="h-4 w-4" />
           </Button>
-          <Button type="button" onClick={() => editor.chain().focus().toggleStrike().run()}>
-            <Strikethrough />
-          </Button>
-          <Separator orientation="vertical" />
-          <Button type="button" onClick={() => editor.chain().focus().setTextAlign("left").run()}>
-            <AlignLeft />
-          </Button>
-          <Button type="button" onClick={() => editor.chain().focus().setTextAlign("center").run()}>
-            <AlignCenter />
-          </Button>
-          <Button type="button" onClick={() => editor.chain().focus().setTextAlign("right").run()}>
-            <AlignRight />
-          </Button>
-
-          <Separator orientation="vertical" />
-          <Button type="button" onClick={() => editor.chain().focus().undo().run()}>
-            <Undo />
-          </Button>
-          <Button type="button" onClick={() => editor.chain().focus().redo().run()}>
-            <Redo />
-          </Button>
-          
-          <Separator orientation="vertical" />
-          <Button type="button" onClick={addLink}>
-            <LinkIcon />
-          </Button>
-          <Button type="button" onClick={addVideo}>
-            <VideoIcon />
+          <Button
+            variant={editor.isActive("strike") ? "default" : "ghost"}
+            size="icon"
+            onClick={() => editor.chain().focus().toggleStrike().run()}
+            className="h-8 w-8"
+          >
+            <Strikethrough className="h-4 w-4" />
           </Button>
         </div>
 
-        {/* Right Section: Image Inputs and Buttons */}
-        <div className="flex items-center gap-2">
-          <input
-            type="number"
-            value={imageWidth}
-            onChange={(e) => setImageWidth(Number(e.target.value))}
-            placeholder="Width"
-            className="w-20 px-2 py-1 border rounded"
-          />
-          <input
-            type="number"
-            value={imageHeight}
-            onChange={(e) => setImageHeight(Number(e.target.value))}
-            placeholder="Height"
-            className="w-20 px-2 py-1 border rounded"
-          />
+        <Separator orientation="vertical" className="h-8" />
+
+        {/* Text Alignment */}
+        <div className="flex items-center gap-1">
           <Button
-            type="button"
-            onClick={() => addImage?.({ width: imageWidth, height: imageHeight })}
+            variant={editor.isActive({ textAlign: "left" }) ? "default" : "ghost"}
+            size="icon"
+            onClick={() => editor.chain().focus().setTextAlign("left").run()}
+            className="h-8 w-8"
           >
-            <ImagePlus /> 이미지(맞춤)
+            <AlignLeft className="h-4 w-4" />
           </Button>
-          <Button type="button" onClick={addResizableImage}>
-            <ImagePlus /> 이미지(리사이즈)
+          <Button
+            variant={editor.isActive({ textAlign: "center" }) ? "default" : "ghost"}
+            size="icon"
+            onClick={() => editor.chain().focus().setTextAlign("center").run()}
+            className="h-8 w-8"
+          >
+            <AlignCenter className="h-4 w-4" />
+          </Button>
+          <Button
+            variant={editor.isActive({ textAlign: "right" }) ? "default" : "ghost"}
+            size="icon"
+            onClick={() => editor.chain().focus().setTextAlign("right").run()}
+            className="h-8 w-8"
+          >
+            <AlignRight className="h-4 w-4" />
+          </Button>
+        </div>
+
+        <Separator orientation="vertical" className="h-8" />
+
+        {/* Undo and Redo */}
+        <div className="flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => editor.chain().focus().undo().run()}
+            className="h-8 w-8"
+          >
+            <Undo className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => editor.chain().focus().redo().run()}
+            className="h-8 w-8"
+          >
+            <Redo className="h-4 w-4" />
           </Button>
         </div>
       </div>
 
-      {/* Second Row: Font Options */}
+      {/* Second Row */}
       <div className="flex items-center gap-2">
-        <FontFamilySelector editor={editor} />
-        <FontSizeAdjuster
-          value={fontSize}
-          onChange={(newSize) => {
-            setFontSize(newSize);
-            editor.chain().focus().setFontSize(`${newSize}px`).run();
-          }}
-        />
+        {/* Font Options */}
+        <div className="flex items-center gap-1">
+          <FontSizeAdjuster
+            value={16}
+            onChange={(size) => editor.chain().focus().setFontSize(`${size}px`).run()}
+          />
+          <FontFamilySelector editor={editor} />
+        </div>
+
+        <Separator orientation="vertical" className="h-8" />
+
+        {/* Color Picker */}
+        <div className="flex items-center">
+          <input
+            type="color"
+            value={color}
+            onChange={handleColorChange}
+            className="w-8 h-8 cursor-pointer"
+          />
+          <span className="ml-2">글자색</span>
+        </div>
+
+        <Separator orientation="vertical" className="h-8" />
+
+        {/* Add Table */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() =>
+            editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
+          }
+          className="h-8 w-8"
+        >
+          <TableIcon className="h-4 w-4" />
+        </Button>
+
+        <Separator orientation="vertical" className="h-8" />
+
+        {/* Add Image */}
+        <div className="ml-auto">
+          <Button variant="secondary" onClick={addImage} className="h-8 px-3">
+            <ImagePlus className="h-4 w-4 mr-2" />
+            이미지 추가
+          </Button>
+        </div>
       </div>
     </div>
   );
 };
+
+export default TiptapToolbar;
