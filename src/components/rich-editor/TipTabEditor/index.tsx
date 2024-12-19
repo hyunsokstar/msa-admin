@@ -11,6 +11,10 @@ import { Image as TiptapImage } from "@tiptap/extension-image";
 import ResizeImage from "tiptap-extension-resize-image";
 import HorizontalRule from "@tiptap/extension-horizontal-rule";
 import Link from "@tiptap/extension-link";
+import { Table } from "@tiptap/extension-table";
+import { TableRow } from "@tiptap/extension-table-row";
+import { TableCell } from "@tiptap/extension-table-cell";
+import { TableHeader } from "@tiptap/extension-table-header";
 import { FontSize } from "./extensions/FontSize";
 import { FontFamily } from "./extensions/FontFamily";
 import Video from "./extensions/Video";
@@ -40,12 +44,16 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
       Link.configure({
         openOnClick: true,
         HTMLAttributes: {
-          class: 'text-blue-500 hover:underline',
-          rel: 'noopener noreferrer nofollow',
-          target: '_blank'
+          class: "text-blue-500 hover:underline",
+          rel: "noopener noreferrer nofollow",
+          target: "_blank",
         },
       }),
       Video,
+      Table.configure({ resizable: true }),
+      TableRow,
+      TableCell,
+      TableHeader,
     ],
     content,
     editable: !disabled,
@@ -140,37 +148,35 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
   };
 
   const addVideo = () => {
-    const url = prompt('Please enter the video URL:');
+    const url = prompt("Please enter the video URL:");
     if (url && editor) {
       editor.chain().focus().setVideo({ src: url }).run();
     }
   };
 
   const addLink = () => {
-    const previousUrl = editor?.getAttributes('link').href;
-    const url = window.prompt('URL', previousUrl);
-    
-    // cancelled
+    const previousUrl = editor?.getAttributes("link").href;
+    const url = window.prompt("URL", previousUrl);
+
     if (url === null) {
       return;
     }
 
-    // empty
-    if (url === '') {
-      editor?.chain().focus().extendMarkRange('link').unsetLink().run();
+    if (url === "") {
+      editor?.chain().focus().extendMarkRange("link").unsetLink().run();
       return;
     }
 
-    // update link
-    editor?.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+    editor?.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
   };
 
   return (
     <div className="flex flex-col w-full h-[calc(100vh-300px)] bg-white shadow-md rounded-md">
       {editor && (
-        <TiptapToolbar 
-          editor={editor} 
-          addImage={addImage} 
+        <TiptapToolbar
+          editor={editor}
+          addImage={addImage}
+          addResizableImage={addResizableImage}
         />
       )}
       <div

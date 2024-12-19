@@ -13,13 +13,12 @@ import {
   Undo,
   Redo,
   ImagePlus,
-  Table as TableIcon,
-  PaintBucket,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import FontSizeAdjuster from "./FontSizeAdjuster";
 import FontFamilySelector from "./FontFamilySelector";
+import TableActionsPopover from "./TableActionsPopover";
 
 interface TiptapToolbarProps {
   editor: Editor | null;
@@ -157,16 +156,7 @@ const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
         <Separator orientation="vertical" className="h-8" />
 
         {/* Add Table */}
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() =>
-            editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
-          }
-          className="h-8 w-8"
-        >
-          <TableIcon className="h-4 w-4" />
-        </Button>
+        <TableActionsPopover editor={editor} />
 
         <Separator orientation="vertical" className="h-8" />
 
