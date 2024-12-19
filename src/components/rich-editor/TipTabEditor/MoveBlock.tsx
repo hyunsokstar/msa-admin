@@ -4,7 +4,7 @@ type Props = {}
 
 const MoveBlock = (props: Props) => {
   return (
-    <div>MoveBlock</div>
+    <div>MoveBlock2</div>
   )
 }
 
