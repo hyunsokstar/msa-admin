@@ -7,7 +7,7 @@ import Color from "@tiptap/extension-color";
 import Highlight from "@tiptap/extension-highlight";
 import TextAlign from "@tiptap/extension-text-align";
 import Underline from "@tiptap/extension-underline";
-import { Image as TiptapImage } from "@tiptap/extension-image";
+import Image from "@tiptap/extension-image";
 import ResizeImage from "tiptap-extension-resize-image";
 import { FontSize } from "./extensions/FontSize";
 import { FontFamily } from "./extensions/FontFamily";
@@ -31,9 +31,9 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
       FontFamily.configure({ types: ["textStyle"] }),
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       Underline,
-      TiptapImage.configure({ inline: true }),
+      Image.configure({ inline: true }),
       ResizeImage.configure({
-        allowBase64: true,
+        // 이미지 리사이징 관련 설정
       }),
     ],
     content,
@@ -48,7 +48,7 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
     },
   });
 
-  const addImage = (size: { width: number; height: number }) => {
+  const addImage = () => {
     const fileInput = document.createElement("input");
     fileInput.type = "file";
     fileInput.accept = "image/*";
@@ -59,14 +59,7 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
         try {
           const imageUrl = await uploadImageToS3(file);
           if (imageUrl && editor) {
-            const attributes = {
-              src: imageUrl,
-              ...(size.width > 0 && size.height > 0 && {
-                width: size.width,
-                height: size.height,
-              }),
-            };
-            editor.chain().focus().setImage(attributes).run();
+            editor.chain().focus().setImage({ src: imageUrl }).run();
           }
         } catch (error) {
           console.error("Image upload failed:", error);
@@ -107,10 +100,12 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
 
   return (
     <div className="flex flex-col w-full h-[calc(100vh-200px)] max-h-[600px] bg-white">
+      {/* 툴바 */}
       <TiptapToolbar editor={editor} addImage={addImage} />
+      {/* 에디터 영역 */}
       <div
         className="flex-1 relative border-t bg-white overflow-y-auto"
-        onClick={() => editor?.commands.focus()}
+        onClick={() => editor?.commands.focus()} // 클릭 시 에디터 활성화
       >
         <EditorContent editor={editor} className="w-full h-full p-4" />
       </div>
