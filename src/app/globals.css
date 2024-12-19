@@ -6,3 +6,33 @@
   --font-geist-sans: 'Geist Sans', sans-serif;
   --font-geist-mono: 'Geist Mono', monospace;
 }
+
+/* global.css */
+table {
+  width: 100%; /* 테이블을 부모 컨테이너에 맞춤 */
+  border-collapse: collapse; /* 테이블 셀 간의 중복된 경계 제거 */
+  margin: 1rem 0; /* 위아래 여백 */
+}
+
+th, td {
+  border: 1px solid #ddd; /* 테이블 경계선 */
+  padding: 8px; /* 셀 안쪽 여백 */
+  text-align: left; /* 기본 텍스트 정렬 */
+}
+
+th {
+  background-color: #f4f4f4; /* 헤더 배경 색 */
+  font-weight: bold; /* 헤더 텍스트 굵게 */
+}
+
+td {
+  background-color: #fff; /* 셀 배경 색 */
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9; /* 짝수 행 배경색 */
+}
+
+tr:hover {
+  background-color: #f1f1f1; /* 행에 마우스 오버 시 배경색 */
+}

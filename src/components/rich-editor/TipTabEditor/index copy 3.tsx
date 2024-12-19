@@ -16,7 +16,7 @@ import TableCell from "@tiptap/extension-table-cell";
 import { FontSize } from "./extensions/FontSize";
 import { FontFamily } from "./extensions/FontFamily";
 import React from "react";
-import { TiptapToolbar } from "./TiptapToolbar";
+import TiptapToolbar from "./TiptapToolbar copy";
 
 interface TiptapEditorProps {
   content: string;
@@ -81,11 +81,13 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
                   height: size.height,
                   style: `width: ${size.width}px; height: ${size.height}px;`,
                 }
-              : { src: imageUrl };
+              : {
+                  src: imageUrl,
+                };
             editor.chain().focus().setImage(attributes).run();
           }
         } catch (error) {
-          console.error("Error uploading image:", error);
+          console.error("Image upload failed:", error);
         }
       }
     };
@@ -107,7 +109,7 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
             editor.chain().focus().setImage({ src: imageUrl }).run();
           }
         } catch (error) {
-          console.error("Error uploading resizable image:", error);
+          console.error("Image upload failed:", error);
         }
       }
     };
@@ -126,7 +128,7 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
         }),
       });
 
-      if (!metadataResponse.ok) throw new Error("Failed to get presigned URL from server");
+      if (!metadataResponse.ok) throw new Error("Failed to get presigned URL");
 
       const { presignedUrl, fileUrl } = await metadataResponse.json();
 
@@ -138,18 +140,18 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
 
       return fileUrl;
     } catch (error) {
-      console.error("Error during image upload process:", error);
+      console.error("Image upload failed:", error);
       return null;
     }
   };
 
   return (
-    <div className="flex flex-col w-full h-[calc(100vh-300px)] bg-white shadow-md rounded-md">
+    <div className="flex flex-col w-full h-[calc(100vh-200px)] max-h-[600px] bg-white">
       {editor && (
-        <TiptapToolbar editor={editor} addImage={addImage} addResizableImage={addResizableImage} />
+        <TiptapToolbar editor={editor} addImage={addImage} />
       )}
       <div
-        className="flex-1 relative border-t bg-white overflow-y-auto rounded-b-md"
+        className="flex-1 relative border-t bg-white overflow-y-auto"
         onClick={() => editor?.commands.focus()}
       >
         <EditorContent editor={editor} className="w-full h-full p-4" />

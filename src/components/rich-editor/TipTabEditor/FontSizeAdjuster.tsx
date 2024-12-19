@@ -18,14 +18,12 @@ const FontSizeAdjuster: React.FC<FontSizeAdjusterProps> = ({ value, onChange }) 
 
   return (
     <div className="flex items-center gap-2">
-      <label htmlFor="font-size" className="text-sm font-medium text-gray-600">
-        글꼴 크기:
-      </label>
       <select
         id="font-size"
         value={value}
         onChange={handleSelectChange}
         className="p-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        style={{  width: "80px" }}
       >
         {fontSizeOptions.map((size) => (
           <option key={size} value={size}>
