@@ -25,26 +25,12 @@ export const DialogButtonForPostApiTest = ({ spec }: DialogButtonForPostApiTestP
   const [response, setResponse] = useState('');
   const [loading, setLoading] = useState(false);
   const [bearerToken, setBearerToken] = useState('');
-  const [jsonError, setJsonError] = useState<string>('');
-
-  const validateJSON = (str: string): boolean => {
-    try {
-      JSON.parse(str);
-      setJsonError('');
-      return true;
-    } catch (e) {
-      setJsonError(e instanceof Error ? e.message : 'Invalid JSON format');
-      return false;
-    }
-  };
 
   const formatRequestBody = (schema: any): string => {
     try {
       if (typeof schema === 'string') {
-        // 이미 문자열인 경우 파싱해서 다시 문자열로 변환
-        return JSON.stringify(JSON.parse(schema), null, 2);
+        return schema;
       }
-      // 객체인 경우 문자열로 변환
       return JSON.stringify(schema, null, 2);
     } catch (e) {
       console.error('Failed to format request body:', e);
@@ -54,40 +40,42 @@ export const DialogButtonForPostApiTest = ({ spec }: DialogButtonForPostApiTestP
 
   useEffect(() => {
     if (spec.endpoint.includes('/auth/login')) {
-      const defaultBody = {
-        userId: "admin",
-        password: "Abc12345"
-      };
-      setRequestBody(JSON.stringify(defaultBody, null, 2));
+      setRequestBody('userId=admin&password=Abc12345');
     } else if (spec.request_body_schema) {
       setRequestBody(formatRequestBody(spec.request_body_schema));
     }
   }, [spec]);
 
-  const handleTest = async () => {
-    if (!validateJSON(requestBody)) {
-      return;
-    }
-    
+const handleTest = async () => {
     setLoading(true);
     try {
+      const proxyData = {
+        endpoint: spec.endpoint,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          ...(bearerToken && { 'Authorization': `Bearer ${bearerToken}` })
+        },
+        body: requestBody  // 여기서 requestBody를 직접 전달
+      };
+
       const response = await fetch('/api/proxy', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'  // proxy 요청 자체는 JSON으로
         },
-        body: JSON.stringify({
-          endpoint: spec.endpoint,
-          method: spec.method,
-          body: JSON.parse(requestBody),
-          headers: bearerToken ? {
-            'Authorization': `Bearer ${bearerToken}`
-          } : undefined
-        })
+        body: JSON.stringify(proxyData)  // proxyData를 JSON으로 직렬화
       });
-      
-      const data = await response.json();
-      setResponse(JSON.stringify(data, null, 2));
+
+      const data = await response.text();
+      try {
+        // JSON 파싱 시도
+        const jsonData = JSON.parse(data);
+        setResponse(JSON.stringify(jsonData, null, 2));
+      } catch {
+        // 텍스트 응답인 경우
+        setResponse(data);
+      }
     } catch (error) {
       setResponse(`Error: ${error instanceof Error ? error.message : 'Failed to fetch'}`);
     } finally {
@@ -132,19 +120,11 @@ export const DialogButtonForPostApiTest = ({ spec }: DialogButtonForPostApiTestP
             <h3 className="text-sm font-medium">Request Body</h3>
             <Textarea
               value={requestBody}
-              onChange={(e) => {
-                setRequestBody(e.target.value);
-                validateJSON(e.target.value);
-              }}
-              placeholder="Enter request body in JSON format"
-              className={`font-mono min-h-[200px] ${jsonError ? 'border-red-500' : ''}`}
+              onChange={(e) => setRequestBody(e.target.value)}
+              placeholder="Enter request body as a string"
+              className="font-mono min-h-[200px]"
               rows={8}
             />
-            {jsonError && (
-              <p className="text-sm text-red-500 mt-1">
-                {jsonError}
-              </p>
-            )}
           </div>
 
           {/* Response Area */}
@@ -159,7 +139,7 @@ export const DialogButtonForPostApiTest = ({ spec }: DialogButtonForPostApiTestP
         <div className="p-6 border-t">
           <Button 
             onClick={handleTest} 
-            disabled={loading || !requestBody || Boolean(jsonError)}
+            disabled={loading }
             className="w-full"
           >
             {loading ? 'Testing...' : 'Test POST Request'}

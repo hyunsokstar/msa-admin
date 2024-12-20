@@ -45,6 +45,9 @@ export async function apiForDeleteMenuForMenuId(menuId: number): Promise<boolean
 export async function apiForGetMenusData(): Promise<MenuItemType[] | null> {
     const supabase = getSupabase();
 
+    console.log("menu data 가져오기 api 호출");
+    
+
     if (!supabase) {
         console.error("Supabase 클라이언트를 초기화하지 못했습니다.");
         return null;
@@ -56,6 +59,9 @@ export async function apiForGetMenusData(): Promise<MenuItemType[] | null> {
             .select('*')
             .order('parent_id', { ascending: true })
             .order('sort_order', { ascending: true });
+
+        console.log("메뉴 데이터 가져오기 성공 ?", data);
+        
 
         if (error) {
             console.error('메뉴 데이터를 가져오는 중 오류 발생:', error);

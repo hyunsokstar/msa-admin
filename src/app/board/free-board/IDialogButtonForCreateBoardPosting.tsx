@@ -92,7 +92,7 @@ const IDialogButtonForCreateBoardPosting: React.FC = () => {
                   <FormMessage className="text-red-500" />
                 </FormItem>
               )}
-            />
+            />  
 
             {/* 에디터 영역 */}
             <FormField
