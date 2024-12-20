@@ -34,7 +34,7 @@ export const DialogButtonForPostApiTest = ({ spec }: DialogButtonForPostApiTestP
       return JSON.stringify(schema, null, 2);
     } catch (e) {
       console.error('Failed to format request body:', e);
-      return schema?.toString() || '';
+      return schema || '';
     }
   };
 
@@ -46,25 +46,40 @@ export const DialogButtonForPostApiTest = ({ spec }: DialogButtonForPostApiTestP
     }
   }, [spec]);
 
-const handleTest = async () => {
+  const handleTest = async () => {
     setLoading(true);
     try {
+      // requestBody가 JSON 형식인지 확인
+      let parsedBody;
+      let contentType = 'application/json';
+      
+      try {
+        // JSON parsing 시도
+        parsedBody = JSON.parse(requestBody);
+      } catch (e) {
+        // JSON parsing이 실패하면 form-urlencoded로 간주
+        parsedBody = requestBody;
+        contentType = 'application/x-www-form-urlencoded';
+      }
+
       const proxyData = {
         endpoint: spec.endpoint,
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': contentType,
           ...(bearerToken && { 'Authorization': `Bearer ${bearerToken}` })
         },
-        body: requestBody  // 여기서 requestBody를 직접 전달
+        body: parsedBody
       };
+
+      console.log('Sending request:', proxyData);  // 디버깅용 로그
 
       const response = await fetch('/api/proxy', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'  // proxy 요청 자체는 JSON으로
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify(proxyData)  // proxyData를 JSON으로 직렬화
+        body: JSON.stringify(proxyData)
       });
 
       const data = await response.text();
@@ -100,7 +115,6 @@ const handleTest = async () => {
         </DialogHeader>
         
         <div className="flex-1 overflow-auto p-6 space-y-4">
-          {/* Bearer Token Input */}
           <div className="flex gap-2 space-y-2">
             <h3 className="text-sm font-medium">Token (Option)</h3>
             <Input
@@ -115,19 +129,17 @@ const handleTest = async () => {
             />
           </div>
 
-          {/* Request Body */}
           <div className="space-y-2">
             <h3 className="text-sm font-medium">Request Body</h3>
             <Textarea
               value={requestBody}
               onChange={(e) => setRequestBody(e.target.value)}
-              placeholder="Enter request body as a string"
+              placeholder="Enter request body"
               className="font-mono min-h-[200px]"
               rows={8}
             />
           </div>
 
-          {/* Response Area */}
           <div className="space-y-2">
             <h3 className="text-sm font-medium">Response</h3>
             <div className="border rounded-md p-4 bg-gray-50 min-h-[300px] max-h-[500px] overflow-auto font-mono text-sm whitespace-pre">
@@ -139,7 +151,7 @@ const handleTest = async () => {
         <div className="p-6 border-t">
           <Button 
             onClick={handleTest} 
-            disabled={loading }
+            disabled={loading}
             className="w-full"
           >
             {loading ? 'Testing...' : 'Test POST Request'}
