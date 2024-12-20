@@ -82,7 +82,7 @@ const services = [
      </div>
 
      {/* 검색 */}
-     <div className="flex gap-4">
+     <div className="flex gap-2">
        <div className="relative flex-1">
          <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
          <Input 
@@ -94,7 +94,7 @@ const services = [
        </div>
      </div>
 
-    <div className="text- text-gray-500 py-4">
+    <div className="text- text-gray-500 flex justify-end mt-2"> 
       <IDialogButtonForCreateApiSpec />
     </div>
 

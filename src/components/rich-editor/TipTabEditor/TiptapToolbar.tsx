@@ -167,6 +167,28 @@ const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
             이미지 추가
           </Button>
         </div>
+
+        <div className="ml-auto">
+          <Button
+            variant="secondary"
+            onClick={() => {
+              const url = prompt("유튜브 URL을 입력하세요:");
+              if (url) {
+                editor.chain().focus().setYoutubeVideo({
+                  src: url,
+                  width: 640, // 기본 너비
+                  height: 360, // 기본 높이
+                }).run();
+              }
+            }}
+            className="h-8 px-3"
+          >
+            <ImagePlus className="h-4 w-4 mr-2" />
+            유튜브 추가
+          </Button>
+        </div>
+
+        
       </div>
     </div>
   );

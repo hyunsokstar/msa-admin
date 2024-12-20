@@ -18,6 +18,8 @@ import { TableHeader } from "@tiptap/extension-table-header";
 import { FontSize } from "./extensions/FontSize";
 import { FontFamily } from "./extensions/FontFamily";
 import Video from "./extensions/Video";
+import Youtube from "@tiptap/extension-youtube";
+
 import React from "react";
 import TiptapToolbar from "./TiptapToolbar";
 
@@ -54,6 +56,12 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
       TableRow,
       TableCell,
       TableHeader,
+      Youtube.configure({
+      controls: true,
+      nocookie: true,
+      width: 640,
+      height: 360,
+    }),
     ],
     content,
     editable: !disabled,

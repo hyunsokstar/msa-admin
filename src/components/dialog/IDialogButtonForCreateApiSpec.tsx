@@ -9,9 +9,7 @@
     import { Label } from "@/components/ui/label";
     import { PlusCircle } from 'lucide-react';
     import { ApiSpec } from '@/api/apiForApiSpec';
-    import { useMutation, useQueryClient } from '@tanstack/react-query';
-    import { toast } from 'react-toastify';
-    import { addApiSpec } from '@/api/apiForApiSpec';
+    import useApiForCreateApiSpec from '@/hook/useApiForCreateApiSpec';
 
     interface IDialogButtonForCreateApiSpecProps {
     onSuccess?: () => void;
@@ -51,35 +49,35 @@
     };
 
     // API Hook with improved error handling
-    const useApiForCreateApiSpec = () => {
-    const queryClient = useQueryClient();
+    // const useApiForCreateApiSpec = () => {
+    // const queryClient = useQueryClient();
 
-    return useMutation<ApiSpec[], Error, Partial<ApiSpec>>({
-        mutationFn: async (apiSpecData: Partial<ApiSpec>) => {
-        try {
-            const result = await addApiSpec(apiSpecData);
-            if (!result) {
-            throw new Error('API 스펙 생성에 실패했습니다.');
-            }
-            return result;
-        } catch (error) {
-            if (error instanceof Error) {
-            throw error;
-            }
-            throw new Error('API 스펙 생성 중 오류가 발생했습니다.');
-        }
-        },
-        onSuccess: () => {
-        toast.success('API 스펙이 성공적으로 생성되었습니다.');
-        queryClient.invalidateQueries({
-            queryKey: ['apiSpecs'],
-        });
-        },
-        onError: (error: Error) => {
-        toast.error(error.message);
-        }
-    });
-    };
+    // return useMutation<ApiSpec[], Error, Partial<ApiSpec>>({
+    //     mutationFn: async (apiSpecData: Partial<ApiSpec>) => {
+    //     try {
+    //         const result = await addApiSpec(apiSpecData);
+    //         if (!result) {
+    //         throw new Error('API 스펙 생성에 실패했습니다.');
+    //         }
+    //         return result;
+    //     } catch (error) {
+    //         if (error instanceof Error) {
+    //         throw error;
+    //         }
+    //         throw new Error('API 스펙 생성 중 오류가 발생했습니다.');
+    //     }
+    //     },
+    //     onSuccess: () => {
+    //     toast.success('API 스펙이 성공적으로 생성되었습니다.');
+    //     queryClient.invalidateQueries({
+    //         queryKey: ['apiSpecs'],
+    //     });
+    //     },
+    //     onError: (error: Error) => {
+    //     toast.error(error.message);
+    //     }
+    // });
+    // };
 
     export const IDialogButtonForCreateApiSpec: React.FC<IDialogButtonForCreateApiSpecProps> = ({ 
     onSuccess,
