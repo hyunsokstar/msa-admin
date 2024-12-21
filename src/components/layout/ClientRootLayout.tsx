@@ -17,7 +17,7 @@ export default function ClientRootLayout({ children }: { children: React.ReactNo
         <QueryClientProvider client={queryClient}>
             <HeaderMenus />
             {/* ToastContainer 추가 */}
-            <ToastContainer
+            {/* <ToastContainer
                 position="top-center" // 위치 설정
                 autoClose={2000} // 자동 닫힘 시간 (밀리초)
                 hideProgressBar={false} // 진행 표시 바 표시 여부
@@ -27,7 +27,7 @@ export default function ClientRootLayout({ children }: { children: React.ReactNo
                 pauseOnFocusLoss // 포커스 손실 시 일시 중지
                 draggable // 드래그 가능 여부
                 pauseOnHover // 호버 시 일시 중지
-            />
+            /> */}
             {children}
         </QueryClientProvider>
     );

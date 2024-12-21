@@ -101,7 +101,7 @@ const DevTodoApp = () => {
     <div className="flex min-h-screen">
       {/* 메인 컨텐츠 영역 */}
       <div className="flex-1 p-6">
-        <Card className="mb-8">
+        {/* <Card className="mb-8">
           <CardContent className="pt-6">
             <form onSubmit={handleAddTodo} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -156,7 +156,7 @@ const DevTodoApp = () => {
               </div>
             </form>
           </CardContent>
-        </Card>
+        </Card> */}
 
         <div className="space-y-4">
           {todos.map(todo => (
