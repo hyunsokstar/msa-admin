@@ -6,6 +6,7 @@ import { MenuItemType } from '@/api/apiForMenu';
 import { Button } from "@/components/ui/button";
 import DialogButtonForAddMenuForParentMenu from '@/components/dialog/DialogButtonForAddMenuForParentMenu';
 import { DEPTH_COLORS } from './DEPTH_COLORS';
+import IDialogButtonForUpdateNaviMenu from '@/components/dialog/IDialogButtonForUpdateNaviMenu';
 
 export interface SortableMenuItemProps {
   menu: MenuItemType;
@@ -104,13 +105,13 @@ export const SortableMenuItem: React.FC<SortableMenuItemProps> = ({
                 parentMenuName={menu.name}
                 onSuccess={onSuccess}
               />
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-7 w-7"
-              >
-                <Pencil className="w-3 h-3 text-gray-400" />
-              </Button>
+              
+              {/* 업데이트 버튼 */}
+              <IDialogButtonForUpdateNaviMenu
+                  menu={menu}
+                  onSuccess={onSuccess}
+                />
+
               <Button
                 variant="ghost"
                 size="icon"

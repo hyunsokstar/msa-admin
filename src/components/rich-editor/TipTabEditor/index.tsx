@@ -19,6 +19,8 @@ import { FontSize } from "./extensions/FontSize";
 import { FontFamily } from "./extensions/FontFamily";
 import Video from "./extensions/Video";
 import Youtube from "@tiptap/extension-youtube";
+import TiptapBubbleMenu from './TiptapBubbleMenu';
+
 
 import React from "react";
 import TiptapToolbar from "./TiptapToolbar";
@@ -179,13 +181,15 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
   };
 
   return (
-    <div className="flex flex-col w-full h-[calc(100vh-300px)] bg-white shadow-md rounded-md">
+    <div className="flex flex-col w-full h-[calc(100vh-220px)] bg-white shadow-md rounded-md">
       {editor && (
-        <TiptapToolbar
-          editor={editor}
-          addImage={addImage}
-          // addResizableImage={addResizableImage}
-        />
+        <>
+          <TiptapToolbar
+            editor={editor}
+            addImage={addImage}
+          />
+          <TiptapBubbleMenu editor={editor} />
+        </>
       )}
       <div
         className="flex-1 relative border-t bg-white overflow-y-auto rounded-b-md"

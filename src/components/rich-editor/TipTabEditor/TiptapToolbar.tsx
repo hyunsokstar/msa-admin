@@ -150,7 +150,7 @@ const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
             onChange={handleColorChange}
             className="w-8 h-8 cursor-pointer"
           />
-          <span className="ml-2">글자색</span>
+          {/* <span className="ml-2">글자색</span> */}
         </div>
 
         <Separator orientation="vertical" className="h-8" />

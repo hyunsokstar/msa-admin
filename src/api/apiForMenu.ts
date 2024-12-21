@@ -1,5 +1,6 @@
 // src/api/apiForGetMenusData.ts
 import getSupabase from '@/lib/supabaseClient';
+import { UpdateHeaderNavDto } from '@/types/typeForMenu';
 
 // MenuItemType 타입 선언
 export type MenuItemType = {
@@ -301,5 +302,49 @@ export async function apiForUpdateMenuOrder({
     } catch (error) {
         console.error('메뉴 순서 업데이트 중 예외 발생:', error);
         return false;
+    }
+}
+
+export async function apiForUpdateHeaderNav(
+    menuId: number, 
+    updateData: UpdateHeaderNavDto
+): Promise<MenuItemType> {
+    const supabase = getSupabase();
+    
+    if (!supabase) {
+        throw new Error('Supabase 클라이언트를 초기화하지 못했습니다.');
+    }
+
+    try {
+        const { data, error } = await supabase
+            .from('menus')
+            .update({
+                name: updateData.name,
+                path: updateData.path,
+                // updated_at: new Date().toISOString()
+            })
+            .eq('id', menuId)
+            .select()
+            .single();
+
+        if (error) {
+            throw new Error(error.message);
+        }
+
+        if (!data) {
+            throw new Error('메뉴 업데이트 후 데이터를 찾을 수 없습니다.');
+        }
+
+        return {
+            key: (key: any) => {},
+            id: data.id,
+            name: data.name,
+            path: data.path,
+            sort_order: data.sort_order,
+            items: []
+        };
+    } catch (error) {
+        console.error('메뉴 헤더 업데이트 중 오류:', error);
+        throw error;
     }
 }
