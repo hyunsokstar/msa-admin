@@ -1,6 +1,5 @@
 import getSupabase from '@/lib/supabaseClient';
 import { Issue, CreateIssueDto, UpdateIssueDto, IssueFilter } from '@/types/typeForTaskIssue';
-import { UserSelectInfo } from '@/types/typeForUser';
 
 interface ApiForTaskIssue {
     getAllIssues: (filter?: IssueFilter, limit?: number, offset?: number) => Promise<{
@@ -13,29 +12,13 @@ interface ApiForTaskIssue {
     createIssue: (issueData: CreateIssueDto) => Promise<Issue>;
     updateIssue: (id: number, updateData: UpdateIssueDto) => Promise<Issue>;
     deleteIssue: (id: number) => Promise<void>;
+    getMyIssues: (userId: string, filter?: IssueFilter, limit?: number, offset?: number) => Promise<{
+        issues: Issue[];
+        totalCompleted: number;
+        totalIncomplete: number;
+        totalIssues: number;
+    }>;
 }
-
-// Helper function to apply filters
-const applyFilters = (query: any, filter?: IssueFilter) => {
-    let filterConditions: any = {};
-    
-    if (filter) {
-        if (filter.status && filter.status !== 'All') filterConditions.status = filter.status;
-        if (filter.priority && filter.priority !== 'All') filterConditions.priority = filter.priority;
-        if (filter.category1 && filter.category1 !== 'All') filterConditions.category1 = filter.category1;
-        if (filter.type && filter.type !== 'All') filterConditions.type = filter.type;
-        if (filter.executor && filter.executor.trim() !== '') filterConditions.executor = filter.executor;
-    }
-
-    query = query.match(filterConditions);
-
-    // Apply keyword filter separately since it needs ilike
-    if (filter?.keyword && filter.keyword.trim() !== '') {
-        query = query.ilike('title', `%${filter.keyword}%`);
-    }
-
-    return query;
-};
 
 const apiForTaskIssue: ApiForTaskIssue = {
     getAllIssues: async (filter?: IssueFilter, limit = 10, offset = 0) => {
@@ -145,7 +128,52 @@ const apiForTaskIssue: ApiForTaskIssue = {
             .eq('id', id);
 
         if (error) throw new Error(error.message);
+    },
+
+    getMyIssues: async (userId: string, filter?: IssueFilter, limit = 10, offset = 0) => {
+        const supabase = getSupabase();
+        if (!supabase) throw new Error('Supabase client is not initialized');
+
+        let query = supabase
+            .from('issues')
+            .select(`
+                *,
+                manager_user:users!fk_issues_manager(id, email),
+                executor_user:users!issues_executor_fkey(id, email)
+            `, { count: 'exact' })
+            .eq('executor', userId);
+
+        // 필터 적용
+        if (filter) {
+            if (filter.status && filter.status !== 'All') query = query.eq('status', filter.status);
+            if (filter.priority && filter.priority !== 'All') query = query.eq('priority', filter.priority);
+            if (filter.category1 && filter.category1 !== 'All') query = query.eq('category1', filter.category1);
+            if (filter.type && filter.type !== 'All') query = query.eq('type', filter.type);
+            if (filter.keyword && filter.keyword.trim() !== '') {
+                query = query.ilike('title', `%${filter.keyword}%`);
+            }
+        }
+
+        // 페이징 적용
+        query = query
+            .range(offset, offset + limit - 1)
+            .order('created_at', { ascending: false });
+
+        const { data, error, count } = await query;
+
+        if (error) throw new Error(error.message);
+
+        const totalCompleted = data?.filter(issue => issue.status === 'Closed').length || 0;
+        const totalIncomplete = (data?.length || 0) - totalCompleted;
+
+        return {
+            issues: data || [],
+            totalCompleted,
+            totalIncomplete,
+            totalIssues: count || 0
+        };
     }
+
 };
 
 export default apiForTaskIssue;

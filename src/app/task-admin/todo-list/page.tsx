@@ -1,292 +1,151 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { PlusCircle, CheckCircle2, Circle, Clock, AlertTriangle, Music, MessageSquare, Bookmark, Volume2 } from 'lucide-react';
+import React, { useState } from "react";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import { Skeleton } from "@/components/ui/skeleton";
+import { IssueFilter } from "@/types/typeForTaskIssue";
+import { useApiForGetMyIssues } from "@/hook/useApiForGetMyIssues";
+import ISearchFormForIssueList from "@/components/searchform/ISearchFormForIssueList";
+import { useUserStore } from "@/store/useUserStore";
+import { CustomBadge } from "@/components/bedge/CustomBadge";
+import Link from "next/link";
+import { ExternalLink } from "lucide-react";
+import Pagination from "rc-pagination";
 
-type Priority = 'high' | 'medium' | 'low';
-type Status = 'todo' | 'in-progress' | 'completed' | 'blocked';
-type Category = 'frontend' | 'backend' | 'design' | 'testing';
+const MyIssuesPage = () => {
+    const [filter, setFilter] = useState<IssueFilter>({});
+    const [currentPage, setCurrentPage] = useState(1);
+    const limit = 10;
+    const offset = (currentPage - 1) * limit;
 
-interface Todo {
-  id: number;
-  title: string;
-  description: string;
-  priority: Priority;
-  status: Status;
-  category: Category;
-  dueDate: string;
-}
+    const { isAuthenticated } = useUserStore();
+    const { data, isLoading, error } = useApiForGetMyIssues(filter, limit, offset);
+    const { issues, totalIssues, totalCompleted, totalIncomplete } = data || {};
 
-const DevTodoApp = () => {
-  const [todos, setTodos] = useState<Todo[]>([
-    {
-      id: 1,
-      title: "API 엔드포인트 구현",
-      description: "사용자 인증 관련 REST API 개발",
-      priority: "high",
-      status: "in-progress",
-      category: "backend",
-      dueDate: "2024-12-15"
-    },
-    {
-      id: 2,
-      title: "로그인 페이지 UI 개선",
-      description: "반응형 디자인 적용 및 유효성 검사 추가",
-      priority: "medium",
-      status: "todo",
-      category: "frontend",
-      dueDate: "2024-12-20"
-    }
-  ]);
-
-  const [newTodo, setNewTodo] = useState<Omit<Todo, 'id' | 'status'>>({
-    title: "",
-    description: "",
-    priority: "medium",
-    category: "frontend",
-    dueDate: ""
-  });
-
-  const getPriorityColor = (priority: Priority) => {
-    const colors = {
-      high: 'text-red-500',
-      medium: 'text-yellow-500',
-      low: 'text-green-500'
+    const handleFilterChange = (newFilter: IssueFilter) => {
+        setFilter(newFilter);
+        setCurrentPage(1);
     };
-    return colors[priority] || 'text-gray-500';
-  };
 
-  const getStatusIcon = (status: Status) => {
-    switch (status) {
-      case 'completed': return <CheckCircle2 className="text-green-500" />;
-      case 'in-progress': return <Clock className="text-blue-500" />;
-      case 'blocked': return <AlertTriangle className="text-red-500" />;
-      default: return <Circle className="text-gray-500" />;
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+    };
+
+    if (!isAuthenticated) {
+        return (
+            <div className="p-6">
+                <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-3 rounded">
+                    로그인이 필요한 페이지입니다.
+                </div>
+            </div>
+        );
     }
-  };
 
-  const handleAddTodo = (e: React.FormEvent) => {
-    e.preventDefault();
-    setTodos([...todos, {
-      id: todos.length + 1,
-      ...newTodo,
-      status: 'todo'
-    }]);
-    setNewTodo({
-      title: "",
-      description: "",
-      priority: "medium",
-      category: "frontend",
-      dueDate: ""
-    });
-  };
-
-  const handleStatusChange = (id: number) => {
-    setTodos(todos.map(todo => {
-      if (todo.id === id) {
-        const statusMap: Record<Status, Status> = {
-          'todo': 'in-progress',
-          'in-progress': 'completed',
-          'completed': 'todo',
-          'blocked': 'todo'
-        };
-        return { ...todo, status: statusMap[todo.status] };
-      }
-      return todo;
-    }));
-  };
-
-  return (
-    <div className="flex min-h-screen">
-      {/* 메인 컨텐츠 영역 */}
-      <div className="flex-1 p-6">
-        {/* <Card className="mb-8">
-          <CardContent className="pt-6">
-            <form onSubmit={handleAddTodo} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input
-                  type="text"
-                  placeholder="Task 제목"
-                  className="w-full p-2 border rounded"
-                  value={newTodo.title}
-                  onChange={(e) => setNewTodo({...newTodo, title: e.target.value})}
-                  required
-                />
-                <input
-                  type="text"
-                  placeholder="설명"
-                  className="w-full p-2 border rounded"
-                  value={newTodo.description}
-                  onChange={(e) => setNewTodo({...newTodo, description: e.target.value})}
-                />
-                <select
-                  className="w-full p-2 border rounded"
-                  value={newTodo.priority}
-                  onChange={(e) => setNewTodo({...newTodo, priority: e.target.value as Priority})}
-                >
-                  <option value="high">High Priority</option>
-                  <option value="medium">Medium Priority</option>
-                  <option value="low">Low Priority</option>
-                </select>
-                <select
-                  className="w-full p-2 border rounded"
-                  value={newTodo.category}
-                  onChange={(e) => setNewTodo({...newTodo, category: e.target.value as Category})}
-                >
-                  <option value="frontend">Frontend</option>
-                  <option value="backend">Backend</option>
-                  <option value="design">Design</option>
-                  <option value="testing">Testing</option>
-                </select>
-                <input
-                  type="date"
-                  className="w-full p-2 border rounded"
-                  value={newTodo.dueDate}
-                  onChange={(e) => setNewTodo({...newTodo, dueDate: e.target.value})}
-                  required
-                />
-                <button
-                  type="submit"
-                  className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 flex items-center justify-center gap-2"
-                >
-                  <PlusCircle size={20} />
-                  새 Task 추가
-                </button>
-              </div>
-            </form>
-          </CardContent>
-        </Card> */}
-
-        <div className="space-y-4">
-          {todos.map(todo => (
-            <Card key={todo.id} className="hover:shadow-lg transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <button onClick={() => handleStatusChange(todo.id)}>
-                        {getStatusIcon(todo.status)}
-                      </button>
-                      <h3 className="text-xl font-semibold">{todo.title}</h3>
-                    </div>
-                    <p className="text-gray-600 mb-3">{todo.description}</p>
-                    <div className="flex flex-wrap gap-2 text-sm">
-                      <span className={`px-3 py-1 rounded-full ${getPriorityColor(todo.priority)} bg-opacity-10`}>
-                        {todo.priority.charAt(0).toUpperCase() + todo.priority.slice(1)}
-                      </span>
-                      <span className="px-3 py-1 bg-gray-100 rounded-full">
-                        {todo.category}
-                      </span>
-                      <span className="px-3 py-1 bg-gray-100 rounded-full">
-                        Due: {todo.dueDate}
-                      </span>
-                    </div>
-                  </div>
+    if (isLoading) {
+        return (
+            <div className="p-6 space-y-6">
+                <Skeleton className="h-32 w-full" />
+                <div className="space-y-4">
+                    {[...Array(5)].map((_, index) => (
+                        <Skeleton key={index} className="h-16 w-full" />
+                    ))}
                 </div>
-              </CardContent>
-            </Card>
-          ))}
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="p-6">
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+                    Error: {error instanceof Error ? error.message : '오류가 발생했습니다.'}
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="p-6 space-y-6">
+            <h1 className="text-2xl font-bold">내 담당 이슈</h1>
+            
+            <ISearchFormForIssueList
+                onFilterChange={handleFilterChange}
+                stats={{
+                    totalCompleted: totalCompleted || 0,
+                    totalIncomplete: totalIncomplete || 0,
+                }}
+            />
+
+            <div className="border rounded-lg overflow-hidden">
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>ID</TableHead>
+                            <TableHead>Title</TableHead>
+                            <TableHead>Status/Priority</TableHead>
+                            <TableHead>Categories</TableHead>
+                            <TableHead>Manager</TableHead>
+                            <TableHead>Created At</TableHead>
+                            <TableHead>Actions</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {issues?.map((issue) => (
+                            <TableRow key={issue.id}>
+                                <TableCell>{issue.id}</TableCell>
+                                <TableCell>{issue.title}</TableCell>
+                                <TableCell>
+                                    <div className="flex gap-1">
+                                        <CustomBadge variant="status" value={issue.status} />
+                                        <CustomBadge variant="status" value={issue.type} />
+                                        <CustomBadge variant="priority" value={issue.priority} />
+                                    </div>
+                                </TableCell>
+                                <TableCell>
+                                    <div className="flex gap-1">
+                                        <CustomBadge variant="category" value={issue.category1} />
+                                        <CustomBadge variant="category" value={issue.category2} />
+                                    </div>
+                                </TableCell>
+                                <TableCell>{issue.manager_user?.email || "N/A"}</TableCell>
+                                <TableCell>
+                                    {new Date(issue.created_at).toLocaleDateString()}
+                                </TableCell>
+                                <TableCell>
+                                    {issue.page_url && (
+                                        <Link 
+                                            href={issue.page_url} 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            className="text-blue-500 hover:text-blue-700"
+                                        >
+                                            <ExternalLink className="h-4 w-4" />
+                                        </Link>
+                                    )}
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </div>
+
+            <div className="flex justify-center mt-4">
+                <Pagination
+                    current={currentPage}
+                    total={totalIssues || 0}
+                    pageSize={limit}
+                    onChange={handlePageChange}
+                />
+            </div>
         </div>
-      </div>
-
-      {/* 오른쪽 사이드바 */}
-      <div className="w-80 border-l p-4 space-y-4">
-        {/* 프로필 */}
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-3">
-              <img 
-                src="/api/placeholder/40/40"
-                alt="Profile" 
-                className="w-10 h-10 rounded-full"
-              />
-              <div>
-                <h3 className="font-semibold">terecal@daum.net</h3>
-                <p className="text-sm text-gray-500">Developer</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* 즐겨찾기 */}
-        <Card>
-          <CardContent className="p-4">
-            <h3 className="font-semibold mb-3 flex items-center gap-2">
-              <Bookmark size={16} />
-              즐겨찾기
-            </h3>
-            <div className="space-y-2">
-              <a href="#" className="block text-sm hover:text-blue-500">Jenkins Dashboard</a>
-              <a href="#" className="block text-sm hover:text-blue-500">Figma 디자인</a>
-              <a href="#" className="block text-sm hover:text-blue-500">Jira 보드</a>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* 음악 플레이어 */}
-        <Card>
-          {/* <CardContent className="p-4">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Music size={16} />
-                  <span className="text-sm font-medium">현재 재생중</span>
-                </div>
-                <Volume2 size={16} className="text-gray-500" />
-              </div>
-              <div className="text-sm">
-                <p className="font-medium">lofi coding beats</p>
-                <p className="text-gray-500 text-xs">Ambient Music</p>
-              </div>
-              <div className="h-1 bg-gray-200 rounded-full">
-                <div className="h-1 bg-blue-500 rounded-full w-1/3"></div>
-              </div>
-            </div>
-          </CardContent> */}
-        </Card>
-
-        {/* 접속자 정보 */}
-        <Card>
-          <CardContent className="p-4">
-            <h3 className="font-semibold mb-3">접속자 (3)</h3>
-            <div className="space-y-2">
-              {[
-                { name: "terecal", status: "online" },
-                { name: "Jane Cooper", status: "online" },
-                { name: "Robert Fox", status: "away" }
-              ].map((user, index) => (
-                <div key={index} className="flex items-center gap-2">
-                  <div className="relative">
-                    <img 
-                      src="/api/placeholder/32/32"
-                      alt={user.name} 
-                      className="w-8 h-8 rounded-full"
-                    />
-                    <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white ${
-                      user.status === 'online' ? 'bg-green-500' : 'bg-gray-400'
-                    }`}></span>
-                  </div>
-                  <span className="text-sm">{user.name}</span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* 챗봇 링크 */}
-        <Card className="bg-blue-500 text-white hover:bg-blue-600 transition-colors">
-          <CardContent className="p-4">
-            <a href="#" className="flex items-center gap-2">
-              <MessageSquare size={20} />
-              <span>ChatBot 문의하기</span>
-            </a>
-          </CardContent>
-        </Card>
-
-      </div>
-    </div>
-  );
+    );
 };
 
-export default DevTodoApp;
+export default MyIssuesPage;
