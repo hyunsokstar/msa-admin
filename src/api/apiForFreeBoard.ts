@@ -2,11 +2,15 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { ICreateFreeBoardDto, IRequestDtoForApiForGetFreeBoardList, IResponseDtoForApiForGetFreeBoardList } from '../types/typeForFreeBoard';
+import { useUserStore } from '@/store/useUserStore';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
+
+const { user, session } = useUserStore.getState();
+
 
 export const apiForGetFreeBoardList = async ({
   page,
@@ -40,18 +44,24 @@ export const apiForGetFreeBoardList = async ({
 // src/api/apiForFreeBoard.ts
 
 export const apiForCreateFreeBoard = async (data: ICreateFreeBoardDto) => {
-  // Get current authenticated user
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  const { session } = useUserStore.getState();
   
-  if (authError) throw new Error(authError.message);
-  if (!user) throw new Error('User not authenticated');
+  if (!session?.access_token) {
+    throw new Error('User not authenticated');
+  }
+
+  // supabase 클라이언트에 세션 설정
+  supabase.auth.setSession({
+    access_token: session.access_token,
+    refresh_token: session.refresh_token,
+  });
 
   const { data: result, error } = await supabase
     .from('free_board')
     .insert({
       title: data.title,
       content: data.content,
-      writer_id: user.id,  // Add writer_id from authenticated user
+      writer_id: session.user.id,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     })
