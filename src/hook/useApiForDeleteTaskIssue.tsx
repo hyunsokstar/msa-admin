@@ -35,8 +35,8 @@ export const useApiForDeleteTaskIssue = (filter: any) => {
             console.log('Mutation 성공');
             // issues 쿼리 무효화
             queryClient.invalidateQueries({
-                queryKey: ['issues', filter],
-                exact: true
+                queryKey: ['issues'],
+                // exact: true
             });
             toast.success('이슈가 성공적으로 삭제되었습니다.');
         },

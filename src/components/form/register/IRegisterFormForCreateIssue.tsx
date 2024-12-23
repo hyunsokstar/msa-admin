@@ -1,3 +1,4 @@
+"use client";
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Input } from "@/components/ui/input";
@@ -177,7 +178,7 @@ const IRegisterFormForCreateIssue = ({ defaultValues, userEmail, onSubmit }: IFo
           취소
         </Button>
         <Button type="submit" className="h-9 bg-indigo-600 hover:bg-indigo-700">
-          등록하기
+          save
         </Button>
       </div>
     </form>

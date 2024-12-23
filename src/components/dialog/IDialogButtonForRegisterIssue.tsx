@@ -49,6 +49,10 @@ const IDialogButtonForRegisterIssue = ({ isDisabled }: DialogButtonProps) => {
   }, [open, user]);
 
   const handleSubmit = async (data: CreateIssueDto) => {
+
+    console.log("save button click check : ", data);
+    
+
     if (data.title.trim() === "") {
       alert("제목은 필수 입력 항목입니다.");
       return;
@@ -60,6 +64,8 @@ const IDialogButtonForRegisterIssue = ({ isDisabled }: DialogButtonProps) => {
     }
 
     try {
+      console.log("save button click check 2: ", data);
+      
       await createIssueMutation.mutateAsync({
         ...data,
         manager: user.id,
@@ -85,6 +91,7 @@ const IDialogButtonForRegisterIssue = ({ isDisabled }: DialogButtonProps) => {
           variant="default"
           className="bg-indigo-600 hover:bg-indigo-700 text-white"
           disabled={isDisabled}
+
         >
           신규 이슈 등록
         </Button>
@@ -98,7 +105,7 @@ const IDialogButtonForRegisterIssue = ({ isDisabled }: DialogButtonProps) => {
           <IRegisterFormForCreateIssue
             defaultValues={issueData}
             userEmail={user?.email || ''}
-            onSubmit={handleSubmit}
+            onSubmit={(data) => handleSubmit(data)}
           />
         )}
       </DialogContent>
