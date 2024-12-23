@@ -2,11 +2,11 @@
   "name": "msa-admin",
   "version": "0.1.0",
   "private": true,
-"scripts": {
-  "dev": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 next dev --experimental-https --turbopack",
-  "build": "next build",
-  "start": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 next start --experimental-https"
-},
+  "scripts": {
+      "dev": "NODE_TLS_REJECT_UNAUTHORIZED=0 next dev --turbopack",
+      "build": "next build",
+      "start": "NODE_TLS_REJECT_UNAUTHORIZED=0 next start"
+  },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.705.0",
     "@aws-sdk/s3-request-presigner": "^3.705.0",
@@ -79,7 +79,6 @@
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "18.3.12",
-    "cross-env": "^7.0.3",
     "postcss": "^8.4.47",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

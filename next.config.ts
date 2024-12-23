@@ -1,8 +1,23 @@
-// msa-admin\next.config.ts
+// // msa-admin\next.config.ts
+// import type { NextConfig } from "next";
+
+// const nextConfig: NextConfig = {
+//   /* config options here */
+// };
+
+// export default nextConfig;
+
 import type { NextConfig } from "next";
+import fs from 'fs';
+import path from 'path';
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  server: {
+    https: {
+      key: fs.readFileSync(path.join(process.cwd(), 'ssl', 'private.key')),
+      cert: fs.readFileSync(path.join(process.cwd(), 'ssl', 'certificate.crt'))
+    }
+  }
 };
 
 export default nextConfig;

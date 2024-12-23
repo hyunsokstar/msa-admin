@@ -31,7 +31,7 @@ const IDialogButtonForFreeBoardDetail: React.FC<IDialogButtonForFreeBoardDetailP
         {title}
       </Button>
       <Dialog open={isOpen} onOpenChange={toggleDialog}>
-        <DialogContent className="bg-white max-w-2xl w-full h-auto p-6 rounded-lg shadow-lg">
+        <DialogContent className="bg-white max-w-full w-full h-auto p-6 rounded-lg shadow-lg">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold">{title}</DialogTitle>
             <DialogClose onClick={toggleDialog} />
