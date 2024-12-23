@@ -12,7 +12,7 @@ import fs from 'fs';
 import path from 'path';
 
 const nextConfig: NextConfig = {
-  server: {
+  webServer: {  // server가 아닌 webServer 사용
     https: {
       key: fs.readFileSync(path.join(process.cwd(), 'ssl', 'private.key')),
       cert: fs.readFileSync(path.join(process.cwd(), 'ssl', 'certificate.crt'))
