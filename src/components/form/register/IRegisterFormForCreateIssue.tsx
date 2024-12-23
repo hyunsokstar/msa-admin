@@ -54,7 +54,6 @@ const IRegisterFormForCreateIssue = ({ defaultValues, userEmail, onSubmit }: IFo
             />
           </div>
 
-          {/* Page URL */}
           <div className="space-y-1.5">
             <label className="text-sm font-medium text-gray-700">페이지 URL</label>
             <Input

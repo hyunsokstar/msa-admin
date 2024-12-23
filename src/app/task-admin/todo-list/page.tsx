@@ -89,11 +89,11 @@ const MyIssuesPage = () => {
                         <TableRow>
                             <TableHead>ID</TableHead>
                             <TableHead>Title</TableHead>
-                            <TableHead>Status/Priority</TableHead>
+                            <TableHead>Type/Priority/Status</TableHead>
                             <TableHead>Categories</TableHead>
-                            <TableHead>Manager</TableHead>
+                            <TableHead>Manager/Executor</TableHead>
                             <TableHead>Created At</TableHead>
-                            <TableHead>Actions</TableHead>
+                            <TableHead>Page</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -103,9 +103,9 @@ const MyIssuesPage = () => {
                                 <TableCell>{issue.title}</TableCell>
                                 <TableCell>
                                     <div className="flex gap-1">
-                                        <CustomBadge variant="status" value={issue.status} />
-                                        <CustomBadge variant="status" value={issue.type} />
                                         <CustomBadge variant="priority" value={issue.priority} />
+                                        <CustomBadge variant="type" value={issue.type} />
+                                        <CustomBadge variant="status" value={issue.status} />
                                     </div>
                                 </TableCell>
                                 <TableCell>
@@ -119,16 +119,18 @@ const MyIssuesPage = () => {
                                     {new Date(issue.created_at).toLocaleDateString()}
                                 </TableCell>
                                 <TableCell>
-                                    {issue.page_url && (
-                                        <Link 
-                                            href={issue.page_url} 
-                                            target="_blank" 
-                                            rel="noopener noreferrer"
-                                            className="text-blue-500 hover:text-blue-700"
-                                        >
-                                            <ExternalLink className="h-4 w-4" />
-                                        </Link>
-                                    )}
+                                    <div className="flex items-center justify-center">
+                                        {issue.page_url && (
+                                            <Link 
+                                                href={issue.page_url} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer"
+                                                className="text-blue-500 hover:text-blue-700"
+                                            >
+                                                <ExternalLink className="h-4 w-4" />
+                                            </Link>
+                                        )}
+                                    </div>
                                 </TableCell>
                             </TableRow>
                         ))}

@@ -79,7 +79,6 @@ const IRegisterFormForUpdateIssue = ({ defaultValues, userEmail, onSubmit, isUpd
                 />
               </div>
 
-              {/* Page URL */}
               <div className="flex items-center space-x-4">
                 <label className="text-sm font-medium text-gray-700 w-24">페이지 URL</label>
                 <Input

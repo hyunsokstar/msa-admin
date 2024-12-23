@@ -16,6 +16,7 @@ import IDialogButtonForCreateApiName from '@/components/dialog/IDialogButtonForC
 import IDialogButtonForCreateApiSpec from '@/components/dialog/IDialogButtonForCreateApiSpec';
 import IDialogButtonForUpdateApiSpec from '@/app/board/free-board/IDialogButtonForUpdateApiSpec';
 import { IDialogButtonForDeleteApiSpec } from '@/app/board/free-board/IDialogButtonForDeleteApiSpec';
+import { cn } from '@/lib/utils';
 
 interface ApiSpec {
  id: string;
@@ -106,17 +107,17 @@ const services = [
           ?.filter(spec => spec.service_name === selectedService)
           .map(spec => (
             <div key={spec.id} className="border rounded-lg p-4 hover:bg-gray-50">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Badge className={getMethodColor(spec.method)}>
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-4 flex-1">
+                  <Badge className={cn("w-16 justify-center", getMethodColor(spec.method))}>
                     {spec.method}
                   </Badge>
-                  <span className="font-mono font-medium">{spec.endpoint}</span>
-                  <Badge variant="outline">
+                  <span className="font-mono font-medium flex-1">{spec.endpoint}</span>
+                  <Badge variant="outline" className="w-24 justify-center">
                     {services.find(s => s.id === spec.service_name)?.name}
                   </Badge>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3">
                   <IDialogButtonForUpdateApiSpec spec={spec} />
                   <IDialogButtonForDeleteApiSpec spec={spec} />
                   {spec.method === 'GET' 
@@ -125,7 +126,7 @@ const services = [
                   }
                 </div>
               </div>
-              <p className="text-gray-600 mt-2">{spec.description}</p>
+              <p className="text-gray-600 mt-3">{spec.description}</p>
             </div>
           ))}
         {filteredSpecs?.filter(spec => spec.service_name === selectedService).length === 0 && (

@@ -23,6 +23,7 @@ import IDialogButtonForUpdateTaskIssue from "@/components/dialog/IDialogButtonFo
 import { CustomBadge } from "@/components/bedge/CustomBadge";
 import ISquareForShowImage from "@/components/dialog/display/ISquareForShowImage";
 import Pagination from "rc-pagination"; // rc-pagination import
+import TextAlign from "@tiptap/extension-text-align";
 // import "rc-pagination/assets/index.css"; // 기본 스타일 가져오기
 
 const IssueAdminPage = () => {
@@ -101,10 +102,10 @@ const IssueAdminPage = () => {
                             <TableRow>
                                 <TableHead>ID</TableHead>
                                 <TableHead>Title</TableHead>
-                                <TableHead>참고 이미지</TableHead>
-                                <TableHead>Status/Type/Priority</TableHead>
+                                <TableHead>Refer Image</TableHead>
+                                <TableHead>Type/Priority/Status</TableHead>
                                 <TableHead>Categories</TableHead>
-                                <TableHead>Assignees</TableHead>
+                                <TableHead>Manager/Executor</TableHead>
                                 <TableHead>Page URL</TableHead>
                                 <TableHead>Actions</TableHead>
                             </TableRow>
@@ -125,9 +126,9 @@ const IssueAdminPage = () => {
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex gap-1">
-                                            <CustomBadge variant="status" value={issue.status} />
-                                            <CustomBadge variant="type" value={issue.type} />
                                             <CustomBadge variant="priority" value={issue.priority} />
+                                            <CustomBadge variant="type" value={issue.type} />
+                                            <CustomBadge variant="status" value={issue.status} />
                                         </div>
                                     </TableCell>
                                     <TableCell>
@@ -144,12 +145,14 @@ const IssueAdminPage = () => {
                                             <div>Executor: {issue.executor_user?.email || "N/A"}</div>
                                         </div>
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell className="">
+                                        <div className="h-full w-full flex items-center justify-center">
                                         {issue.page_url && (
                                             <Link href={issue.page_url} target="_blank" rel="noopener noreferrer">
                                                 <ExternalLink className="h-4 w-4" />
                                             </Link>
                                         )}
+                                        </div>
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex space-x-2">
