@@ -39,11 +39,8 @@ export const DialogButtonForPostApiTest = ({ spec }: DialogButtonForPostApiTestP
   };
 
   useEffect(() => {
-    if (spec.endpoint.includes('/auth/login')) {
-      setRequestBody('userId=admin&password=Abc12345');
-    } else if (spec.request_body_schema) {
-      setRequestBody(formatRequestBody(spec.request_body_schema));
-    }
+
+      setRequestBody(spec.request_body_schema);
   }, [spec]);
 
   const handleTest = async () => {
