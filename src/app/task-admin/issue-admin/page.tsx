@@ -97,6 +97,7 @@ const IssueAdminPage = () => {
                         <TableHeader>
                             <TableRow>
                                 <TableHead className="text-center">ID</TableHead>
+                                <TableHead className="text-center">title</TableHead>
                                 <TableHead className="text-center">Refer Image</TableHead>
                                 <TableHead className="text-center">Type/Priority/Status</TableHead>
                                 <TableHead className="text-center">Categories</TableHead>
@@ -109,6 +110,7 @@ const IssueAdminPage = () => {
                             {issues?.map((issue) => (
                                 <TableRow key={issue.id}>
                                     <TableCell className="text-center">{issue.id}</TableCell>
+                                    <TableCell className="text-center">{issue.title}</TableCell>
                                     <TableCell className="text-center">
                                         <div className="flex justify-center gap-2">
                                             <ISquareForShowImage
