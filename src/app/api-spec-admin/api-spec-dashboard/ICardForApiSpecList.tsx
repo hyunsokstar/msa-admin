@@ -4,10 +4,10 @@ import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import IDialogButtonForUpdateApiSpec from "@/app/board/free-board/IDialogButtonForUpdateApiSpec";
 import { IDialogButtonForDeleteApiSpec } from "@/app/board/free-board/IDialogButtonForDeleteApiSpec";
 import { DialogButtonForGetApiTest } from "./DialogButtonForGetApiTest";
 import { DialogButtonForPostApiTest } from "./DialogButtonForPostApiTest";
+import IDialogButtonForUpdateApiSpec from "@/app/board/free-board/IDialogButtonForUpdateApiSpec";
 
 interface ApiSpec {
   id: string;
