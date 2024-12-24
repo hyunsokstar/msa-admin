@@ -22,9 +22,7 @@ import IDialogButtonForDeleteTaskIssue from "@/components/dialog/IDialogButtonFo
 import IDialogButtonForUpdateTaskIssue from "@/components/dialog/IDialogButtonForUpdateTaskIssue";
 import { CustomBadge } from "@/components/bedge/CustomBadge";
 import ISquareForShowImage from "@/components/dialog/display/ISquareForShowImage";
-import Pagination from "rc-pagination"; // rc-pagination import
-import TextAlign from "@tiptap/extension-text-align";
-// import "rc-pagination/assets/index.css"; // 기본 스타일 가져오기
+import Pagination from "rc-pagination";
 
 const IssueAdminPage = () => {
     const [filter, setFilter] = useState<IssueFilter>({});
@@ -35,8 +33,6 @@ const IssueAdminPage = () => {
     const { data, isLoading, error } = useApiForGetAllIssueList(filter, limit, offset);
     const { issues, totalIssues, totalCompleted, totalIncomplete } = data || {};
     const { isAuthenticated } = useUserStore();
-
-    console.log("data: ", data);
 
     const handleFilterChange = (newFilter: IssueFilter) => {
         setFilter(newFilter);
@@ -100,62 +96,60 @@ const IssueAdminPage = () => {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>ID</TableHead>
-                                <TableHead>Title</TableHead>
-                                <TableHead>Refer Image</TableHead>
-                                <TableHead>Type/Priority/Status</TableHead>
-                                <TableHead>Categories</TableHead>
-                                <TableHead>Manager/Executor</TableHead>
-                                <TableHead>Page URL</TableHead>
-                                <TableHead>Actions</TableHead>
+                                <TableHead className="text-center">ID</TableHead>
+                                <TableHead className="text-center">Refer Image</TableHead>
+                                <TableHead className="text-center">Type/Priority/Status</TableHead>
+                                <TableHead className="text-center">Categories</TableHead>
+                                <TableHead className="text-center">Manager/Executor</TableHead>
+                                <TableHead className="text-center">Page URL</TableHead>
+                                <TableHead className="text-center">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {issues?.map((issue) => (
                                 <TableRow key={issue.id}>
-                                    <TableCell>{issue.id}</TableCell>
-                                    <TableCell>{issue.title}</TableCell>
-                                    <TableCell>
-                                        <ISquareForShowImage
-                                            imageUrls={{
-                                                url1: issue.ref_img_url1,
-                                                url2: issue.ref_img_url2,
-                                                url3: issue.ref_img_url3,
-                                            }}
-                                        />
+                                    <TableCell className="text-center">{issue.id}</TableCell>
+                                    <TableCell className="text-center">
+                                        <div className="flex justify-center gap-2">
+                                            <ISquareForShowImage
+                                                imageUrls={{
+                                                    url1: issue.ref_img_url1,
+                                                    url2: issue.ref_img_url2,
+                                                    url3: issue.ref_img_url3,
+                                                }}
+                                            />
+                                        </div>
                                     </TableCell>
-                                    <TableCell>
-                                        <div className="flex gap-1">
+                                    <TableCell className="text-center">
+                                        <div className="flex justify-center gap-1">
                                             <CustomBadge variant="priority" value={issue.priority} />
                                             <CustomBadge variant="type" value={issue.type} />
                                             <CustomBadge variant="status" value={issue.status} />
                                         </div>
                                     </TableCell>
-                                    <TableCell>
-                                        <div className="flex gap-1">
+                                    <TableCell className="text-center">
+                                        <div className="flex justify-center gap-1">
                                             <CustomBadge variant="category" value={issue.category1} />
                                             {issue.category2 && (
                                                 <CustomBadge variant="category" value={issue.category2} />
                                             )}
                                         </div>
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell className="text-center">
                                         <div className="space-y-1">
                                             <div>Manager: {issue.manager_user?.email || "N/A"}</div>
                                             <div>Executor: {issue.executor_user?.email || "N/A"}</div>
                                         </div>
                                     </TableCell>
-                                    <TableCell className="">
-                                        <div className="h-full w-full flex items-center justify-center">
+                                    <TableCell className="text-center">
                                         {issue.page_url && (
                                             <Link href={issue.page_url} target="_blank" rel="noopener noreferrer">
-                                                <ExternalLink className="h-4 w-4" />
+                                                <ExternalLink className="h-4 w-4 mx-auto" />
                                             </Link>
                                         )}
-                                        </div>
                                     </TableCell>
-                                    <TableCell>
-                                        <div className="flex space-x-2">
+                                    <TableCell className="text-center">
+                                        <div className="flex justify-center space-x-2">
                                             <IDialogButtonForUpdateTaskIssue issue={issue} />
                                             <IDialogButtonForDeleteTaskIssue
                                                 issueId={issue.id}
@@ -172,13 +166,12 @@ const IssueAdminPage = () => {
 
                 <div className="flex justify-center">
                     <Pagination
-                        current={currentPage} // currentPage 대신 current
-                        total={totalIssues || 0} // totalItems -> total
+                        current={currentPage}
+                        total={totalIssues || 0}
                         pageSize={limit}
-                        onChange={handlePageChange} // onPageChange 대신 onChange
+                        onChange={handlePageChange}
                     />
                 </div>
-
             </div>
         </div>
     );
