@@ -1,143 +1,119 @@
-"use client"
-import React, { useState, useEffect } from 'react';
+"use client";
+
+import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
-import { Search, BookOpen, LayoutDashboard, Shield, ShoppingCart, Users, PlayCircle, Layout } from 'lucide-react';
-import { useApiForDashboard } from '@/hook/useApiForDashboard';
-import { useApiForSearch } from '@/hook/useApiForSearch';
-import { DialogButtonForApiTest } from './DialogButtonForApiTest';
-import { DialogButtonForGetApiTest } from './DialogButtonForGetApiTest';
-import { DialogButtonForPostApiTest } from './DialogButtonForPostApiTest';
-import IDialogButtonForCreateApiName from '@/components/dialog/IDialogButtonForCreateApiName';
-import IDialogButtonForCreateApiSpec from '@/components/dialog/IDialogButtonForCreateApiSpec';
-import IDialogButtonForUpdateApiSpec from '@/app/board/free-board/IDialogButtonForUpdateApiSpec';
-import { IDialogButtonForDeleteApiSpec } from '@/app/board/free-board/IDialogButtonForDeleteApiSpec';
-import { cn } from '@/lib/utils';
-
-interface ApiSpec {
- id: string;
- endpoint: string;
- method: string;
- service_name?: string;
- description?: string;
- request_body_schema?: any;
-}
-
-const getMethodColor = (method: string) => {
-   switch (method) {
-     case 'GET': return 'bg-blue-500';
-     case 'POST': return 'bg-green-500';
-     case 'PUT': return 'bg-yellow-500';
-     case 'DELETE': return 'bg-red-500';
-     case 'PATCH': return 'bg-purple-500';
-     default: return 'bg-gray-500';
-   }
-};
+import { Search, BookOpen, LayoutDashboard, ShoppingCart, Users, Layout } from "lucide-react";
+import { useApiForDashboard } from "@/hook/useApiForDashboard";
+import { useApiForSearch } from "@/hook/useApiForSearch";
+import IDialogButtonForCreateApiSpec from "@/components/dialog/IDialogButtonForCreateApiSpec";
+import ICardForApiSpecList from "./ICardForApiSpecList";
+import MethodFilterToggle from "./MethodFilterToggle";
 
 const MSADashboard = () => {
-const services = [
-  { id: 'LMS', name: 'LMS', icon: BookOpen, color: 'bg-blue-500' },
-  { id: 'CMS', name: 'CMS', icon: LayoutDashboard, color: 'bg-purple-500' },
-  { id: 'SHOPPING_MALL', name: 'Shopping Mall', icon: ShoppingCart, color: 'bg-green-500' },
-  { id: 'USER', name: 'User', icon: Users, color: 'bg-yellow-500' },
-  { id: 'BOARD', name: 'Board', icon: Layout, color: 'bg-indigo-500' }  // 추가된 부분
-];
+  const services = [
+    { id: "LMS", name: "LMS", icon: BookOpen, color: "bg-blue-500" },
+    { id: "CMS", name: "CMS", icon: LayoutDashboard, color: "bg-purple-500" },
+    { id: "SHOPPING_MALL", name: "Shopping Mall", icon: ShoppingCart, color: "bg-green-500" },
+    { id: "USER", name: "User", icon: Users, color: "bg-yellow-500" },
+    { id: "BOARD", name: "Board", icon: Layout, color: "bg-indigo-500" },
+  ];
 
- const [selectedService, setSelectedService] = useState(services[0].id);
- const { data, isLoading, error } = useApiForDashboard();
- const { searchTerm, setSearchTerm, filteredSpecs } = useApiForSearch(data?.specs);
-
- if (isLoading) return <div>Loading...</div>;
- if (error) return <div>Error: {error instanceof Error ? error.message : 'An error occurred'}</div>;
-
- return (
+  const [selectedService, setSelectedService] = useState(services[0].id);
+  const [selectedMethods, setSelectedMethods] = useState<Set<string>>(new Set(["GET", "POST", "PUT", "DELETE", "PATCH"]));
   
-   <div className="container mx-auto p-6 space-y-6">
-     {/* 서비스 카드 */}
-     <div className="grid grid-cols-5 gap-4">
-       {services.map(service => (
-         <Card 
-           key={service.id}
-           className={`cursor-pointer hover:shadow-md transition-shadow ${
-             selectedService === service.id ? 'ring-1 ring-primary shadow-md' : ''
-           }`}
-           onClick={() => setSelectedService(service.id)}
-         >
-           <CardContent className="pt-6">
-             <div className="flex flex-col items-center text-center">
-               <div className={`${service.color} p-3 rounded-full mb-3`}>
-                 <service.icon className="h-6 w-6 text-white" />
-               </div>
-               <h3 className="font-semibold">{service.name}</h3>
-               <p className="text-sm text-gray-500">
-                 {data?.stats[service.id] || 0} APIs
-               </p>
-             </div>
-           </CardContent>
-         </Card>
-       ))}
-     </div>
+  const { data, isLoading, error } = useApiForDashboard();
+  const { searchTerm, setSearchTerm, filteredSpecs } = useApiForSearch(data?.specs);
 
-     {/* 검색 */}
-     <div className="flex gap-2">
-       <div className="relative flex-1">
-         <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
-         <Input 
-           placeholder="Search APIs across all services..." 
-           className="pl-8"
-           value={searchTerm}
-           onChange={(e) => setSearchTerm(e.target.value)}
-         />
-       </div>
-     </div>
+  const handleMethodToggle = (method: string) => {
+    setSelectedMethods(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(method)) {
+        newSet.delete(method);
+      } else {
+        newSet.add(method);
+      }
+      return newSet;
+    });
+  };
 
-    <div className="text- text-gray-500 flex justify-end mt-2"> 
-      <IDialogButtonForCreateApiSpec />
-    </div>
+  const getMethodColor = (method: string) => {
+    switch (method) {
+      case "GET":
+        return "bg-blue-500";
+      case "POST":
+        return "bg-green-500";
+      case "PUT":
+        return "bg-yellow-500";
+      case "DELETE":
+        return "bg-red-500";
+      case "PATCH":
+        return "bg-purple-500";
+      default:
+        return "bg-gray-500";
+    }
+  };
 
-     {/* API 목록 */}
-     {/* API 목록 */}
-    <Card>
-      <CardContent className="pt-6 space-y-4">
-        {filteredSpecs
-          ?.filter(spec => spec.service_name === selectedService)
-          .map(spec => (
-            <div key={spec.id} className="border rounded-lg p-4 hover:bg-gray-50">
-              <div className="flex items-center gap-6">
-                <div className="flex items-center gap-4 flex-1">
-                  <Badge className={cn("w-16 justify-center", getMethodColor(spec.method))}>
-                    {spec.method}
-                  </Badge>
-                  <span className="font-mono font-medium flex-1">{spec.endpoint}</span>
-                  <Badge variant="outline" className="w-24 justify-center">
-                    {services.find(s => s.id === spec.service_name)?.name}
-                  </Badge>
+  // Filter specs by selected methods
+  const methodFilteredSpecs = filteredSpecs?.filter(spec => 
+    selectedMethods.has(spec.method)
+  ) ?? [];
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error instanceof Error ? error.message : "An error occurred"}</div>;
+
+  return (
+    <div className="container mx-auto p-6 space-y-6">
+      <div className="grid grid-cols-5 gap-4">
+        {services.map((service) => (
+          <Card
+            key={service.id}
+            className={`cursor-pointer hover:shadow-md transition-shadow ${
+              selectedService === service.id ? "ring-1 ring-primary shadow-md" : ""
+            }`}
+            onClick={() => setSelectedService(service.id)}
+          >
+            <CardContent className="pt-6">
+              <div className="flex flex-col items-center text-center">
+                <div className={`${service.color} p-3 rounded-full mb-3`}>
+                  <service.icon className="h-6 w-6 text-white" />
                 </div>
-                <div className="flex items-center gap-3">
-                  <IDialogButtonForUpdateApiSpec spec={spec} />
-                  <IDialogButtonForDeleteApiSpec spec={spec} />
-                  {spec.method === 'GET' 
-                    ? <DialogButtonForGetApiTest spec={spec} /> 
-                    : <DialogButtonForPostApiTest spec={spec} />
-                  }
-                </div>
+                <h3 className="font-semibold">{service.name}</h3>
+                <p className="text-sm text-gray-500">{data?.stats[service.id] || 0} APIs</p>
               </div>
-              <p className="text-gray-600 mt-3">{spec.description}</p>
-            </div>
-          ))}
-        {filteredSpecs?.filter(spec => spec.service_name === selectedService).length === 0 && (
-          <div className="text-center text-gray-500 py-4">
-            No APIs found for this service
-          </div>
-        )}
-      </CardContent>
-    </Card>
-   </div>
- );
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="flex gap-2">
+        <div className="relative flex-1">
+          <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
+          <Input
+            placeholder="Search APIs across all services..."
+            className="pl-8"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+      </div>
+
+      <div className="flex justify-between items-center mt-2">
+        <MethodFilterToggle 
+          selectedMethods={selectedMethods}
+          onMethodToggle={handleMethodToggle}
+        />
+        <IDialogButtonForCreateApiSpec />
+      </div>
+
+      <ICardForApiSpecList
+        specs={methodFilteredSpecs}
+        services={services}
+        selectedService={selectedService}
+        getMethodColor={getMethodColor}
+      />
+    </div>
+  );
 };
 
 export default MSADashboard;
