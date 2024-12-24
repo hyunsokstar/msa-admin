@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { PlayCircle } from 'lucide-react';
+import { PlayCircle, Loader2 } from 'lucide-react';
 import DialogButtonForAdminLoginAndGetToken from '@/components/dialog/DialogButtonForAdminLoginAndGetToken';
+import MonacoEditor from '@monaco-editor/react';
 
 interface ApiSpec {
   id: string;
@@ -25,6 +25,7 @@ export const DialogButtonForPostApiTest = ({ spec }: DialogButtonForPostApiTestP
   const [response, setResponse] = useState('');
   const [loading, setLoading] = useState(false);
   const [bearerToken, setBearerToken] = useState('');
+  const [requestBodyError, setRequestBodyError] = useState<string | null>(null);
 
   const formatRequestBody = (schema: any): string => {
     try {
@@ -39,22 +40,39 @@ export const DialogButtonForPostApiTest = ({ spec }: DialogButtonForPostApiTestP
   };
 
   useEffect(() => {
-
-      setRequestBody(spec.request_body_schema);
+    if (spec.request_body_schema) {
+      setRequestBody(formatRequestBody(spec.request_body_schema));
+    }
   }, [spec]);
 
+  const validateJson = (value: string): boolean => {
+    try {
+      if (value) {
+        JSON.parse(value);
+      }
+      setRequestBodyError(null);
+      return true;
+    } catch (e) {
+      if (e instanceof Error) {
+        setRequestBodyError(e.message);
+      }
+      return false;
+    }
+  };
+
   const handleTest = async () => {
+    if (!validateJson(requestBody)) {
+      return;
+    }
+
     setLoading(true);
     try {
-      // requestBody가 JSON 형식인지 확인
       let parsedBody;
       let contentType = 'application/json';
       
       try {
-        // JSON parsing 시도
         parsedBody = JSON.parse(requestBody);
       } catch (e) {
-        // JSON parsing이 실패하면 form-urlencoded로 간주
         parsedBody = requestBody;
         contentType = 'application/x-www-form-urlencoded';
       }
@@ -69,8 +87,6 @@ export const DialogButtonForPostApiTest = ({ spec }: DialogButtonForPostApiTestP
         body: parsedBody
       };
 
-      console.log('Sending request:', proxyData);  // 디버깅용 로그
-
       const response = await fetch('/api/proxy', {
         method: 'POST',
         headers: {
@@ -81,11 +97,9 @@ export const DialogButtonForPostApiTest = ({ spec }: DialogButtonForPostApiTestP
 
       const data = await response.text();
       try {
-        // JSON 파싱 시도
         const jsonData = JSON.parse(data);
         setResponse(JSON.stringify(jsonData, null, 2));
       } catch {
-        // 텍스트 응답인 경우
         setResponse(data);
       }
     } catch (error) {
@@ -95,64 +109,151 @@ export const DialogButtonForPostApiTest = ({ spec }: DialogButtonForPostApiTestP
     }
   };
 
+  const handleEditorChange = (value: string | undefined) => {
+    const newValue = value || '';
+    setRequestBody(newValue);
+    validateJson(newValue);
+  };
+
+  const handleResponseEditorDidMount = (editor: any) => {
+    if (response) {
+      try {
+        const formatted = JSON.stringify(JSON.parse(response), null, 2);
+        editor.setValue(formatted);
+      } catch (e) {
+        editor.setValue(response);
+      }
+    }
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
+        <Button 
+          variant="outline" 
+          size="sm"
+          className="hover:bg-green-100 hover:text-green-600 transition-colors"
+        >
           <PlayCircle className="h-4 w-4 mr-2" />
           Test POST
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-5xl max-h-[90vh] w-full bg-white overflow-hidden flex flex-col">
-        <DialogHeader>
+
+      <DialogContent className="max-w-none w-[100vw] h-[100vh] bg-white overflow-hidden flex flex-col p-0 m-0 rounded-none">
+        <DialogHeader className="px-6 py-4 border-b">
           <DialogTitle className="flex items-center gap-2">
-            <Badge className="bg-green-500">POST</Badge>
-            <span className="font-mono">{spec.endpoint}</span>
+            <Badge className="bg-green-500 hover:bg-green-600 transition-colors">
+              POST
+            </Badge>
+            <span className="font-mono text-green-600">
+              {spec.endpoint}
+            </span>
           </DialogTitle>
         </DialogHeader>
         
-        <div className="flex-1 overflow-auto p-6 space-y-4">
-          <div className="flex gap-2 space-y-2">
-            <h3 className="text-sm font-medium">Token (Option)</h3>
-            <Input
-              value={bearerToken}
-              onChange={(e) => setBearerToken(e.target.value)}
-              placeholder="Enter JWT token"
-              className="font-mono"
-            />
-            <DialogButtonForAdminLoginAndGetToken 
-              onTokenReceived={setBearerToken} 
-              triggerButtonText="Login to get token" 
-            />
+        <div className="flex-1 flex overflow-hidden">
+          {/* Left Panel - Request */}
+          <div className="w-1/2 overflow-auto px-6 py-4 space-y-4 border-r">
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium text-gray-700">Bearer Token</h3>
+              <div className='flex gap-2'>
+                <Input
+                  value={bearerToken}
+                  onChange={(e) => setBearerToken(e.target.value)}
+                  placeholder="Enter JWT token"
+                  className="font-mono bg-gray-50 focus:ring-green-500 flex-1"
+                />
+                <DialogButtonForAdminLoginAndGetToken 
+                  onTokenReceived={setBearerToken} 
+                  triggerButtonText="Login to get token" 
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium text-gray-700">Request Body</h3>
+              <div className="border rounded-md overflow-hidden">
+                <MonacoEditor
+                  height="calc(100vh - 300px)"
+                  language="json"
+                  theme="light"
+                  value={requestBody}
+                  onChange={handleEditorChange}
+                  options={{
+                    minimap: { enabled: false },
+                    fontSize: 14,
+                    lineNumbers: 'off',
+                    folding: true,
+                    wordWrap: 'on',
+                    formatOnPaste: true,
+                    formatOnType: true,
+                    automaticLayout: true,
+                    scrollBeyondLastLine: false,
+                    renderLineHighlight: 'none',
+                    hideCursorInOverviewRuler: true,
+                    overviewRulerBorder: false,
+                    padding: { top: 8, bottom: 8 },
+                    tabSize: 2,
+                  }}
+                />
+              </div>
+              {requestBodyError && (
+                <p className="text-sm text-red-500 mt-1">{requestBodyError}</p>
+              )}
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <h3 className="text-sm font-medium">Request Body</h3>
-            <Textarea
-              value={requestBody}
-              onChange={(e) => setRequestBody(e.target.value)}
-              placeholder="Enter request body"
-              className="font-mono min-h-[200px]"
-              rows={8}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <h3 className="text-sm font-medium">Response</h3>
-            <div className="border rounded-md p-4 bg-gray-50 min-h-[300px] max-h-[500px] overflow-auto font-mono text-sm whitespace-pre">
-              {response || 'Response will appear here...'}
+          {/* Right Panel - Response */}
+          <div className="w-1/2 overflow-auto px-6 py-4 space-y-4 bg-gray-50">
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium text-gray-700">Response</h3>
+              <div className="border bg-white rounded-md overflow-hidden">
+                <MonacoEditor
+                  height="calc(100vh - 200px)"
+                  language="json"
+                  theme="light"
+                  value={response || '// Response will appear here...'}
+                  options={{
+                    readOnly: true,
+                    minimap: { enabled: false },
+                    fontSize: 14,
+                    lineNumbers: 'off',
+                    folding: true,
+                    wordWrap: 'on',
+                    formatOnPaste: true,
+                    formatOnType: true,
+                    automaticLayout: true,
+                    scrollBeyondLastLine: false,
+                    renderLineHighlight: 'none',
+                    hideCursorInOverviewRuler: true,
+                    overviewRulerBorder: false,
+                    padding: { top: 8, bottom: 8 },
+                    tabSize: 2,
+                  }}
+                  onMount={handleResponseEditorDidMount}
+                />
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="p-6 border-t">
-          <Button 
-            onClick={handleTest} 
-            disabled={loading}
-            className="w-full"
-          >
-            {loading ? 'Testing...' : 'Test POST Request'}
-          </Button>
+        <div className="px-6 py-4 border-t bg-gray-50">
+          <div className="max-w-5xl mx-auto">
+            <Button
+              onClick={handleTest}
+              disabled={loading || !!requestBodyError}
+              className="w-full bg-green-500 hover:bg-green-600 text-white disabled:opacity-50 transition-colors"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Testing...
+                </>
+              ) : (
+                'Test POST Request'
+              )}
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
