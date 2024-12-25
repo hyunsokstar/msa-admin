@@ -11,7 +11,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MonacoEditor from '@monaco-editor/react';
 import { ApiSpec } from '@/api/apiForApiSpec';
@@ -33,9 +32,9 @@ const SERVICE_OPTIONS = [
 
 const HTTP_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'] as const;
 
-export const IDialogButtonForUpdateApiSpec: React.FC<IDialogButtonForUpdateApiSpecProps> = ({ 
+export const IDialogButtonForUpdateApiSpec: React.FC<IDialogButtonForUpdateApiSpecProps> = ({
   spec,
-  onSuccess 
+  onSuccess
 }) => {
   const [open, setOpen] = useState(false);
   const updateApiSpec = useApiForUpdateApiSpec();
@@ -66,14 +65,14 @@ export const IDialogButtonForUpdateApiSpec: React.FC<IDialogButtonForUpdateApiSp
     }
 
     updateApiSpec.mutate(
-      { 
-        id: spec.id, 
+      {
+        id: spec.id,
         updates: {
           ...formData,
-          request_body_schema: formData.request_body_schema 
+          request_body_schema: formData.request_body_schema
             ? JSON.parse(formData.request_body_schema)
             : null,
-        } 
+        }
       },
       {
         onSuccess: () => {
@@ -112,8 +111,8 @@ export const IDialogButtonForUpdateApiSpec: React.FC<IDialogButtonForUpdateApiSp
   const getInitialJsonValue = () => {
     if (!spec.request_body_schema) return '';
     try {
-      return typeof spec.request_body_schema === 'string' 
-        ? spec.request_body_schema 
+      return typeof spec.request_body_schema === 'string'
+        ? spec.request_body_schema
         : JSON.stringify(spec.request_body_schema, null, 2);
     } catch {
       return '';
@@ -123,8 +122,8 @@ export const IDialogButtonForUpdateApiSpec: React.FC<IDialogButtonForUpdateApiSp
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           size="sm"
           className="gap-2 font-medium hover:bg-gray-100 focus:ring focus:ring-blue-500 transition-all duration-200"
         >
@@ -132,17 +131,17 @@ export const IDialogButtonForUpdateApiSpec: React.FC<IDialogButtonForUpdateApiSp
           수정
         </Button>
       </DialogTrigger>
-      
-      <DialogContent className="max-w-[90vw] w-full h-[90vh] bg-white p-0 rounded-lg shadow-lg">
-        <DialogHeader className="px-6 py-3 border-b bg-gray-50">
+
+      <DialogContent className="max-w-[98vw] max-h-[98vh] w-full h-full sm:max-w-full sm:max-h-full sm:w-[98vw] sm:h-[98vh] bg-white p-0 shadow-2xl rounded-lg overflow-hidden">
+        <DialogHeader className="px-6 py-4 border-b bg-gray-50 sticky top-0 z-10">
           <DialogTitle className="text-lg font-semibold">API 스펙 수정</DialogTitle>
         </DialogHeader>
 
-        <div className="flex flex-1 h-full overflow-hidden">
+        <div className="flex flex-col sm:flex-row flex-1 h-full overflow-hidden">
           {/* Left Column - Form */}
-          <div className="w-1/2 p-6 overflow-y-auto border-r space-y-4">
+          <div className="w-full sm:w-1/2 p-6 overflow-y-auto border-r space-y-4">
             <Input
-              value={formData.title}
+              value={formData.title || ''}
               onChange={(e) => handleChange('title', e.target.value)}
               placeholder="API 제목"
               required
@@ -159,8 +158,8 @@ export const IDialogButtonForUpdateApiSpec: React.FC<IDialogButtonForUpdateApiSp
                 </SelectTrigger>
                 <SelectContent className="bg-white border border-gray-200 shadow-lg">
                   {SERVICE_OPTIONS.map((service) => (
-                    <SelectItem 
-                      key={service.value} 
+                    <SelectItem
+                      key={service.value}
                       value={service.value}
                       className="hover:bg-gray-100 cursor-pointer focus:bg-gray-100"
                     >
@@ -179,8 +178,8 @@ export const IDialogButtonForUpdateApiSpec: React.FC<IDialogButtonForUpdateApiSp
                 </SelectTrigger>
                 <SelectContent className="bg-white border border-gray-200 shadow-lg">
                   {HTTP_METHODS.map((method) => (
-                    <SelectItem 
-                      key={method} 
+                    <SelectItem
+                      key={method}
                       value={method}
                       className="hover:bg-gray-100 cursor-pointer focus:bg-gray-100"
                     >
@@ -192,7 +191,7 @@ export const IDialogButtonForUpdateApiSpec: React.FC<IDialogButtonForUpdateApiSp
             </div>
 
             <Input
-              value={formData.endpoint}
+              value={formData.endpoint || ''}
               onChange={(e) => handleChange('endpoint', e.target.value)}
               placeholder="/api/v1/example"
               required
@@ -201,14 +200,14 @@ export const IDialogButtonForUpdateApiSpec: React.FC<IDialogButtonForUpdateApiSp
 
             <div className="grid grid-cols-2 gap-4">
               <Input
-                value={formData.category1}
+                value={formData.category1 || ''}
                 onChange={(e) => handleChange('category1', e.target.value)}
                 placeholder="카테고리1"
                 className="bg-white border-gray-200 hover:border-gray-300 focus:ring focus:ring-blue-500 transition-colors"
               />
-              
+
               <Input
-                value={formData.category2}
+                value={formData.category2 || ''}
                 onChange={(e) => handleChange('category2', e.target.value)}
                 placeholder="카테고리2"
                 className="bg-white border-gray-200 hover:border-gray-300 focus:ring focus:ring-blue-500 transition-colors"
@@ -216,7 +215,7 @@ export const IDialogButtonForUpdateApiSpec: React.FC<IDialogButtonForUpdateApiSp
             </div>
 
             <Textarea
-              value={formData.description}
+              value={formData.description || ''}
               onChange={(e) => handleChange('description', e.target.value)}
               placeholder="API 설명"
               className="bg-white border-gray-200 hover:border-gray-300 focus:ring focus:ring-blue-500 transition-colors"
@@ -249,103 +248,104 @@ export const IDialogButtonForUpdateApiSpec: React.FC<IDialogButtonForUpdateApiSp
 
             <div className="flex items-center">
               <Switch
-                checked={formData.auth_required}
+                id="auth-required-switch"
+                checked={!!formData.auth_required}
                 onCheckedChange={(checked: boolean) => handleChange('auth_required', checked)}
-                className="data-[state=checked]:bg-blue-600 focus:ring focus:ring-blue-500"
+                className="data-[state=checked]:bg-blue-600 data-[state=unchecked]:bg-gray-200"
               />
-              <span className="ml-2 text-sm font-medium">인증 필요</span>
+              <label htmlFor="auth-required-switch" className="ml-2 text-sm font-medium">인증 필요</label>
             </div>
           </div>
 
           {/* Right Column - Tabs for Type Definitions */}
-          <div className="w-1/2 p-6 bg-gray-50 overflow-hidden flex flex-col">
+          <div className="w-full sm:w-1/2 p-6 bg-gray-50 overflow-hidden flex flex-col">
             <Tabs defaultValue="request" className="flex-1 flex flex-col">
-              <TabsList className="flex w-full p-1 bg-gray-200 rounded-lg border shadow-sm mb-6 gap-2">
-                <TabsTrigger 
-                  value="request" 
+              <TabsList className="flex w-full p-1 bg-white rounded-lg border-2 shadow-sm mb-6 gap-2">
+                <TabsTrigger
+                  value="request"
                   className="flex-1 py-3 text-sm font-medium rounded-md transition-all duration-200
-                    data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm
-                    hover:bg-gray-50"
+                    data-[state=active]:bg-blue-600 data-[state=active]:text-white
+                    hover:bg-blue-50"
                 >
                   Request Type
                 </TabsTrigger>
-                <TabsTrigger 
-                  value="response" 
+                <TabsTrigger
+                  value="response"
                   className="flex-1 py-3 text-sm font-medium rounded-md transition-all duration-200
-                    data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700 data-[state=active]:shadow-sm
-                    hover:bg-gray-50"
+                    data-[state=active]:bg-blue-600 data-[state=active]:text-white
+                    hover:bg-blue-50"
                 >
                   Response Type
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="request" className="flex-1">
-                <div className="h-full border rounded-lg overflow-hidden bg-white shadow-sm">
-                  <MonacoEditor
-                    height="100%"
-                    defaultLanguage="typescript"
-                    value={formData.request_type || ''}
-                    onChange={(value) => handleChange('request_type', value || '')}
-                    options={{
-                      minimap: { enabled: false },
-                      scrollBeyondLastLine: false,
-                      fontSize: 14,
-                      lineNumbers: 'off',
-                      folding: true,
-                      formatOnPaste: true,
-                      formatOnType: true,
-                      automaticLayout: true,
-                      tabSize: 2,
-                    }}
-                  />
-                </div>
-              </TabsContent>
+              <div className="flex-1 relative">
+                <TabsContent value="request" className="absolute inset-0">
+                  <div className="h-full border rounded-lg overflow-hidden bg-white shadow-sm">
+                    <MonacoEditor
+                      height="100%"
+                      defaultLanguage="typescript"
+                      value={formData.request_type || ''}
+                      onChange={(value) => handleChange('request_type', value || '')}
+                      options={{
+                        minimap: { enabled: false },
+                        scrollBeyondLastLine: false,
+                        fontSize: 14,
+                        lineNumbers: 'off',
+                        folding: true,
+                        formatOnPaste: true,
+                        formatOnType: true,
+                        automaticLayout: true,
+                        tabSize: 2,
+                      }}
+                    />
+                  </div>
+                </TabsContent>
 
-              <TabsContent value="response" className="flex-1">
-                <div className="h-full border rounded-lg overflow-hidden bg-white shadow-sm">
-                  <MonacoEditor
-                    height="100%"
-                    defaultLanguage="typescript"
-                    value={formData.response_type || ''}
-                    onChange={(value) => handleChange('response_type', value || '')}
-                    options={{
-                      minimap: { enabled: false },
-                      scrollBeyondLastLine: false,
-                      fontSize: 14,
-                      lineNumbers: 'off',
-                      folding: true,
-                      formatOnPaste: true,
-                      formatOnType: true,
-                      automaticLayout: true,
-                      tabSize: 2,
-                    }}
-                  />
-                </div>
-              </TabsContent>
+                <TabsContent value="response" className="absolute inset-0">
+                  <div className="h-full border rounded-lg overflow-hidden bg-white shadow-sm">
+                    <MonacoEditor
+                      height="100%"
+                      defaultLanguage="typescript"
+                      value={formData.response_type || ''}
+                      onChange={(value) => handleChange('response_type', value || '')}
+                      options={{
+                        minimap: { enabled: false },
+                        scrollBeyondLastLine: false,
+                        fontSize: 14,
+                        lineNumbers: 'off',
+                        folding: true,
+                        formatOnPaste: true,
+                        formatOnType: true,
+                        automaticLayout: true,
+                        tabSize: 2,
+                      }}
+                    />
+                  </div>
+                </TabsContent>
+              </div>
             </Tabs>
           </div>
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 px-8 py-6 bg-white border-t shadow-[0_-1px_2px_rgba(0,0,0,0.1)]">
-          <div className="flex justify-end gap-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleCancel}
-              disabled={updateApiSpec.isPending}
-              className="min-w-[120px] py-4 px-6 text-base font-medium bg-white hover:bg-gray-50 transition-all duration-200 border-gray-300"
-            >
-              취소
-            </Button>
-            <Button
-              type="submit"
-              onClick={handleSubmit}
-              disabled={updateApiSpec.isPending || !!jsonError}
-              className="min-w-[120px] py-4 px-6 text-base font-medium bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200 shadow-md hover:shadow-lg"
-            >
-              {updateApiSpec.isPending ? '수정 중...' : '수정'}
-            </Button>
-          </div>
+        <div className="px-6 py-4 bg-white border-t flex justify-end gap-4 sticky bottom-0">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleCancel}
+            disabled={updateApiSpec.isPending}
+            className="min-w-[120px] py-2 px-4 text-sm font-medium bg-white hover:bg-gray-50 border-2 border-gray-300 rounded-lg"
+          >
+            취소
+          </Button>
+          <Button
+            type="submit"
+            onClick={handleSubmit}
+            disabled={updateApiSpec.isPending || !!jsonError}
+            className="min-w-[120px] py-2 px-4 text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md hover:shadow-lg"
+          >
+            {updateApiSpec.isPending ? '수정 중...' : '수정'}
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
