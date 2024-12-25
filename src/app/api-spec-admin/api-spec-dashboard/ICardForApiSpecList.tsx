@@ -8,15 +8,18 @@ import { IDialogButtonForDeleteApiSpec } from "@/app/board/free-board/IDialogBut
 import { DialogButtonForGetApiTest } from "./DialogButtonForGetApiTest";
 import { DialogButtonForPostApiTest } from "./DialogButtonForPostApiTest";
 import IDialogButtonForUpdateApiSpec from "@/app/board/free-board/IDialogButtonForUpdateApiSpec";
+import { ApiSpec } from "@/api/apiForApiSpec";
 
-interface ApiSpec {
-  id: string;
-  endpoint: string;
-  method: string;
-  service_name?: string;
-  description?: string;
-  title: string;
-}
+// interface ApiSpec {
+//   id: string;
+//   endpoint: string;
+//   method: string;
+//   service_name?: string;
+//   description?: string;
+//   title: string;
+//   request_type: string;
+//   response_type: string;
+// }
 
 interface Service {
   id: string;

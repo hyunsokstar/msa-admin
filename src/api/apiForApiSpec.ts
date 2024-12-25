@@ -19,6 +19,8 @@ export interface ApiSpec {
   created_at?: string;
   updated_at?: string;
   auth_required?: boolean;
+  request_type: string;
+  response_type: string;
 }
 
 // 모든 API 스펙 데이터 조회
