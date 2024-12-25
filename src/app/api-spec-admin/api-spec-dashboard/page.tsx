@@ -9,6 +9,7 @@ import { useApiForSearch } from "@/hook/useApiForSearch";
 import IDialogButtonForCreateApiSpec from "@/components/dialog/IDialogButtonForCreateApiSpec";
 import ICardForApiSpecList from "./ICardForApiSpecList";
 import MethodFilterToggle from "./MethodFilterToggle";
+import IFilterFormForCategorysForApiSpec from "./IFilterFormForCategorysForApiSpec";
 
 const MSADashboard = () => {
   const services = [
@@ -21,6 +22,8 @@ const MSADashboard = () => {
 
   const [selectedService, setSelectedService] = useState(services[0].id);
   const [selectedMethods, setSelectedMethods] = useState<Set<string>>(new Set(["GET", "POST", "PUT", "DELETE", "PATCH"]));
+  const [category1, setCategory1] = useState("");
+  const [category2, setCategory2] = useState("");
   
   const { data, isLoading, error } = useApiForDashboard();
   const { searchTerm, setSearchTerm, filteredSpecs } = useApiForSearch(data?.specs);
@@ -54,10 +57,17 @@ const MSADashboard = () => {
     }
   };
 
-  // Filter specs by selected methods
+  // Filter specs by selected methods and categories
   const methodFilteredSpecs = filteredSpecs?.filter(spec => 
     selectedMethods.has(spec.method)
   ) ?? [];
+
+  // Apply category filters
+  const categoryFilteredSpecs = methodFilteredSpecs.filter(spec => {
+    const matchCategory1 = !category1 || spec.category1?.toLowerCase().includes(category1.toLowerCase());
+    const matchCategory2 = !category2 || spec.category2?.toLowerCase().includes(category2.toLowerCase());
+    return matchCategory1 && matchCategory2;
+  });
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error instanceof Error ? error.message : "An error occurred"}</div>;
@@ -103,11 +113,17 @@ const MSADashboard = () => {
           selectedMethods={selectedMethods}
           onMethodToggle={handleMethodToggle}
         />
+        <IFilterFormForCategorysForApiSpec
+          category1={category1}
+          category2={category2}
+          onCategory1Change={setCategory1}
+          onCategory2Change={setCategory2}
+        />
         <IDialogButtonForCreateApiSpec />
       </div>
 
       <ICardForApiSpecList
-        specs={methodFilteredSpecs}
+        specs={categoryFilteredSpecs}
         services={services}
         selectedService={selectedService}
         getMethodColor={getMethodColor}
