@@ -7,10 +7,16 @@ import { SelectColumn } from 'react-data-grid';
 import 'react-data-grid/lib/styles.css';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, CheckCircle, XCircle, Clock } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, Clock, X } from "lucide-react";
 import Pagination from 'rc-pagination';
 import 'rc-pagination/assets/index.css';
 import { useApiForDashboard } from '@/hook/useApiForDashboard';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 type TestStatus = 'loading' | 'success' | 'error' | undefined;
 
@@ -41,6 +47,7 @@ function ApiTesting() {
   const [testTimes, setTestTimes] = React.useState<Record<string, string | undefined>>({});
   const [isTestRunning, setIsTestRunning] = React.useState(false);
   const [testResultsList, setTestResultsList] = React.useState<TestResult[]>([]);
+  const [isResultModalOpen, setIsResultModalOpen] = React.useState(false);
   const { data, isLoading, isError } = useApiForDashboard();
 
   const columns = [
@@ -107,7 +114,7 @@ function ApiTesting() {
 
         newTestResults.push({
           id: rowData.id,
-          service_name: rowData.service_name,
+          service_name: rowData.service_name ?? 'Unknown Service',
           title: rowData.title,
           method: rowData.method,
           status,
@@ -118,7 +125,7 @@ function ApiTesting() {
         updatedResults[key] = 'error';
         newTestResults.push({
           id: rowData.id,
-          service_name: rowData.service_name,
+          service_name: rowData.service_name ?? 'Unknown Service',
           title: rowData.title,
           method: rowData.method,
           status: 'error',
@@ -131,6 +138,7 @@ function ApiTesting() {
     setTestTimes({ ...updatedTimes });
     setTestResultsList([...newTestResults, ...testResultsList]);
     setIsTestRunning(false);
+    setIsResultModalOpen(true);
   };
 
   if (isLoading) {
@@ -190,15 +198,23 @@ function ApiTesting() {
         </CardContent>
       </Card>
 
-      {testResultsList.length > 0 && (
-        <Card className="shadow-md border-2">
-          <CardHeader>
-            <CardTitle>Test Results</CardTitle>
-          </CardHeader>
-          <CardContent>
+      <Dialog open={isResultModalOpen} onOpenChange={setIsResultModalOpen}>
+        <DialogContent className="max-w-full w-full h-full max-h-screen flex flex-col">
+          <DialogHeader className="flex flex-row items-center justify-between">
+            <DialogTitle>Test Results</DialogTitle>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="w-8 h-8 p-0"
+              onClick={() => setIsResultModalOpen(false)}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </DialogHeader>
+          <div className="flex-1 overflow-auto">
             <div className="border rounded-lg overflow-x-auto">
               <table className="w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+                <thead className="bg-gray-50 sticky top-0">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
@@ -245,9 +261,9 @@ function ApiTesting() {
                 </tbody>
               </table>
             </div>
-          </CardContent>
-        </Card>
-      )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
