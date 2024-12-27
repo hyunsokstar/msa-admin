@@ -202,3 +202,4 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
 };
 
 export default TiptapEditor;
+  

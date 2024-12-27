@@ -1,135 +1,404 @@
 "use client";
 
-import React, { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Search, BookOpen, LayoutDashboard, ShoppingCart, Users, Layout } from "lucide-react";
-import { useApiForDashboard } from "@/hook/useApiForDashboard";
-import { useApiForSearch } from "@/hook/useApiForSearch";
-import IDialogButtonForCreateApiSpec from "@/components/dialog/IDialogButtonForCreateApiSpec";
-import ICardForApiSpecList from "./ICardForApiSpecList";
-import MethodFilterToggle from "./MethodFilterToggle";
-import IFilterFormForCategorysForApiSpec from "./IFilterFormForCategorysForApiSpec";
+import React from 'react';
+import type { Key } from 'react';
+import ReactDataGrid from 'react-data-grid';
+import { SelectColumn } from 'react-data-grid';
+import 'react-data-grid/lib/styles.css';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Loader2, CheckCircle, XCircle, Clock, X, BookOpen, LayoutDashboard, ShoppingCart, Users, Layout } from "lucide-react";
+import Pagination from 'rc-pagination';
+import 'rc-pagination/assets/index.css';
+import { useApiForDashboard } from '@/hook/useApiForDashboard';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
-const MSADashboard = () => {
-  const services = [
-    { id: "LMS", name: "LMS", icon: BookOpen, color: "bg-blue-500" },
-    { id: "CMS", name: "CMS", icon: LayoutDashboard, color: "bg-purple-500" },
-    { id: "SHOPPING_MALL", name: "Shopping Mall", icon: ShoppingCart, color: "bg-green-500" },
-    { id: "USER", name: "User", icon: Users, color: "bg-yellow-500" },
-    { id: "BOARD", name: "Board", icon: Layout, color: "bg-indigo-500" },
+type TestStatus = 'loading' | 'success' | 'error' | undefined;
+type HttpMethod = 'ALL' | 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+
+interface RowData {
+  id: string | number;
+  service_name: string;
+  title: string;
+  method: string;
+  endpoint: string;
+  request_body_schema: string;
+}
+
+interface TestResult {
+  id: string | number;
+  service_name: string;
+  title: string;
+  method: string;
+  status: TestStatus;
+  time?: string;
+  timestamp: string;
+}
+
+const services = [
+  { id: "ALL", name: "All Services", icon: Layout, color: "bg-gray-500" },
+  { id: "LMS", name: "LMS", icon: BookOpen, color: "bg-blue-500" },
+  { id: "CMS", name: "CMS", icon: LayoutDashboard, color: "bg-purple-500" },
+  { id: "SHOPPING_MALL", name: "Shopping Mall", icon: ShoppingCart, color: "bg-green-500" },
+  { id: "USER", name: "User", icon: Users, color: "bg-yellow-500" },
+  { id: "BOARD", name: "Board", icon: Layout, color: "bg-indigo-500" },
+];
+
+function ApiTesting() {
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [selectedMethod, setSelectedMethod] = React.useState<HttpMethod>('ALL');
+  const [selectedService, setSelectedService] = React.useState("ALL");
+  const pageSize = 10;
+  const [selectedRows, setSelectedRows] = React.useState<ReadonlySet<Key>>(new Set());
+  const [testResults, setTestResults] = React.useState<Record<string, TestStatus>>({});
+  const [testTimes, setTestTimes] = React.useState<Record<string, string | undefined>>({});
+  const [isTestRunning, setIsTestRunning] = React.useState(false);
+  const [testResultsList, setTestResultsList] = React.useState<TestResult[]>([]);
+  const [isResultModalOpen, setIsResultModalOpen] = React.useState(false);
+  const { data, isLoading, isError } = useApiForDashboard();
+
+  const columns = [
+    SelectColumn,
+    { key: 'service_name', name: 'Service Name', width: 150 },
+    { key: 'title', name: 'Title', width: 200 },
+    { key: 'method', name: 'Method', width: 100 },
+    { key: 'endpoint', name: 'Endpoint', width: 250 },
+    { key: 'request_body_schema', name: 'Request Body Schema', width: 300 }
   ];
 
-  const [selectedService, setSelectedService] = useState(services[0].id);
-  const [selectedMethods, setSelectedMethods] = useState<Set<string>>(new Set(["GET", "POST", "PUT", "DELETE", "PATCH"]));
-  const [category1, setCategory1] = useState("");
-  const [category2, setCategory2] = useState("");
-  
-  const { data, isLoading, error } = useApiForDashboard();
-  const { searchTerm, setSearchTerm, filteredSpecs } = useApiForSearch(data?.specs);
+  const getFilteredData = () => {
+    if (!data?.specs) return [];
+    return data.specs.filter(spec => 
+      (selectedMethod === 'ALL' || spec.method === selectedMethod) &&
+      (selectedService === 'ALL' || spec.service_name === selectedService)
+    );
+  };
 
-  const handleMethodToggle = (method: string) => {
-    setSelectedMethods(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(method)) {
-        newSet.delete(method);
-      } else {
-        newSet.add(method);
+  const getCurrentPageData = () => {
+    const filteredData = getFilteredData();
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    return filteredData.slice(startIndex, endIndex).map((spec) => ({
+      ...spec,
+      id: spec.id
+    }));
+  };
+
+  const handleSelectedRowsChange = (newSelectedRows: ReadonlySet<Key>) => {
+    setSelectedRows(newSelectedRows);
+  };
+
+  const handleMethodChange = (value: string) => {
+    setSelectedMethod(value as HttpMethod);
+    setCurrentPage(1);
+    setSelectedRows(new Set());
+  };
+
+  const handleServiceChange = (serviceId: string) => {
+    setSelectedService(serviceId);
+    setCurrentPage(1);
+    setSelectedRows(new Set());
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleTestSelectedRows = async () => {
+    if (!data?.specs || selectedRows.size === 0) return;
+
+    setIsTestRunning(true);
+    const updatedResults = { ...testResults };
+    const updatedTimes = { ...testTimes };
+    const newTestResults: TestResult[] = [];
+
+    for (const rowId of selectedRows) {
+      const key = rowId.toString();
+      const rowData = data.specs.find((spec) => spec.id === rowId);
+
+      if (!rowData) continue;
+
+      updatedResults[key] = 'loading';
+      setTestResults({ ...updatedResults });
+
+      const startTime = performance.now();
+      try {
+        const response = await fetch('/api/proxy', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            endpoint: rowData.endpoint,
+            method: rowData.method,
+            body: rowData.request_body_schema,
+          }),
+        });
+
+        const status = response.ok ? 'success' : 'error';
+        updatedResults[key] = status;
+        const endTime = performance.now();
+        const timeSpent = (endTime - startTime).toFixed(2);
+        updatedTimes[key] = timeSpent;
+
+        newTestResults.push({
+          id: rowData.id,
+          service_name: rowData.service_name ?? 'Unknown Service',
+          title: rowData.title,
+          method: rowData.method,
+          status,
+          time: timeSpent,
+          timestamp: new Date().toLocaleTimeString()
+        });
+      } catch (error) {
+        updatedResults[key] = 'error';
+        newTestResults.push({
+          id: rowData.id,
+          service_name: rowData.service_name ?? 'Unknown Service',
+          title: rowData.title,
+          method: rowData.method,
+          status: 'error',
+          timestamp: new Date().toLocaleTimeString()
+        });
       }
-      return newSet;
-    });
-  };
-
-  const getMethodColor = (method: string) => {
-    switch (method) {
-      case "GET":
-        return "bg-blue-500";
-      case "POST":
-        return "bg-green-500";
-      case "PUT":
-        return "bg-yellow-500";
-      case "DELETE":
-        return "bg-red-500";
-      case "PATCH":
-        return "bg-purple-500";
-      default:
-        return "bg-gray-500";
     }
+
+    setTestResults({ ...updatedResults });
+    setTestTimes({ ...updatedTimes });
+    setTestResultsList([...newTestResults, ...testResultsList]);
+    setIsTestRunning(false);
+    setIsResultModalOpen(true);
   };
 
-  // Filter specs by selected methods and categories
-  const methodFilteredSpecs = filteredSpecs?.filter(spec => 
-    selectedMethods.has(spec.method)
-  ) ?? [];
+  if (isLoading) {
+    return <div className="flex justify-center items-center h-96">Loading...</div>;
+  }
 
-  // Apply category filters
-  const categoryFilteredSpecs = methodFilteredSpecs.filter(spec => {
-    const matchCategory1 = !category1 || spec.category1?.toLowerCase().includes(category1.toLowerCase());
-    const matchCategory2 = !category2 || spec.category2?.toLowerCase().includes(category2.toLowerCase());
-    return matchCategory1 && matchCategory2;
-  });
+  if (isError) {
+    return <div className="flex justify-center items-center h-96 text-destructive">Error loading data</div>;
+  }
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error instanceof Error ? error.message : "An error occurred"}</div>;
+  const filteredData = getFilteredData();
 
-  return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="grid grid-cols-5 gap-4">
+return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-6 gap-4 mb-6 p-3">
         {services.map((service) => (
           <Card
             key={service.id}
             className={`cursor-pointer hover:shadow-md transition-shadow ${
-              selectedService === service.id ? "ring-1 ring-primary shadow-md" : ""
+              selectedService === service.id ? "ring-2 ring-primary shadow-md" : ""
             }`}
-            onClick={() => setSelectedService(service.id)}
+            onClick={() => handleServiceChange(service.id)}
           >
             <CardContent className="pt-6">
               <div className="flex flex-col items-center text-center">
                 <div className={`${service.color} p-3 rounded-full mb-3`}>
                   <service.icon className="h-6 w-6 text-white" />
                 </div>
-                <h3 className="font-semibold">{service.name}</h3>
-                <p className="text-sm text-gray-500">{data?.stats[service.id] || 0} APIs</p>
+                <h3 className="font-semibold text-sm">{service.name}</h3>
+                <p className="text-xs text-gray-500">
+                  {service.id === "ALL" 
+                    ? data?.specs?.length || 0
+                    : data?.specs?.filter(spec => spec.service_name === service.id).length || 0} APIs
+                </p>
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      <div className="flex gap-2">
-        <div className="relative flex-1">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
-          <Input
-            placeholder="Search APIs across all services..."
-            className="pl-8"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-      </div>
+      <Card className="shadow-md border-2">
+        <CardHeader>
+          <div className="flex flex-col gap-4 p-3">
+            <div className="flex justify-between items-center">
+              
+              <div className="flex items-center gap-4">
+              <Label>HTTP Method:</Label>
+              <RadioGroup
+                value={selectedMethod}
+                onValueChange={handleMethodChange}
+                className="flex gap-4"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="ALL" id="all" />
+                  <Label htmlFor="all">ALL</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="GET" id="get" />
+                  <Label htmlFor="get">GET</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="POST" id="post" />
+                  <Label htmlFor="post">POST</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="PUT" id="put" />
+                  <Label htmlFor="put">PUT</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="PATCH" id="patch" />
+                  <Label htmlFor="patch">PATCH</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="DELETE" id="delete" />
+                  <Label htmlFor="delete">DELETE</Label>
+                </div>
+              </RadioGroup>
+            </div>
 
-      <div className="flex justify-between items-center mt-2">
-        <MethodFilterToggle 
-          selectedMethods={selectedMethods}
-          onMethodToggle={handleMethodToggle}
-        />
-        <IFilterFormForCategorysForApiSpec
-          category1={category1}
-          category2={category2}
-          onCategory1Change={setCategory1}
-          onCategory2Change={setCategory2}
-        />
-        <IDialogButtonForCreateApiSpec />
-      </div>
 
-      <ICardForApiSpecList
-        specs={categoryFilteredSpecs}
-        services={services}
-        selectedService={selectedService}
-        getMethodColor={getMethodColor}
-      />
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-medium text-muted-foreground">
+                  Selected: {selectedRows.size}
+                </span>
+                <Button 
+                  onClick={handleTestSelectedRows}
+                  className="relative inline-flex items-center gap-2 transition-all hover:bg-primary/90 active:scale-95"
+                  disabled={selectedRows.size === 0 || isTestRunning}
+                >
+                  {isTestRunning && (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  )}
+                  Run Test
+                </Button>
+              </div>
+            </div>
+            {/* <div className="flex items-center gap-4">
+              <Label>HTTP Method:</Label>
+              <RadioGroup
+                value={selectedMethod}
+                onValueChange={handleMethodChange}
+                className="flex gap-4"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="ALL" id="all" />
+                  <Label htmlFor="all">ALL</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="GET" id="get" />
+                  <Label htmlFor="get">GET</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="POST" id="post" />
+                  <Label htmlFor="post">POST</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="PUT" id="put" />
+                  <Label htmlFor="put">PUT</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="PATCH" id="patch" />
+                  <Label htmlFor="patch">PATCH</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="DELETE" id="delete" />
+                  <Label htmlFor="delete">DELETE</Label>
+                </div>
+              </RadioGroup>
+            </div> */}
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="min-h-[500px] border rounded-lg overflow-hidden">
+            <ReactDataGrid
+              columns={columns}
+              rows={getCurrentPageData()}
+              rowHeight={50}
+              className="rdg-light h-full"
+              selectedRows={selectedRows}
+              onSelectedRowsChange={handleSelectedRowsChange}
+              rowKeyGetter={(row) => (row as RowData).id}
+            />
+          </div>
+          <div className="flex justify-center mt-4">
+            <Pagination
+              current={currentPage}
+              total={filteredData.length}
+              pageSize={pageSize}
+              onChange={handlePageChange}
+              showSizeChanger
+              showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+              className="custom-pagination"
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Dialog open={isResultModalOpen} onOpenChange={setIsResultModalOpen}>
+        <DialogContent className="max-w-full w-full h-full max-h-screen flex flex-col">
+          <DialogHeader className="flex flex-row items-center justify-between">
+            <DialogTitle>Test Results</DialogTitle>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="w-8 h-8 p-0"
+              onClick={() => setIsResultModalOpen(false)}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </DialogHeader>
+          <div className="flex-1 overflow-auto">
+            <div className="border rounded-lg overflow-x-auto">
+              <table className="w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50 sticky top-0">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Method</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Timestamp</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {testResultsList.map((result, index) => (
+                    <tr key={`${result.id}-${index}`} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{result.service_name}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{result.title}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                          {result.method}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-1">
+                          {result.status === 'success' ? (
+                            <div className="flex items-center text-green-600 gap-1">
+                              <CheckCircle className="h-4 w-4" />
+                              <span>Success</span>
+                            </div>
+                          ) : (
+                            <div className="flex items-center text-red-600 gap-1">
+                              <XCircle className="h-4 w-4" />
+                              <span>Failed</span>
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <div className="flex items-center gap-1">
+                          <Clock className="h-4 w-4 text-gray-400" />
+                          <span>{result.time} ms</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{result.timestamp}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
-};
 
-export default MSADashboard;
+}
+
+export default ApiTesting;
