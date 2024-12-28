@@ -27,28 +27,36 @@ export const DialogButtonForPostApiTest = ({ spec }: DialogButtonForPostApiTestP
   const [bearerToken, setBearerToken] = useState('');
   const [requestBodyError, setRequestBodyError] = useState<string | null>(null);
 
-  const formatRequestBody = (schema: any): string => {
-    try {
-      if (typeof schema === 'string') {
-        return schema;
-      }
-      return JSON.stringify(schema, null, 2);
-    } catch (e) {
-      console.error('Failed to format request body:', e);
-      return schema || '';
+const formatRequestBody = (schema: any): string => {
+  try {
+    if (typeof schema === 'string') {
+      // JavaScript 객체 문자열을 실제 객체로 변환
+      const obj = eval(`(${schema})`);
+      // 객체를 올바른 JSON 문자열로 변환
+      return JSON.stringify(obj);
     }
-  };
+    // 객체인 경우 바로 JSON 문자열로 변환
+    return JSON.stringify(schema);
+  } catch (e) {
+    console.error('Failed to format request body:', e);
+    return schema || '';
+  }
+};
 
-  useEffect(() => {
-    if (spec.request_body_schema) {
-      setRequestBody(formatRequestBody(spec.request_body_schema));
-    }
-  }, [spec]);
+useEffect(() => {
+  if (spec.request_body_schema) {
+    // JSON 형식으로 변환된 문자열을 상태에 저장
+    const formattedBody = formatRequestBody(spec.request_body_schema);
+    setRequestBody(formattedBody);
+  }
+}, [spec]);
 
   const validateJson = (value: string): boolean => {
     try {
       if (value) {
-        JSON.parse(value);
+        // JavaScript 객체로 먼저 변환하고 JSON 문자열로 다시 변환
+        const obj = eval(`(${value})`);
+        JSON.stringify(obj);
       }
       setRequestBodyError(null);
       return true;
@@ -60,54 +68,74 @@ export const DialogButtonForPostApiTest = ({ spec }: DialogButtonForPostApiTestP
     }
   };
 
-  const handleTest = async () => {
-    if (!validateJson(requestBody)) {
-      return;
+const handleTest = async () => {
+  if (!validateJson(requestBody)) {
+    return;
+  }
+
+  setLoading(true);
+  try {
+    let parsedBody;
+    let contentType = 'application/json';
+    
+    try {
+      // 입력된 문자열을 객체로 변환
+      const tempBody = eval(`(${requestBody})`);
+      // 객체를 올바른 JSON 문자열로 변환
+      parsedBody = JSON.parse(JSON.stringify(tempBody));
+    } catch (e) {
+      parsedBody = requestBody;
+      contentType = 'application/x-www-form-urlencoded';
     }
 
-    setLoading(true);
-    try {
-      let parsedBody;
-      let contentType = 'application/json';
-      
-      try {
-        parsedBody = JSON.parse(requestBody);
-      } catch (e) {
-        parsedBody = requestBody;
-        contentType = 'application/x-www-form-urlencoded';
-      }
+    const proxyData = {
+      endpoint: spec.endpoint,
+      method: 'POST',
+      headers: {
+        'Content-Type': contentType,
+        'Authorization': `Bearer ${bearerToken}` // Authorization 헤더 추가
+      },
+      body: parsedBody
+    };
 
-      const proxyData = {
+    // const response = await fetch('/api/proxy', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify(proxyData)
+    // });
+
+    // 클라이언트
+    const response = await fetch('/api/proxy', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${bearerToken}` // 여기에 Authorization 헤더 추가
+      },
+      body: JSON.stringify({
         endpoint: spec.endpoint,
         method: 'POST',
         headers: {
-          'Content-Type': contentType,
-          ...(bearerToken && { 'Authorization': `Bearer ${bearerToken}` })
+          'Content-Type': contentType
         },
         body: parsedBody
-      };
+      })
+    });
 
-      const response = await fetch('/api/proxy', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(proxyData)
-      });
-
-      const data = await response.text();
-      try {
-        const jsonData = JSON.parse(data);
-        setResponse(JSON.stringify(jsonData, null, 2));
-      } catch {
-        setResponse(data);
-      }
-    } catch (error) {
-      setResponse(`Error: ${error instanceof Error ? error.message : 'Failed to fetch'}`);
-    } finally {
-      setLoading(false);
+    const data = await response.text();
+    try {
+      const jsonData = JSON.parse(data);
+      setResponse(JSON.stringify(jsonData, null, 2));
+    } catch {
+      setResponse(data);
     }
-  };
+  } catch (error) {
+    setResponse(`Error: ${error instanceof Error ? error.message : 'Failed to fetch'}`);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleEditorChange = (value: string | undefined) => {
     const newValue = value || '';
@@ -177,7 +205,7 @@ export const DialogButtonForPostApiTest = ({ spec }: DialogButtonForPostApiTestP
                   height="calc(100vh - 300px)"
                   language="json"
                   theme="light"
-                  value={requestBody}
+                  value={requestBody || '// Request body will appear here...'}
                   onChange={handleEditorChange}
                   options={{
                     minimap: { enabled: false },

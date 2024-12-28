@@ -4,46 +4,55 @@ export async function POST(request: Request) {
   try {
     const { endpoint, method, body } = await request.json();
     
-    // 원본 요청에서 Authorization 헤더 가져오기 
     const authorization = request.headers.get('authorization');
     
-    // 기본 헤더 설정에 Authorization 추가
     const requestHeaders = {
       'Content-Type': 'application/json',
-      ...(authorization && { 'Authorization': authorization }) // Authorization 헤더가 있으면 추가
+      ...(authorization && { 'Authorization': authorization })
     };
+
+    // body가 객체인 경우 JSON 문자열로 변환
+    let bodyString = typeof body === 'object' ? JSON.stringify(body) : body;
+
+    console.log('Request headers:', requestHeaders);
+    console.log('Sending request with body:', bodyString);
 
     const response = await fetch(endpoint, {
       method: method || 'GET',
       headers: requestHeaders,
-      body: method !== 'GET' ? (
-        requestHeaders['Content-Type'] === 'application/x-www-form-urlencoded' 
-          ? body
-          : JSON.stringify(body)
-      ) : undefined
+      body: method !== 'GET' ? bodyString : undefined
     });
 
-    console.log("response : ", response);
-    console.log("requestHeaders : ", requestHeaders); // 헤더 확인용 로그
+    // 응답 내용 먼저 받기
+    const responseText = await response.text();
+    console.log('Response status:', response.status);
+    console.log('Response text:', responseText);
 
     if (!response.ok) {
-      throw new Error(`API responded with status: ${response.status}`);
+      return NextResponse.json(
+        { 
+          error: 'API request failed',
+          status: response.status,
+          details: responseText
+        }, 
+        { status: response.status }
+      );
     }
 
-    // 나머지 코드는 동일
-    const contentType = response.headers.get('content-type');
-    if (contentType?.includes('application/json')) {
-      const data = await response.json();
-      return NextResponse.json(data);
-    } else {
-      const text = await response.text();
-      return new NextResponse(text, {
-        headers: { 'Content-Type': contentType || 'text/plain' }
+    // responseText가 JSON인지 확인
+    try {
+      const jsonData = JSON.parse(responseText);
+      return NextResponse.json(jsonData);
+    } catch {
+      return new NextResponse(responseText, {
+        headers: { 
+          'Content-Type': response.headers.get('content-type') || 'text/plain' 
+        }
       });
     }
 
   } catch (error) {
-    console.error('Proxy error:', error);
+    console.error('Proxy error details:', error);
     return NextResponse.json(
       { 
         error: 'Failed to proxy request',

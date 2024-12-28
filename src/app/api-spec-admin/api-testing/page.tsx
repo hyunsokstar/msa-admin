@@ -126,10 +126,7 @@ function ApiTesting() {
 
   const handleTestSelectedRows = async () => {
     if (!data?.specs || selectedRows.size === 0) return;
-
-    console.log("bearerToken : ", bearerToken);
     
-
     setIsTestRunning(true);
     const updatedResults = { ...testResults };
     const updatedTimes = { ...testTimes };
@@ -146,24 +143,23 @@ function ApiTesting() {
 
       const startTime = performance.now();
       try {
-        const headers: Record<string, string> = {
-          'Content-Type': 'application/json',
-        };
-
-        if (bearerToken) {
-          headers['Authorization'] = `Bearer ${bearerToken}`;
-        }
-
-        console.log("headers : ", headers);
-        
+        // 이미 JSON 형식이므로 바로 파싱
+        let parsedBody = JSON.parse(rowData.request_body_schema);
 
         const response = await fetch('/api/proxy', {
           method: 'POST',
-          headers,
+          headers: {
+            'Content-Type': 'application/json',
+            ...(bearerToken && { 'Authorization': `Bearer ${bearerToken}` })  // 토큰을 최상위 headers에 추가
+          },
           body: JSON.stringify({
             endpoint: rowData.endpoint,
             method: rowData.method,
-            body: rowData.request_body_schema,
+            headers: {
+              'Content-Type': 'application/json',
+              ...(bearerToken && { 'Authorization': `Bearer ${bearerToken}` })
+            },
+            body: parsedBody
           }),
         });
 
@@ -182,6 +178,7 @@ function ApiTesting() {
           time: timeSpent,
           timestamp: new Date().toLocaleTimeString()
         });
+
       } catch (error) {
         updatedResults[key] = 'error';
         newTestResults.push({
