@@ -2,12 +2,15 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
-    const { endpoint, method, body, headers = {} } = await request.json();
+    const { endpoint, method, body } = await request.json();
     
-    // headers가 없는 경우를 대비해 기본값 설정
+    // 원본 요청에서 Authorization 헤더 가져오기 
+    const authorization = request.headers.get('authorization');
+    
+    // 기본 헤더 설정에 Authorization 추가
     const requestHeaders = {
       'Content-Type': 'application/json',
-      ...headers
+      ...(authorization && { 'Authorization': authorization }) // Authorization 헤더가 있으면 추가
     };
 
     const response = await fetch(endpoint, {
@@ -15,19 +18,19 @@ export async function POST(request: Request) {
       headers: requestHeaders,
       body: method !== 'GET' ? (
         requestHeaders['Content-Type'] === 'application/x-www-form-urlencoded' 
-          ? body  // form-urlencoded는 문자열 그대로 전달
-          : JSON.stringify(body) // 그 외의 경우 JSON으로 변환
+          ? body
+          : JSON.stringify(body)
       ) : undefined
     });
 
     console.log("response : ", response);
-    
+    console.log("requestHeaders : ", requestHeaders); // 헤더 확인용 로그
 
     if (!response.ok) {
       throw new Error(`API responded with status: ${response.status}`);
     }
 
-    // 응답 형식 확인 및 처리
+    // 나머지 코드는 동일
     const contentType = response.headers.get('content-type');
     if (contentType?.includes('application/json')) {
       const data = await response.json();

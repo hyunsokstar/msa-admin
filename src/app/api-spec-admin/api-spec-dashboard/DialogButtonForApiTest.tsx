@@ -39,7 +39,7 @@ export const DialogButtonForApiTest = ({ spec }: DialogButtonForApiTestProps) =>
     if (spec.endpoint.includes('/auth/login')) {
       const defaultBody = {
         userId: "admin",
-        password: "Abc12345"
+        password: "Admin123"
       };
       setRequestBody(JSON.stringify(defaultBody, null, 2));
     } else if (spec.request_body_schema) {

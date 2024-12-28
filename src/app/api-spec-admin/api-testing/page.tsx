@@ -7,18 +7,17 @@ import { SelectColumn } from 'react-data-grid';
 import 'react-data-grid/lib/styles.css';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, CheckCircle, XCircle, Clock, X } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import Pagination from 'rc-pagination';
 import 'rc-pagination/assets/index.css';
 import { useApiForDashboard } from '@/hook/useApiForDashboard';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import IDialogButtonForApiTestResultList from './_comp/IDialogButtonForApiTestResultList';
+import IRadioButtonsForOptionsForMultiApiTestList from './_comp/IRadioButtonsForOptionsForMultiApiTestList';
+import IServiceCardsForFilteringMultiApiTestList from './_comp/IServiceCardsForFilteringMultiApiTestList';
+import IFilterFormForCategorysForApiSpec from '../api-spec-dashboard/IFilterFormForCategorysForApiSpec';
+import DialogButtonForAdminLoginAndGetToken from '@/components/dialog/DialogButtonForAdminLoginAndGetToken';
 
 type TestStatus = 'loading' | 'success' | 'error' | undefined;
 type HttpMethod = 'ALL' | 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
@@ -30,6 +29,8 @@ interface RowData {
   method: string;
   endpoint: string;
   request_body_schema: string;
+  category1?: string;
+  category2?: string;
 }
 
 interface TestResult {
@@ -45,6 +46,10 @@ interface TestResult {
 function ApiTesting() {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [selectedMethod, setSelectedMethod] = React.useState<HttpMethod>('ALL');
+  const [selectedService, setSelectedService] = React.useState("ALL");
+  const [category1, setCategory1] = React.useState("");
+  const [category2, setCategory2] = React.useState("");
+  const [bearerToken, setBearerToken] = React.useState("");
   const pageSize = 10;
   const [selectedRows, setSelectedRows] = React.useState<ReadonlySet<Key>>(new Set());
   const [testResults, setTestResults] = React.useState<Record<string, TestStatus>>({});
@@ -66,7 +71,10 @@ function ApiTesting() {
   const getFilteredData = () => {
     if (!data?.specs) return [];
     return data.specs.filter(spec => 
-      selectedMethod === 'ALL' || spec.method === selectedMethod
+      (selectedMethod === 'ALL' || spec.method === selectedMethod) &&
+      (selectedService === 'ALL' || spec.service_name === selectedService) &&
+      (!category1 || spec.category1?.toLowerCase().includes(category1.toLowerCase())) &&
+      (!category2 || spec.category2?.toLowerCase().includes(category2.toLowerCase()))
     );
   };
 
@@ -86,16 +94,41 @@ function ApiTesting() {
 
   const handleMethodChange = (value: string) => {
     setSelectedMethod(value as HttpMethod);
-    setCurrentPage(1); // Reset to first page when filter changes
-    setSelectedRows(new Set()); // Clear selection when filter changes
+    setCurrentPage(1);
+    setSelectedRows(new Set());
+  };
+
+  const handleServiceChange = (serviceId: string) => {
+    setSelectedService(serviceId);
+    setCurrentPage(1);
+    setSelectedRows(new Set());
+  };
+
+  const handleCategory1Change = (value: string) => {
+    setCategory1(value);
+    setCurrentPage(1);
+    setSelectedRows(new Set());
+  };
+
+  const handleCategory2Change = (value: string) => {
+    setCategory2(value);
+    setCurrentPage(1);
+    setSelectedRows(new Set());
   };
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
+  const handleTokenReceived = (token: string) => {
+    setBearerToken(token);
+  };
+
   const handleTestSelectedRows = async () => {
     if (!data?.specs || selectedRows.size === 0) return;
+
+    console.log("bearerToken : ", bearerToken);
+    
 
     setIsTestRunning(true);
     const updatedResults = { ...testResults };
@@ -113,9 +146,20 @@ function ApiTesting() {
 
       const startTime = performance.now();
       try {
+        const headers: Record<string, string> = {
+          'Content-Type': 'application/json',
+        };
+
+        if (bearerToken) {
+          headers['Authorization'] = `Bearer ${bearerToken}`;
+        }
+
+        console.log("headers : ", headers);
+        
+
         const response = await fetch('/api/proxy', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers,
           body: JSON.stringify({
             endpoint: rowData.endpoint,
             method: rowData.method,
@@ -170,6 +214,12 @@ function ApiTesting() {
 
   return (
     <div className="space-y-6">
+      <IServiceCardsForFilteringMultiApiTestList
+        selectedService={selectedService}
+        onServiceChange={handleServiceChange}
+        specs={data?.specs}
+      />
+
       <Card className="shadow-md border-2">
         <CardHeader>
           <div className="flex flex-col gap-4">
@@ -191,38 +241,34 @@ function ApiTesting() {
                 </Button>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <Label>HTTP Method:</Label>
-              <RadioGroup
-                value={selectedMethod}
-                onValueChange={handleMethodChange}
-                className="flex gap-4"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="ALL" id="all" />
-                  <Label htmlFor="all">ALL</Label>
+            <div className="space-y-4">
+              <div className="flex items-center gap-4">
+                <Label htmlFor="bearer-token" className="min-w-[100px]">Bearer Token:</Label>
+                <div className="flex flex-1 gap-2">
+                  <Input
+                    id="bearer-token"
+                    value={bearerToken}
+                    onChange={(e) => setBearerToken(e.target.value)}
+                    className="flex-1 font-mono text-sm"
+                    placeholder="Enter your Bearer token..."
+                  />
+                  <DialogButtonForAdminLoginAndGetToken 
+                    onTokenReceived={handleTokenReceived}
+                  />
                 </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="GET" id="get" />
-                  <Label htmlFor="get">GET</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="POST" id="post" />
-                  <Label htmlFor="post">POST</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="PUT" id="put" />
-                  <Label htmlFor="put">PUT</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="PATCH" id="patch" />
-                  <Label htmlFor="patch">PATCH</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="DELETE" id="delete" />
-                  <Label htmlFor="delete">DELETE</Label>
-                </div>
-              </RadioGroup>
+              </div>
+              <div className="flex items-center justify-between">
+                <IRadioButtonsForOptionsForMultiApiTestList 
+                  selectedMethod={selectedMethod}
+                  onMethodChange={handleMethodChange}
+                />
+                <IFilterFormForCategorysForApiSpec
+                  category1={category1}
+                  category2={category2}
+                  onCategory1Change={handleCategory1Change}
+                  onCategory2Change={handleCategory2Change}
+                />
+              </div>
             </div>
           </div>
         </CardHeader>
@@ -252,72 +298,11 @@ function ApiTesting() {
         </CardContent>
       </Card>
 
-      <Dialog open={isResultModalOpen} onOpenChange={setIsResultModalOpen}>
-        <DialogContent className="max-w-full w-full h-full max-h-screen flex flex-col">
-          <DialogHeader className="flex flex-row items-center justify-between">
-            <DialogTitle>Test Results</DialogTitle>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="w-8 h-8 p-0"
-              onClick={() => setIsResultModalOpen(false)}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </DialogHeader>
-          <div className="flex-1 overflow-auto">
-            <div className="border rounded-lg overflow-x-auto">
-              <table className="w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50 sticky top-0">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Method</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Timestamp</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {testResultsList.map((result, index) => (
-                    <tr key={`${result.id}-${index}`} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{result.service_name}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{result.title}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-                          {result.method}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center gap-1">
-                          {result.status === 'success' ? (
-                            <div className="flex items-center text-green-600 gap-1">
-                              <CheckCircle className="h-4 w-4" />
-                              <span>Success</span>
-                            </div>
-                          ) : (
-                            <div className="flex items-center text-red-600 gap-1">
-                              <XCircle className="h-4 w-4" />
-                              <span>Failed</span>
-                            </div>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <div className="flex items-center gap-1">
-                          <Clock className="h-4 w-4 text-gray-400" />
-                          <span>{result.time} ms</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{result.timestamp}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <IDialogButtonForApiTestResultList 
+        isOpen={isResultModalOpen}
+        onOpenChange={setIsResultModalOpen}
+        testResultsList={testResultsList}
+      />
     </div>
   );
 }

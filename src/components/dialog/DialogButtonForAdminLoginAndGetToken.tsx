@@ -11,7 +11,7 @@ interface IDialogButtonForAdminLoginAndGetTokenProps {
 
 const defaultLoginBody = {
   userId: "admin",
-  password: "Abc12345"
+  password: "Admin123"
 };
 
 export const DialogButtonForAdminLoginAndGetToken = ({ 
@@ -84,7 +84,7 @@ export const DialogButtonForAdminLoginAndGetToken = ({
           <div className="space-y-2">
             <label className="text-sm font-medium">비밀번호</label>
             <Input
-              type="text"
+              type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="비밀번호 입력"
