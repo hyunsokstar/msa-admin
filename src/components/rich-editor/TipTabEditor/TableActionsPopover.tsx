@@ -22,11 +22,11 @@ const TableActionsPopover = ({ editor }: TableActionsPopoverProps) => {
 
   return (
     <Popover>
-      <PopoverTrigger asChild>
+      {/* <PopoverTrigger asChild>
         <Button type="button" variant="ghost">
           <TableIcon className="mr-2 h-4 w-4" /> 테이블3
         </Button>
-      </PopoverTrigger>
+      </PopoverTrigger> */}
       <PopoverContent className="absolute right-0 w-64 p-2 flex flex-wrap gap-2 bg-white shadow-md border rounded-md">
         <Button variant="ghost" type="button" onClick={handleInsertTable} className="hover:bg-gray-100">
           테이블 추가

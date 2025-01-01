@@ -3,7 +3,7 @@ import { Editor } from "@tiptap/react";
 import {
   Bold, Italic, Underline as UnderlineIcon, Strikethrough,
   AlignLeft, AlignCenter, AlignRight,
-  Undo, Redo, ImagePlus, Youtube
+  Undo, Redo, ImagePlus, Youtube, Figma
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -27,12 +27,25 @@ const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
     editor.chain().focus().setColor(selectedColor).run();
   };
 
+  const addFigma = () => {
+    const figmaUrl = prompt('Figma 파일 URL을 입력하세요:');
+    if (figmaUrl && figmaUrl.includes('figma.com')) {
+      editor.chain().focus().insertContent({
+        type: 'figmaEmbed',
+        attrs: { src: figmaUrl }
+      }).run();
+    } else if (figmaUrl) {
+      alert('올바른 Figma URL을 입력해주세요.');
+    }
+  };
+
   return (
     <div className="border rounded-md p-2 bg-background">
       <div className="flex items-center gap-2 flex-wrap">
         {/* Text Formatting Group */}
         <div className="flex items-center space-x-1">
           <Button
+            type="button"
             variant={editor.isActive("bold") ? "default" : "ghost"}
             size="sm"
             onClick={() => editor.chain().focus().toggleBold().run()}
@@ -41,6 +54,7 @@ const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
             <Bold className="h-4 w-4" />
           </Button>
           <Button
+            type="button"
             variant={editor.isActive("italic") ? "default" : "ghost"}
             size="sm"
             onClick={() => editor.chain().focus().toggleItalic().run()}
@@ -49,6 +63,7 @@ const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
             <Italic className="h-4 w-4" />
           </Button>
           <Button
+            type="button"
             variant={editor.isActive("underline") ? "default" : "ghost"}
             size="sm"
             onClick={() => editor.chain().focus().toggleUnderline().run()}
@@ -57,6 +72,7 @@ const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
             <UnderlineIcon className="h-4 w-4" />
           </Button>
           <Button
+            type="button"
             variant={editor.isActive("strike") ? "default" : "ghost"}
             size="sm"
             onClick={() => editor.chain().focus().toggleStrike().run()}
@@ -89,6 +105,7 @@ const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
         {/* Alignment Controls */}
         <div className="flex items-center space-x-1">
           <Button
+            type="button"
             variant={editor.isActive({ textAlign: "left" }) ? "default" : "ghost"}
             size="sm"
             onClick={() => editor.chain().focus().setTextAlign("left").run()}
@@ -97,6 +114,7 @@ const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
             <AlignLeft className="h-4 w-4" />
           </Button>
           <Button
+            type="button"
             variant={editor.isActive({ textAlign: "center" }) ? "default" : "ghost"}
             size="sm"
             onClick={() => editor.chain().focus().setTextAlign("center").run()}
@@ -105,6 +123,7 @@ const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
             <AlignCenter className="h-4 w-4" />
           </Button>
           <Button
+            type="button"
             variant={editor.isActive({ textAlign: "right" }) ? "default" : "ghost"}
             size="sm"
             onClick={() => editor.chain().focus().setTextAlign("right").run()}
@@ -119,6 +138,7 @@ const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
         {/* History Controls */}
         <div className="flex items-center space-x-1">
           <Button
+            type="button"
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().undo().run()}
@@ -127,6 +147,7 @@ const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
             <Undo className="h-4 w-4" />
           </Button>
           <Button
+            type="button"
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().redo().run()}
@@ -148,6 +169,7 @@ const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
             이미지
           </Button>
           <Button
+            type="button"
             variant="secondary"
             size="sm"
             onClick={() => {
@@ -164,6 +186,16 @@ const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
           >
             <Youtube className="h-4 w-4 mr-1" />
             유튜브
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            onClick={addFigma}
+            className="h-8"
+          >
+            <Figma className="h-4 w-4 mr-1" />
+            피그마
           </Button>
         </div>
       </div>

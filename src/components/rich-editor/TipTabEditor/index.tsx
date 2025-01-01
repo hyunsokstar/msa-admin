@@ -24,6 +24,7 @@ import Paragraph from '@tiptap/extension-paragraph';
 import HardBreak from '@tiptap/extension-hard-break';
 import Text from '@tiptap/extension-text';
 import Document from '@tiptap/extension-document';
+import { FigmaEmbed } from './extensions/FigmaEmbed';  // 추가
 
 import React from "react";
 import TiptapToolbar from "./TiptapToolbar";
@@ -95,6 +96,7 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
         width: 640,
         height: 360,
       }),
+      FigmaEmbed,  // 추가
     ],
     content,
     editable: !disabled,

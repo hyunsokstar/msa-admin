@@ -9,6 +9,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { X } from "lucide-react";
+import DOMPurify from "dompurify";
 
 interface IDialogButtonForFreeBoardDetailProps {
   title: string;
@@ -23,19 +24,38 @@ const IDialogButtonForFreeBoardDetail: React.FC<IDialogButtonForFreeBoardDetailP
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  const purifyConfig = {
+    ADD_TAGS: ["iframe"],
+    ADD_ATTR: [
+      "allow",
+      "allowfullscreen",
+      "frameborder",
+      "scrolling",
+      "style",
+      "class",
+      "src",
+      "title",
+      "width",
+      "height",
+      "data-figma-embed"
+    ],
+  };
+
+  const sanitizedContent = DOMPurify.sanitize(content, purifyConfig);
+
   return (
     <>
       <button 
         onClick={() => setIsOpen(true)} 
-        className="text-blue-600 hover:text-blue-800 hover:underline text-left focus:outline-none"
+        className="w-full text-left group-hover:text-blue-600 transition-colors focus:outline-none"
       >
-        <span className="line-clamp-1">
+        <span className="text-gray-900 font-medium line-clamp-1">
           {title}
         </span>
       </button>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="bg-white max-w-4xl w-[90vw] h-[90vh] p-0 rounded-xl shadow-xl flex flex-col overflow-hidden">
+        <DialogContent className="bg-white max-w-5xl w-[95vw] h-[95vh] p-0 rounded-xl shadow-xl flex flex-col overflow-hidden">
           <DialogHeader className="px-8 py-6 border-b bg-white sticky top-0 z-10">
             <div className="flex items-start justify-between">
               <div className="flex flex-col gap-2">
@@ -61,8 +81,8 @@ const IDialogButtonForFreeBoardDetail: React.FC<IDialogButtonForFreeBoardDetailP
             <div
               className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 
                 prose-strong:text-gray-900 prose-a:text-blue-600 hover:prose-a:text-blue-500 
-                prose-img:rounded-lg prose-hr:border-gray-200"
-              dangerouslySetInnerHTML={{ __html: content }}
+                prose-img:rounded-lg prose-hr:border-gray-200 [&_iframe]:w-full [&_iframe]:min-h-[600px] [&_iframe]:border-0"
+              dangerouslySetInnerHTML={{ __html: sanitizedContent }}
             />
           </div>
         </DialogContent>
