@@ -18,6 +18,7 @@ import IRadioButtonsForOptionsForMultiApiTestList from './_comp/IRadioButtonsFor
 import IServiceCardsForFilteringMultiApiTestList from './_comp/IServiceCardsForFilteringMultiApiTestList';
 import IFilterFormForCategorysForApiSpec from '../api-spec-dashboard/IFilterFormForCategorysForApiSpec';
 import DialogButtonForAdminLoginAndGetToken from '@/components/dialog/DialogButtonForAdminLoginAndGetToken';
+import CommonButton from '@/components/common/CommonButton';
 
 type TestStatus = 'loading' | 'success' | 'error' | undefined;
 type HttpMethod = 'ALL' | 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
@@ -226,16 +227,14 @@ function ApiTesting() {
                 <span className="text-sm font-medium text-muted-foreground">
                   Selected: {selectedRows.size}
                 </span>
-                <Button 
-                  onClick={handleTestSelectedRows}
-                  className="relative inline-flex items-center gap-2 transition-all hover:bg-primary/90 active:scale-95"
-                  disabled={selectedRows.size === 0 || isTestRunning}
-                >
-                  {isTestRunning && (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  )}
-                  Run Test
-                </Button>
+
+              <CommonButton 
+                defaultHoverColor="primary"  // hover 시 파란색 배경
+                onClick={handleTestSelectedRows}
+              >
+                Run Test
+              </CommonButton>
+
               </div>
             </div>
             <div className="space-y-4">

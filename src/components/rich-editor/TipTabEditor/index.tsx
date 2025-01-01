@@ -1,7 +1,7 @@
 "use client";
 
 import { useEditor, EditorContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
+import { Extension } from '@tiptap/core'
 import TextStyle from "@tiptap/extension-text-style";
 import Color from "@tiptap/extension-color";
 import Highlight from "@tiptap/extension-highlight";
@@ -20,10 +20,25 @@ import { FontFamily } from "./extensions/FontFamily";
 import Video from "./extensions/Video";
 import Youtube from "@tiptap/extension-youtube";
 import TiptapBubbleMenu from './TiptapBubbleMenu';
-
+import Paragraph from '@tiptap/extension-paragraph';
+import HardBreak from '@tiptap/extension-hard-break';
+import Text from '@tiptap/extension-text';
+import Document from '@tiptap/extension-document';
 
 import React from "react";
 import TiptapToolbar from "./TiptapToolbar";
+
+const EnterKeyExtension = Extension.create({
+  name: 'enterKey',
+  addKeyboardShortcuts() {
+    return {
+      Enter: ({ editor }) => {
+        editor.commands.insertContent('<br />')
+        return true
+      },
+    }
+  },
+})
 
 interface TiptapEditorProps {
   content: string;
@@ -34,7 +49,11 @@ interface TiptapEditorProps {
 const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps) => {
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      Document,
+      Paragraph,
+      Text,
+      HardBreak,
+      EnterKeyExtension,
       TextStyle,
       Color,
       Highlight.configure({ multicolor: true }),
@@ -42,8 +61,20 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
       FontFamily.configure({ types: ["textStyle"], defaultFamily: "sans-serif" }),
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       Underline,
-      TiptapImage.configure({ inline: true }),
-      ResizeImage.configure({ allowBase64: true }),
+      TiptapImage.configure({ 
+        inline: true,
+        HTMLAttributes: {
+          style: 'margin: 0 4px; padding: 0 4px; vertical-align: middle;',
+          class: 'editor-image',
+        }
+      }),
+      ResizeImage.configure({ 
+        allowBase64: true,
+        HTMLAttributes: {
+          style: 'margin: 0 4px; padding: 0 4px; vertical-align: middle;',
+          class: 'editor-image',
+        }
+      }),
       HorizontalRule,
       Link.configure({
         openOnClick: true,
@@ -59,11 +90,11 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
       TableCell,
       TableHeader,
       Youtube.configure({
-      controls: true,
-      nocookie: true,
-      width: 640,
-      height: 360,
-    }),
+        controls: true,
+        nocookie: true,
+        width: 640,
+        height: 360,
+      }),
     ],
     content,
     editable: !disabled,
@@ -95,33 +126,13 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
                   height: size.height,
                   style: `width: ${size.width}px; height: ${size.height}px;`,
                 }
-              : { src: imageUrl };
-            editor.chain().focus().setImage(attributes).run();
+              : { 
+                  src: imageUrl
+                };
+            editor.commands.setImage(attributes);
           }
         } catch (error) {
           console.error("Image upload failed:", error);
-        }
-      }
-    };
-
-    fileInput.click();
-  };
-
-  const addResizableImage = () => {
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = "image/*";
-
-    fileInput.onchange = async () => {
-      const file = fileInput.files?.[0];
-      if (file) {
-        try {
-          const imageUrl = await uploadImageToS3(file);
-          if (imageUrl && editor) {
-            editor.chain().focus().setImage({ src: imageUrl }).run();
-          }
-        } catch (error) {
-          console.error("Error uploading resizable image:", error);
         }
       }
     };
@@ -195,11 +206,13 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
         className="flex-1 relative border-t bg-white overflow-y-auto rounded-b-md"
         onClick={() => editor?.commands.focus()}
       >
-        <EditorContent editor={editor} className="w-full h-full p-4" />
+        <EditorContent 
+          editor={editor} 
+          className="w-full h-full p-4 [&_.ProseMirror]:caret-blue-500 [&_.ProseMirror]:caret-2 [&_.editor-image]:outline-2 [&_.editor-image]:outline-transparent hover:[&_.editor-image]:outline-blue-500" 
+        />
       </div>
     </div>
   );
 };
 
 export default TiptapEditor;
-  

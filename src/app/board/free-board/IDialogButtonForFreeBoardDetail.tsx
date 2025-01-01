@@ -8,11 +8,11 @@ import {
   DialogTitle,
   DialogClose,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 
 interface IDialogButtonForFreeBoardDetailProps {
   title: string;
-  content: string; // HTML 문자열이 넘어온다고 가정
+  content: string;
   createdAt: string;
 }
 
@@ -23,28 +23,47 @@ const IDialogButtonForFreeBoardDetail: React.FC<IDialogButtonForFreeBoardDetailP
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const toggleDialog = () => setIsOpen((prev) => !prev);
-
   return (
     <>
-      <Button onClick={toggleDialog} variant="link" className="text-blue-500 hover:underline">
-        {title}
-      </Button>
-      <Dialog open={isOpen} onOpenChange={toggleDialog}>
-        <DialogContent className="bg-white max-w-full w-full h-auto p-6 rounded-lg shadow-lg">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-bold">{title}</DialogTitle>
-            <DialogClose onClick={toggleDialog} />
+      <button 
+        onClick={() => setIsOpen(true)} 
+        className="text-blue-600 hover:text-blue-800 hover:underline text-left focus:outline-none"
+      >
+        <span className="line-clamp-1">
+          {title}
+        </span>
+      </button>
+
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent className="bg-white max-w-4xl w-[90vw] h-[90vh] p-0 rounded-xl shadow-xl flex flex-col overflow-hidden">
+          <DialogHeader className="px-8 py-6 border-b bg-white sticky top-0 z-10">
+            <div className="flex items-start justify-between">
+              <div className="flex flex-col gap-2">
+                <DialogTitle className="text-2xl font-bold text-gray-900">
+                  {title}
+                </DialogTitle>
+                <p className="text-sm text-gray-600">
+                  작성일: {new Date(createdAt).toLocaleDateString('ko-KR', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </p>
+              </div>
+              <DialogClose className="rounded-full p-2 hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-200">
+                <X className="h-5 w-5 text-gray-500" />
+                <span className="sr-only">Close</span>
+              </DialogClose>
+            </div>
           </DialogHeader>
-          <div className="space-y-4">
-            {/* content를 HTML로 렌더링 */}
+
+          <div className="flex-1 px-8 py-6 overflow-y-auto bg-white">
             <div
-              className="text-gray-700"
+              className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 
+                prose-strong:text-gray-900 prose-a:text-blue-600 hover:prose-a:text-blue-500 
+                prose-img:rounded-lg prose-hr:border-gray-200"
               dangerouslySetInnerHTML={{ __html: content }}
             />
-            <p className="text-sm text-gray-500">
-              작성일: {new Date(createdAt).toLocaleDateString()}
-            </p>
           </div>
         </DialogContent>
       </Dialog>

@@ -1,18 +1,9 @@
-"use client";
-
 import React, { useState } from "react";
 import { Editor } from "@tiptap/react";
 import {
-  Bold,
-  Italic,
-  Underline as UnderlineIcon,
-  Strikethrough,
-  AlignLeft,
-  AlignCenter,
-  AlignRight,
-  Undo,
-  Redo,
-  ImagePlus,
+  Bold, Italic, Underline as UnderlineIcon, Strikethrough,
+  AlignLeft, AlignCenter, AlignRight,
+  Undo, Redo, ImagePlus, Youtube
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -37,14 +28,13 @@ const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
   };
 
   return (
-    <div className="flex flex-col gap-2 border rounded-md p-2 bg-background">
-      {/* First Row */}
-      <div className="flex items-center gap-2">
-        {/* Text Formatting */}
-        <div className="flex items-center gap-1">
+    <div className="border rounded-md p-2 bg-background">
+      <div className="flex items-center gap-2 flex-wrap">
+        {/* Text Formatting Group */}
+        <div className="flex items-center space-x-1">
           <Button
             variant={editor.isActive("bold") ? "default" : "ghost"}
-            size="icon"
+            size="sm"
             onClick={() => editor.chain().focus().toggleBold().run()}
             className="h-8 w-8"
           >
@@ -52,7 +42,7 @@ const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
           </Button>
           <Button
             variant={editor.isActive("italic") ? "default" : "ghost"}
-            size="icon"
+            size="sm"
             onClick={() => editor.chain().focus().toggleItalic().run()}
             className="h-8 w-8"
           >
@@ -60,7 +50,7 @@ const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
           </Button>
           <Button
             variant={editor.isActive("underline") ? "default" : "ghost"}
-            size="icon"
+            size="sm"
             onClick={() => editor.chain().focus().toggleUnderline().run()}
             className="h-8 w-8"
           >
@@ -68,7 +58,7 @@ const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
           </Button>
           <Button
             variant={editor.isActive("strike") ? "default" : "ghost"}
-            size="icon"
+            size="sm"
             onClick={() => editor.chain().focus().toggleStrike().run()}
             className="h-8 w-8"
           >
@@ -78,11 +68,29 @@ const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
 
         <Separator orientation="vertical" className="h-8" />
 
-        {/* Text Alignment */}
-        <div className="flex items-center gap-1">
+        {/* Font Controls */}
+        <div className="flex items-center space-x-2">
+          <FontSizeAdjuster
+            value={16}
+            onChange={(size) => editor.chain().focus().setFontSize(`${size}px`).run()}
+          />
+          <FontFamilySelector editor={editor} />
+          <input
+            type="color"
+            value={color}
+            onChange={handleColorChange}
+            className="w-8 h-8 cursor-pointer"
+            title="텍스트 색상"
+          />
+        </div>
+
+        <Separator orientation="vertical" className="h-8" />
+
+        {/* Alignment Controls */}
+        <div className="flex items-center space-x-1">
           <Button
             variant={editor.isActive({ textAlign: "left" }) ? "default" : "ghost"}
-            size="icon"
+            size="sm"
             onClick={() => editor.chain().focus().setTextAlign("left").run()}
             className="h-8 w-8"
           >
@@ -90,7 +98,7 @@ const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
           </Button>
           <Button
             variant={editor.isActive({ textAlign: "center" }) ? "default" : "ghost"}
-            size="icon"
+            size="sm"
             onClick={() => editor.chain().focus().setTextAlign("center").run()}
             className="h-8 w-8"
           >
@@ -98,7 +106,7 @@ const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
           </Button>
           <Button
             variant={editor.isActive({ textAlign: "right" }) ? "default" : "ghost"}
-            size="icon"
+            size="sm"
             onClick={() => editor.chain().focus().setTextAlign("right").run()}
             className="h-8 w-8"
           >
@@ -108,11 +116,11 @@ const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
 
         <Separator orientation="vertical" className="h-8" />
 
-        {/* Undo and Redo */}
-        <div className="flex items-center gap-1">
+        {/* History Controls */}
+        <div className="flex items-center space-x-1">
           <Button
             variant="ghost"
-            size="icon"
+            size="sm"
             onClick={() => editor.chain().focus().undo().run()}
             className="h-8 w-8"
           >
@@ -120,75 +128,44 @@ const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
           </Button>
           <Button
             variant="ghost"
-            size="icon"
+            size="sm"
             onClick={() => editor.chain().focus().redo().run()}
             className="h-8 w-8"
           >
             <Redo className="h-4 w-4" />
           </Button>
         </div>
-      </div>
-
-      {/* Second Row */}
-      <div className="flex items-center gap-2">
-        {/* Font Options */}
-        <div className="flex items-center gap-1">
-          <FontSizeAdjuster
-            value={16}
-            onChange={(size) => editor.chain().focus().setFontSize(`${size}px`).run()}
-          />
-          <FontFamilySelector editor={editor} />
-        </div>
 
         <Separator orientation="vertical" className="h-8" />
 
-        {/* Color Picker */}
-        <div className="flex items-center">
-          <input
-            type="color"
-            value={color}
-            onChange={handleColorChange}
-            className="w-8 h-8 cursor-pointer"
-          />
-          {/* <span className="ml-2">글자색</span> */}
-        </div>
-
-        <Separator orientation="vertical" className="h-8" />
-
-        {/* Add Table */}
+        {/* Table Controls */}
         <TableActionsPopover editor={editor} />
 
-        <Separator orientation="vertical" className="h-8" />
-
-        {/* Add Image */}
-        <div className="ml-auto">
-          <Button variant="secondary" onClick={addImage} className="h-8 px-3">
-            <ImagePlus className="h-4 w-4 mr-2" />
-            이미지 추가
+        {/* Media Controls */}
+        <div className="flex items-center space-x-2 ml-auto">
+          <Button type="button" variant="secondary" size="sm" onClick={addImage} className="h-8">
+            <ImagePlus className="h-4 w-4 mr-1" />
+            이미지
           </Button>
-        </div>
-
-        <div className="ml-auto">
           <Button
             variant="secondary"
+            size="sm"
             onClick={() => {
               const url = prompt("유튜브 URL을 입력하세요:");
               if (url) {
                 editor.chain().focus().setYoutubeVideo({
                   src: url,
-                  width: 640, // 기본 너비
-                  height: 360, // 기본 높이
+                  width: 640,
+                  height: 360,
                 }).run();
               }
             }}
-            className="h-8 px-3"
+            className="h-8"
           >
-            <ImagePlus className="h-4 w-4 mr-2" />
-            유튜브 추가
+            <Youtube className="h-4 w-4 mr-1" />
+            유튜브
           </Button>
         </div>
-
-        
       </div>
     </div>
   );

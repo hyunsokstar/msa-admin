@@ -10,16 +10,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import Pagination from "rc-pagination";
 import IDialogButtonForFreeBoardDetail from "./IDialogButtonForFreeBoardDetail";
 import IDialogButtonForCreateBoardPosting from "./IDialogButtonForCreateBoardPosting";
+import "rc-pagination/assets/index.css";
 
 const FreeBoard: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -30,35 +24,31 @@ const FreeBoard: React.FC = () => {
     limit,
   });
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error loading data</div>;
 
-  const totalPages = Math.ceil((data?.totalCount || 0) / limit);
+  const totalItems = data?.totalCount || 0;
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Free Board</h1>
-      
-      <div className="flex p-2 justify-end">
+    <div className="p-4 max-w-6xl mx-auto">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-gray-900">Free Board</h1>
         <IDialogButtonForCreateBoardPosting />
       </div>
-      <div className="border rounded-md">
+
+      <div className="bg-white border rounded-lg shadow-sm overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead className="w-[100px]">번호</TableHead>
-              <TableHead>제목</TableHead>
-              <TableHead className="w-[200px]">작성일</TableHead>
+            <TableRow className="bg-gray-50">
+              <TableHead className="w-[100px] text-gray-600">번호</TableHead>
+              <TableHead className="text-gray-600">제목</TableHead>
+              <TableHead className="w-[200px] text-gray-600">작성일</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {data?.items.map((post) => (
               <TableRow key={post.id}>
-                <TableCell className="font-medium">{post.id}</TableCell>
+                <TableCell className="font-medium text-gray-600">{post.id}</TableCell>
                 <TableCell>
                   <IDialogButtonForFreeBoardDetail
                     title={post.title}
@@ -66,8 +56,12 @@ const FreeBoard: React.FC = () => {
                     createdAt={post.created_at}
                   />
                 </TableCell>
-                <TableCell>
-                  {new Date(post.created_at).toLocaleDateString()}
+                <TableCell className="text-gray-500">
+                  {new Date(post.created_at).toLocaleDateString('ko-KR', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
                 </TableCell>
               </TableRow>
             ))}
@@ -75,52 +69,14 @@ const FreeBoard: React.FC = () => {
         </Table>
       </div>
 
-      <div className="mt-4">
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious 
-                onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
-                className={currentPage <= 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
-              />
-            </PaginationItem>
-            
-            {[...Array(totalPages)].map((_, i) => {
-              const page = i + 1;
-              if (
-                page === 1 ||
-                page === totalPages ||
-                (page >= currentPage - 2 && page <= currentPage + 2)
-              ) {
-                return (
-                  <PaginationItem key={page}>
-                    <PaginationLink
-                      onClick={() => handlePageChange(page)}
-                      isActive={page === currentPage}
-                    >
-                      {page}
-                    </PaginationLink>
-                  </PaginationItem>
-                );
-              }
-              if (page === currentPage - 3 || page === currentPage + 3) {
-                return (
-                  <PaginationItem key={page}>
-                    <PaginationLink>...</PaginationLink>
-                  </PaginationItem>
-                );
-              }
-              return null;
-            })}
-
-            <PaginationItem>
-              <PaginationNext
-                onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
-                className={currentPage >= totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+      <div className="mt-6 flex justify-center">
+        <Pagination
+          current={currentPage}
+          total={totalItems}
+          pageSize={limit}
+          onChange={setCurrentPage}
+          className="shadow-sm rounded-md"
+        />
       </div>
     </div>
   );
