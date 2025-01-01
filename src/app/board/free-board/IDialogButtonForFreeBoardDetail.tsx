@@ -23,6 +23,7 @@ const IDialogButtonForFreeBoardDetail: React.FC<IDialogButtonForFreeBoardDetailP
   createdAt,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const purifyConfig = {
     ADD_TAGS: ["iframe"],
@@ -46,10 +47,20 @@ const IDialogButtonForFreeBoardDetail: React.FC<IDialogButtonForFreeBoardDetailP
   return (
     <>
       <button 
-        onClick={() => setIsOpen(true)} 
-        className="w-full text-left group-hover:text-blue-600 transition-colors focus:outline-none"
+        onClick={() => setIsOpen(true)}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className="w-full text-left group focus:outline-none"
       >
-        <span className="text-gray-900 font-medium line-clamp-1">
+        <span 
+          className={`
+            inline-block text-gray-900 font-medium line-clamp-1
+            hover:text-blue-600 hover:underline
+            focus-visible:text-blue-600 focus-visible:underline
+            transition-all cursor-pointer
+            ${isHovered ? 'text-blue-600 underline' : ''}
+          `}
+        >
           {title}
         </span>
       </button>
