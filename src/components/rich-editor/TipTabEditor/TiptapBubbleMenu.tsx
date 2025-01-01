@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { ChangeEvent } from "react";
 import { BubbleMenu, Editor } from "@tiptap/react";
 import {
   Bold,
@@ -12,27 +14,28 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import "../../../styles/fonts.css";
+import CodeBlockHighlighter from "./CodeBlockHighlighter";
 
 const fontFamilyOptions = [
-  { label: "Default", value: "sans-serif", className: "" },
-  { label: "Roboto Mono", value: "Roboto Mono", className: "font-roboto-mono" },
-  { label: "Noto Sans KR", value: "Noto Sans KR", className: "font-noto-sans-kr" },
-  { label: "Black Han Sans", value: "Black Han Sans", className: "font-black-han-sans" },
-  { label: "Cute Font", value: "Cute Font", className: "font-cute" },
-  { label: "Gamja Flower", value: "Gamja Flower", className: "font-gamja" },
-  { label: "나눔고딕코딩", value: "Nanum Gothic Coding", className: "font-nanum-gothic-coding" },
-  { label: "나눔손글씨", value: "Nanum Pen", className: "font-nanum-pen" },
+  { label: "Default", value: "sans-serif" },
+  { label: "Roboto Mono", value: "Roboto Mono" },
+  { label: "Noto Sans KR", value: "Noto Sans KR" },
+  { label: "Black Han Sans", value: "Black Han Sans" },
+  { label: "Cute Font", value: "Cute Font" },
+  { label: "Gamja Flower", value: "Gamja Flower" },
+  { label: "Nanum Gothic Coding", value: "Nanum Gothic Coding" },
+  { label: "Nanum Pen", value: "Nanum Pen" },
 ];
 
 interface TiptapBubbleMenuProps {
   editor: Editor;
 }
 
-const TiptapBubbleMenu = ({ editor }: TiptapBubbleMenuProps) => {
+const TiptapBubbleMenu: React.FC<TiptapBubbleMenuProps> = ({ editor }) => {
   const [color, setColor] = React.useState("#000000");
   const [fontSize, setFontSize] = React.useState(16);
 
-  const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleColorChange = (e: ChangeEvent<HTMLInputElement>) => {
     const selectedColor = e.target.value;
     setColor(selectedColor);
     editor.chain().focus().setColor(selectedColor).run();
@@ -43,7 +46,7 @@ const TiptapBubbleMenu = ({ editor }: TiptapBubbleMenuProps) => {
     editor.chain().focus().setFontSize(`${size}px`).run();
   };
 
-  const handleFontFamilyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleFontFamilyChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const selectedFont = e.target.value;
     editor.chain().focus().setFontFamily(selectedFont).run();
   };
@@ -102,6 +105,7 @@ const TiptapBubbleMenu = ({ editor }: TiptapBubbleMenuProps) => {
         {/* Format Buttons */}
         <div className="flex items-center gap-2">
           <Button
+            type="button"
             variant={editor.isActive("bold") ? "default" : "ghost"}
             size="sm"
             onClick={() => editor.chain().focus().toggleBold().run()}
@@ -111,6 +115,7 @@ const TiptapBubbleMenu = ({ editor }: TiptapBubbleMenuProps) => {
           </Button>
 
           <Button
+            type="button"
             variant={editor.isActive("italic") ? "default" : "ghost"}
             size="sm"
             onClick={() => editor.chain().focus().toggleItalic().run()}
@@ -120,6 +125,7 @@ const TiptapBubbleMenu = ({ editor }: TiptapBubbleMenuProps) => {
           </Button>
 
           <Button
+            type="button"
             variant={editor.isActive("underline") ? "default" : "ghost"}
             size="sm"
             onClick={() => editor.chain().focus().toggleUnderline().run()}
@@ -132,6 +138,7 @@ const TiptapBubbleMenu = ({ editor }: TiptapBubbleMenuProps) => {
         {/* Highlight Buttons */}
         <div className="flex items-center gap-2">
           <Button
+            type="button"
             variant="ghost"
             size="sm"
             onClick={() => applyHighlight("yellow")}
@@ -140,6 +147,7 @@ const TiptapBubbleMenu = ({ editor }: TiptapBubbleMenuProps) => {
             <Highlighter className="h-4 w-4 text-yellow-400" />
           </Button>
           <Button
+            type="button"
             variant="ghost"
             size="sm"
             onClick={() => applyHighlight("#ffcc99")}
@@ -152,6 +160,7 @@ const TiptapBubbleMenu = ({ editor }: TiptapBubbleMenuProps) => {
         {/* Reset Formatting Button */}
         <div className="flex items-center gap-2">
           <Button
+            type="button"
             variant="ghost"
             size="sm"
             onClick={resetFormatting}
@@ -164,6 +173,7 @@ const TiptapBubbleMenu = ({ editor }: TiptapBubbleMenuProps) => {
         {/* Alignment Buttons */}
         <div className="flex items-center gap-2">
           <Button
+            type="button"
             variant={editor.isActive({ textAlign: "left" }) ? "default" : "ghost"}
             size="sm"
             onClick={() => editor.chain().focus().setTextAlign("left").run()}
@@ -172,6 +182,7 @@ const TiptapBubbleMenu = ({ editor }: TiptapBubbleMenuProps) => {
             <AlignLeft className="h-4 w-4" />
           </Button>
           <Button
+            type="button"
             variant={editor.isActive({ textAlign: "center" }) ? "default" : "ghost"}
             size="sm"
             onClick={() => editor.chain().focus().setTextAlign("center").run()}
@@ -180,6 +191,7 @@ const TiptapBubbleMenu = ({ editor }: TiptapBubbleMenuProps) => {
             <AlignCenter className="h-4 w-4" />
           </Button>
           <Button
+            type="button"
             variant={editor.isActive({ textAlign: "right" }) ? "default" : "ghost"}
             size="sm"
             onClick={() => editor.chain().focus().setTextAlign("right").run()}
