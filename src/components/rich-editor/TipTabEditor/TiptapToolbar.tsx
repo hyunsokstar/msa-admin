@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+// components/TiptapToolbar.tsx
+import React from "react";
 import { Editor } from "@tiptap/react";
 import {
   Bold, Italic, Underline as UnderlineIcon, Strikethrough,
@@ -10,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import FontSizeAdjuster from "./FontSizeAdjuster";
 import FontFamilySelector from "./FontFamilySelector";
 import TableActionsPopover from "./TableActionsPopover";
+import FontColorSelector from "./FontColorSelector";
 
 interface TiptapToolbarProps {
   editor: Editor | null;
@@ -17,15 +19,7 @@ interface TiptapToolbarProps {
 }
 
 const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
-  const [color, setColor] = useState("#000000");
-
   if (!editor) return null;
-
-  const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedColor = e.target.value;
-    setColor(selectedColor);
-    editor.chain().focus().setColor(selectedColor).run();
-  };
 
   const addFigma = () => {
     const figmaUrl = prompt('Figma 파일 URL을 입력하세요:');
@@ -91,13 +85,7 @@ const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
             onChange={(size) => editor.chain().focus().setFontSize(`${size}px`).run()}
           />
           <FontFamilySelector editor={editor} />
-          <input
-            type="color"
-            value={color}
-            onChange={handleColorChange}
-            className="w-8 h-8 cursor-pointer"
-            title="텍스트 색상"
-          />
+          <FontColorSelector editor={editor} />
         </div>
 
         <Separator orientation="vertical" className="h-8" />

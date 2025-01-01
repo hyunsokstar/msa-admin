@@ -3,7 +3,6 @@
 import { useEditor, EditorContent } from "@tiptap/react";
 import { Extension } from '@tiptap/core'
 import TextStyle from "@tiptap/extension-text-style";
-import Color from "@tiptap/extension-color";
 import Highlight from "@tiptap/extension-highlight";
 import TextAlign from "@tiptap/extension-text-align";
 import Underline from "@tiptap/extension-underline";
@@ -17,6 +16,7 @@ import { TableCell } from "@tiptap/extension-table-cell";
 import { TableHeader } from "@tiptap/extension-table-header";
 import { FontSize } from "./extensions/FontSize";
 import { FontFamily } from "./extensions/FontFamily";
+import { FontColor } from "./extensions/FontColor";
 import Video from "./extensions/Video";
 import Youtube from "@tiptap/extension-youtube";
 import TiptapBubbleMenu from './TiptapBubbleMenu';
@@ -24,7 +24,7 @@ import Paragraph from '@tiptap/extension-paragraph';
 import HardBreak from '@tiptap/extension-hard-break';
 import Text from '@tiptap/extension-text';
 import Document from '@tiptap/extension-document';
-import { FigmaEmbed } from './extensions/FigmaEmbed';  // 추가
+import { FigmaEmbed } from './extensions/FigmaEmbed';
 
 import React from "react";
 import TiptapToolbar from "./TiptapToolbar";
@@ -56,7 +56,7 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
       HardBreak,
       EnterKeyExtension,
       TextStyle,
-      Color,
+      FontColor,
       Highlight.configure({ multicolor: true }),
       FontSize.configure({ types: ["textStyle"] }),
       FontFamily.configure({ types: ["textStyle"], defaultFamily: "sans-serif" }),
@@ -96,7 +96,7 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
         width: 640,
         height: 360,
       }),
-      FigmaEmbed,  // 추가
+      FigmaEmbed,
     ],
     content,
     editable: !disabled,
@@ -168,29 +168,6 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
       console.error("Error during image upload process:", error);
       return null;
     }
-  };
-
-  const addVideo = () => {
-    const url = prompt("Please enter the video URL:");
-    if (url && editor) {
-      editor.chain().focus().setVideo({ src: url }).run();
-    }
-  };
-
-  const addLink = () => {
-    const previousUrl = editor?.getAttributes("link").href;
-    const url = window.prompt("URL", previousUrl);
-
-    if (url === null) {
-      return;
-    }
-
-    if (url === "") {
-      editor?.chain().focus().extendMarkRange("link").unsetLink().run();
-      return;
-    }
-
-    editor?.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
   };
 
   return (
