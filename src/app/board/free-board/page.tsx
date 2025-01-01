@@ -32,7 +32,7 @@ const FreeBoard: React.FC = () => {
   return (
     <div className="p-4 max-w-6xl mx-auto">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Free Board</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Free Board2</h1>
         <IDialogButtonForCreateBoardPosting />
       </div>
 
