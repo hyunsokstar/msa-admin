@@ -10,11 +10,6 @@ export async function GET() {
     // createRouteHandlerClient 직접 사용
     const supabase = createRouteHandlerClient({ 
       cookies,
-      options: {
-        global: { 
-          fetch: fetch.bind(globalThis)
-        }
-      }
     });
 
     // 세션 체크
