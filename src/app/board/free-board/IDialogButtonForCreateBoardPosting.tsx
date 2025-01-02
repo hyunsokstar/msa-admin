@@ -50,9 +50,6 @@ const IDialogButtonForCreateBoardPosting: React.FC = () => {
         setOpen(false);
         form.reset();
       },
-      onError: (error) => {
-        console.error('게시글 생성 실패:', error);
-      }
     });
   };
 
