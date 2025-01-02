@@ -41,7 +41,9 @@ const DialogButtonForLogin: React.FC = () => {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="outline" className="text-sm font-medium px-6 py-2">
+                <Button 
+                    type='button'
+                variant="outline" className="text-sm font-medium px-6 py-2">
                     <LogIn className="w-4 h-4 mr-2" />
                     로그인
                 </Button>
@@ -138,6 +140,7 @@ const DialogButtonForLogin: React.FC = () => {
                                         </Label>
                                     </div>
                                     <Button
+                                    type='button'
                                         variant="link"
                                         className="text-sm text-blue-500 hover:text-blue-600 p-0"
                                     >
@@ -146,6 +149,7 @@ const DialogButtonForLogin: React.FC = () => {
                                 </div>
 
                                 <Button
+                                type='button'
                                     onClick={handleLogin}
                                     className="w-full bg-[#4171d6] hover:bg-blue-700 text-white py-2 mt-6 rounded-lg transition-colors"
                                     disabled={loginMutation.isPending}
@@ -167,15 +171,21 @@ const DialogButtonForLogin: React.FC = () => {
 
                                 <div className="mt-6 flex justify-center space-x-4">
                                     {/* Google 로그인 버튼 */}
-                                    <button className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50 transition-colors">
+                                    <button 
+                                        type='button'
+                                    className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50 transition-colors">
                                         <FaGoogle className="w-5 h-5 text-[#EA4335]" />
                                     </button>
                                     {/* Kakao 로그인 버튼 */}
-                                    <button className="w-10 h-10 flex items-center justify-center rounded-full bg-[#FEE500] hover:bg-[#FDD800] transition-colors">
+                                    <button 
+                                    type='button'
+                                    className="w-10 h-10 flex items-center justify-center rounded-full bg-[#FEE500] hover:bg-[#FDD800] transition-colors">
                                         <FaComment className="w-5 h-5 text-[#3C1E1E]" />
                                     </button>
                                     {/* Naver 로그인 버튼 */}
-                                    <button className="w-10 h-10 flex items-center justify-center rounded-full bg-[#03C75A] hover:bg-[#02B551] transition-colors">
+                                    <button 
+                                    type='button'
+                                    className="w-10 h-10 flex items-center justify-center rounded-full bg-[#03C75A] hover:bg-[#02B551] transition-colors">
                                         <FaFacebook className="w-5 h-5 text-white" />
                                     </button>
                                 </div>
