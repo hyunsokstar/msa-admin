@@ -53,3 +53,12 @@ export const createNoteCollectionSchema = z.object({
 });
 
 export type CreateNoteCollectionFormData = z.infer<typeof createNoteCollectionSchema>;
+
+export interface UpdateNoteCollectionDto {
+  name: string;
+}
+
+export interface UpdateNoteCollectionResponse {
+  data: NoteCollection;
+  error?: string;
+}

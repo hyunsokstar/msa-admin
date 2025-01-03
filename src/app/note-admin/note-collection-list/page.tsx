@@ -2,12 +2,23 @@
 "use client";
 
 import React, { useState } from 'react';
-import Image from 'next/image';
+import { Pencil, Trash2 } from 'lucide-react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import Pagination from 'rc-pagination';
 import { NoteCollection } from '@/types/typeForNoteCollections';
-import 'rc-pagination/assets/index.css';
 import { useApiForNoteCollections } from '@/hook/useApiForNoteCollections';
 import { IDialogButtonForCreateNoteCollection } from '@/components/dialog/IDialogButtonForCreateNoteCollection';
+import 'rc-pagination/assets/index.css';
+import CommonButton from '@/components/common/CommonButton';
+import { IDialogButtonForEditNoteCollection } from '@/components/dialog/IDialogButtonForEditNoteCollection';
+import { IDialogButtonForDeleteNoteCollection } from '@/components/dialog/IDialogButtonForDeleteNoteCollection';
 
 const NoteCollectionListPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -22,35 +33,43 @@ const NoteCollectionListPage = () => {
     setCurrentPage(page);
   };
 
+  const handleEdit = (id: number) => {
+    // TODO: 수정 기능 구현
+    console.log('Edit:', id);
+  };
+
+  const handleDelete = (id: number) => {
+    // TODO: 삭제 기능 구현
+    console.log('Delete:', id);
+  };
+
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error occurred</div>;
 
   return (
     <div className="p-4">
-      
-      <div className="overflow-x-auto">
-
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Note Collections</h1>
         <IDialogButtonForCreateNoteCollection />
       </div>
 
-        <table className="min-w-full bg-white border border-gray-300">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 border-b text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-              <th className="px-6 py-3 border-b text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-              <th className="px-6 py-3 border-b text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Writer</th>
-              <th className="px-6 py-3 border-b text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created At</th>
-              <th className="px-6 py-3 border-b text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Updated At</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[100px]">ID</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Writer</TableHead>
+              <TableHead>Created At</TableHead>
+              <TableHead className="w-[100px] text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {data?.data.map((collection: NoteCollection) => (
-              <tr key={collection.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap">{collection.id}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{collection.name}</td>
-                <td className="px-6 py-4 whitespace-nowrap">
+              <TableRow key={collection.id}>
+                <TableCell>{collection.id}</TableCell>
+                <TableCell>{collection.name}</TableCell>
+                <TableCell>
                   <div className="flex items-center gap-2">
                     {collection.writer?.profile_image_url && (
                       <img
@@ -59,21 +78,28 @@ const NoteCollectionListPage = () => {
                         className="h-8 w-8 rounded-full object-cover"
                       />
                     )}
-                    <div className="text-sm text-gray-900">
-                      {collection.writer?.full_name || 'Anonymous'}
-                    </div>
+                    <span>{collection.writer?.full_name || 'Anonymous'}</span>
                   </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                </TableCell>
+                <TableCell>
                   {new Date(collection.created_at).toLocaleString()}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {new Date(collection.updated_at).toLocaleString()}
-                </td>
-              </tr>
+                </TableCell>
+                <TableCell className="text-right space-x-2">
+                    <IDialogButtonForEditNoteCollection
+                      collectionId={collection.id}
+                      initialName={collection.name}
+                    />
+
+                <IDialogButtonForDeleteNoteCollection
+                  collectionId={collection.id}
+                  collectionName={collection.name}
+                />
+
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
 
       <div className="mt-4 flex justify-between items-center">

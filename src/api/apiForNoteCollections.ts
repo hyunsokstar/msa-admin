@@ -1,5 +1,5 @@
 // src/api/apiForNoteCollections.ts
-import { CreateNoteCollectionDto, CreateNoteCollectionResponse, NoteCollection, PaginatedResponse } from '@/types/typeForNoteCollections';
+import { CreateNoteCollectionDto, CreateNoteCollectionResponse, NoteCollection, PaginatedResponse, UpdateNoteCollectionDto, UpdateNoteCollectionResponse } from '@/types/typeForNoteCollections';
 
 export interface GetNoteCollectionsParams {
   page?: number;
@@ -57,6 +57,50 @@ export const createNoteCollection = async (data: CreateNoteCollectionDto): Promi
     return await response.json();
   } catch (error) {
     console.error('Error in createNoteCollection:', error);
+    throw error;
+  }
+};
+
+export const apiForUpdateNoteCollection = async (
+  id: number,
+  data: UpdateNoteCollectionDto
+): Promise<UpdateNoteCollectionResponse> => {
+  try {
+    const response = await fetch(`/api/note-collections/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to update note collection');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error in apiForUpdateNoteCollection:', error);
+    throw error;
+  }
+};
+
+// note collections 삭제 API
+export const apiForDeleteNoteCollection = async (id: number): Promise<{ success: boolean }> => {
+  try {
+    const response = await fetch(`/api/note-collections/${id}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to delete note collection');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error in apiForDeleteNoteCollection:', error);
     throw error;
   }
 };
