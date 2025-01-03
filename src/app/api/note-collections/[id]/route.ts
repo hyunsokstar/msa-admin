@@ -3,19 +3,24 @@ import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
+type RouteContext = {
+  params: {
+    id: string;
+  };
+};
+
 export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+  req: NextRequest,
+  { params }: RouteContext
+): Promise<NextResponse> {
   try {
     const supabase = createRouteHandlerClient({ cookies });
-    const body = await request.json();
-    const id = params.id;
+    const body = await req.json();
 
     const { data, error } = await supabase
       .from('note_collections')
       .update({ name: body.name })
-      .eq('id', id)
+      .eq('id', params.id)
       .select(`
         *,
         writer:users(id, full_name, profile_image_url)
@@ -38,21 +43,17 @@ export async function PUT(
   }
 }
 
-// app/api/note-collections/[id]/route.ts
-// 기존 PUT 메서드 아래에 추가
-
 export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+  req: NextRequest,
+  { params }: RouteContext
+): Promise<NextResponse> {
   try {
     const supabase = createRouteHandlerClient({ cookies });
-    const id = params.id;
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('note_collections')
       .delete()
-      .eq('id', id)
+      .eq('id', params.id)
       .single();
 
     if (error) {
