@@ -1,10 +1,8 @@
 // src/types/typeForNoteCollections.ts
-
-// types/typeForNoteCollections.ts
 export interface Writer {
   id: string;
   full_name: string | null;
-  profile_image_url: string | null;
+  profile_image_url: string | null;  // API 응답과 일치하도록 유지
 }
 
 export interface NoteCollection {
@@ -30,10 +28,5 @@ export interface GetNoteCollectionsParams {
 export interface PaginatedResponse<T> {
   data: T;
   pagination: PaginationInfo;
-  error?: string;
-}
-
-export interface ApiResponse<T> {
-  data: T;
   error?: string;
 }

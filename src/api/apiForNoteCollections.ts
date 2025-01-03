@@ -1,16 +1,15 @@
 // src/api/apiForNoteCollections.ts
+import { NoteCollection, PaginatedResponse } from '@/types/typeForNoteCollections';
 
-import { ApiResponse, NoteCollection, PaginatedResponse } from '@/types/typeForNoteCollections';
-
-interface GetNoteCollectionsParams {
+export interface GetNoteCollectionsParams {
   page?: number;
   pageSize?: number;
 }
 
-export const apiForGetNoteCollections = async ({
-  page = 1,
-  pageSize = 10
-}: GetNoteCollectionsParams = {}): Promise<PaginatedResponse<NoteCollection[]>> => {
+export const apiForGetNoteCollections = async (context: any) => {
+  const [_, params] = context.queryKey;
+  const { page = 1, pageSize = 10 } = params as GetNoteCollectionsParams;
+
   try {
     const response = await fetch(
       `/api/note-collections?page=${page}&pageSize=${pageSize}`,
@@ -27,7 +26,10 @@ export const apiForGetNoteCollections = async ({
       throw new Error(errorData.error || 'Failed to fetch note collections');
     }
 
-    return await response.json();
+    const responseData = await response.json();
+    console.log('Response data:', responseData);
+    return responseData;
+
   } catch (error) {
     console.error('Error in apiForGetNoteCollections:', error);
     throw error;

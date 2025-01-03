@@ -6,19 +6,19 @@ import Image from 'next/image';
 import Pagination from 'rc-pagination';
 import { NoteCollection } from '@/types/typeForNoteCollections';
 import 'rc-pagination/assets/index.css';
-import { useApiForGetNoteCollections } from '@/hook/useApiForGetNoteCollections';
+import { useApiForNoteCollections } from '@/hook/useApiForNoteCollections';
 
 const NoteCollectionListPage = () => {
-  const [page, setPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
 
-  const { data, isLoading, error } = useApiForGetNoteCollections({
-    page,
+  const { data, isLoading, error } = useApiForNoteCollections({
+    page: currentPage,
     pageSize,
   });
 
-  const handlePageChange = (newPage: number) => {
-    setPage(newPage);
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -28,7 +28,6 @@ const NoteCollectionListPage = () => {
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Note Collections</h1>
       
-      {/* Table */}
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-300">
           <thead className="bg-gray-50">
@@ -48,15 +47,11 @@ const NoteCollectionListPage = () => {
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center gap-2">
                     {collection.writer?.profile_image_url && (
-                      <div className="flex-shrink-0 h-8 w-8">
-                        <Image
-                          src={collection.writer.profile_image_url}
-                          alt={collection.writer.full_name || ''}
-                          width={32}
-                          height={32}
-                          className="rounded-full"
-                        />
-                      </div>
+                      <img
+                        src={collection.writer.profile_image_url}
+                        alt={collection.writer.full_name || ''}
+                        className="h-8 w-8 rounded-full object-cover"
+                      />
                     )}
                     <div className="text-sm text-gray-900">
                       {collection.writer?.full_name || 'Anonymous'}
@@ -75,20 +70,17 @@ const NoteCollectionListPage = () => {
         </table>
       </div>
 
-      {/* Pagination */}
-      <div className="mt-4">
-        <div className="flex justify-between items-center">
-          <div className="text-sm text-gray-500">
-            Total {data?.pagination.total} items
-          </div>
-          <Pagination
-            current={page}
-            total={data?.pagination.total || 0}
-            pageSize={pageSize}
-            onChange={handlePageChange}
-            className="my-4"
-          />
+      <div className="mt-4 flex justify-between items-center">
+        <div className="text-sm text-gray-500">
+          Total {data?.pagination.total} items
         </div>
+        <Pagination
+          current={currentPage}
+          total={data?.pagination.total || 0}
+          pageSize={pageSize}
+          onChange={handlePageChange}
+          className="my-4"
+        />
       </div>
     </div>
   );
