@@ -31,10 +31,10 @@ export async function PUT(request: NextRequest) {
   }
 }
 
-export async function DELETE(request: NextRequest) {
+export async function DELETE(request: NextRequest, context: { params: { id: string } }) {
   try {
     const supabase = createRouteHandlerClient({ cookies });
-    const id = request.nextUrl.searchParams.get('id');
+    const { id } = context.params; // params에서 id 추출
 
     const { error } = await supabase
       .from("note_collections")

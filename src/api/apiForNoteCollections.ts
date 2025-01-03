@@ -88,10 +88,15 @@ export const apiForUpdateNoteCollection = async (
 
 // note collections 삭제 API
 export const apiForDeleteNoteCollection = async (id: number): Promise<{ success: boolean }> => {
+  console.log("삭제할 id : ", id);
+  
   try {
     const response = await fetch(`/api/note-collections/${id}`, {
       method: 'DELETE',
     });
+
+    console.log('Response:', response);
+    
 
     if (!response.ok) {
       const errorData = await response.json();

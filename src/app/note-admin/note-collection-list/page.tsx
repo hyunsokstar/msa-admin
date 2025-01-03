@@ -89,11 +89,10 @@ const NoteCollectionListPage = () => {
                       collectionId={collection.id}
                       initialName={collection.name}
                     />
-
-                <IDialogButtonForDeleteNoteCollection
-                  collectionId={collection.id}
-                  collectionName={collection.name}
-                />
+                    <IDialogButtonForDeleteNoteCollection
+                      collectionId={collection.id}
+                      collectionName={collection.name}
+                    />
 
                 </TableCell>
               </TableRow>
