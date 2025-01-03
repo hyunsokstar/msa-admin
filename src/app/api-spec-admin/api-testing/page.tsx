@@ -229,7 +229,6 @@ function ApiTesting() {
                 </span>
 
               <CommonButton 
-                defaultHoverColor="primary"  // hover 시 파란색 배경
                 onClick={handleTestSelectedRows}
               >
                 Run Test
