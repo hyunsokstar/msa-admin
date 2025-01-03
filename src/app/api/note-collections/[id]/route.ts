@@ -31,10 +31,40 @@ export async function PUT(request: NextRequest) {
   }
 }
 
-export async function DELETE(request: NextRequest, context: { params: { id: string } }) {
+// export async function DELETE(request: NextRequest, context: { params: { id: string } }) {
+//   try {
+//     const supabase = createRouteHandlerClient({ cookies });
+//     const { id } = context.params; // params에서 id 추출
+
+//     const { error } = await supabase
+//       .from("note_collections")
+//       .delete()
+//       .eq("id", id)
+//       .single();
+
+//     if (error) {
+//       console.error("Error deleting note collection:", error.message);
+//       return NextResponse.json({ error: error.message }, { status: 500 });
+//     }
+
+//     return NextResponse.json({ success: true }, { status: 200 });
+//   } catch (error) {
+//     console.error("Server error:", error);
+//     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+//   }
+// }
+
+export async function DELETE(request: NextRequest) {
   try {
     const supabase = createRouteHandlerClient({ cookies });
-    const { id } = context.params; // params에서 id 추출
+
+    // URL에서 ID 추출
+    const urlParts = request.nextUrl.pathname.split("/");
+    const id = urlParts[urlParts.length - 1];
+
+    if (!id) {
+      return NextResponse.json({ error: "ID is required" }, { status: 400 });
+    }
 
     const { error } = await supabase
       .from("note_collections")
