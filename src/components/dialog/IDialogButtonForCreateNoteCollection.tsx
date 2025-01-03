@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { X } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { createNoteCollectionSchema, CreateNoteCollectionFormData } from '@/types/typeForNoteCollections';
-import useApiForCreateNoteCollection from '@/hook/useApiForCreateNoteCollection';
+import useApiForCreateNoteCollection from '@/hook/notes/useApiForCreateNoteCollection';
 import { useUserStore } from '@/store/useUserStore';
 
 export const IDialogButtonForCreateNoteCollection = () => {

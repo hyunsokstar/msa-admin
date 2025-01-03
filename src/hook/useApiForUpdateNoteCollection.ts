@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { 
   apiForUpdateNoteCollection, 
-} from '@/api/apiForNoteCollections';
+} from '@/api/notes/apiForNoteCollections';
 import { UpdateNoteCollectionDto } from '@/types/typeForNoteCollections';
 
 interface UpdateNoteCollectionParams {

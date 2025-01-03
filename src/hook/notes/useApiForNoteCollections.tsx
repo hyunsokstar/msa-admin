@@ -1,6 +1,6 @@
 // src/hooks/useApiForNoteCollections.ts
 import { useQuery } from '@tanstack/react-query';
-import { apiForGetNoteCollections, GetNoteCollectionsParams } from '@/api/apiForNoteCollections';
+import { apiForGetNoteCollections, GetNoteCollectionsParams } from '@/api/notes/apiForNoteCollections';
 import { PaginatedResponse, NoteCollection } from '@/types/typeForNoteCollections';
 
 export const useApiForNoteCollections = (params: GetNoteCollectionsParams = {}) => {

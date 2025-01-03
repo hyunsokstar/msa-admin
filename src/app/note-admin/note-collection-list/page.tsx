@@ -13,12 +13,13 @@ import {
 } from "@/components/ui/table";
 import Pagination from 'rc-pagination';
 import { NoteCollection } from '@/types/typeForNoteCollections';
-import { useApiForNoteCollections } from '@/hook/useApiForNoteCollections';
+import { useApiForNoteCollections } from '@/hook/notes/useApiForNoteCollections';
 import { IDialogButtonForCreateNoteCollection } from '@/components/dialog/IDialogButtonForCreateNoteCollection';
 import 'rc-pagination/assets/index.css';
 import CommonButton from '@/components/common/CommonButton';
 import { IDialogButtonForEditNoteCollection } from '@/components/dialog/IDialogButtonForEditNoteCollection';
 import { IDialogButtonForDeleteNoteCollection } from '@/components/dialog/IDialogButtonForDeleteNoteCollection';
+import Link from 'next/link';
 
 const NoteCollectionListPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -68,7 +69,18 @@ const NoteCollectionListPage = () => {
             {data?.data.map((collection: NoteCollection) => (
               <TableRow key={collection.id}>
                 <TableCell>{collection.id}</TableCell>
-                <TableCell>{collection.name}</TableCell>
+
+                  <TableCell>
+                  <div>
+                    <Link 
+                      href={`/note-admin/note-collection-list/${collection.id}/notes`}
+                      className="text-blue-600 hover:text-blue-800 hover:underline"
+                    >
+                      {collection.name}
+                    </Link>
+                  </div>
+                </TableCell>
+                
                 <TableCell>
                   <div className="flex items-center gap-2">
                     {collection.writer?.profile_image_url && (

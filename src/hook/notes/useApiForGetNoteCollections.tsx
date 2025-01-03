@@ -1,7 +1,7 @@
 // src/hooks/useApiForGetNoteCollections.ts
 
 import { useQuery } from '@tanstack/react-query';
-import { apiForGetNoteCollections } from '@/api/apiForNoteCollections';
+import { apiForGetNoteCollections } from '@/api/notes/apiForNoteCollections';
 import { GetNoteCollectionsParams } from '@/types/typeForNoteCollections';
 
 export const useApiForGetNoteCollections = (params: GetNoteCollectionsParams = {}) => {

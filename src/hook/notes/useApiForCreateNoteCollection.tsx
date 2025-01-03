@@ -2,7 +2,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { CreateNoteCollectionDto, NoteCollection } from '@/types/typeForNoteCollections';
-import { createNoteCollection } from '@/api/apiForNoteCollections';
+import { createNoteCollection } from '@/api/notes/apiForNoteCollections';
 
 export const useApiForCreateNoteCollection = () => {
   const queryClient = useQueryClient();

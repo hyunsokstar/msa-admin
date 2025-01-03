@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Trash2, X } from 'lucide-react';
 import CommonButton from '@/components/common/CommonButton';
-import { useApiForDeleteNoteCollection } from '@/hook/useApiForDeleteNoteCollection';
+import { useApiForDeleteNoteCollection } from '@/hook/notes/useApiForDeleteNoteCollection';
 
 interface IDialogButtonForDeleteNoteCollectionProps {
   collectionId: number;

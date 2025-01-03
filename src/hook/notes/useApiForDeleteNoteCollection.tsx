@@ -1,7 +1,7 @@
 // src/hooks/useApiForDeleteNoteCollection.ts
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
-import { apiForDeleteNoteCollection } from '@/api/apiForNoteCollections';
+import { apiForDeleteNoteCollection } from '@/api/notes/apiForNoteCollections';
 
 export const useApiForDeleteNoteCollection = () => {
   const queryClient = useQueryClient();
