@@ -1,5 +1,5 @@
 // src/api/apiForNoteCollections.ts
-import { NoteCollection, PaginatedResponse } from '@/types/typeForNoteCollections';
+import { CreateNoteCollectionDto, CreateNoteCollectionResponse, NoteCollection, PaginatedResponse } from '@/types/typeForNoteCollections';
 
 export interface GetNoteCollectionsParams {
   page?: number;
@@ -32,6 +32,31 @@ export const apiForGetNoteCollections = async (context: any) => {
 
   } catch (error) {
     console.error('Error in apiForGetNoteCollections:', error);
+    throw error;
+  }
+};
+
+export const createNoteCollection = async (data: CreateNoteCollectionDto): Promise<CreateNoteCollectionResponse> => {
+  try {
+    const response = await fetch('/api/note-collections', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    console.log('Response:', response);
+    
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to create note collection');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error in createNoteCollection:', error);
     throw error;
   }
 };

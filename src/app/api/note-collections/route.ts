@@ -45,3 +45,39 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
+export async function POST(request: NextRequest) {
+ try {
+   const supabase = createRouteHandlerClient({ cookies });
+   const body = await request.json();
+
+   const { data, error } = await supabase
+     .from('note_collections')
+     .insert([
+       {
+         name: body.name,
+         writer: body.writer
+       }
+     ])
+     .select(`
+       *,
+       writer:users(id, full_name, profile_image_url)
+     `)
+     .single();
+
+   if (error) {
+     console.error('Error creating note collection:', error.message);
+     return NextResponse.json({ error: error.message }, { status: 500 });
+   }
+
+   return NextResponse.json({ data }, { status: 201 });
+
+ } catch (error) {
+   console.error('Server error:', error);
+   return NextResponse.json(
+     { error: 'Internal server error' },
+     { status: 500 }
+   );
+ }
+}
+

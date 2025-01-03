@@ -7,6 +7,7 @@ import Pagination from 'rc-pagination';
 import { NoteCollection } from '@/types/typeForNoteCollections';
 import 'rc-pagination/assets/index.css';
 import { useApiForNoteCollections } from '@/hook/useApiForNoteCollections';
+import { IDialogButtonForCreateNoteCollection } from '@/components/dialog/IDialogButtonForCreateNoteCollection';
 
 const NoteCollectionListPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,6 +30,12 @@ const NoteCollectionListPage = () => {
       <h1 className="text-2xl font-bold mb-4">Note Collections</h1>
       
       <div className="overflow-x-auto">
+
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Note Collections</h1>
+        <IDialogButtonForCreateNoteCollection />
+      </div>
+
         <table className="min-w-full bg-white border border-gray-300">
           <thead className="bg-gray-50">
             <tr>

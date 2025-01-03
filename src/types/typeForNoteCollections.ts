@@ -1,3 +1,6 @@
+import { z } from 'zod';
+
+
 // src/types/typeForNoteCollections.ts
 export interface Writer {
   id: string;
@@ -30,3 +33,23 @@ export interface PaginatedResponse<T> {
   pagination: PaginationInfo;
   error?: string;
 }
+
+// src/types/typeForNoteCollections.ts
+export interface CreateNoteCollectionDto {
+  name: string;
+  writer: string;  // writer ID
+}
+
+export interface CreateNoteCollectionResponse {
+  data: NoteCollection;
+  error?: string;
+}
+
+// 기존 타입 정의 아래에 추가
+export const createNoteCollectionSchema = z.object({
+  name: z.string()
+    .min(1, '컬렉션 이름은 필수입니다.')
+    .max(100, '컬렉션 이름은 100자를 초과할 수 없습니다.')
+});
+
+export type CreateNoteCollectionFormData = z.infer<typeof createNoteCollectionSchema>;
