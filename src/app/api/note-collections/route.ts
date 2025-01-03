@@ -1,26 +1,42 @@
-import { createPagesServerClient } from '@supabase/auth-helpers-nextjs';
+// app/api/note-collections/route.ts
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
   try {
-    // 1. Create Supabase server client
-    const response = NextResponse.next();
-    const supabase = createPagesServerClient({ req: request as any, res: response as any });
+    const searchParams = request.nextUrl.searchParams;
+    const page = parseInt(searchParams.get('page') || '1');
+    const pageSize = parseInt(searchParams.get('pageSize') || '10');
+    
+    const offset = (page - 1) * pageSize;
 
-    // 2. Fetch note collections
-    const { data, error } = await supabase
+    const supabase = createRouteHandlerClient({ cookies });
+
+    const { data, error, count } = await supabase
       .from('note_collections')
-      .select('*')
-      .order('created_at', { ascending: false });
+      .select(`
+        *,
+        writer:users(id, full_name, profile_image_url)
+      `, { count: 'exact' })
+      .order('created_at', { ascending: false })
+      .range(offset, offset + pageSize - 1);
 
-    // 3. Handle errors
     if (error) {
       console.error('Error fetching note collections:', error.message);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    // 4. Return fetched data
-    return NextResponse.json({ data }, { status: 200 });
+    return NextResponse.json({
+      data,
+      pagination: {
+        currentPage: page,
+        pageSize,
+        total: count,
+        totalPages: Math.ceil((count || 0) / pageSize)
+      }
+    }, { status: 200 });
+
   } catch (error) {
     console.error('Server error:', error);
     return NextResponse.json(
