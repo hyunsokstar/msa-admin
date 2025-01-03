@@ -48,7 +48,7 @@ export const IDialogButtonForCreateNoteCollection = () => {
       });
       setIsOpen(false);
       reset();
-      toast.success('노트 컬렉션이 성공적으로 생성되었습니다.');
+      // toast.success('노트 컬렉션이 성공적으로 생성되었습니다.');
     } catch (error) {
       console.error('Failed to create note collection:', error);
       toast.error('노트 컬렉션 생성에 실패했습니다.');
