@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 // src\types\notes\typeForNotes.ts
 export interface Note {
   id: number;
@@ -27,4 +29,23 @@ export interface PaginatedResponse<T> {
 export interface GetNotesParams {
   page?: number;
   pageSize?: number;
+}
+
+export interface ICreateNoteData {
+  title: string;
+  collectionId: string;
+  writer: string;
+}
+
+export const createNoteSchema = z.object({
+ title: z.string()
+   .min(1, '제목을 입력해주세요.')
+   .max(100, '제목은 100자를 초과할 수 없습니다.'),
+});
+
+export type CreateNoteFormData = z.infer<typeof createNoteSchema>;
+
+export interface UpdateNoteData {
+  id: number;
+  title: string;
 }

@@ -14,6 +14,9 @@ import Pagination from 'rc-pagination';
 import 'rc-pagination/assets/index.css';
 import { Note } from '@/types/notes/typeForNotes';
 import { useApiForGetNotesForNoteCollection } from '@/hook/notes/useApiForGetNotesForNoteCollection';
+import { IDialogButtonForCreateNote } from '@/components/dialog/IDialogButtonForCreateNote';
+import { IDialogButtonForUpdateNote } from '@/components/dialog/IDialogButtonForUpdateNote';
+import { IDialogButtonForDeleteNote } from '@/components/dialog/IDialogButtonForDeleteNote';
 
 interface Props {
   params: Promise<{
@@ -47,6 +50,7 @@ const NotesListForCollection = ({ params }: Props) => {
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Notes</h1>
         {/* TODO: Add Create Note Button */}
+        <IDialogButtonForCreateNote collectionId={collectionId} />
       </div>
 
       <div className="rounded-md border">
@@ -85,16 +89,18 @@ const NotesListForCollection = ({ params }: Props) => {
                   {new Date(note.updated_at).toLocaleString()}
                 </TableCell>
                 <TableCell className="text-right space-x-2">
-                  {/* TODO: Add Edit/Delete Buttons
-                  <IDialogButtonForEditNote
+                  {/* TODO: Add Edit/Delete Buttons */}
+                  <IDialogButtonForUpdateNote
                     noteId={note.id}
-                    initialTitle={note.title}
-                  />
+                    initialTitle={note.title} 
+                    collectionId={collectionId}                  
+                    />
                   <IDialogButtonForDeleteNote
                     noteId={note.id}
-                    noteTitle={note.title}
-                  /> 
-                  */}
+                    noteTitle={note.title} 
+                    collectionId={collectionId}                  
+                    /> 
+                 
                 </TableCell>
               </TableRow>
             ))}
