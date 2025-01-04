@@ -17,6 +17,7 @@ import { useApiForGetNotesForNoteCollection } from '@/hook/notes/useApiForGetNot
 import { IDialogButtonForCreateNote } from '@/components/dialog/IDialogButtonForCreateNote';
 import { IDialogButtonForUpdateNote } from '@/components/dialog/IDialogButtonForUpdateNote';
 import { IDialogButtonForDeleteNote } from '@/components/dialog/IDialogButtonForDeleteNote';
+import Link from 'next/link';
 
 interface Props {
   params: Promise<{
@@ -69,7 +70,17 @@ const NotesListForCollection = ({ params }: Props) => {
             {data?.data.map((note: Note) => (
               <TableRow key={note.id}>
                 <TableCell>{note.id}</TableCell>
-                <TableCell>{note.title}</TableCell>
+                {/* <TableCell>{note.title}</TableCell> */}
+                {/* hi */}
+                <TableCell>
+                  <Link 
+                    href={`/note-admin/notes/${note.id}/note-contents`}
+                    className="text-blue-600 hover:text-blue-800 hover:underline"
+                  >
+                    {note.title}
+                  </Link>
+                </TableCell>
+
                 <TableCell>
                   <div className="flex items-center gap-2">
                     {note.writer?.profile_image_url && (
