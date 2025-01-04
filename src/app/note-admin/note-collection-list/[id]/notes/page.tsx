@@ -61,7 +61,7 @@ const NotesListForCollection = ({ params }: Props) => {
               <TableHead>Title</TableHead>
               <TableHead>Writer</TableHead>
               <TableHead>Created At</TableHead>
-              <TableHead>Updated At</TableHead>
+              {/* <TableHead>Updated At</TableHead> */}
               <TableHead className="w-[100px] text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -85,9 +85,9 @@ const NotesListForCollection = ({ params }: Props) => {
                 <TableCell>
                   {new Date(note.created_at).toLocaleString()}
                 </TableCell>
-                <TableCell>
+                {/* <TableCell>
                   {new Date(note.updated_at).toLocaleString()}
-                </TableCell>
+                </TableCell> */}
                 <TableCell className="text-right space-x-2">
                   {/* TODO: Add Edit/Delete Buttons */}
                   <IDialogButtonForUpdateNote
