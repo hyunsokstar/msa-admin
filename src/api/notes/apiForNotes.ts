@@ -1,51 +1,111 @@
-// src/app/api/notes/[id]/contents/route.ts
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
+import { GetNotesParams, ICreateNoteData, Note, PaginatedResponse } from "@/types/notes/typeForNotes";
 
-export async function GET(request: NextRequest) {
+export const getNotesByCollectionId = async (
+  collectionId: string, 
+  params: GetNotesParams = {}
+): Promise<PaginatedResponse<Note[]>> => {
+  const { page = 1, pageSize = 10 } = params;
+  
   try {
-    const cookieStore = cookies();
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
-    
-    // URL에서 id와 페이지 정보 추출
-    const urlParts = request.nextUrl.pathname.split("/");
-    const noteId = urlParts[urlParts.length - 2];
-    const pageNum = Number(request.nextUrl.searchParams.get('pageNum')) || 1;
-    const pageSize = Number(request.nextUrl.searchParams.get('pageSize')) || 10;
-    
-    // 전체 개수 조회
-    const { count } = await supabase
-      .from("note_contents")
-      .select('*', { count: 'exact', head: true })
-      .eq("note_id", noteId);
+    const queryParams = new URLSearchParams({
+      page: page.toString(),
+      pageSize: pageSize.toString()
+    });
 
-    // 페이지네이션된 데이터 조회
-    const { data, error } = await supabase
-      .from("note_contents")
-      .select(`
-        *,
-        writer:users(id, full_name, profile_image_url)
-      `)
-      .eq("note_id", noteId)
-      .order("order", { ascending: true })
-      .range((pageNum - 1) * pageSize, pageNum * pageSize - 1);
+    const response = await fetch(
+      `/api/note-collections/${collectionId}/notes?${queryParams}`
+    );
 
-    if (error) {
-      console.error("Error fetching note contents:", error.message);
-      return NextResponse.json({ error: error.message }, { status: 500 });
+    console.log('response:', response);
+    
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch notes');
+    }
+    
+    const json = await response.json();
+    return json;
+  } catch (error) {
+    console.error('Failed to fetch notes:', error);
+    throw error;
+  }
+};
+
+export const apiForCreateNote = async (data: ICreateNoteData) => {
+  try {
+    const response = await fetch(`/api/note-collections/${data.collectionId}/notes`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title: data.title,
+        writer: data.writer
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to create note');
     }
 
-    return NextResponse.json({
-      data,
-      pagination: {
-        current: pageNum,
-        pageSize,
-        total: count
-      }
-    }, { status: 200 });
+    const json = await response.json();
+    return json;
   } catch (error) {
-    console.error("Server error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    console.error('Failed to create note:', error);
+    throw error;
   }
-}
+};
+
+// 노트 수정 API
+export const apiForUpdateNote = async (
+  collectionId: string,
+  noteId: number,
+  data: { title: string }
+): Promise<Note> => {
+  try {
+    const response = await fetch(`/api/note-collections/${collectionId}/notes`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: noteId,
+        title: data.title
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to update note');
+    }
+
+    const json = await response.json();
+    return json.data;
+  } catch (error) {
+    console.error('Failed to update note:', error);
+    throw error;
+  }
+};
+
+// 노트 삭제 API
+export const apiForDeleteNote = async (
+  collectionId: string,
+  noteId: number
+): Promise<{ success: boolean }> => {
+  try {
+    const response = await fetch(
+      `/api/note-collections/${collectionId}/notes?id=${noteId}`, 
+      {
+        method: 'DELETE',
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Failed to delete note');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Failed to delete note:', error);
+    throw error;
+  }
+};
