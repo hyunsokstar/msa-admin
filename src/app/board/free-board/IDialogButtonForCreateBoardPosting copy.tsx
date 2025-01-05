@@ -18,8 +18,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import TiptapEditor from "@/components/rich-editor/TipTabEditor";
-import { useCreateNoteContent, useNoteContents } from "@/hook/notes/useApiForNoteContents";
+import {  useNoteContents } from "@/hook/notes/useApiForNoteContents";
 import CommonButton from "@/components/common/CommonButton";
+import { useCreateNoteContent } from "@/hook/notes/useApiForCreateNoteContents";
 
 interface Props {
   noteId: string;
