@@ -7,35 +7,66 @@ import { Button } from "@/components/ui/button";
 import { Check, X } from "lucide-react";
 import { NoteContent } from "@/types/notes/typeForNoteContents";
 import TiptapEditor from "@/components/rich-editor/TipTabEditor";
+import { toast } from 'react-toastify';
+import useApiForUpdateNoteContents from '@/hook/notes/useApiForUpdateNoteContents';
 
 interface Props {
   content: NoteContent;
   isSelected: boolean;
   onClick: () => void;
-  onUpdate?: (updatedContent: NoteContent) => void;
   onCancel?: () => void;
+  noteId: string;
+  pageNum?: number;
 }
 
-const ICardForUpdateNoteContents = ({ content, isSelected, onClick, onUpdate, onCancel }: Props) => {
+const ICardForUpdateNoteContents = ({ 
+  content, 
+  isSelected, 
+  onClick, 
+  onCancel,
+  noteId,
+  pageNum 
+}: Props) => {
+  const { updateNoteContent, isLoading } = useApiForUpdateNoteContents({
+    noteId,
+    pageNum
+  });
+
   const [formData, setFormData] = useState({
     title: content.title || '',
     path: content.path || '',
     content: content.content || ''
   });
 
-  const handleUpdate = () => {
-    console.log('Update clicked for content:', {
-      ...content,
-      ...formData
-    });
-    onUpdate?.({
-      ...content,
-      ...formData
-    });
+  const handleUpdate = async () => {
+    try {
+      await updateNoteContent(content.id, {
+        title: formData.title,
+        path: formData.path,
+        content: formData.content
+      });
+
+      toast.success('노트 내용이 성공적으로 수정되었습니다.', {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    } catch (error) {
+      toast.error('노트 내용 수정 중 오류가 발생했습니다.', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    }
   };
 
   const handleCancel = () => {
-    console.log('Cancel clicked for content:', content);
     setFormData({
       title: content.title || '',
       path: content.path || '',
@@ -100,13 +131,15 @@ const ICardForUpdateNoteContents = ({ content, isSelected, onClick, onUpdate, on
         <div className="grid grid-cols-2 gap-4">
           <Button
             onClick={handleUpdate}
+            disabled={isLoading}
             className="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white"
           >
             <Check className="w-4 h-4" />
-            수정 완료
+            {isLoading ? '수정 중...' : '수정 완료'}
           </Button>
           <Button
             onClick={handleCancel}
+            disabled={isLoading}
             variant="outline"
             className="flex items-center justify-center gap-2 border-red-500 text-red-500 hover:bg-red-50"
           >

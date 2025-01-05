@@ -43,6 +43,8 @@ const ICardForNoteContents = ({
         content={content}
         isSelected={isSelected}
         onClick={onClick}
+        pageNum={pageNum}
+        noteId={noteId}
       />
     );
   }
