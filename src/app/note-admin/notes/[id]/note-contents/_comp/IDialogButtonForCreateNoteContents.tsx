@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { Plus, X, Save } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -82,9 +82,11 @@ export default function IDialogButtonForCreateNoteContents({ noteId, pageNum }: 
         }
       });
 
+      toast.success('노트가 성공적으로 생성되었습니다.');
       setOpen(false);
       form.reset();
     } catch (error) {
+      toast.error('노트 생성에 실패했습니다.');
       console.error('Failed to create note content:', error);
     }
   };
@@ -97,23 +99,26 @@ export default function IDialogButtonForCreateNoteContents({ noteId, pageNum }: 
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <CommonButton
+          variant="default"
           size="sm"
-          startIcon={<Plus className="h-4 w-4" />}
+          className="transition-all duration-200 ease-in-out hover:scale-105"
         >
-          Add Note
+          <Plus className="h-4 w-4 mr-2" />
+          노트 추가
         </CommonButton>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[80%] max-h-[80vh] overflow-y-auto bg-white dark:bg-slate-900">
-        <DialogHeader>
-          <DialogTitle className="text-slate-900 dark:text-slate-50">Create New Note Content</DialogTitle>
+      <DialogContent className="sm:max-w-[900px] w-[95vw] min-h-[700px] flex flex-col p-0 gap-0 bg-white dark:bg-slate-900">
+        <DialogHeader className="shrink-0 px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+          <DialogTitle className="text-2xl font-bold text-gray-900 dark:text-white">
+            새 노트 작성
+          </DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleCreate)} className="space-y-4 py-4">
-            <div className="grid gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="title" className="text-slate-900 dark:text-slate-50">Title</Label>
+          <form onSubmit={form.handleSubmit(handleCreate)} className="flex flex-col h-full">
+            <div className="px-6 py-4 flex flex-col gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name="title"
@@ -121,19 +126,16 @@ export default function IDialogButtonForCreateNoteContents({ noteId, pageNum }: 
                     <FormItem>
                       <FormControl>
                         <Input
-                          placeholder="Enter title"
-                          className="bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-50"
+                          placeholder="제목을 입력하세요"
+                          className="h-10 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:ring-blue-500 focus:border-blue-500"
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-sm text-red-500" />
                     </FormItem>
                   )}
                 />
-              </div>
 
-              <div className="grid gap-2">
-                <Label htmlFor="path" className="text-slate-900 dark:text-slate-50">Path</Label>
                 <FormField
                   control={form.control}
                   name="path"
@@ -141,57 +143,62 @@ export default function IDialogButtonForCreateNoteContents({ noteId, pageNum }: 
                     <FormItem>
                       <FormControl>
                         <Input
-                          placeholder="Enter path"
-                          className="bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-50"
+                          placeholder="경로를 입력하세요"
+                          className="h-10 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:ring-blue-500 focus:border-blue-500"
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-sm text-red-500" />
                     </FormItem>
                   )}
                 />
               </div>
 
-              <div className="grid gap-2">
-                <Label htmlFor="content" className="text-slate-900 dark:text-slate-50">Content</Label>
-                <FormField
-                  control={form.control}
-                  name="content"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <div className="min-h-[400px] border rounded-lg overflow-hidden bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700">
+              <FormField
+                control={form.control}
+                name="content"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormControl>
+                      <div className="border rounded-lg overflow-hidden bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                        <div className="h-[500px] overflow-y-auto">
                           <TiptapEditor
                             content={field.value}
                             onChange={field.onChange}
                           />
                         </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+                      </div>
+                    </FormControl>
+                    <FormMessage className="text-sm text-red-500" />
+                  </FormItem>
+                )}
+              />
             </div>
 
-            <DialogFooter className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg mt-4">
-              <CommonButton
-                type="button"
-                variant="outline"
-                onClick={() => {
-                  setOpen(false);
-                  form.reset();
-                }}
-              >
-                Cancel
-              </CommonButton>
-              <CommonButton
-                type="submit"
-                isLoading={createMutation.isPending}
-                loadingText="Creating..."
-              >
-                Create
-              </CommonButton>
+            <DialogFooter className="shrink-0 px-6 py-4 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-slate-900 mt-auto">
+              <div className="grid grid-cols-2 gap-4 w-full">
+                <CommonButton
+                  type="button"
+                  variant="outline"
+                  className="w-full h-12 text-base hover:bg-gray-100 dark:hover:bg-gray-800"
+                  onClick={() => {
+                    setOpen(false);
+                    form.reset();
+                  }}
+                >
+                  <X className="h-5 w-5 mr-2" />
+                  취소
+                </CommonButton>
+                <CommonButton
+                  type="submit"
+                  className="w-full h-12 text-base bg-blue-600 hover:bg-blue-700"
+                  isLoading={createMutation.isPending}
+                  loadingText="생성 중..."
+                >
+                  <Save className="h-5 w-5 mr-2" />
+                  {createMutation.isPending ? '생성 중...' : '노트 생성'}
+                </CommonButton>
+              </div>
             </DialogFooter>
           </form>
         </Form>
