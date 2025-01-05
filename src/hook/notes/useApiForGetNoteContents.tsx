@@ -15,7 +15,7 @@ export const useApiForGetNoteContents = ({
   pageSize = 10 
 }: UseNoteContentsParams) => {
   return useQuery<NoteContentResponse>({
-    queryKey: ['noteContents', noteId, pageNum, pageSize],
+    queryKey: ['noteContents', noteId, pageNum],
     queryFn: () => getNoteContents({ noteId, pageNum }),
     staleTime: 5000,
   });

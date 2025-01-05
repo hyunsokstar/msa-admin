@@ -63,8 +63,10 @@ const NoteContentListPageForNote = ({ params }: Props) => {
                 key={content.id}
                 content={content}
                 isSelected={selectedNote?.id === content.id}
-                onClick={() => setSelectedNote(content)}
-              />
+                onClick={() => setSelectedNote(content)} 
+                noteId={noteId}
+                pageNum={pageNum}             
+                />
             ))}
           </div>
         </div>
