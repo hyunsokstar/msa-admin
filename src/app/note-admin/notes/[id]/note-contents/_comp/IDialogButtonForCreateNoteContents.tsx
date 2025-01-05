@@ -18,14 +18,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import TiptapEditor from "@/components/rich-editor/TipTabEditor";
-import { useNoteContents } from "@/hook/notes/useApiForNoteContents";
 import CommonButton from "@/components/common/CommonButton";
 import { useCreateNoteContent } from "@/hook/notes/useApiForCreateNoteContents";
 import { useUserStore } from '@/store/useUserStore';
 import { toast } from "react-toastify";
+import { useApiForGetNoteContents } from "@/hook/notes/useApiForGetNoteContents";
 
 interface Props {
   noteId: string;
+  pageNum?: number;
 }
 
 const formSchema = z.object({
@@ -36,11 +37,11 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function IDialogButtonForCreateNoteContents({ noteId }: Props) {
+export default function IDialogButtonForCreateNoteContents({ noteId, pageNum }: Props) {
   const { user, isAuthenticated } = useUserStore();
   const [open, setOpen] = useState(false);
   const createMutation = useCreateNoteContent();
-  const { data: noteContents } = useNoteContents(noteId);
+  const { data: noteContents } = useApiForGetNoteContents({noteId, pageNum});
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),

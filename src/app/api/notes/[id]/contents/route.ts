@@ -3,15 +3,20 @@ import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
-    const cookieStore = cookies();
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+    // cookies()를 직접 전달하도록 수정
+    const supabase = createRouteHandlerClient({ cookies });
     
-    // URL에서 id 추출
-    const urlParts = request.nextUrl.pathname.split("/");
-    const noteId = urlParts[urlParts.length - 2]; // '/contents' 앞의 id 가져오기
-
+    // params에서 직접 id 추출
+    const noteId = params.id;
+    const searchParams = request.nextUrl.searchParams;
+    const page = Math.max(1, parseInt(searchParams.get('pageNum') || '1'));
+    
+    // 데이터 조회
     const { data, error } = await supabase
       .from("note_contents")
       .select(`
@@ -19,27 +24,40 @@ export async function GET(request: NextRequest) {
         writer:users(id, full_name, profile_image_url)
       `)
       .eq("note_id", noteId)
-      .order("order", { ascending: true });
+      .eq("page", page)
+      .order('order', { ascending: true });
 
     if (error) {
       console.error("Error fetching note contents:", error.message);
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json(
+        { error: error.message }, 
+        { status: 500 }
+      );
     }
 
-    return NextResponse.json({ data }, { status: 200 });
+    return NextResponse.json(
+      { data: data || [] }, 
+      { status: 200 }
+    );
+
   } catch (error) {
     console.error("Server error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" }, 
+      { status: 500 }
+    );
   }
 }
 
-export async function POST(request: NextRequest) {
+// POST 메서드도 동일한 패턴으로 추가
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
-    const cookieStore = cookies();
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+    const supabase = createRouteHandlerClient({ cookies });
     const body = await request.json();
-    const urlParts = request.nextUrl.pathname.split("/");
-    const noteId = urlParts[urlParts.length - 2];
+    const noteId = params.id;
 
     const { data, error } = await supabase
       .from("note_contents")
@@ -52,13 +70,22 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error("Error creating note content:", error.message);
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json(
+        { error: error.message },
+        { status: 500 }
+      );
     }
 
-    return NextResponse.json({ data }, { status: 201 });
+    return NextResponse.json(
+      { data },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("Server error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
 

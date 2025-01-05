@@ -1,4 +1,16 @@
 // src/types/notes/typeForNoteContents.ts
+
+// POST 요청용 타입
+export interface CreateNoteContentData {
+  title: string;
+  content: string;
+  page: number;
+  order: number;
+  path: string;
+  writer: string; // writer의 id만 필요
+}
+
+// src/types/notes/typeForNoteContents.ts
 export interface NoteContent {
   id: number;
   note_id: number;
@@ -14,16 +26,6 @@ export interface NoteContent {
     full_name: string;
     profile_image_url?: string;
   };
-}
-
-// POST 요청용 타입
-export interface CreateNoteContentData {
-  title: string;
-  content: string;
-  page: number;
-  order: number;
-  path: string;
-  writer: string; // writer의 id만 필요
 }
 
 export interface NoteContentResponse {

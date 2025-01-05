@@ -18,9 +18,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import TiptapEditor from "@/components/rich-editor/TipTabEditor";
-import {  useNoteContents } from "@/hook/notes/useApiForNoteContents";
 import CommonButton from "@/components/common/CommonButton";
 import { useCreateNoteContent } from "@/hook/notes/useApiForCreateNoteContents";
+import { useApiForGetNoteContents } from "@/hook/notes/useApiForGetNoteContents";
 
 interface Props {
   noteId: string;
@@ -37,7 +37,7 @@ type FormValues = z.infer<typeof formSchema>;
 export default function IDialogButtonForCreateNoteContents({ noteId }: Props) {
   const [open, setOpen] = useState(false);
   const createMutation = useCreateNoteContent();
-  const { data: noteContents } = useNoteContents(noteId);
+  const { data: noteContents } = useApiForGetNoteContents(noteId);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
