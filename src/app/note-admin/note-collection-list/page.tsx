@@ -86,7 +86,7 @@ const NoteCollectionListPage = () => {
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <Avatar>
-                        <AvatarImage src={collection.writer?.profile_image_url} />
+                        <AvatarImage src={collection.writer?.profile_image_url || undefined} />
                         <AvatarFallback>
                           {collection.writer?.full_name?.charAt(0) || 'A'}
                         </AvatarFallback>

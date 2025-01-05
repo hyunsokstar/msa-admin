@@ -1,22 +1,24 @@
-// src/app/api/notes/[id]/contents/route.ts
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
+// Route segment config
+export const dynamic = 'force-dynamic';
+
+// GET
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+  context: { params: Promise<{ id: string }> }
+): Promise<NextResponse> {
   try {
-    // cookies()를 직접 전달하도록 수정
     const supabase = createRouteHandlerClient({ cookies });
-    
-    // params에서 직접 id 추출
+    const params = await context.params;
     const noteId = params.id;
-    const searchParams = request.nextUrl.searchParams;
-    const page = Math.max(1, parseInt(searchParams.get('pageNum') || '1'));
-    
-    // 데이터 조회
+
+    const page = Math.max(1, parseInt(request.nextUrl.searchParams.get('pageNum') || '1'));
+
+    console.log('Fetching note contents:', { noteId, page });
+
     const { data, error } = await supabase
       .from("note_contents")
       .select(`
@@ -30,34 +32,36 @@ export async function GET(
     if (error) {
       console.error("Error fetching note contents:", error.message);
       return NextResponse.json(
-        { error: error.message }, 
+        { error: error.message },
         { status: 500 }
       );
     }
 
     return NextResponse.json(
-      { data: data || [] }, 
+      { data: data || [] },
       { status: 200 }
     );
-
   } catch (error) {
     console.error("Server error:", error);
     return NextResponse.json(
-      { error: "Internal server error" }, 
+      { error: "Internal server error" },
       { status: 500 }
     );
   }
 }
 
-// POST 메서드도 동일한 패턴으로 추가
+// POST
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+  context: { params: Promise<{ id: string }> }
+): Promise<NextResponse> {
   try {
     const supabase = createRouteHandlerClient({ cookies });
     const body = await request.json();
+    const params = await context.params;
     const noteId = params.id;
+
+    console.log('Creating note content:', { noteId, body });
 
     const { data, error } = await supabase
       .from("note_contents")
@@ -89,12 +93,17 @@ export async function POST(
   }
 }
 
-export async function PUT(request: NextRequest) {
+// PUT
+export async function PUT(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+): Promise<NextResponse> {
   try {
-    const cookieStore = cookies();
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+    const supabase = createRouteHandlerClient({ cookies });
     const body = await request.json();
     const contentId = body.id;
+
+    console.log('Updating note content:', { contentId, body });
 
     const { data, error } = await supabase
       .from("note_contents")
@@ -105,25 +114,44 @@ export async function PUT(request: NextRequest) {
 
     if (error) {
       console.error("Error updating note content:", error.message);
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json(
+        { error: error.message },
+        { status: 500 }
+      );
     }
 
-    return NextResponse.json({ data }, { status: 200 });
+    return NextResponse.json(
+      { data },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Server error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
 
-export async function DELETE(request: NextRequest) {
+// DELETE
+export async function DELETE(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+): Promise<NextResponse> {
   try {
-    const cookieStore = cookies();
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+    const supabase = createRouteHandlerClient({ cookies });
+
+    // id는 /contents/?id=... 형태로 Query Param에서 가져옴
     const contentId = request.nextUrl.searchParams.get('id');
 
     if (!contentId) {
-      return NextResponse.json({ error: "Content ID is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Content ID is required" },
+        { status: 400 }
+      );
     }
+
+    console.log('Deleting note content:', { contentId });
 
     const { error } = await supabase
       .from("note_contents")
@@ -132,12 +160,21 @@ export async function DELETE(request: NextRequest) {
 
     if (error) {
       console.error("Error deleting note content:", error.message);
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json(
+        { error: error.message },
+        { status: 500 }
+      );
     }
 
-    return NextResponse.json({ success: true }, { status: 200 });
+    return NextResponse.json(
+      { success: true },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Server error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
