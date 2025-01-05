@@ -1,7 +1,7 @@
 // src/app/Note/[id]/_comp/IDialogButtonForCreateNoteContents.tsx
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { Plus } from "lucide-react";
 import {
   Dialog,
@@ -18,8 +18,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import TiptapEditor from "@/components/rich-editor/TipTabEditor";
-import { useCreateNoteContent, useNoteContents } from "@/hook/notes/useApiForNoteContents";
+import { useNoteContents } from "@/hook/notes/useApiForNoteContents";
 import CommonButton from "@/components/common/CommonButton";
+import { useCreateNoteContent } from "@/hook/notes/useApiForCreateNoteContents";
+import { useUserStore } from '@/store/useUserStore';
+import { toast } from "react-toastify";
 
 interface Props {
   noteId: string;
@@ -34,6 +37,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export default function IDialogButtonForCreateNoteContents({ noteId }: Props) {
+  const { user, isAuthenticated } = useUserStore();
   const [open, setOpen] = useState(false);
   const createMutation = useCreateNoteContent();
   const { data: noteContents } = useNoteContents(noteId);
@@ -47,34 +51,49 @@ export default function IDialogButtonForCreateNoteContents({ noteId }: Props) {
     },
   });
 
-  // order의 최대값 계산
-  const maxOrder = useMemo(() => {
-    if (!noteContents || !Array.isArray(noteContents)) return 0;
-    return noteContents.reduce((max, content) => Math.max(max, content.order), 0);
-  }, [noteContents]);
+  const handleOpenChange = (newOpen: boolean) => {
+    if (newOpen && !isAuthenticated) {
+      toast.error('로그인이 필요합니다.');
+      return;
+    }
+    setOpen(newOpen);
+  };
 
   const handleCreate = async (data: FormValues) => {
     try {
+      if (!user) {
+        toast.error('로그인이 필요합니다.');
+        return;
+      }
+
+      const maxOrder = noteContents?.data?.reduce((max, content) => 
+        Math.max(max, content.order || 0), 0) ?? 0;
+
       await createMutation.mutateAsync({
         noteId,
         data: {
           title: data.title,
           content: data.content,
-          page: 1, // 페이지는 동적으로 변경 가능
-          order: maxOrder + 1, // 기존 order 최대값 + 1
+          page: 1,
+          order: maxOrder + 1,
           path: data.path,
+          writer: user.id,
         }
       });
 
       setOpen(false);
-      form.reset(); // 폼 리셋
+      form.reset();
     } catch (error) {
       console.error('Failed to create note content:', error);
     }
   };
 
+  if (!isAuthenticated) {
+    return null;
+  }
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <CommonButton
           size="sm"
@@ -140,10 +159,12 @@ export default function IDialogButtonForCreateNoteContents({ noteId }: Props) {
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <TiptapEditor
-                          content={field.value}
-                          onChange={field.onChange}
-                        />
+                        <div className="min-h-[400px] border rounded-lg overflow-hidden bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700">
+                          <TiptapEditor
+                            content={field.value}
+                            onChange={field.onChange}
+                          />
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -152,13 +173,13 @@ export default function IDialogButtonForCreateNoteContents({ noteId }: Props) {
               </div>
             </div>
 
-            <DialogFooter className="bg-slate-100 dark:bg-slate-800">
+            <DialogFooter className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg mt-4">
               <CommonButton
                 type="button"
                 variant="outline"
                 onClick={() => {
                   setOpen(false);
-                  form.reset(); // 폼 리셋
+                  form.reset();
                 }}
               >
                 Cancel

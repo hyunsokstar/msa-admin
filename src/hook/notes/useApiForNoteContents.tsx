@@ -18,25 +18,6 @@ export const useNoteContents = (noteId: string) => {
   });
 };
 
-// 생성 Hook
-export const useCreateNoteContent = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: ({ noteId, data }: { noteId: string; data: Partial<NoteContent> }) => 
-      createNoteContent(noteId, data),
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: ['noteContents', variables.noteId],
-      });
-      toast.success('내용이 추가되었습니다.');
-    },
-    onError: (error: Error) => {
-      toast.error(`추가 실패: ${error.message}`);
-    },
-  });
-};
-
 // 수정 Hook
 export const useUpdateNoteContent = () => {
   const queryClient = useQueryClient();

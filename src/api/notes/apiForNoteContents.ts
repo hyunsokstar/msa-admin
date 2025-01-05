@@ -1,5 +1,5 @@
 // src/api/notes/apiForNoteContents.ts
-import { NoteContent, NoteContentResponse } from '@/types/notes/typeForNoteContents';
+import { NoteContent,CreateNoteContentData,  NoteContentResponse } from '@/types/notes/typeForNoteContents';
 
 export const getNoteContents = async (noteId: string): Promise<NoteContentResponse> => {
   try {
@@ -17,7 +17,7 @@ export const getNoteContents = async (noteId: string): Promise<NoteContentRespon
   }
 };
 
-export const createNoteContent = async (noteId: string, data: Partial<NoteContent>) => {
+export const createNoteContent = async (noteId: string, data: Partial<CreateNoteContentData>) => {
   try {
     const response = await fetch(`/api/notes/${noteId}/contents`, {
       method: 'POST',
