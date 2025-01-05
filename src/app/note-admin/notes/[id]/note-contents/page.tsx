@@ -2,12 +2,13 @@
 "use client";
 
 import React, { useState } from 'react';
-import { ChevronUp, ChevronDown, ArrowRight } from 'lucide-react';
+import { ChevronUp, ChevronDown, ArrowRight, Edit2 } from 'lucide-react';
 import { NoteContent } from '@/types/notes/typeForNoteContents';
 import ICardForNoteContents from './_comp/ICardForNoteContents';
 import IDialogButtonForCreateNoteContents from './_comp/IDialogButtonForCreateNoteContents';
 import { useApiForGetNoteContents } from '@/hook/notes/useApiForGetNoteContents';
 import { useSearchParams } from 'next/navigation';
+import { Button } from "@/components/ui/button";
 
 interface Props {
   params: Promise<{
@@ -21,13 +22,13 @@ const NoteContentListPageForNote = ({ params }: Props) => {
   const noteId = resolvedParams.id;
   
   const pageNum = Math.max(1, Number(searchParams.get('pageNum')) || 1);
+  const [isUpdateMode, setIsUpdateMode] = useState(false);
+  const [selectedNote, setSelectedNote] = useState<NoteContent | null>(null);
 
   const { data, isLoading, error } = useApiForGetNoteContents({
     noteId,
     pageNum
   });
-  
-  const [selectedNote, setSelectedNote] = useState<NoteContent | null>(null);
 
   if (isLoading) return (
     <div className="flex items-center justify-center h-screen">
@@ -50,11 +51,21 @@ const NoteContentListPageForNote = ({ params }: Props) => {
       <div className="w-3/5 overflow-auto">
         <div className="bg-white rounded-lg shadow-md p-6 min-h-full">
           <div className="flex justify-between items-center mb-6">
-            <div>
+            <div className="flex items-center gap-4">
               <h1 className="text-2xl font-bold">Note Contents</h1>
-              <p className="text-sm text-gray-500 mt-1">Page {pageNum}</p>
+              <Button
+                variant={isUpdateMode ? "secondary" : "outline"}
+                onClick={() => setIsUpdateMode(!isUpdateMode)}
+                className="flex items-center gap-2"
+              >
+                <Edit2 className="h-4 w-4" />
+                {isUpdateMode ? '수정 모드 끄기' : '수정 모드'}
+              </Button>
             </div>
-            <IDialogButtonForCreateNoteContents noteId={noteId} pageNum={pageNum}/>
+            <div className="flex items-center gap-2">
+              <p className="text-sm text-gray-500">Page {pageNum}</p>
+              <IDialogButtonForCreateNoteContents noteId={noteId} pageNum={pageNum}/>
+            </div>
           </div>
 
           <div className="space-y-2">
@@ -63,10 +74,11 @@ const NoteContentListPageForNote = ({ params }: Props) => {
                 key={content.id}
                 content={content}
                 isSelected={selectedNote?.id === content.id}
-                onClick={() => setSelectedNote(content)} 
+                isUpdateMode={isUpdateMode}
+                onClick={() => setSelectedNote(content)}
                 noteId={noteId}
-                pageNum={pageNum}             
-                />
+                pageNum={pageNum}
+              />
             ))}
           </div>
         </div>
@@ -91,35 +103,41 @@ const NoteContentListPageForNote = ({ params }: Props) => {
               </div>
               
               <div className="flex gap-2">
-                <button 
+                <Button
                   onClick={() => {
                     // TODO: Implement order change
+                    console.log('Move up clicked');
                   }}
-                  className="flex items-center gap-1 px-3 py-2 border rounded hover:bg-gray-50"
                   disabled={selectedNote.order === 1}
+                  variant="outline"
+                  className="flex items-center gap-2"
                 >
-                  <ChevronUp size={18} />
+                  <ChevronUp className="h-4 w-4" />
                   Move Up
-                </button>
-                <button 
+                </Button>
+                <Button
                   onClick={() => {
                     // TODO: Implement order change
+                    console.log('Move down clicked');
                   }}
-                  className="flex items-center gap-1 px-3 py-2 border rounded hover:bg-gray-50"
                   disabled={selectedNote.order === data?.data.length}
+                  variant="outline"
+                  className="flex items-center gap-2"
                 >
-                  <ChevronDown size={18} />
+                  <ChevronDown className="h-4 w-4" />
                   Move Down
-                </button>
-                <button 
+                </Button>
+                <Button
                   onClick={() => {
                     // TODO: Implement navigation
+                    console.log('Navigate to note clicked');
                   }}
-                  className="flex items-center gap-1 px-3 py-2 border rounded hover:bg-gray-50 ml-auto"
+                  variant="outline"
+                  className="flex items-center gap-2 ml-auto"
                 >
-                  <ArrowRight size={18} />
+                  <ArrowRight className="h-4 w-4" />
                   Go to Note
-                </button>
+                </Button>
               </div>
             </div>
           ) : (

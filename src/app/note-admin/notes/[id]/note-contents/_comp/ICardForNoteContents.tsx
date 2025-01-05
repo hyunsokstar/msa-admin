@@ -5,10 +5,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { NoteContent } from "@/types/notes/typeForNoteContents";
 import useApiForDeleteNoteContent from "@/hook/notes/useApiForDeleteNoteContent";
 import IDialogButtonForDeleteNoteContents from "./IDialogButtonForDeleteNoteContents";
+import ICardForUpdateNoteContents from "./ICardForUpdateNoteContents";
 
 interface ICardForNoteContentsProps {
   content: NoteContent;
   isSelected: boolean;
+  isUpdateMode?: boolean;
   onClick: () => void;
   onTitleChange?: (value: string) => void;
   onPathChange?: (value: string) => void;
@@ -19,6 +21,7 @@ interface ICardForNoteContentsProps {
 const ICardForNoteContents = ({ 
   content, 
   isSelected, 
+  isUpdateMode = false,
   onClick,
   onTitleChange,
   onPathChange,
@@ -33,6 +36,16 @@ const ICardForNoteContents = ({
   const handleDelete = () => {
     deleteNoteContent(content.id);
   };
+
+  if (isUpdateMode) {
+    return (
+      <ICardForUpdateNoteContents
+        content={content}
+        isSelected={isSelected}
+        onClick={onClick}
+      />
+    );
+  }
 
   return (
     <Card 
