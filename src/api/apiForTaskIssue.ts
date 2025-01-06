@@ -136,7 +136,7 @@ const apiForTaskIssue: ApiForTaskIssue = {
     updateData: UpdateIssueDto
     ): Promise<Issue> => {
     const response = await fetch(`/api/issues/${id}`, {
-        method: "PATCH",
+        method: "PUT",
         headers: {
         "Content-Type": "application/json",
         },
@@ -155,15 +155,21 @@ const apiForTaskIssue: ApiForTaskIssue = {
     },
 
     deleteIssue: async (id: number): Promise<void> => {
-        const supabase = getSupabase();
-        if (!supabase) throw new Error('Supabase client is not initialized');
+        try {
+        const response = await fetch(`/api/issues/${id}?id=${id}`, {
+            method: 'DELETE',
+        });
 
-        const { error } = await supabase
-            .from('issues')
-            .delete()
-            .eq('id', id);
-
-        if (error) throw new Error(error.message);
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to delete issue');
+        }
+        } catch (error) {
+        if (error instanceof Error) {
+            throw new Error(`Failed to delete issue: ${error.message}`);
+        }
+        throw new Error('Failed to delete issue');
+        }
     },
 
     getMyIssues: async (userId: string, filter?: IssueFilter, limit = 10, offset = 0) => {
