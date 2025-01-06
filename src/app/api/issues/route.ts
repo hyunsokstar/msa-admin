@@ -1,7 +1,10 @@
 // app/api/issues/route.ts
 import { createClient } from '@supabase/supabase-js';
-import { NextResponse } from 'next/server';
 import { IssueFilter } from '@/types/typeForTaskIssue';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
+import { NextRequest, NextResponse } from 'next/server';
+import { CreateIssueDto } from '@/types/typeForTaskIssue';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -64,6 +67,33 @@ export async function GET(request: Request) {
     console.error('Error in issues API:', error);
     return NextResponse.json(
       { error: 'Internal Server Error' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const supabase = createRouteHandlerClient({ cookies });
+    const issueData: CreateIssueDto = await request.json();
+
+    const { data, error } = await supabase
+      .from('issues')
+      .insert([issueData])
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error creating issue:', error.message);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ data }, { status: 201 });
+
+  } catch (error) {
+    console.error('Server error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }

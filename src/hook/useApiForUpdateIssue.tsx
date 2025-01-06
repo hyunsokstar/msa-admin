@@ -17,7 +17,7 @@ export const useApiForUpdateIssue = (filter: IssueFilter | undefined) => {
         mutationFn: async ({ id, data }: UpdateIssueVariables) => {
             try {
                 const result = await apiForTaskIssue.updateIssue(id, data);
-                toast.success('이슈가 성공적으로 업데이트되었습니다.');
+                // toast.success('이슈가 성공적으로 업데이트되었습니다.');
                 return result;
             } catch (error) {
                 const errorMessage = error instanceof Error ? error.message : '이슈 업데이트 중 오류가 발생했습니다.';

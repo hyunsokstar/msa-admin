@@ -20,56 +20,32 @@ interface ApiForTaskIssue {
     }>;
 }
 
+
 const apiForTaskIssue: ApiForTaskIssue = {
-    // getAllIssues: async (filter?: IssueFilter, limit = 10, offset = 0) => {
-    //     const supabase = getSupabase();
-    //     if (!supabase) throw new Error('Supabase client is not initialized');
+    createIssue : async (issueData: CreateIssueDto): Promise<Issue> => {
+    try {
+        const response = await fetch('/api/issues', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(issueData),
+        });
 
-    //     // 메인 데이터 쿼리 준비
-    //     let mainQuery = supabase
-    //         .from('issues')
-    //         .select(`
-    //             *,
-    //             manager_user:users!fk_issues_manager(id, email),
-    //             executor_user:users!issues_executor_fkey(id, email)
-    //         `, { count: 'exact' });  // count 옵션 추가
+        if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create issue');
+        }
 
-    //     // 필터 조건 적용
-    //     if (filter) {
-    //         if (filter.status && filter.status !== 'All') mainQuery = mainQuery.eq('status', filter.status);
-    //         if (filter.priority && filter.priority !== 'All') mainQuery = mainQuery.eq('priority', filter.priority);
-    //         if (filter.category1 && filter.category1 !== 'All') mainQuery = mainQuery.eq('category1', filter.category1);
-    //         if (filter.type && filter.type !== 'All') mainQuery = mainQuery.eq('type', filter.type);
-    //         if (filter.keyword && filter.keyword.trim() !== '') {
-    //             mainQuery = mainQuery.ilike('title', `%${filter.keyword}%`);
-    //         }
-    //         if (filter.executor && filter.executor.trim() !== '') mainQuery = mainQuery.eq('executor', filter.executor);
-    //     }
-
-    //     // 페이징 적용
-    //     mainQuery = mainQuery
-    //         .range(offset, offset + limit - 1)
-    //         .order('created_at', { ascending: false });
-
-    //     try {
-    //         const { data, error, count } = await mainQuery;
-    //         if (error) throw new Error(error.message);
-
-    //         // 완료/미완료 이슈 카운트는 데이터에서 직접 계산
-    //         const totalCompleted = data?.filter(issue => issue.status === 'Closed').length || 0;
-    //         const totalIncomplete = data?.filter(issue => issue.status !== 'Closed').length || 0;
-
-    //         return {
-    //             issues: data || [],
-    //             totalCompleted,
-    //             totalIncomplete,
-    //             totalIssues: count || 0  // count 값 사용
-    //         };
-    //     } catch (error) {
-    //         console.error('Error fetching issues:', error);
-    //         throw error;
-    //     }
-    // },
+        const { data } = await response.json();
+        return data as Issue;
+    } catch (error) {
+        if (error instanceof Error) {
+        throw new Error(`Failed to create issue: ${error.message}`);
+        }
+        throw new Error('Failed to create issue');
+    }
+    },
 
     getAllIssues: async (filter?: IssueFilter, limit = 10, offset = 0) => {
         try {
@@ -124,33 +100,58 @@ const apiForTaskIssue: ApiForTaskIssue = {
         return data as Issue;
     },
 
-    createIssue: async (issueData: CreateIssueDto): Promise<Issue> => {
-        const supabase = getSupabase();
-        if (!supabase) throw new Error('Supabase client is not initialized');
+    // createIssue: async (issueData: CreateIssueDto): Promise<Issue> => {
+    //     const supabase = getSupabase();
+    //     if (!supabase) throw new Error('Supabase client is not initialized');
 
-        const { data, error } = await supabase
-            .from('issues')
-            .insert([issueData])
-            .select()
-            .single();
+    //     const { data, error } = await supabase
+    //         .from('issues')
+    //         .insert([issueData])
+    //         .select()
+    //         .single();
 
-        if (error) throw new Error(error.message);
-        return data as Issue;
-    },
+    //     if (error) throw new Error(error.message);
+    //     return data as Issue;
+    // },
 
-    updateIssue: async (id: number, updateData: UpdateIssueDto): Promise<Issue> => {
-        const supabase = getSupabase();
-        if (!supabase) throw new Error('Supabase client is not initialized');
+    // updateIssue: async (id: number, updateData: UpdateIssueDto): Promise<Issue> => {
+    //     const supabase = getSupabase();
+    //     if (!supabase) throw new Error('Supabase client is not initialized');
 
-        const { data, error } = await supabase
-            .from('issues')
-            .update({ ...updateData, updated_at: new Date().toISOString() })
-            .eq('id', id)
-            .select()
-            .single();
+    //     const { data, error } = await supabase
+    //         .from('issues')
+    //         .update({ ...updateData, updated_at: new Date().toISOString() })
+    //         .eq('id', id)
+    //         .select()
+    //         .single();
 
-        if (error) throw new Error(error.message);
-        return data as Issue;
+    //     if (error) throw new Error(error.message);
+    //     return data as Issue;
+    // },
+    /**
+     * PATCH /api/issues/[id] 라우트를 호출하여 이슈 업데이트
+     */
+    updateIssue: async (
+    id: number,
+    updateData: UpdateIssueDto
+    ): Promise<Issue> => {
+    const response = await fetch(`/api/issues/${id}`, {
+        method: "PATCH",
+        headers: {
+        "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updateData),
+    });
+
+    if (!response.ok) {
+        // 에러 처리
+        const errorBody = await response.json();
+        console.error("Failed to update issue:", errorBody.error);
+        throw new Error(errorBody.error || "Failed to update issue");
+    }
+
+    const { data } = await response.json();
+    return data as Issue;
     },
 
     deleteIssue: async (id: number): Promise<void> => {
