@@ -165,7 +165,7 @@ export default function HeaderMenus() {
     return (
         <Card className="bg-white/80 backdrop-blur-sm border-none shadow-sm">
             <nav className="relative px-4 py-2 flex justify-between items-center">
-                <img src="/logo.svg" alt="Dankkum Logo" className="w-16 h-auto" />
+                {/* <img src="/logo.svg" alt="Dankkum Logo" className="w-16 h-auto" /> */}
                 <div className="flex space-x-6">
                     {renderMenuItems(menuItems)}
                 </div>
