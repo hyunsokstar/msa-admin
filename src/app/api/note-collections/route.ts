@@ -1,70 +1,83 @@
-// app/api/issues/[id]/route.ts
+// app/api/note-collections/route.ts
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-import { UpdateIssueDto } from '@/types/typeForTaskIssue';
 
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies });
-    const id = parseInt(params.id);
-    const updateData: UpdateIssueDto = await request.json();
+    const searchParams = request.nextUrl.searchParams;
+    const page = parseInt(searchParams.get('page') || '1');
+    const pageSize = parseInt(searchParams.get('pageSize') || '10');
+    
+    const offset = (page - 1) * pageSize;
 
-    const { data, error } = await supabase
-      .from('issues')
-      .update({
-        ...updateData,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', id)
+    const supabase = createRouteHandlerClient({ cookies });
+
+    const { data, error, count } = await supabase
+      .from('note_collections')
       .select(`
         *,
-        assignee:users!assignee_id(id, full_name, profile_image_url),
-        reporter:users!reporter_id(id, full_name, profile_image_url)
-      `)
-      .single();
+        writer:users(id, full_name, profile_image_url)
+      `, { count: 'exact' })
+      .order('created_at', { ascending: false })
+      .range(offset, offset + pageSize - 1);
 
     if (error) {
-      return NextResponse.json(
-        { error: `Error updating issue: ${error.message}` },
-        { status: 500 }
-      );
+      console.error('Error fetching note collections:', error.message);
+      return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    if (!data) {
-      return NextResponse.json(
-        { error: 'Issue not found' },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json(
-      { data },
-      { 
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json',
-        }
+    return NextResponse.json({
+      data,
+      pagination: {
+        currentPage: page,
+        pageSize,
+        total: count,
+        totalPages: Math.ceil((count || 0) / pageSize)
       }
-    );
+    }, { status: 200 });
 
   } catch (error) {
     console.error('Server error:', error);
-    
     return NextResponse.json(
-      { 
-        error: 'Internal server error',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { 
-        status: 500,
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      }
+      { error: 'Internal server error' },
+      { status: 500 }
     );
   }
 }
+
+export async function POST(request: NextRequest) {
+ try {
+   const supabase = createRouteHandlerClient({ cookies });
+   const body = await request.json();
+
+   const { data, error } = await supabase
+     .from('note_collections')
+     .insert([
+       {
+         name: body.name,
+         writer: body.writer
+       }
+     ])
+     .select(`
+       *,
+       writer:users(id, full_name, profile_image_url)
+     `)
+     .single();
+
+   if (error) {
+     console.error('Error creating note collection:', error.message);
+     return NextResponse.json({ error: error.message }, { status: 500 });
+   }
+
+   return NextResponse.json({ data }, { status: 201 });
+
+ } catch (error) {
+   console.error('Server error:', error);
+   return NextResponse.json(
+     { error: 'Internal server error' },
+     { status: 500 }
+   );
+ }
+}
+
