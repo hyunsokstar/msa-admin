@@ -1,5 +1,5 @@
 "use client";
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card } from '@/components/ui/card';
@@ -7,6 +7,19 @@ import AuthMenus from './AuthMenus';
 import useApiForGetMenusData from '@/hook/useApiForGetMenusData';
 import { useMenuStore } from '@/store/useMenuStore';
 import { MenuItemType } from '@/api/apiForMenu';
+import { ChevronDown, ChevronRight } from 'lucide-react';
+
+const menuVariants = {
+  initial: { opacity: 0, scale: 0.95 },
+  animate: { opacity: 1, scale: 1 },
+  exit: { opacity: 0, scale: 0.95 },
+};
+
+const transition = {
+  type: "spring",
+  stiffness: 300,
+  damping: 30
+};
 
 export default function HeaderMenus() {
     const [openMenus, setOpenMenus] = useState<Set<string>>(new Set());
@@ -14,39 +27,34 @@ export default function HeaderMenus() {
     const { data: menuItems, isLoading, isError } = useApiForGetMenusData();
     const { updateSideMenus } = useMenuStore();
 
-    const handleMenuClick = (path: string, menuId: number) => {
+    const handleMenuClick = useCallback((path: string, menuId: number) => {
         if (path) {
-            // Zustand store 업데이트 후 라우팅
             updateSideMenus(menuId.toString());
             router.push(`/${path}`);
             setOpenMenus(new Set());
         }
-    };
+    }, [router, updateSideMenus]);
 
-    const handleMouseEnter = (menuPath: string) => {
-        setOpenMenus(prev => {
-            const newSet = new Set(prev);
-            newSet.add(menuPath);
-            return newSet;
-        });
-    };
+    const handleMouseEnter = useCallback((menuPath: string) => {
+        setOpenMenus(prev => new Set([...prev, menuPath]));
+    }, []);
 
-    const handleMouseLeave = (menuPath: string) => {
+    const handleMouseLeave = useCallback((menuPath: string) => {
         setOpenMenus(prev => {
             const newSet = new Set(prev);
             newSet.delete(menuPath);
             return newSet;
         });
-    };
+    }, []);
 
     if (isLoading) {
         return (
-            <Card className="bg-white/80 backdrop-blur-sm border-none shadow-sm">
-                <nav className="relative px-4 py-2 flex justify-between items-center">
+            <Card className="bg-white/90 backdrop-blur-md border-none shadow-lg">
+                <nav className="relative px-6 py-3 flex justify-between items-center">
                     <img src="/logo.svg" alt="Dankkum Logo" className="w-16 h-auto" />
-                    <div className="flex space-x-6 animate-pulse">
+                    <div className="flex space-x-8">
                         {[1, 2, 3].map((i) => (
-                            <div key={i} className="h-8 w-24 bg-gray-200 rounded-lg" />
+                            <div key={i} className="h-8 w-28 bg-gray-200/80 rounded-lg animate-pulse" />
                         ))}
                     </div>
                     <AuthMenus />
@@ -57,10 +65,10 @@ export default function HeaderMenus() {
 
     if (isError || !menuItems) {
         return (
-            <Card className="bg-white/80 backdrop-blur-sm border-none shadow-sm">
-                <nav className="relative px-4 py-2 flex justify-between items-center">
+            <Card className="bg-white/90 backdrop-blur-md border-none shadow-lg">
+                <nav className="relative px-6 py-3 flex justify-between items-center">
                     <img src="/logo.svg" alt="Dankkum Logo" className="w-16 h-auto" />
-                    <div className="text-red-500">메뉴를 불러오는데 실패했습니다.</div>
+                    <div className="text-red-500 font-medium">Failed to load menu items</div>
                     <AuthMenus />
                 </nav>
             </Card>
@@ -68,44 +76,46 @@ export default function HeaderMenus() {
     }
 
     const renderSubMenuItems = (menu: MenuItemType, currentPath: string = '', depth: number = 0) => {
-        if (!menu.items || menu.items.length === 0) return null;
+        if (!menu.items?.length) return null;
 
         const fullPath = currentPath ? `${currentPath}/${menu.path}` : menu.path;
         const isOpen = openMenus.has(fullPath);
 
-        const position = depth === 0 ? "top-full left-0 mt-2" : "left-full top-0 ml-2";
-        const motionInitial = depth === 0 ? { opacity: 0, y: -10 } : { opacity: 0, x: -10 };
-        const motionAnimate = depth === 0 ? { opacity: 1, y: 0 } : { opacity: 1, x: 0 };
-        const motionExit = depth === 0 ? { opacity: 0, y: -10 } : { opacity: 0, x: -10 };
-
+        const position = depth === 0 ? "top-full left-0" : "left-full top-0";
+        
         return (
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        initial={motionInitial}
-                        animate={motionAnimate}
-                        exit={motionExit}
-                        transition={{ duration: 0.15 }}
-                        className={`absolute ${position} z-50`}
+                        variants={menuVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                        transition={transition}
+                        className={`absolute ${position} z-50 ${depth === 0 ? 'mt-2' : '-mt-2 ml-2'}`}
                     >
-                        <Card className="bg-white/95 backdrop-blur-sm border border-gray-100 shadow-lg mt-1.5">
-                            <ul className="py-2 min-w-[200px]">
+                        <Card className="bg-white/95 backdrop-blur-lg border border-gray-100/50 shadow-xl rounded-xl overflow-hidden">
+                            <ul className="py-2 min-w-[220px]">
                                 {menu.items.map((subMenu) => {
                                     const subPath = `${fullPath}/${subMenu.path}`;
                                     return (
                                         <li
                                             key={subPath}
-                                            className="relative px-2"
+                                            className="relative px-1"
                                             onMouseEnter={() => handleMouseEnter(subPath)}
                                             onMouseLeave={() => handleMouseLeave(subPath)}
                                         >
                                             <button
                                                 onClick={() => handleMenuClick(subPath, subMenu.id)}
-                                                className="w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-blue-50/50 text-gray-700 hover:text-blue-600 transition-colors duration-150"
+                                                className="w-full text-left px-4 py-2.5 text-sm rounded-lg 
+                                                    hover:bg-blue-50/80 text-gray-700 hover:text-blue-600 
+                                                    transition-all duration-200 ease-in-out flex items-center 
+                                                    justify-between group"
                                             >
-                                                {subMenu.name}
+                                                <span className="font-medium">{subMenu.name}</span>
                                                 {subMenu.items?.length > 0 && (
-                                                    <span className="float-right">›</span>
+                                                    <ChevronRight className="w-4 h-4 text-gray-400 
+                                                        group-hover:text-blue-500 transition-colors" />
                                                 )}
                                             </button>
                                             {renderSubMenuItems(subMenu, fullPath, depth + 1)}
@@ -120,56 +130,57 @@ export default function HeaderMenus() {
         );
     };
 
-    const renderMenuItems = (items: MenuItemType[]) => {
-        return (
-            <ul className="flex space-x-6">
-                {items.map((menu) => {
-                    const currentPath = menu.path;
-                    const isOpen = openMenus.has(currentPath);
+    const renderMenuItems = (items: MenuItemType[]) => (
+        <ul className="flex space-x-8">
+            {items.map((menu) => {
+                const currentPath = menu.path;
+                const isOpen = openMenus.has(currentPath);
+                const hasSubMenus = menu.items?.length > 0;
 
-                    return (
-                        <li
-                            key={currentPath}
-                            className="relative menu-item"
-                            onMouseEnter={() => handleMouseEnter(currentPath)}
-                            onMouseLeave={() => handleMouseLeave(currentPath)}
-                        >
-                            <button
-                                onClick={() => {
-                                    if (menu.items?.length > 0) {
-                                        // 클릭할 수 없도록 조건 추가
-                                        return;
-                                    }
+                return (
+                    <li
+                        key={currentPath}
+                        className="relative menu-item"
+                        onMouseEnter={() => handleMouseEnter(currentPath)}
+                        onMouseLeave={() => handleMouseLeave(currentPath)}
+                    >
+                        <button
+                            onClick={() => {
+                                if (!hasSubMenus) {
                                     handleMenuClick(menu.path, menu.id);
-                                }}
-                                className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 ease-in-out ${
-                                    menu.items?.length > 0
-                                        ? 'cursor-default text-gray-500'
-                                        : 'hover:bg-blue-50/50 text-gray-700 hover:text-blue-600'
-                                }`}
-                                disabled={menu.items?.length > 0} // 하위 메뉴가 있을 경우 버튼을 비활성화
-                            >
-                                {menu.name}
-                                {menu.items?.length > 0 && (
-                                    <span className="ml-1">▼</span>
-                                )}
-                            </button>
-                            {renderSubMenuItems(menu, '', 0)}
-                        </li>
-                    );
-                })}
-            </ul>
-        );
-    };
+                                }
+                            }}
+                            className={`px-4 py-2.5 text-sm font-medium rounded-lg 
+                                transition-all duration-200 ease-in-out flex items-center 
+                                space-x-1 group ${
+                                hasSubMenus
+                                    ? 'cursor-default text-gray-600 hover:text-gray-800'
+                                    : 'hover:bg-blue-50/80 text-gray-700 hover:text-blue-600'
+                            }`}
+                            disabled={hasSubMenus}
+                        >
+                            <span>{menu.name}</span>
+                            {hasSubMenus && (
+                                <ChevronDown className={`w-4 h-4 transition-transform duration-200 
+                                    ${isOpen ? 'rotate-180' : ''} 
+                                    text-gray-400 group-hover:text-gray-600`} 
+                                />
+                            )}
+                        </button>
+                        {renderSubMenuItems(menu, '', 0)}
+                    </li>
+                );
+            })}
+        </ul>
+    );
 
     return (
-        <Card className="bg-white/80 backdrop-blur-sm border-none shadow-sm">
-            <nav className="relative px-4 py-2 flex justify-between items-center">
-                {/* <img src="/logo.svg" alt="Dankkum Logo" className="w-16 h-auto" /> */}
-                <div className="flex space-x-6">
+        <Card className="bg-white/90 backdrop-blur-md border-none shadow-lg">
+            <nav className="relative px-6 py-3 flex justify-between items-center">
+                <img src="/logo.svg" alt="Dankkum Logo" className="w-16 h-auto" />
+                <div className="flex items-center space-x-8">
                     {renderMenuItems(menuItems)}
                 </div>
-
                 <AuthMenus />
             </nav>
         </Card>
