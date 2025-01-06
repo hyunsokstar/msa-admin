@@ -51,7 +51,6 @@ export default function HeaderMenus() {
         return (
             <Card className="bg-white/90 backdrop-blur-md border-none shadow-lg">
                 <nav className="relative px-6 py-3 flex justify-between items-center">
-                    <img src="/logo.svg" alt="Dankkum Logo" className="w-16 h-auto" />
                     <div className="flex space-x-8">
                         {[1, 2, 3].map((i) => (
                             <div key={i} className="h-8 w-28 bg-gray-200/80 rounded-lg animate-pulse" />
@@ -67,7 +66,7 @@ export default function HeaderMenus() {
         return (
             <Card className="bg-white/90 backdrop-blur-md border-none shadow-lg">
                 <nav className="relative px-6 py-3 flex justify-between items-center">
-                    <img src="/logo.svg" alt="Dankkum Logo" className="w-16 h-auto" />
+                    {/* <img src="/logo.svg" alt="Dankkum Logo" className="w-16 h-auto" /> */}
                     <div className="text-red-500 font-medium">Failed to load menu items</div>
                     <AuthMenus />
                 </nav>
@@ -177,7 +176,7 @@ export default function HeaderMenus() {
     return (
         <Card className="bg-white/90 backdrop-blur-md border-none shadow-lg">
             <nav className="relative px-6 py-3 flex justify-between items-center">
-                <img src="/logo.svg" alt="Dankkum Logo" className="w-16 h-auto" />
+                {/* <img src="/logo.svg" alt="Dankkum Logo" className="w-16 h-auto" /> */}
                 <div className="flex items-center space-x-8">
                     {renderMenuItems(menuItems)}
                 </div>

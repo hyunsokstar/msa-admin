@@ -82,13 +82,13 @@ const DialogButtonForSignUp: React.FC = () => {
                     {/* 왼쪽: 이미지 섹션 */}
                     <div className="w-full md:w-1/2 flex flex-col">
                         {/* 상단 영역 */}
-                        <div className="h-1/2 flex items-center justify-center">
+                        {/* <div className="h-1/2 flex items-center justify-center">
                             <img
                                 src="/site_logo.png"
                                 alt="Dankkum Logo"
                                 className="w-full h-full object-cover"
                             />
-                        </div>
+                        </div> */}
                         {/* 하단 텍스트 영역 */}
                         <div className="bg-[#4171d6] h-1/2 flex flex-col items-center justify-center p-8 text-white">
                             <h2 className="text-3xl font-bold mb-4">업무 관리 + Util</h2>
