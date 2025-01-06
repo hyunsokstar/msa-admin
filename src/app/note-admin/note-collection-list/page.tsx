@@ -1,4 +1,3 @@
-// src/app/note-collections/page.tsx
 "use client";
 
 import React, { useState } from 'react';
@@ -18,8 +17,46 @@ import { IDialogButtonForEditNoteCollection } from '@/components/dialog/IDialogB
 import { IDialogButtonForDeleteNoteCollection } from '@/components/dialog/IDialogButtonForDeleteNoteCollection';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 import Link from 'next/link';
 import 'rc-pagination/assets/index.css';
+
+const LoadingSkeleton = () => {
+  return Array(5).fill(0).map((_, idx) => (
+    <TableRow key={idx} className="animate-in fade-in-50 slide-in-from-top-2">
+      <TableCell>
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <Skeleton className="h-10 w-10 rounded-full" />
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer" />
+          </div>
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-[120px] bg-gradient-to-r from-slate-200 to-slate-100" />
+            <Skeleton className="h-3 w-[80px] bg-gradient-to-r from-slate-100 to-slate-50" />
+          </div>
+        </div>
+      </TableCell>
+      <TableCell>
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-[250px] bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200" />
+          <Skeleton className="h-3 w-[180px] bg-gradient-to-r from-slate-100 to-slate-50" />
+        </div>
+      </TableCell>
+      <TableCell>
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-[150px] bg-gradient-to-r from-slate-200 to-slate-100" />
+          <Skeleton className="h-3 w-[100px] bg-gradient-to-r from-slate-100 to-slate-50" />
+        </div>
+      </TableCell>
+      <TableCell>
+        <div className="flex justify-end gap-2">
+          <Skeleton className="h-8 w-8 rounded-md bg-gradient-to-r from-slate-200 to-slate-100" />
+          <Skeleton className="h-8 w-8 rounded-md bg-gradient-to-r from-slate-200 to-slate-100" />
+        </div>
+      </TableCell>
+    </TableRow>
+  ));
+};
 
 const NoteCollectionListPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -47,52 +84,47 @@ const NoteCollectionListPage = () => {
 
   return (
     <div className="p-6 max-w-[1400px] mx-auto">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-6 animate-in fade-in-50 duration-500">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Note Collections</h1>
-          <p className="text-sm text-slate-500 mt-1">Manage and organize your note collections</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+            Note Collections
+          </h1>
+          <p className="text-sm text-slate-500 mt-1">
+            Manage and organize your note collections
+          </p>
         </div>
         <IDialogButtonForCreateNoteCollection />
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden transition-all duration-200 hover:shadow-md">
         <Table>
           <TableHeader>
-            <TableRow className="hover:bg-slate-100/50 dark:hover:bg-slate-800/50">
-              <TableHead className="w-[250px]">Writer</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead className="w-[180px]">Created At</TableHead>
-              <TableHead className="w-[120px] text-right">Actions</TableHead>
+            <TableRow className="bg-slate-50/50 dark:bg-slate-800/50">
+              <TableHead className="w-[250px] font-semibold">Writer</TableHead>
+              <TableHead className="font-semibold">Name</TableHead>
+              <TableHead className="w-[180px] font-semibold">Created At</TableHead>
+              <TableHead className="w-[120px] text-right font-semibold">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading ? (
-              Array(5).fill(0).map((_, idx) => (
-                <TableRow key={idx}>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <Skeleton className="h-10 w-10 rounded-full" />
-                      <Skeleton className="h-4 w-[100px]" />
-                    </div>
-                  </TableCell>
-                  <TableCell><Skeleton className="h-4 w-[200px]" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-[120px]" /></TableCell>
-                  <TableCell><Skeleton className="h-8 w-[100px] ml-auto" /></TableCell>
-                </TableRow>
-              ))
+              <LoadingSkeleton />
             ) : (
               data?.data.map((collection: NoteCollection) => (
-                <TableRow key={collection.id} className="hover:bg-slate-100/50 dark:hover:bg-slate-800/50">
+                <TableRow 
+                  key={collection.id} 
+                  className="group hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors duration-200"
+                >
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <Avatar>
+                      <Avatar className="border-2 border-white shadow-sm">
                         <AvatarImage src={collection.writer?.profile_image_url || undefined} />
-                        <AvatarFallback>
+                        <AvatarFallback className="bg-gradient-to-br from-blue-100 to-blue-200 text-blue-600">
                           {collection.writer?.full_name?.charAt(0) || 'A'}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex flex-col">
-                        <span className="font-medium text-slate-900 dark:text-slate-100">
+                        <span className="font-medium text-slate-900 dark:text-slate-100 group-hover:text-blue-600 transition-colors">
                           {collection.writer?.full_name || 'Anonymous'}
                         </span>
                         <span className="text-sm text-slate-500">Writer</span>
@@ -103,7 +135,7 @@ const NoteCollectionListPage = () => {
                   <TableCell>
                     <Link 
                       href={`/note-admin/note-collection-list/${collection.id}/notes`}
-                      className="font-medium text-slate-900 dark:text-slate-100 hover:text-blue-600 dark:hover:text-blue-400"
+                      className="font-medium text-slate-900 dark:text-slate-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                     >
                       {collection.name}
                     </Link>
@@ -138,7 +170,7 @@ const NoteCollectionListPage = () => {
         </Table>
       </div>
 
-      <div className="mt-6 flex justify-between items-center bg-white dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
+      <div className="mt-6 flex justify-between items-center bg-white dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800 transition-all duration-200 hover:shadow-md">
         <div className="text-sm text-slate-500">
           Total <span className="font-medium text-slate-900 dark:text-slate-100">{data?.pagination.total}</span> items
         </div>

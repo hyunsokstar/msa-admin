@@ -1,4 +1,3 @@
-// src/app/note-admin/note-collection-list/[id]/notes/page.tsx
 "use client";
 
 import React, { useState } from 'react';
@@ -27,6 +26,43 @@ interface Props {
   }>
 }
 
+const LoadingSkeleton = () => {
+  return Array(5).fill(0).map((_, idx) => (
+    <TableRow key={idx} className="animate-in fade-in-50 slide-in-from-top-2 duration-300" style={{ animationDelay: `${idx * 100}ms` }}>
+      <TableCell>
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <Skeleton className="h-10 w-10 rounded-full" />
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer" />
+          </div>
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-[120px] bg-gradient-to-r from-slate-200 to-slate-100" />
+            <Skeleton className="h-3 w-[80px] bg-gradient-to-r from-slate-100 to-slate-50" />
+          </div>
+        </div>
+      </TableCell>
+      <TableCell>
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-[250px] bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200" />
+          <Skeleton className="h-3 w-[180px] bg-gradient-to-r from-slate-100 to-slate-50" />
+        </div>
+      </TableCell>
+      <TableCell>
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-[150px] bg-gradient-to-r from-slate-200 to-slate-100" />
+          <Skeleton className="h-3 w-[100px] bg-gradient-to-r from-slate-100 to-slate-50" />
+        </div>
+      </TableCell>
+      <TableCell>
+        <div className="flex justify-end gap-2">
+          <Skeleton className="h-8 w-8 rounded-md bg-gradient-to-r from-slate-200 to-slate-100" />
+          <Skeleton className="h-8 w-8 rounded-md bg-gradient-to-r from-slate-200 to-slate-100" />
+        </div>
+      </TableCell>
+    </TableRow>
+  ));
+};
+
 const NotesListForCollection = ({ params }: Props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
@@ -47,62 +83,63 @@ const NotesListForCollection = ({ params }: Props) => {
   if (error) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="text-center">
+        <div className="text-center space-y-3 animate-in fade-in-50">
           <h2 className="text-2xl font-bold text-red-600">Error occurred</h2>
-          <p className="text-gray-600 mt-2">Failed to load notes</p>
+          <p className="text-gray-600">Failed to load notes</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors"
+          >
+            Try Again
+          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-6 max-w-[1400px] mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Notes</h1>
-          <p className="text-sm text-slate-500 mt-1">Manage your notes and their contents</p>
+    <div className="p-6 max-w-[1400px] mx-auto space-y-6">
+      <div className="flex justify-between items-center animate-in fade-in-50 duration-500">
+        <div className="space-y-1">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+            Notes
+          </h1>
+          <p className="text-sm text-slate-500">
+            Manage your notes and their contents
+          </p>
         </div>
         <IDialogButtonForCreateNote collectionId={collectionId} />
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden transition-all duration-200 hover:shadow-md">
         <Table>
           <TableHeader>
-            <TableRow className="hover:bg-slate-100/50 dark:hover:bg-slate-800/50">
-              <TableHead className="w-[250px]">Writer</TableHead>
-              <TableHead>Title</TableHead>
-              <TableHead className="w-[180px]">Created At</TableHead>
-              <TableHead className="w-[120px] text-right">Actions</TableHead>
+            <TableRow className="bg-slate-50/50 dark:bg-slate-800/50">
+              <TableHead className="w-[250px] font-semibold">Writer</TableHead>
+              <TableHead className="font-semibold">Title</TableHead>
+              <TableHead className="w-[180px] font-semibold">Created At</TableHead>
+              <TableHead className="w-[120px] text-right font-semibold">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading ? (
-              Array(5).fill(0).map((_, idx) => (
-                <TableRow key={idx}>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <Skeleton className="h-10 w-10 rounded-full" />
-                      <Skeleton className="h-4 w-[100px]" />
-                    </div>
-                  </TableCell>
-                  <TableCell><Skeleton className="h-4 w-[200px]" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-[120px]" /></TableCell>
-                  <TableCell><Skeleton className="h-8 w-[100px] ml-auto" /></TableCell>
-                </TableRow>
-              ))
+              <LoadingSkeleton />
             ) : (
-              data?.data.map((note: Note) => (
-                <TableRow key={note.id} className="hover:bg-slate-100/50 dark:hover:bg-slate-800/50">
+              data?.data.map((note: Note, index: number) => (
+                <TableRow 
+                  key={note.id} 
+                  className="group hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors duration-200"
+                >
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <Avatar>
+                      <Avatar className="border-2 border-white shadow-sm">
                         <AvatarImage src={note.writer?.profile_image_url} />
-                        <AvatarFallback>
+                        <AvatarFallback className="bg-gradient-to-br from-blue-100 to-blue-200 text-blue-600">
                           {note.writer?.full_name?.charAt(0) || 'A'}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex flex-col">
-                        <span className="font-medium text-slate-900 dark:text-slate-100">
+                        <span className="font-medium text-slate-900 dark:text-slate-100 group-hover:text-blue-600 transition-colors">
                           {note.writer?.full_name || 'Anonymous'}
                         </span>
                         <span className="text-sm text-slate-500">Writer</span>
@@ -113,9 +150,9 @@ const NotesListForCollection = ({ params }: Props) => {
                   <TableCell>
                     <Link 
                       href={`/note-admin/notes/${note.id}/note-contents`}
-                      className="font-medium text-slate-900 dark:text-slate-100 hover:text-blue-600 dark:hover:text-blue-400"
+                      className="inline-block font-medium text-slate-900 dark:text-slate-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                     >
-                      {note.title}
+                      <div className="line-clamp-2">{note.title}</div>
                     </Link>
                   </TableCell>
 
@@ -131,17 +168,19 @@ const NotesListForCollection = ({ params }: Props) => {
                     </time>
                   </TableCell>
 
-                  <TableCell className="text-right space-x-2">
-                    <IDialogButtonForUpdateNote
-                      noteId={note.id}
-                      initialTitle={note.title} 
-                      collectionId={collectionId}                  
-                    />
-                    <IDialogButtonForDeleteNote
-                      noteId={note.id}
-                      noteTitle={note.title} 
-                      collectionId={collectionId}                  
-                    />
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <IDialogButtonForUpdateNote
+                        noteId={note.id}
+                        initialTitle={note.title} 
+                        collectionId={collectionId}                  
+                      />
+                      <IDialogButtonForDeleteNote
+                        noteId={note.id}
+                        noteTitle={note.title} 
+                        collectionId={collectionId}                  
+                      />
+                    </div>
                   </TableCell>
                 </TableRow>
               ))
@@ -150,7 +189,7 @@ const NotesListForCollection = ({ params }: Props) => {
         </Table>
       </div>
 
-      <div className="mt-6 flex justify-between items-center bg-white dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
+      <div className="flex justify-between items-center bg-white dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800 transition-all duration-200 hover:shadow-md">
         <div className="text-sm text-slate-500">
           Total <span className="font-medium text-slate-900 dark:text-slate-100">{data?.pagination.total}</span> items
         </div>
