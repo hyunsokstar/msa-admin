@@ -57,7 +57,7 @@ export default function HomePage() {
             <p className="text-gray-700 leading-relaxed">
               이 페이지는 팀원들과의 협업을 돕기 위해 업무 상태와 진행 상황을
               간편하게 관리하고 확인할 수 있도록 만든 업무 관리 프로젝트입니다.
-              반응형 디자인으로 모바일에서도 편리하게 이용하실 수 있습니다.
+              반응형 디자인으로 모바일에서도 편리하게 이용하실 수 있습니다 !
             </p>
             <Button
               variant="outline"
