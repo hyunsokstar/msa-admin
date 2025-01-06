@@ -100,51 +100,22 @@ const apiForTaskIssue: ApiForTaskIssue = {
         return data as Issue;
     },
 
-    // createIssue: async (issueData: CreateIssueDto): Promise<Issue> => {
-    //     const supabase = getSupabase();
-    //     if (!supabase) throw new Error('Supabase client is not initialized');
-
-    //     const { data, error } = await supabase
-    //         .from('issues')
-    //         .insert([issueData])
-    //         .select()
-    //         .single();
-
-    //     if (error) throw new Error(error.message);
-    //     return data as Issue;
-    // },
-
-    // updateIssue: async (id: number, updateData: UpdateIssueDto): Promise<Issue> => {
-    //     const supabase = getSupabase();
-    //     if (!supabase) throw new Error('Supabase client is not initialized');
-
-    //     const { data, error } = await supabase
-    //         .from('issues')
-    //         .update({ ...updateData, updated_at: new Date().toISOString() })
-    //         .eq('id', id)
-    //         .select()
-    //         .single();
-
-    //     if (error) throw new Error(error.message);
-    //     return data as Issue;
-    // },
-    /**
-     * PATCH /api/issues/[id] 라우트를 호출하여 이슈 업데이트
-     */
     updateIssue: async (
     id: number,
     updateData: UpdateIssueDto
     ): Promise<Issue> => {
     const response = await fetch(`/api/issues/${id}`, {
-        method: "PATCH",
+        method: "PUT",
         headers: {
         "Content-Type": "application/json",
         },
         body: JSON.stringify(updateData),
     });
 
+    console.log("response : ", response);
+    
+
     if (!response.ok) {
-        // 에러 처리
         const errorBody = await response.json();
         console.error("Failed to update issue:", errorBody.error);
         throw new Error(errorBody.error || "Failed to update issue");
@@ -155,17 +126,15 @@ const apiForTaskIssue: ApiForTaskIssue = {
     },
 
     deleteIssue: async (id: number): Promise<void> => {
-        const supabase = getSupabase();
-        if (!supabase) throw new Error('Supabase client is not initialized');
+        const response = await fetch(`/api/issues/${id}`, {
+            method: 'DELETE',
+        });
 
-        const { error } = await supabase
-            .from('issues')
-            .delete()
-            .eq('id', id);
-
-        if (error) throw new Error(error.message);
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Failed to delete issue');
+        }
     },
-
     getMyIssues: async (userId: string, filter?: IssueFilter, limit = 10, offset = 0) => {
         const supabase = getSupabase();
         if (!supabase) throw new Error('Supabase client is not initialized');
