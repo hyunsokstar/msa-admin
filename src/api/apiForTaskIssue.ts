@@ -126,20 +126,13 @@ const apiForTaskIssue: ApiForTaskIssue = {
     },
 
     deleteIssue: async (id: number): Promise<void> => {
-        try {
-        const response = await fetch(`/api/issues/${id}?id=${id}`, {
+        const response = await fetch(`/api/issues/${id}`, {
             method: 'DELETE',
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Failed to delete issue');
-        }
-        } catch (error) {
-        if (error instanceof Error) {
-            throw new Error(`Failed to delete issue: ${error.message}`);
-        }
-        throw new Error('Failed to delete issue');
+            const error = await response.json();
+            throw new Error(error.message || 'Failed to delete issue');
         }
     },
     getMyIssues: async (userId: string, filter?: IssueFilter, limit = 10, offset = 0) => {
