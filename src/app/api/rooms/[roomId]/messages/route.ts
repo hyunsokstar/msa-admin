@@ -1,16 +1,18 @@
-"use client";
-
-// app/api/rooms/[roomId]/messages/route.ts
-import { NextResponse } from 'next/server';
+// src/app/api/rooms/[roomId]/messages/route.ts
+import { NextRequest, NextResponse } from 'next/server';
 import getSupabase from '@/lib/supabaseClient';
+
+// Route segment config
+export const dynamic = 'force-dynamic';
 
 // GET 메시지 목록 조회
 export async function GET(
-  req: Request,
-  { params }: { params: { roomId: string } }
-) {
+  request: NextRequest,
+  context: { params: Promise<{ roomId: string }> }
+): Promise<NextResponse> {
   try {
-    const { roomId } = params;
+    const params = await context.params;
+    const roomId = params.roomId;
     
     const supabase = getSupabase();
     if (!supabase) {
@@ -49,7 +51,10 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(data);
+    return NextResponse.json(
+      { data: data || [] },
+      { status: 200 }
+    );
   } catch (error) {
     console.error('메시지 조회 중 오류:', error);
     return NextResponse.json(
@@ -61,12 +66,13 @@ export async function GET(
 
 // POST 메시지 전송
 export async function POST(
-  req: Request,
-  { params }: { params: { roomId: string } }
-) {
+  request: NextRequest,
+  context: { params: Promise<{ roomId: string }> }
+): Promise<NextResponse> {
   try {
-    const { roomId } = params;
-    const { content, message_type = 'text' } = await req.json();
+    const params = await context.params;
+    const roomId = params.roomId;
+    const { content, message_type = 'text' } = await request.json();
     
     if (!content) {
       return NextResponse.json(
@@ -131,7 +137,10 @@ export async function POST(
       );
     }
 
-    return NextResponse.json(data);
+    return NextResponse.json(
+      { data },
+      { status: 201 }
+    );
   } catch (error) {
     console.error('메시지 처리 중 오류:', error);
     return NextResponse.json(
