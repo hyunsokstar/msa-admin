@@ -52,7 +52,7 @@ export const apiForLoginUser = async ({
     weakPassword?: WeakPassword;
     session: Session;
     isAdmin: boolean;
-    user: IUser
+    user: User
 }> => {
     const supabase = getSupabase();
     if (!supabase) throw new Error('Supabase 클라이언트를 초기화하지 못했습니다.');
