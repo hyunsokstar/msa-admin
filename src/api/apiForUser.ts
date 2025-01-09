@@ -1,21 +1,23 @@
 // src/api/apiForUserList.ts
 import { deleteUserAction } from '@/app/actions/deleteUser';
 import getSupabase from '@/lib/supabaseClient';
-import { User, CreateUserDto, UpdateUserDto, UserFilter, UserSelectInfo } from '@/types/typeForUser';
+import { IOrganization } from '@/types/typeForOrganization';
+import { IUser, CreateUserDto, UpdateUserDto, UserFilter, UserSelectInfo } from '@/types/typeForUser';
+
 
 interface ApiForUserList {
-    getAllUsers: (filter?: UserFilter) => Promise<User[]>;
-    getUserById: (id: string) => Promise<User>;
-    createUser: (userData: CreateUserDto) => Promise<User>;
-    updateUser: (id: string, updateData: UpdateUserDto) => Promise<User>;
+    getAllUsers: (filter?: UserFilter) => Promise<IUser[]>;
+    getUserById: (id: string) => Promise<IUser>;
+    createUser: (userData: CreateUserDto) => Promise<IUser>;
+    updateUser: (id: string, updateData: UpdateUserDto) => Promise<IUser>;
     deleteUser: (id: string) => Promise<void>;
-    getOnlineUsers: () => Promise<User[]>;
+    getOnlineUsers: () => Promise<IUser[]>;
     getUsersInfoForSelectBox: () => Promise<UserSelectInfo[]>;
 
 }
 
 const apiForUserList: ApiForUserList = {
-    getAllUsers: async (filter?: UserFilter): Promise<User[]> => {
+    getAllUsers: async (filter?: UserFilter): Promise<IUser[]> => {
         const supabase = getSupabase();
         if (!supabase) {
             throw new Error('Supabase client is not initialized');
@@ -38,10 +40,10 @@ const apiForUserList: ApiForUserList = {
             throw new Error(error.message);
         }
 
-        return data as User[];
+        return data as IUser[];
     },
 
-    getUserById: async (id: string): Promise<User> => {
+    getUserById: async (id: string): Promise<IUser> => {
         const supabase = getSupabase();
         if (!supabase) {
             throw new Error('Supabase client is not initialized');
@@ -57,10 +59,10 @@ const apiForUserList: ApiForUserList = {
             throw new Error(error.message);
         }
 
-        return data as User;
+        return data as IUser;
     },
 
-    createUser: async (userData: CreateUserDto): Promise<User> => {
+    createUser: async (userData: CreateUserDto): Promise<IUser> => {
         const supabase = getSupabase();
         if (!supabase) {
             throw new Error('Supabase client is not initialized');
@@ -76,10 +78,10 @@ const apiForUserList: ApiForUserList = {
             throw new Error(error.message);
         }
 
-        return data as User;
+        return data as IUser;
     },
 
-    updateUser: async (id: string, updateData: UpdateUserDto): Promise<User> => {
+    updateUser: async (id: string, updateData: UpdateUserDto): Promise<IUser> => {
         const supabase = getSupabase();
         if (!supabase) {
             throw new Error('Supabase client is not initialized');
@@ -96,7 +98,7 @@ const apiForUserList: ApiForUserList = {
             throw new Error(error.message);
         }
 
-        return data as User;
+        return data as IUser;
     },
 
     deleteUser: async (id: string): Promise<void> => {
@@ -109,7 +111,7 @@ const apiForUserList: ApiForUserList = {
     }
     },
 
-    getOnlineUsers: async (): Promise<User[]> => {
+    getOnlineUsers: async (): Promise<IUser[]> => {
         const supabase = getSupabase();
         if (!supabase) {
             throw new Error('Supabase client is not initialized');
@@ -125,7 +127,7 @@ const apiForUserList: ApiForUserList = {
             throw new Error(error.message);
         }
 
-        return data as User[];
+        return data as IUser[];
     },
 
     // apiForUsersInfoForSelectBox

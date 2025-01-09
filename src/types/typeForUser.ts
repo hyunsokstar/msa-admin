@@ -1,14 +1,19 @@
 // src/types/typeForUser.ts
 
-export interface User {
+export interface IUser {
     id: string;
-    full_name: string | null;
-    profile_image_url: string | null;
-    phone_number: string | null;
-    created_at: string;
-    updated_at: string;
     email: string | null;
+    full_name: string | null;
+    phone_number: string | null;
     is_admin: boolean;
+    created_at: string;
+    profile_image_url: string | null;  // null도 허용하도록 수정
+}
+
+export interface UserFilter {
+    isAdmin?: boolean;
+    email?: string;
+    organizationId?: string;
 }
 
 export interface CreateUserDto {
@@ -25,11 +30,6 @@ export interface UpdateUserDto {
     phone_number?: string;
     email?: string;
     is_admin?: boolean;
-}
-
-export interface UserFilter {
-    email?: string;
-    isAdmin?: boolean;
 }
 
 // 상단에 타입 추가

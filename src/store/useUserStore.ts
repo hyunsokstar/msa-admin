@@ -1,18 +1,14 @@
+import { IUser } from "@/types/typeForUser";
 import { User } from "@supabase/auth-js";
 import { Session } from "@supabase/supabase-js";
 import { create } from "zustand";
 import { persist, devtools } from "zustand/middleware";
 
-export interface ExtendedUser extends User {
-    is_admin?: boolean;
-    profile_image_url?: string;
-}
-
 interface UserState {
-    user: ExtendedUser | null;
+    user: IUser | null;
     session: Session | null;
     isAuthenticated: boolean;
-    setAuth: (user: ExtendedUser | null, session: Session | null) => void;
+    setAuth: (user: IUser | null, session: Session | null) => void;
     setIsAdmin: (isAdmin: boolean) => void;
     clearAuth: () => void;
 }
