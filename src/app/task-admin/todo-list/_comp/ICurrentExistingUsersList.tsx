@@ -10,7 +10,7 @@ interface User {
 }
 
 const ICurrentExistingUsersList = () => {
-  const users: User[] = [
+  const users: IUser[] = [
     { name: "terecal", status: "online" },
     { name: "Jane Cooper", status: "online" },
     { name: "Robert Fox", status: "away" }

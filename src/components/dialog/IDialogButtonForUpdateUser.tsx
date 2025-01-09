@@ -22,7 +22,7 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { User } from "@/types/typeForUser";
+import { IUser } from "@/types/typeForUser";
 import { Pencil } from "lucide-react";
 import { useApiForUpdateUser } from "@/hook/useApiForUpdateUser";
 import ImageUploader2 from "../file-uploader/ImageUploader2";
@@ -40,7 +40,7 @@ const formSchema = z.object({
 type UpdateUserFormData = z.infer<typeof formSchema>;
 
 interface IDialogButtonForUpdateUserProps {
-    user: User;
+    user: IUser;
     isCurrentUser: boolean;
 }
 
