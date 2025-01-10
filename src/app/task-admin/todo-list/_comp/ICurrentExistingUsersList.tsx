@@ -2,6 +2,7 @@
 
 "use client";
 
+import { IUser } from '@/types/typeForChatRoom';
 import React from 'react';
 
 interface User {
