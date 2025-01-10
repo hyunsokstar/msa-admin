@@ -2,7 +2,7 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
-import { User, UpdateUserDto } from '@/types/typeForUser';
+import { IUser, UpdateUserDto } from '@/types/typeForUser';
 import apiForUserList from '@/api/apiForUser';
 
 interface UpdateUserVariables {
@@ -13,7 +13,7 @@ interface UpdateUserVariables {
 export const useApiForUpdateUser = () => {
     const queryClient = useQueryClient();
 
-    return useMutation<User, Error, UpdateUserVariables>({
+    return useMutation<IUser, Error, UpdateUserVariables>({
         mutationFn: async ({ id, updateData }: UpdateUserVariables) => {
             try {
                 const result = await apiForUserList.updateUser(id, updateData);
