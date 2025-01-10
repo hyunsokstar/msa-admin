@@ -13,8 +13,9 @@ import {
 import DialogButtonForLogin from '../dialog/DialogButtonForLoginForm';
 import DialogButtonForSignUp from '../dialog/DialogButtonForSignUp';
 import getSupabase from '@/lib/supabaseClient';
-import { ExtendedUser, useUserStore } from "@/store/useUserStore";
+import { useUserStore } from "@/store/useUserStore";
 import { User } from "@supabase/auth-js";
+import { IUser } from '@/types/typeForUser';
 
 interface UserProfile {
     email: string | null;
@@ -25,7 +26,7 @@ interface UserProfile {
 }
 
 const AuthMenus: React.FC = () => {
-    const [user, setUser] = useState<UserProfile | null>(null);
+    const [user, setUser] = useState<IUser | null>(null);
     const supabase = getSupabase();
     const setAuth = useUserStore((state) => state.setAuth);
 
@@ -55,16 +56,21 @@ const AuthMenus: React.FC = () => {
 
                     setUser({
                         email: session.user.email ?? null,
-                        userId: session.user.id ?? '',
+                        id: session.user.id ?? '',
                         is_admin: is_admin,
                         profile_image_url: profile_image_url,
-                        full_name: full_name
+                        full_name: full_name,
+                        phone_number: publicUser.phone_number ?? null,
+                        created_at: publicUser.created_at ?? null
                     });
 
-                    const extendedUser: ExtendedUser = {
+                    const extendedUser: IUser = {
                         ...session.user,
+                        email: session.user.email ?? null,
                         is_admin: is_admin,
                         profile_image_url: profile_image_url,
+                        full_name: full_name,
+                        phone_number: publicUser.phone_number ?? null
                     };
 
                     setAuth(extendedUser, session);
@@ -86,10 +92,12 @@ const AuthMenus: React.FC = () => {
                     if (!error && publicUser) {
                         setUser({
                             email: session.user.email ?? null,
-                            userId: session.user.id,
+                            id: session.user.id,
                             is_admin: publicUser.is_admin,
                             profile_image_url: publicUser.profile_image_url,
-                            full_name: publicUser.full_name
+                            full_name: publicUser.full_name,
+                            phone_number: publicUser.phone_number ?? null,
+                            created_at: publicUser.created_at ?? null
                         });
                     }
                 } else {
@@ -103,7 +111,7 @@ const AuthMenus: React.FC = () => {
         };
     }, [supabase]);
 
-    const getInitials = (name?: string) => {
+    const getInitials = (name?: string | null) => {
         if (!name) return '';
         return name.split(' ')
             .map(part => part[0])
