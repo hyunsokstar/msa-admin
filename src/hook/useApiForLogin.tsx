@@ -2,7 +2,8 @@ import { useMutation, UseMutationResult } from '@tanstack/react-query';
 import { AuthCredentials, AuthApiResponse, AuthApiError } from '@/types/typeForAuth';
 import { apiForLoginUser, apiForLogoutUser } from '@/api/apiForAuth';
 import { toast } from 'react-toastify';
-import {ExtendedUser, useUserStore} from '@/store/useUserStore';
+import {useUserStore} from '@/store/useUserStore';
+import { IUser } from '@/types/typeForUser';
 
 export const useApiForLogin = (): UseMutationResult<AuthApiResponse, AuthApiError, AuthCredentials> => {
     const setAuth = useUserStore((state) => state.setAuth);
@@ -13,9 +14,10 @@ export const useApiForLogin = (): UseMutationResult<AuthApiResponse, AuthApiErro
             console.log("로그인 응답 데이터 data : ", data);
 
             if (data.user && data.session) {
-                const extendedUser: ExtendedUser = {
+                const extendedUser: IUser = {
                     ...data.user,
-                    is_admin: data.isAdmin ?? false
+                    is_admin: data.isAdmin ?? false,
+                    email: data.user.email ?? null,
                 };
 
                 setAuth(extendedUser, data.session);

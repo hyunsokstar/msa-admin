@@ -1,12 +1,12 @@
 // src/types/typeForChatRoom.ts
 export interface IUser {
   id: string;
-  full_name: string | null;
-  phone_number: string | null;
+  full_name?: string | null;
+  phone_number?: string | null;
   email: string | null;
   is_admin: boolean;
-  created_at: string;
-  updated_at: string;
+  created_at?: string;
+  updated_at?: string;
   profile_image_url?: string | null;
 }
 

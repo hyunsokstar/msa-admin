@@ -28,7 +28,7 @@ const ISideBarForUserList = ({ onSelectOrganization, selectedOrgId }: ISideBarFo
         });
     };
 
-    const getInitials = (name: string | null) => {
+    const getInitials = (name: string | undefined | null) => {
         if (!name) return 'UN';
         return name.substring(0, 2).toUpperCase();
     };

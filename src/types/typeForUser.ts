@@ -3,11 +3,11 @@
 export interface IUser {
     id: string;
     email: string | null;
-    full_name: string | null;
-    phone_number: string | null;
-    is_admin: boolean;
-    created_at: string;
-    profile_image_url: string | null;  // null도 허용하도록 수정
+    full_name?: string | null;
+    phone_number?: string | null;
+    is_admin?: boolean;
+    created_at?: string;
+    profile_image_url?: string | null;  // null도 허용하도록 수정
 }
 
 export interface UserFilter {
