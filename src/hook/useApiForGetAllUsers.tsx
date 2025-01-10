@@ -1,11 +1,11 @@
 // src/hooks/useApiForUserList.ts
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
-import { User, CreateUserDto, UpdateUserDto, UserFilter } from '@/types/typeForUser';
+import { IUser, CreateUserDto, UpdateUserDto, UserFilter } from '@/types/typeForUser';
 import apiForUserList from '@/api/apiForUser';
 
 export const useApiForGetAllUsers = (filter?: UserFilter) => {
-    return useQuery<User[], Error>({
+    return useQuery<IUser[], Error>({
         queryKey: ['users', filter],
         queryFn: async () => {
             try {
@@ -24,7 +24,7 @@ export const useApiForGetAllUsers = (filter?: UserFilter) => {
 };
 
 export const useApiForGetUser = (id: string) => {
-    return useQuery<User, Error>({
+    return useQuery<IUser, Error>({
         queryKey: ['user', id],
         queryFn: async () => {
             try {
@@ -89,7 +89,7 @@ export const useApiForDeleteUser = () => {
 };
 
 export const useApiForGetOnlineUsers = () => {
-    return useQuery<User[], Error>({
+    return useQuery<IUser[], Error>({
         queryKey: ['onlineUsers'],
         queryFn: async () => {
             try {
