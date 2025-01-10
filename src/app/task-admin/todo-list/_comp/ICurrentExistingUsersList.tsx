@@ -2,7 +2,6 @@
 
 "use client";
 
-import { IUser } from '@/types/typeForChatRoom';
 import React from 'react';
 
 interface User {
@@ -11,7 +10,7 @@ interface User {
 }
 
 const ICurrentExistingUsersList = () => {
-  const users: IUser[] = [
+  const users: User[] = [
     { name: "terecal", status: "online" },
     { name: "Jane Cooper", status: "online" },
     { name: "Robert Fox", status: "away" }
