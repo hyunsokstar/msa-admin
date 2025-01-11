@@ -112,7 +112,7 @@ const NotesListForCollection = ({ params }: Props) => {
         <IDialogButtonForCreateNote collectionId={collectionId} />
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden transition-all duration-200 hover:shadow-md">
+      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm dark:border-slate-800 overflow-hidden transition-all duration-200 hover:shadow-md">
         <Table>
           <TableHeader>
             <TableRow className="bg-slate-50/50 dark:bg-slate-800/50">

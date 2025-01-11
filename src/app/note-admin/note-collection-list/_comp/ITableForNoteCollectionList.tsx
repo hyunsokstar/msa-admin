@@ -132,7 +132,7 @@ export const ITableForNoteCollectionList: React.FC<ITableForNoteCollectionListPr
                     collectionName={collection.name}
                   />
                 </div>
-              </TableCell>
+              </TableCell>  
             </TableRow>
           ))
         )}
