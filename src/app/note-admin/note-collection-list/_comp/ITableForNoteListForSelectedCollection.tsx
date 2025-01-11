@@ -178,7 +178,7 @@ export const ITableForNoteListForSelectedCollection: React.FC<ITableForNoteListF
         </TableBody>
       </Table>
 
-      {!isLoading && data?.data.length > 0 && (
+      {!isLoading && data?.data && data.data.length > 0 && (
         <div className="flex justify-between items-center bg-gray-50 -mx-6 px-6 py-4 border-t border-gray-200">
           <div className="text-sm text-gray-500">
             Total <span className="font-medium text-gray-900">{data?.pagination.total || 0}</span> notes
