@@ -1,144 +1,170 @@
-"use client";
-
-import React from 'react';
+// src/components/table/ITableForUserList.tsx
+import { useState } from 'react';
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import {
+    Pagination,
+    PaginationContent,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Skeleton } from "@/components/ui/skeleton";
-import { NoteCollection } from '@/types/typeForNoteCollections';
-import { IDialogButtonForEditNoteCollection } from '@/components/dialog/IDialogButtonForEditNoteCollection';
-import { IDialogButtonForDeleteNoteCollection } from '@/components/dialog/IDialogButtonForDeleteNoteCollection';
-import Link from 'next/link';
+import IDialogButtonForUpdateUser from '@/components/dialog/IDialogButtonForUpdateUser';
+import { IUser } from '@/types/typeForUser';
 
-interface ITableForNoteCollectionListProps {
-  data?: {
-    data: NoteCollection[];
-  };
-  isLoading: boolean;
+interface ITableForUserListProps {
+    users: IUser[];
+    currentUser: IUser | null;
+    onDeleteUser: (userId: string) => void;
 }
 
-const LoadingSkeleton = () => {
-  return Array(5).fill(0).map((_, idx) => (
-    <TableRow key={idx} className="animate-in fade-in-50 slide-in-from-top-2">
-      <TableCell className="text-center">
-        <div className="flex items-center gap-3 justify-center">
-          <div className="relative">
-            <Skeleton className="h-10 w-10 rounded-full" />
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer" />
-          </div>
-          <div className="space-y-2">
-            <Skeleton className="h-4 w-[120px] bg-gradient-to-r from-slate-200 to-slate-100" />
-            <Skeleton className="h-3 w-[80px] bg-gradient-to-r from-slate-100 to-slate-50" />
-          </div>
-        </div>
-      </TableCell>
-      <TableCell className="text-center">
-        <div className="flex flex-col items-center space-y-2">
-          <Skeleton className="h-4 w-[250px] bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200" />
-          <Skeleton className="h-3 w-[180px] bg-gradient-to-r from-slate-100 to-slate-50" />
-        </div>
-      </TableCell>
-      <TableCell className="text-center">
-        <div className="flex flex-col items-center space-y-2">
-          <Skeleton className="h-4 w-[150px] bg-gradient-to-r from-slate-200 to-slate-100" />
-          <Skeleton className="h-3 w-[100px] bg-gradient-to-r from-slate-100 to-slate-50" />
-        </div>
-      </TableCell>
-      <TableCell className="text-center">
-        <div className="inline-flex gap-2 justify-center">
-          <Skeleton className="h-8 w-8 rounded-md bg-gradient-to-r from-slate-200 to-slate-100" />
-          <Skeleton className="h-8 w-8 rounded-md bg-gradient-to-r from-slate-200 to-slate-100" />
-        </div>
-      </TableCell>
-    </TableRow>
-  ));
-};
+const ITableForUserList = ({ users, currentUser, onDeleteUser }: ITableForUserListProps) => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
 
-export const ITableForNoteCollectionList: React.FC<ITableForNoteCollectionListProps> = ({
-  data,
-  isLoading
-}) => {
-  return (
-    <div className="bg-white">
-      <Table>
-        <TableHeader>
-          <TableRow className="bg-slate-50/50 dark:bg-slate-800/50">
-            <TableHead className="w-[250px] text-center">Writer</TableHead>
-            <TableHead className="text-center">Name</TableHead>
-            <TableHead className="w-[180px] text-center">Created At</TableHead>
-            <TableHead className="w-[120px] text-center">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {isLoading ? (
-            <LoadingSkeleton />
-          ) : (
-            data?.data.map((collection: NoteCollection) => (
-              <TableRow
-                key={collection.id}
-                className="group hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors duration-200"
-              >
-                <TableCell className="text-center">
-                  <div className="flex items-center gap-3 justify-center">
-                    <Avatar className="border-2 border-white shadow-sm">
-                      <AvatarImage src={collection.writer?.profile_image_url || undefined} />
-                      <AvatarFallback className="bg-gradient-to-br from-blue-100 to-blue-200 text-blue-600">
-                        {collection.writer?.full_name?.charAt(0) || 'A'}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex flex-col items-center">
-                      <span className="font-medium text-slate-900 dark:text-slate-100 group-hover:text-blue-600 transition-colors">
-                        {collection.writer?.full_name || 'Anonymous'}
-                      </span>
-                      <span className="text-sm text-slate-500">Writer</span>
-                    </div>
-                  </div>
-                </TableCell>
+    const getInitials = (user: { full_name?: string | null; email?: string | null }) => {
+        if (user.full_name) {
+            return user.full_name.substring(0, 2).toUpperCase();
+        }
+        if (user.email) {
+            return user.email.substring(0, 2).toUpperCase();
+        }
+        return 'UN';
+    };
 
-                <TableCell className="text-center">
-                  <Link
-                    href={`/note-admin/note-collection-list/${collection.id}/notes`}
-                    className="font-medium text-slate-900 dark:text-slate-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                  >
-                    {collection.name}
-                  </Link>
-                </TableCell>
+    const paginatedUsers = users.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
 
-                <TableCell className="text-center">
-                  <time className="text-slate-500 text-sm">
-                    {new Date(collection.created_at).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit'
+    const totalPages = Math.ceil(users.length / itemsPerPage);
+
+    return (
+        <>
+            <Table>
+                <TableHeader>
+                    <TableRow className="bg-orange-50/50 hover:bg-orange-50">
+                        <TableHead className="w-[60px]">프로필</TableHead>
+                        <TableHead>이메일</TableHead>
+                        <TableHead>이름</TableHead>
+                        <TableHead>전화번호</TableHead>
+                        <TableHead>권한</TableHead>
+                        <TableHead>가입일</TableHead>
+                        <TableHead className="w-[150px]">작업</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {paginatedUsers.map((user) => {
+                        const isCurrentUser = currentUser?.email === user.email;
+                        return (
+                            <TableRow key={user.id} className="hover:bg-orange-50/30">
+                                <TableCell>
+                                    <Avatar className="w-10 h-10 border-2 border-orange-100">
+                                        <AvatarImage 
+                                            src={user.profile_image_url || ''} 
+                                            alt={user.full_name || user.email || '사용자'} 
+                                        />
+                                        <AvatarFallback className="bg-orange-100 text-orange-700">
+                                            {getInitials(user)}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                </TableCell>
+                                <TableCell className="font-medium">{user.email}</TableCell>
+                                <TableCell>{user.full_name || '-'}</TableCell>
+                                <TableCell>{user.phone_number || '-'}</TableCell>
+                                <TableCell>
+                                    <Badge 
+                                        variant={user.is_admin ? "destructive" : "secondary"}
+                                        className={user.is_admin 
+                                            ? "bg-red-100 text-red-700 hover:bg-red-200" 
+                                            : "bg-orange-100 text-orange-700 hover:bg-orange-200"}
+                                    >
+                                        {user.is_admin ? '관리자' : '일반'}
+                                    </Badge>
+                                </TableCell>
+                                <TableCell className="text-gray-600">
+                                    {new Date(user.created_at).toLocaleDateString()}
+                                </TableCell>
+                                <TableCell>
+                                    {isCurrentUser && (
+                                        <div className="flex gap-2">
+                                            <IDialogButtonForUpdateUser 
+                                                user={user}
+                                                isCurrentUser={isCurrentUser}
+                                            />
+                                            <Button 
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => onDeleteUser(user.id)}
+                                                className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                                            >
+                                                <Trash2 className="h-4 w-4 mr-1" />
+                                                삭제
+                                            </Button>
+                                        </div>
+                                    )}
+                                </TableCell>
+                            </TableRow>
+                        );
                     })}
-                  </time>
-                </TableCell>
+                </TableBody>
+            </Table>
 
-                <TableCell className="text-center py-4">
-                  <span className="inline-flex gap-2 justify-center">
-                    <IDialogButtonForEditNoteCollection
-                      collectionId={collection.id}
-                      initialName={collection.name}
-                    />
-                    <IDialogButtonForDeleteNoteCollection
-                      collectionId={collection.id}
-                      collectionName={collection.name}
-                    />
-                  </span>
-                </TableCell>
-              </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
-    </div>
-  );
+            {totalPages > 1 && (
+                <div className="mt-6 flex justify-center">
+                    <Pagination>
+                        <PaginationContent>
+                            <PaginationItem>
+                                <PaginationPrevious
+                                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                    aria-disabled={currentPage === 1}
+                                    className={`
+                                        ${currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
+                                        hover:bg-orange-50 border-orange-200
+                                    `}
+                                />
+                            </PaginationItem>
+                            {[...Array(totalPages)].map((_, i) => (
+                                <PaginationItem key={i + 1}>
+                                    <PaginationLink
+                                        onClick={() => setCurrentPage(i + 1)}
+                                        isActive={currentPage === i + 1}
+                                        className={currentPage === i + 1 
+                                            ? 'bg-orange-500 text-white' 
+                                            : 'hover:bg-orange-50 border-orange-200'
+                                        }
+                                    >
+                                        {i + 1}
+                                    </PaginationLink>
+                                </PaginationItem>
+                            ))}
+                            <PaginationItem>
+                                <PaginationNext
+                                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                    aria-disabled={currentPage === totalPages}
+                                    className={`
+                                        ${currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
+                                        hover:bg-orange-50 border-orange-200
+                                    `}
+                                />
+                            </PaginationItem>
+                        </PaginationContent>
+                    </Pagination>
+                </div>
+            )}
+        </>
+    );
 };
+
+export default ITableForUserList;
