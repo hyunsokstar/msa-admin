@@ -62,3 +62,6 @@ export interface UpdateNoteCollectionResponse {
   data: NoteCollection;
   error?: string;
 }
+
+// 타입 가드용 타입
+export type PaginatedNoteCollectionResponse = PaginatedResponse<NoteCollection[]>;

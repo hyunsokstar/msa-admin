@@ -1,5 +1,6 @@
 // src/api/apiForNoteCollections.ts
-import { CreateNoteCollectionDto, CreateNoteCollectionResponse, NoteCollection, PaginatedResponse, UpdateNoteCollectionDto, UpdateNoteCollectionResponse } from '@/types/typeForNoteCollections';
+import { CreateNoteCollectionDto, CreateNoteCollectionResponse, 
+  NoteCollection, PaginatedResponse, UpdateNoteCollectionDto, UpdateNoteCollectionResponse } from '@/types/typeForNoteCollections';
 
 export interface GetNoteCollectionsParams {
   page?: number;

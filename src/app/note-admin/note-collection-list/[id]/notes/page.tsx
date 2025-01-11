@@ -1,3 +1,4 @@
+// C:\Users\terec\msa-admin\src\app\note-admin\note-collection-list\[id]\notes\page.tsx
 "use client";
 
 import React, { useState } from 'react';
