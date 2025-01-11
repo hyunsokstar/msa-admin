@@ -8,12 +8,14 @@ export interface Writer {
   profile_image_url: string | null;  // API 응답과 일치하도록 유지
 }
 
+// types/typeForNoteCollections.ts
 export interface NoteCollection {
   id: number;
   name: string;
   created_at: string;
   updated_at: string;
   writer: Writer | null;
+  note_count: number;  // 추가
 }
 
 export interface PaginationInfo {

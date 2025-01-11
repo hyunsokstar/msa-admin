@@ -1,15 +1,14 @@
 "use client";
 
 import React, { useState } from 'react';
-import Pagination from 'rc-pagination';
 import { useApiForNoteCollections } from '@/hook/notes/useApiForNoteCollections';
 import { IDialogButtonForCreateNoteCollection } from '@/components/dialog/IDialogButtonForCreateNoteCollection';
 import { ITableForNoteCollectionList } from './_comp/ITableForNoteCollectionList';
 import { ITableForNoteListForSelectedCollection } from './_comp/ITableForNoteListForSelectedCollection';
-import { PlusCircle, NotebookPen } from "lucide-react";
+import { NotebookPen } from "lucide-react";
 import CommonButton from "@/components/common/CommonButton";
-import 'rc-pagination/assets/index.css';
 import { IDialogButtonForCreateNote } from '@/components/dialog/IDialogButtonForCreateNote';
+import 'rc-pagination/assets/index.css';
 
 const NoteCollectionListPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -63,19 +62,9 @@ const NoteCollectionListPage = () => {
                 isLoading={isLoading}
                 onCollectionSelect={(id) => setSelectedCollectionId(id)}
                 selectedCollectionId={selectedCollectionId}
-              />
-            </div>
-
-            <div className="flex items-center justify-between p-6 border-t border-gray-200 bg-gray-50">
-              <span className="text-sm text-gray-500">
-                페이지당 {pageSize}개 항목
-              </span>
-              <Pagination
-                current={currentPage}
-                total={data?.pagination.total || 0}
+                currentPage={currentPage}
+                onPageChange={setCurrentPage}
                 pageSize={pageSize}
-                onChange={setCurrentPage}
-                className="rc-pagination-modern"
               />
             </div>
           </div>
@@ -101,15 +90,15 @@ const NoteCollectionListPage = () => {
                 <div className="p-6 border-b border-gray-200">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h2 className="text-xl font-semibold text-gray-900">Notes For Collection</h2>
+                      <h2 className="text-2xl font-semibold text-gray-900">노트 목록</h2>
+                      <p className="text-sm text-gray-500 mt-1">
+                        선택된 컬렉션의 노트 목록
+                      </p>
                     </div>
-                    <div>
-                      <IDialogButtonForCreateNote collectionId={selectedCollectionId} />
-
-                    </div>
+                    <IDialogButtonForCreateNote collectionId={selectedCollectionId} />
                   </div>
                 </div>
-                <div className="flex-1 overflow-auto p-6">
+                <div className="flex-1 overflow-auto min-h-0 p-6">
                   <ITableForNoteListForSelectedCollection
                     collectionId={selectedCollectionId}
                   />
