@@ -1,6 +1,29 @@
 // src/api/notes/apiForNoteContents.ts
 import { NoteContent, CreateNoteContentData, NoteContentResponse } from '@/types/notes/typeForNoteContents';
 
+interface OrderChangeItem {
+  id: number;
+  order: number;
+}
+
+export const updateNoteContentOrder = async (
+  noteId: string,
+  items: OrderChangeItem[]
+): Promise<void> => {
+  const response = await fetch(`/api/notes/${noteId}/contents/order`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ items }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Failed to update order');
+  }
+};
+
 interface GetNoteContentsParams {
   noteId: string;
   pageNum?: number;

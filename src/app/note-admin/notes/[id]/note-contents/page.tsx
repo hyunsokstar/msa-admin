@@ -153,6 +153,8 @@ const NoteContentListPageForNote = ({ params }: Props) => {
                 }}
                 onDelete={handleDelete}
                 isDeletingId={deletingId || undefined}
+                noteId={noteId}
+                pageNum={pageNum}
               />
             </div>
           </section>

@@ -1,3 +1,4 @@
+// src/app/Note/[id]/_comp/SortableNoteContentList.tsx
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -18,6 +19,7 @@ import {
 } from '@dnd-kit/sortable';
 import { NoteContent } from '@/types/notes/typeForNoteContents';
 import { SortableItemForNoteContentList } from './SortableItemForNoteContentList';
+import { useApiForUpdateNoteContentOrder } from '@/hook/notes/useApiForUpdateNoteContentOrder';
 
 interface SortableNoteListProps {
   contents: NoteContent[];
@@ -25,6 +27,8 @@ interface SortableNoteListProps {
   setSelectedNote: (note: NoteContent) => void;
   onDelete: (contentId: string) => void;
   isDeletingId?: string;
+  noteId: string;  // 추가
+  pageNum: number; // 추가
 }
 
 const SortableNoteList = ({
@@ -32,10 +36,13 @@ const SortableNoteList = ({
   selectedNoteId,
   setSelectedNote,
   onDelete,
-  isDeletingId
+  isDeletingId,
+  noteId,
+  pageNum
 }: SortableNoteListProps) => {
   const [items, setItems] = useState(contents);
   const [activeId, setActiveId] = useState<string | null>(null);
+  const updateOrderMutation = useApiForUpdateNoteContentOrder(noteId, pageNum);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -53,18 +60,29 @@ const SortableNoteList = ({
     setActiveId(event.active.id as string);
   };
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
     setActiveId(null);
-    
+
     if (over && active.id !== over.id) {
       const oldIndex = items.findIndex(item => item.id === active.id);
       const newIndex = items.findIndex(item => item.id === over.id);
       
       const newItems = arrayMove(items, oldIndex, newIndex);
       setItems(newItems);
-      // TODO: API 호출하여 순서 변경 저장
-      console.log('Order changed:', { oldIndex, newIndex, newItems });
+
+      // API를 통해 순서 업데이트
+      const orderUpdates = newItems.map((item, index) => ({
+        id: item.id,
+        order: index + 1,
+      }));
+
+      try {
+        await updateOrderMutation.mutateAsync(orderUpdates);
+      } catch (error) {
+        // 에러 발생 시 원래 상태로 복구
+        setItems(contents);
+      }
     }
   };
 
