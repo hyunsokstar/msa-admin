@@ -10,15 +10,18 @@ interface OrderChangeItem {
   order: number;
 }
 
-export async function PATCH(
+export async function PUT(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ): Promise<NextResponse> {
   try {
     const supabase = createRouteHandlerClient({ cookies });
-    const noteId = context.params.id;
+    const params = await context.params;
+    const noteId = params.id;
     const body = await request.json();
     const items: OrderChangeItem[] = body.items;
+
+    console.log('Updating note contents order:', { noteId, items });
 
     if (!Array.isArray(items)) {
       return NextResponse.json(
@@ -30,23 +33,39 @@ export async function PATCH(
     // 모든 업데이트 작업을 Promise 배열로 생성
     const updatePromises = items.map(item => 
       supabase
-        .from('note_contents')
+        .from("note_contents")
         .update({ order: item.order })
-        .eq('id', item.id)
-        .eq('note_id', noteId)
+        .eq("id", item.id)
+        .eq("note_id", noteId)
+        .select()
     );
 
     // 모든 업데이트를 병렬로 실행
-    await Promise.all(updatePromises);
+    const results = await Promise.all(updatePromises);
+
+    // 에러 체크
+    const errors = results
+      .map((result, index) => result.error ? { error: result.error, index } : null)
+      .filter(Boolean);
+
+    if (errors.length > 0) {
+      console.error("Error updating note contents order:", errors);
+      return NextResponse.json(
+        { error: "Failed to update some items order" },
+        { status: 500 }
+      );
+    }
+
+    const updatedData = results.map(result => result.data).flat();
 
     return NextResponse.json(
-      { message: 'Order updated successfully' },
+      { data: updatedData },
       { status: 200 }
     );
   } catch (error) {
-    console.error('Failed to update order:', error);
+    console.error("Server error:", error);
     return NextResponse.json(
-      { error: 'Failed to update order' },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }
