@@ -30,4 +30,5 @@ export interface NoteContent {
 
 export interface NoteContentResponse {
   data: NoteContent[];
+  pages: number[];  // 실제 존재하는 페이지 번호 배열
 }

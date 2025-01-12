@@ -5,7 +5,7 @@ import { useApiForNoteCollections } from '@/hook/notes/useApiForNoteCollections'
 import { IDialogButtonForCreateNoteCollection } from '@/components/dialog/IDialogButtonForCreateNoteCollection';
 import { ITableForNoteCollectionList } from './_comp/ITableForNoteCollectionList';
 import { ITableForNoteListForSelectedCollection } from './_comp/ITableForNoteListForSelectedCollection';
-import { NotebookPen } from "lucide-react";
+import { NotebookPen, Book } from "lucide-react";
 import CommonButton from "@/components/common/CommonButton";
 import { IDialogButtonForCreateNote } from '@/components/dialog/IDialogButtonForCreateNote';
 import 'rc-pagination/assets/index.css';
@@ -95,7 +95,26 @@ const NoteCollectionListPage = () => {
                         선택된 컬렉션의 노트 목록
                       </p>
                     </div>
-                    <IDialogButtonForCreateNote collectionId={selectedCollectionId} />
+                    <div className="flex gap-4 items-center">
+                      {data?.pages && data.pages.length > 0 && (
+                        <div className="flex items-center gap-2">
+                          <Book className="h-4 w-4 text-slate-500" />
+                          <div className="flex gap-1.5">
+                            {data.pages.map((pageNum) => (
+                              <CommonButton
+                                key={pageNum}
+                                variant="outline"
+                                size="sm"
+                                className="h-7 min-w-[28px] px-2 py-1 text-xs font-normal bg-white hover:bg-blue-50"
+                              >
+                                {pageNum}
+                              </CommonButton>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      <IDialogButtonForCreateNote collectionId={selectedCollectionId} />
+                    </div>
                   </div>
                 </div>
                 <div className="flex-1 overflow-auto min-h-0 p-6">

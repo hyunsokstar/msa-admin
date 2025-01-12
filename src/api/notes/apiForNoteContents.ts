@@ -1,5 +1,5 @@
 // src/api/notes/apiForNoteContents.ts
-import { NoteContent,CreateNoteContentData,  NoteContentResponse } from '@/types/notes/typeForNoteContents';
+import { NoteContent, CreateNoteContentData, NoteContentResponse } from '@/types/notes/typeForNoteContents';
 
 interface GetNoteContentsParams {
   noteId: string;
@@ -10,9 +10,9 @@ export const getNoteContents = async ({
   noteId,
   pageNum = 1
 }: GetNoteContentsParams): Promise<NoteContentResponse> => {
-
   console.log("noteId : ", noteId);
   console.log("pageNum : ", pageNum);
+
   // type 검사
   if (typeof noteId !== 'string') {
     throw new Error('Invalid noteId');
@@ -20,11 +20,9 @@ export const getNoteContents = async ({
 
   try {
     const response = await fetch(`/api/notes/${noteId}/contents?pageNum=${pageNum}`);
-    
     const json = await response.json();
 
     console.log("json : ", json);
-    
 
     // 서버에서 반환된 에러 메시지가 있는지 먼저 확인
     if (json.error) {
@@ -36,17 +34,22 @@ export const getNoteContents = async ({
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    // data 필드가 있는지 확인
-    if (!json.data) {
-      throw new Error('Invalid response format: missing data field');
+    // data와 pages 필드가 있는지 확인
+    if (!json.data || !json.pages) {
+      throw new Error('Invalid response format: missing data or pages field');
     }
 
     return {
-      data: Array.isArray(json.data) ? json.data : []
+      data: Array.isArray(json.data) ? json.data : [],
+      pages: Array.isArray(json.pages) ? json.pages : [] // 페이지 배열 확인 및 처리
     };
     
   } catch (error) {
     console.log("error : ", error);
+    
+    if (error instanceof Error) {
+      throw new Error(`Failed to fetch note contents: ${error.message}`);
+    }
     
     // 구체적인 에러 메시지 전달
     throw new Error('Failed to fetch note contents: Unknown error');

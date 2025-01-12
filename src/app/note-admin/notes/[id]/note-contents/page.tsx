@@ -1,15 +1,17 @@
+// src/app/Note/[id]/NoteContentListPageForNote.tsx
 "use client";
 
 import React, { useState, useRef } from 'react';
 import { Edit2 } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 import { NoteContent } from '@/types/notes/typeForNoteContents';
 import ICardForNoteContents from './_comp/ICardForNoteContents';
 import IDialogButtonForCreateNoteContents from './_comp/IDialogButtonForCreateNoteContents';
 import { useApiForGetNoteContents } from '@/hook/notes/useApiForGetNoteContents';
 import useApiForDeleteNoteContent from '@/hook/notes/useApiForDeleteNoteContent';
-import { useSearchParams } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import SortableNoteContentList from './_comp/SortableNoteContentList';
+import PageNavigationForNoteContentList from './_comp/PageNavigationForNoteContentList';
 
 interface Props {
   params: Promise<{
@@ -98,7 +100,10 @@ const NoteContentListPageForNote = ({ params }: Props) => {
                 </div>
                 <div className="flex items-center gap-2">
                   <p className="text-sm text-gray-500">Page {pageNum}</p>
-                  <IDialogButtonForCreateNoteContents noteId={noteId} pageNum={pageNum} />
+                  <IDialogButtonForCreateNoteContents 
+                    noteId={noteId} 
+                    pageNum={pageNum}
+                  />
                 </div>
               </div>
             </div>
@@ -131,6 +136,13 @@ const NoteContentListPageForNote = ({ params }: Props) => {
             <div className="p-4 border-b">
               <h2 className="text-lg font-bold">Note List</h2>
             </div>
+
+            <PageNavigationForNoteContentList
+              currentPage={pageNum}
+              pages={data?.pages || []}
+              noteId={noteId}
+            />
+            
             <div className="flex-1 overflow-y-auto p-2">
               <SortableNoteContentList
                 contents={data?.data || []}

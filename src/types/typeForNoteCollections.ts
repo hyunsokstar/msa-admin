@@ -15,7 +15,18 @@ export interface NoteCollection {
   created_at: string;
   updated_at: string;
   writer: Writer | null;
-  note_count: number;  // 추가
+  note_count: number;
+}
+
+export interface PaginatedResponse<T> {
+  data: T;
+  pages: number[];  // 페이지 목록 추가
+  pagination: {
+    currentPage: number;
+    pageSize: number;
+    total: number;
+    totalPages: number;
+  };
 }
 
 export interface PaginationInfo {
@@ -28,12 +39,6 @@ export interface PaginationInfo {
 export interface GetNoteCollectionsParams {
   page?: number;
   pageSize?: number;
-}
-
-export interface PaginatedResponse<T> {
-  data: T;
-  pagination: PaginationInfo;
-  error?: string;
 }
 
 // src/types/typeForNoteCollections.ts

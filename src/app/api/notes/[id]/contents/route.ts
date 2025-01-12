@@ -1,11 +1,10 @@
+// app/api/notes/[id]/note-contents/route.ts
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-// Route segment config
 export const dynamic = 'force-dynamic';
 
-// GET
 export async function GET(
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
@@ -14,11 +13,21 @@ export async function GET(
     const supabase = createRouteHandlerClient({ cookies });
     const params = await context.params;
     const noteId = params.id;
-
     const page = Math.max(1, parseInt(request.nextUrl.searchParams.get('pageNum') || '1'));
 
-    console.log('Fetching note contents:', { noteId, page });
+    // 페이지 번호 목록 가져오기
+    const { data: pageData } = await supabase
+      .from("note_contents")
+      .select('page')
+      .eq("note_id", noteId)
+      .not('page', 'is', null);
 
+    // unique한 페이지 번호 배열 추출 및 정렬
+    const pages = Array.from(new Set(pageData?.map(item => item.page)))
+      .filter(page => page !== null)
+      .sort((a, b) => a - b);
+
+    // 현재 페이지의 데이터를 가져오기
     const { data, error } = await supabase
       .from("note_contents")
       .select(`
@@ -38,7 +47,10 @@ export async function GET(
     }
 
     return NextResponse.json(
-      { data: data || [] },
+      { 
+        data: data || [],
+        pages: pages
+      },
       { status: 200 }
     );
   } catch (error) {
@@ -49,6 +61,8 @@ export async function GET(
     );
   }
 }
+
+
 
 // POST
 export async function POST(

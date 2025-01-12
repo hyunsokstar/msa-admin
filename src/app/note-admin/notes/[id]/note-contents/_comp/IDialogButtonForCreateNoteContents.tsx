@@ -26,7 +26,7 @@ import { useApiForGetNoteContents } from "@/hook/notes/useApiForGetNoteContents"
 
 interface Props {
   noteId: string;
-  pageNum?: number;
+  pageNum: number;
 }
 
 const formSchema = z.object({
@@ -75,7 +75,7 @@ export default function IDialogButtonForCreateNoteContents({ noteId, pageNum }: 
         data: {
           title: data.title,
           content: data.content,
-          page: 1,
+          page: pageNum,
           order: maxOrder + 1,
           path: data.path,
           writer: user.id,
@@ -111,7 +111,7 @@ export default function IDialogButtonForCreateNoteContents({ noteId, pageNum }: 
       <DialogContent className="sm:max-w-[900px] w-[95vw] min-h-[700px] flex flex-col p-0 gap-0 bg-white dark:bg-slate-900">
         <DialogHeader className="shrink-0 px-6 py-4 border-b border-gray-200 dark:border-gray-800">
           <DialogTitle className="text-2xl font-bold text-gray-900 dark:text-white">
-            새 노트 작성
+            새 노트 내용 작성 (페이지 {pageNum})
           </DialogTitle>
         </DialogHeader>
 

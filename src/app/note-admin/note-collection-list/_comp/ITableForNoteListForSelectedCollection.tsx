@@ -26,30 +26,30 @@ interface ITableForNoteListForSelectedCollectionProps {
 const LoadingSkeleton = () => {
   return Array(5).fill(0).map((_, idx) => (
     <TableRow key={idx} className="animate-in fade-in-50 slide-in-from-top-2">
-      <TableCell>
-        <div className="flex items-center gap-3">
+      <TableCell className="w-[200px]">
+        <div className="flex items-center gap-2">
           <div className="relative">
-            <Skeleton className="h-10 w-10 rounded-full" />
+            <Skeleton className="h-9 w-9 rounded-full" />
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer" />
           </div>
           <div className="space-y-2 flex-1">
-            <Skeleton className="h-4 w-32" />
-            <Skeleton className="h-3 w-24" />
+            <Skeleton className="h-4 w-28" />
+            <Skeleton className="h-3 w-20" />
           </div>
         </div>
       </TableCell>
-      <TableCell>
-        <div className="flex items-center justify-between">
+      <TableCell className="min-w-[320px]">
+        <div className="flex items-center">
           <Skeleton className="h-4 w-48" />
         </div>
       </TableCell>
-      <TableCell>
-        <Skeleton className="h-4 w-32" />
+      <TableCell className="w-[130px]">
+        <Skeleton className="h-4 w-24" />
       </TableCell>
-      <TableCell>
-        <div className="flex gap-2 justify-end">
-          <Skeleton className="h-8 w-8 rounded-md" />
-          <Skeleton className="h-8 w-8 rounded-md" />
+      <TableCell className="w-[140px]">
+        <div className="flex gap-2 justify-end pr-2">
+          <Skeleton className="h-9 w-9 rounded-md" />
+          <Skeleton className="h-9 w-9 rounded-md" />
         </div>
       </TableCell>
     </TableRow>
@@ -97,14 +97,14 @@ export const ITableForNoteListForSelectedCollection: React.FC<ITableForNoteListF
   }
 
   return (
-    <div className="space-y-6">
-      <Table>
+    <div className="space-y-4">
+      <Table className="border">
         <TableHeader>
           <TableRow className="bg-slate-50/50 hover:bg-slate-50/50">
-            <TableHead className="w-[300px]">Writer</TableHead>
-            <TableHead>Title</TableHead>
-            <TableHead className="w-[180px]">Created</TableHead>
-            <TableHead className="w-[100px] text-right">Actions</TableHead>
+            <TableHead className="w-[200px] text-slate-700">Writer</TableHead>
+            <TableHead className="min-w-[320px] text-slate-700">Title</TableHead>
+            <TableHead className="w-[130px] text-slate-700">Created</TableHead>
+            <TableHead className="w-[140px] text-center pr-6 text-slate-700">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -116,40 +116,38 @@ export const ITableForNoteListForSelectedCollection: React.FC<ITableForNoteListF
             data?.data.map((note: Note) => (
               <TableRow
                 key={note.id}
-                className="group hover:bg-blue-50/30 transition-colors duration-200"
+                className="hover:bg-blue-50/30 transition-colors duration-200"
               >
-                <TableCell>
-                  <div className="flex items-center gap-3">
-                    <Avatar className="border-2 border-white shadow-sm">
+                <TableCell className="w-[200px]">
+                  <div className="flex items-center gap-2">
+                    <Avatar className="h-9 w-9 border-2 border-white shadow-sm">
                       <AvatarImage src={note.writer?.profile_image_url || undefined} />
-                      <AvatarFallback className="bg-gradient-to-br from-blue-100 to-blue-200 text-blue-600">
+                      <AvatarFallback className="bg-gradient-to-br from-blue-100 to-blue-200 text-blue-600 font-medium text-sm">
                         {note.writer?.full_name?.charAt(0) || 'A'}
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <div className="font-medium text-slate-900">
+                      <div className="font-medium text-slate-900 text-sm">
                         {note.writer?.full_name || 'Anonymous'}
                       </div>
-                      <div className="text-sm text-slate-500">Writer</div>
+                      <div className="text-xs text-slate-500">Writer</div>
                     </div>
                   </div>
                 </TableCell>
 
-                <TableCell>
-                  <div className="flex items-center justify-between">
-                    <Link 
-                      href={`/note-admin/notes/${note.id}/note-contents`}
-                      className="block font-medium text-slate-900 group-hover:text-blue-600 transition-colors duration-200"
-                    >
-                      <div className="line-clamp-2 hover:underline cursor-pointer">
-                        {note.title}
-                      </div>
-                    </Link>
-                  </div>
+                <TableCell className="min-w-[320px]">
+                  <Link 
+                    href={`/note-admin/notes/${note.id}/note-contents`}
+                    className="block text-slate-900 hover:text-blue-600 transition-colors duration-200"
+                  >
+                    <div className="line-clamp-2 hover:underline font-medium">
+                      {note.title}
+                    </div>
+                  </Link>
                 </TableCell>
 
-                <TableCell>
-                  <time className="text-sm text-slate-500">
+                <TableCell className="w-[130px]">
+                  <time className="text-sm text-slate-600">
                     {new Date(note.created_at).toLocaleDateString('en-US', {
                       year: 'numeric',
                       month: 'short',
@@ -158,8 +156,8 @@ export const ITableForNoteListForSelectedCollection: React.FC<ITableForNoteListF
                   </time>
                 </TableCell>
 
-                <TableCell>
-                  <div className="flex gap-2 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                <TableCell className="w-[140px] pr-2">
+                  <div className="flex gap-2 justify-center">
                     <IDialogButtonForUpdateNote
                       noteId={note.id}
                       initialTitle={note.title}
@@ -179,9 +177,9 @@ export const ITableForNoteListForSelectedCollection: React.FC<ITableForNoteListF
       </Table>
 
       {!isLoading && data?.data && data.data.length > 0 && (
-        <div className="flex justify-between items-center bg-gray-50 -mx-6 px-6 py-4 border-t border-gray-200">
-          <div className="text-sm text-gray-500">
-            Total <span className="font-medium text-gray-900">{data?.pagination.total || 0}</span> notes
+        <div className="flex justify-between items-center bg-slate-50/70 px-4 py-3 border rounded-md">
+          <div className="text-sm text-slate-600">
+            Total <span className="font-medium text-slate-900">{data?.pagination.total || 0}</span> notes
           </div>
           <Pagination
             current={currentPage}
