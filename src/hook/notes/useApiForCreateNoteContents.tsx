@@ -20,7 +20,7 @@ export const useCreateNoteContent = () => {
       queryClient.invalidateQueries({
         queryKey: ['noteContents', variables.noteId],
       });
-      toast.success('내용이 추가되었습니다.');
+      // toast.success('내용이 추가되었습니다.');
     },
     onError: (error: Error) => {
       toast.error(`추가 실패: ${error.message}`);
