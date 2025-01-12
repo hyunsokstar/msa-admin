@@ -11,7 +11,7 @@ export const updateNoteContentOrder = async (
   items: OrderChangeItem[]
 ): Promise<void> => {
   const response = await fetch(`/api/notes/${noteId}/contents/order`, {
-    method: 'PATCH',
+    method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },
