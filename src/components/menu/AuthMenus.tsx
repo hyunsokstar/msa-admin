@@ -1,6 +1,9 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useUserStore } from "@/store/useUserStore";
+import { IUser } from '@/types/typeForUser';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { ShieldCheck } from 'lucide-react';
@@ -12,104 +15,56 @@ import {
 } from "@/components/ui/tooltip";
 import DialogButtonForLogin from '../dialog/DialogButtonForLoginForm';
 import DialogButtonForSignUp from '../dialog/DialogButtonForSignUp';
-import getSupabase from '@/lib/supabaseClient';
-import { useUserStore } from "@/store/useUserStore";
-import { User } from "@supabase/auth-js";
-import { IUser } from '@/types/typeForUser';
-
-interface UserProfile {
-    email: string | null;
-    userId: string;
-    is_admin?: boolean;
-    profile_image_url?: string;
-    full_name?: string;
-}
 
 const AuthMenus: React.FC = () => {
     const [user, setUser] = useState<IUser | null>(null);
-    const supabase = getSupabase();
+    const supabase = createClientComponentClient();
     const setAuth = useUserStore((state) => state.setAuth);
 
-    useEffect(() => {
-        if (!supabase) return;
+    const fetchUserData = async () => {
+        try {
+            const response = await fetch('/api/auth/user');
 
-        const loadUser = async () => {
-            const {
-                data: { session },
-            } = await supabase.auth.getSession();
+            console.log("사용자 정보 응답 데이터 response at auth menu  : ", response);
+            
 
-            if (session?.user) {
-                const { data: publicUser, error }
-                    = await supabase
-                    .from('users')
-                    .select('*')
-                    .eq('id', session.user.id)
-                    .single();
-
-                if (error) {
-                    console.error('Error fetching user:', error);
-                    return;
-                }
-
-                if (publicUser) {
-                    const { is_admin, profile_image_url, full_name } = publicUser;
-
-                    setUser({
-                        email: session.user.email ?? null,
-                        id: session.user.id ?? '',
-                        is_admin: is_admin,
-                        profile_image_url: profile_image_url,
-                        full_name: full_name,
-                        phone_number: publicUser.phone_number ?? null,
-                        created_at: publicUser.created_at ?? null
-                    });
-
-                    const extendedUser: IUser = {
-                        ...session.user,
-                        email: session.user.email ?? null,
-                        is_admin: is_admin,
-                        profile_image_url: profile_image_url,
-                        full_name: full_name,
-                        phone_number: publicUser.phone_number ?? null
-                    };
-
-                    setAuth(extendedUser, session);
-                }
+            if (response.ok) {
+                const data = await response.json();
+                setUser(data.user);
+                setAuth(data.user, data.session);
+            } else {
+                setUser(null);
+                setAuth(null, null);
             }
-        };
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+            setUser(null);
+            setAuth(null, null);
+        }
+    };
 
-        loadUser();
+    useEffect(() => {
+        fetchUserData();
 
-        const { data: authListener } = supabase.auth.onAuthStateChange(
-            async (_event, session) => {
-                if (session?.user) {
-                    const { data: publicUser, error } = await supabase
-                        .from('users')
-                        .select('*')
-                        .eq('id', session.user.id)
-                        .single();
-
-                    if (!error && publicUser) {
-                        setUser({
-                            email: session.user.email ?? null,
-                            id: session.user.id,
-                            is_admin: publicUser.is_admin,
-                            profile_image_url: publicUser.profile_image_url,
-                            full_name: publicUser.full_name,
-                            phone_number: publicUser.phone_number ?? null,
-                            created_at: publicUser.created_at ?? null
-                        });
-                    }
-                } else {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+            async (event) => {
+                if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+                    await fetchUserData();
+                } else if (event === 'SIGNED_OUT') {
                     setUser(null);
+                    setAuth(null, null);
                 }
             }
         );
 
+        // 주기적으로 사용자 정보 갱신
+        const interval = setInterval(fetchUserData, 60000); // 1분마다 갱신
+
         return () => {
-            authListener?.subscription.unsubscribe();
+            subscription.unsubscribe();
+            clearInterval(interval);
         };
-    }, [supabase]);
+    }, [supabase, setAuth]);
 
     const getInitials = (name?: string | null) => {
         if (!name) return '';
@@ -117,6 +72,12 @@ const AuthMenus: React.FC = () => {
             .map(part => part[0])
             .join('')
             .toUpperCase();
+    };
+
+    const handleSignOut = async () => {
+        await supabase.auth.signOut();
+        setUser(null);
+        setAuth(null, null);
     };
 
     return (
@@ -163,11 +124,7 @@ const AuthMenus: React.FC = () => {
                     </div>
                     <Button
                         variant="outline"
-                        onClick={async () => {
-                            if (supabase) {
-                                await supabase.auth.signOut();
-                            }
-                        }}
+                        onClick={handleSignOut}
                         size="sm"
                     >
                         로그아웃

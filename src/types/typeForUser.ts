@@ -7,6 +7,7 @@ export interface IUser {
     phone_number?: string | null;
     is_admin?: boolean;
     created_at: string;
+    updated_at?: string;
     profile_image_url?: string | null;  // null도 허용하도록 수정
 }
 

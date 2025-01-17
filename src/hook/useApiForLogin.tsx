@@ -1,34 +1,53 @@
-import { useMutation, UseMutationResult } from '@tanstack/react-query';
-import { AuthCredentials, AuthApiResponse, AuthApiError } from '@/types/typeForAuth';
-import { apiForLoginUser, apiForLogoutUser } from '@/api/apiForAuth';
-import { toast } from 'react-toastify';
-import {useUserStore} from '@/store/useUserStore';
-import { IUser } from '@/types/typeForUser';
+// hook/useApiForLogin.tsx
+import { useMutation } from '@tanstack/react-query';
+import { useUserStore } from '@/store/useUserStore';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
-export const useApiForLogin = (): UseMutationResult<AuthApiResponse, AuthApiError, AuthCredentials> => {
+interface LoginCredentials {
+    email: string;
+    password: string;
+}
+
+export const useApiForLogin = () => {
+    const supabase = createClientComponentClient();
     const setAuth = useUserStore((state) => state.setAuth);
 
     return useMutation({
-        mutationFn: apiForLoginUser,
-        onSuccess: (data) => {
-            console.log("로그인 응답 데이터 data : ", data);
+        mutationFn: async ({ email, password }: LoginCredentials) => {
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email,
+                password,
+            });
 
-            if (data.user && data.session) {
-                const extendedUser: IUser = {
+            if (error) throw error;
+
+            // 사용자 추가 정보 가져오기
+            const { data: userData, error: userError } = await supabase
+                .from('users')
+                .select('*')
+                .eq('id', data.user.id)
+                .single();
+
+            if (userError) throw userError;
+
+            // 상태 업데이트
+            setAuth(
+                {
                     ...data.user,
-                    is_admin: data.isAdmin ?? false,
-                    email: data.user.email ?? null,
-                };
+                    email: data.user.email || null,
+                    is_admin: userData.is_admin,
+                    profile_image_url: userData.profile_image_url,
+                    full_name: userData.full_name,
+                    phone_number: userData.phone_number
+                },
+                data.session
+            );
 
-                setAuth(extendedUser, data.session);
-                toast.success('로그인 성공!');
-            }
             return data;
         },
-        onError: (error: AuthApiError) => {
-            const errorMessage = error.message || '로그인 중 오류가 발생했습니다';
-            toast.error(`로그인 실패: ${errorMessage}`);
+        onError: (error) => {
+            console.error('Login error:', error);
             throw error;
-        },
+        }
     });
 };
