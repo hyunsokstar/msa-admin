@@ -13,6 +13,8 @@ export interface IUser {
 
 export interface UserFilter {
     isAdmin?: boolean;
+    name?: string;
+    phone?: string;
     email?: string;
     organizationId?: string;
 }

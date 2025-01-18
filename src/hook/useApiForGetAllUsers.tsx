@@ -2,14 +2,14 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { IUser, CreateUserDto, UpdateUserDto, UserFilter } from '@/types/typeForUser';
-import apiForUserList from '@/api/apiForUser';
+import apiForUserList, { getAllUsers } from '@/api/apiForUser';
 
 export const useApiForGetAllUsers = (filter?: UserFilter) => {
     return useQuery<IUser[], Error>({
         queryKey: ['users', filter],
         queryFn: async () => {
             try {
-                const data = await apiForUserList.getAllUsers(filter);
+                const data = await getAllUsers(filter);
                 if (!data) {
                     throw new Error('사용자 데이터를 찾을 수 없습니다.');
                 }

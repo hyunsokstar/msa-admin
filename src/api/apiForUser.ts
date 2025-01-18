@@ -4,9 +4,34 @@ import getSupabase from '@/lib/supabase/browserClient';
 import { IOrganization } from '@/types/typeForOrganization';
 import { IUser, CreateUserDto, UpdateUserDto, UserFilter, UserSelectInfo } from '@/types/typeForUser';
 
+export const getAllUsers = async (filter?: UserFilter): Promise<IUser[]> => {
+    try {
+        // URL 파라미터 생성
+        const params = new URLSearchParams();
+        if (filter) {
+            Object.entries(filter).forEach(([key, value]) => {
+                if (value !== undefined) {
+                    params.append(key, value.toString());
+                }
+            });
+        }
+
+        const response = await fetch(`/api/users?${params.toString()}`);
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message);
+        }
+
+        const result = await response.json();
+        return result.data;
+    } catch (error: any) {
+        console.error('Failed to fetch users:', error);
+        throw new Error(`Failed to fetch users: ${error.message}`);
+    }
+};
 
 interface ApiForUserList {
-    getAllUsers: (filter?: UserFilter) => Promise<IUser[]>;
+    // getAllUsers: (filter?: UserFilter) => Promise<IUser[]>;
     getUserById: (id: string) => Promise<IUser>;
     createUser: (userData: CreateUserDto) => Promise<IUser>;
     updateUser: (id: string, updateData: UpdateUserDto) => Promise<IUser>;
@@ -17,31 +42,6 @@ interface ApiForUserList {
 }
 
 const apiForUserList: ApiForUserList = {
-    getAllUsers: async (filter?: UserFilter): Promise<IUser[]> => {
-        const supabase = getSupabase();
-        if (!supabase) {
-            throw new Error('Supabase client is not initialized');
-        }
-
-        let query = supabase.from('users').select('*');
-
-        if (filter) {
-            if (filter.email) {
-                query = query.ilike('email', `%${filter.email}%`);
-            }
-            if (filter.isAdmin !== undefined) {
-                query = query.eq('is_admin', filter.isAdmin);
-            }
-        }
-
-        const { data, error } = await query.order('created_at', { ascending: false });
-
-        if (error) {
-            throw new Error(error.message);
-        }
-
-        return data as IUser[];
-    },
 
     getUserById: async (id: string): Promise<IUser> => {
         const supabase = getSupabase();
