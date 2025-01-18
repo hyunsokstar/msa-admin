@@ -8,7 +8,7 @@ import { IDialogButtonForDeleteApiSpec } from "@/app/board/free-board/IDialogBut
 import { DialogButtonForGetApiTest } from "./DialogButtonForGetApiTest";
 import { DialogButtonForPostApiTest } from "./DialogButtonForPostApiTest";
 import IDialogButtonForUpdateApiSpec from "@/app/board/free-board/IDialogButtonForUpdateApiSpec";
-import { ApiSpec } from "@/api/apiForApiSpec";
+import { ApiSpec } from "@/types/typeForApiSpec";
 
 interface ICardForApiSpecListProps {
   specs: ApiSpec[];
