@@ -56,8 +56,8 @@ const ISideBarForUserList = ({
 
   // "해당 부서만 보기" 버튼 클릭 핸들러
   const handleViewOrg = (
-    orgId: string,
-    e: React.MouseEvent<HTMLDivElement>
+    orgId: string, 
+    e: React.MouseEvent<HTMLButtonElement>
   ) => {
     e.stopPropagation(); // 이벤트 버블링 방지
     onSelectOrganization(orgId);
