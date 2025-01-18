@@ -1,4 +1,4 @@
-import getSupabase from '@/lib/supabaseClient';
+import getSupabase from '@/lib/supabase/browserClient';
 import { Issue, CreateIssueDto, UpdateIssueDto, IssueFilter } from '@/types/typeForTaskIssue';
 
 interface ApiForTaskIssue {

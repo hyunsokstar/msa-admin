@@ -1,9 +1,9 @@
 import React from 'react';
-import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Trash2 } from 'lucide-react';
 import { ApiSpec } from '@/api/apiForApiSpec';
 import { useApiForDeleteApiSpec } from '@/hook/useApiForDeleteApiSpec';
+import CommonButton from '@/components/common/CommonButton';
 
 interface IDialogButtonForDeleteApiSpecProps {
   spec: ApiSpec;
@@ -29,10 +29,14 @@ export const IDialogButtonForDeleteApiSpec: React.FC<IDialogButtonForDeleteApiSp
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-700">
-          <Trash2 className="h-4 w-4 mr-2" />
+        <CommonButton
+          variant="ghost"
+          size="sm"
+          startIcon={<Trash2 className="h-4 w-4" />}
+          className="text-red-500 hover:text-red-700"
+        >
           삭제
-        </Button>
+        </CommonButton>
       </DialogTrigger>
       
       <DialogContent className="sm:max-w-xl bg-white">
@@ -55,20 +59,21 @@ export const IDialogButtonForDeleteApiSpec: React.FC<IDialogButtonForDeleteApiSp
         </div>
 
         <DialogFooter className="mt-6">
-          <Button
+          <CommonButton
             variant="outline"
             onClick={() => setOpen(false)}
             disabled={deleteApiSpec.isPending}
           >
             취소
-          </Button>
-          <Button
+          </CommonButton>
+          <CommonButton
             variant="destructive"
             onClick={handleDelete}
-            disabled={deleteApiSpec.isPending}
+            isLoading={deleteApiSpec.isPending}
+            loadingText="삭제 중..."
           >
-            {deleteApiSpec.isPending ? '삭제 중...' : '삭제'}
-          </Button>
+            삭제
+          </CommonButton>
         </DialogFooter>
       </DialogContent>
     </Dialog>

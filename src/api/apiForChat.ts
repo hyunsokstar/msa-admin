@@ -1,5 +1,5 @@
 // src/api/apiForChat.ts
-import getSupabase from '@/lib/supabaseClient';
+import getSupabase from '@/lib/supabase/browserClient';
 import { IChatRoom, IChatMessage } from '@/types/typeForChatRoom';
 
 // 기존 채팅방 목록 API

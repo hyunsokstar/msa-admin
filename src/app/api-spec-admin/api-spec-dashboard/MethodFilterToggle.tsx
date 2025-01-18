@@ -7,7 +7,7 @@ const MethodFilterToggle = ({
   onMethodToggle 
 }: { 
   selectedMethods: Set<string>,
-  onMethodToggle: (method: string) => void 
+  onMethodToggle: (method: string, event: React.MouseEvent) => void 
 }) => {
   const methods = ["GET", "POST", "PUT", "DELETE", "PATCH"];
   
@@ -29,19 +29,24 @@ const MethodFilterToggle = ({
   };
 
   return (
-    <div className="flex gap-2">
-      {methods.map((method) => (
-        <Badge
-          key={method}
-          className={cn(
-            "cursor-pointer w-16 justify-center",
-            selectedMethods.has(method) ? getMethodColor(method) : "bg-gray-200"
-          )}
-          onClick={() => onMethodToggle(method)}
-        >
-          {method}
-        </Badge>
-      ))}
+    <div className="flex flex-col gap-2">
+      <div className="text-xs text-gray-500">
+        Ctrl(⌘)+클릭으로 여러 메소드를 선택할 수 있습니다
+      </div>
+      <div className="flex gap-2">
+        {methods.map((method) => (
+          <Badge
+            key={method}
+            className={cn(
+              "cursor-pointer w-16 justify-center",
+              selectedMethods.has(method) ? getMethodColor(method) : "bg-gray-200"
+            )}
+            onClick={(e) => onMethodToggle(method, e)}
+          >
+            {method}
+          </Badge>
+        ))}
+      </div>
     </div>
   );
 };

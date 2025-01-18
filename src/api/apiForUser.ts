@@ -1,6 +1,6 @@
 // src/api/apiForUserList.ts
 import { deleteUserAction } from '@/app/actions/deleteUser';
-import getSupabase from '@/lib/supabaseClient';
+import getSupabase from '@/lib/supabase/browserClient';
 import { IOrganization } from '@/types/typeForOrganization';
 import { IUser, CreateUserDto, UpdateUserDto, UserFilter, UserSelectInfo } from '@/types/typeForUser';
 

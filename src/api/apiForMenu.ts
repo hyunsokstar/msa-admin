@@ -1,5 +1,5 @@
 // src/api/apiForGetMenusData.ts
-import getSupabase from '@/lib/supabaseClient';
+import getSupabase from '@/lib/supabase/browserClient';
 import { CreateMenuDto, UpdateHeaderNavDto } from '@/types/typeForMenu';
 
 // MenuItemType 타입 선언

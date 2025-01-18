@@ -1,5 +1,5 @@
 // src/api/apiForAuth.ts
-import getSupabase from '@/lib/supabaseClient';
+import getSupabase from '@/lib/supabase/browserClient';
 import { AuthCredentials, AuthApiResponse, UserProfile } from '@/types/typeForAuth';
 import {Session, WeakPassword} from "@supabase/supabase-js";
 import {User} from "@supabase/auth-js";

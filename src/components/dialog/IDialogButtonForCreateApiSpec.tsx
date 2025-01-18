@@ -23,7 +23,6 @@ interface IFormData extends Partial<ApiSpec> {
   method: string;
   endpoint: string;
   description: string;
-  service_name: string;
   category1: string;
   category2: string;
   auth_required: boolean;
@@ -32,20 +31,11 @@ interface IFormData extends Partial<ApiSpec> {
   response_type: string;
 }
 
-const SERVICE_OPTIONS = [
-  { value: 'CMS', label: 'CMS' },
-  { value: 'LMS', label: 'LMS' },
-  { value: 'SHOPPING_MALL', label: '쇼핑몰' },
-  { value: 'USER', label: 'User' },
-  { value: 'BOARD', label: '게시판' }
-];
-
 const INITIAL_FORM_DATA: IFormData = {
   title: '',
   method: 'GET',
   endpoint: '',
   description: '',
-  service_name: 'USER',
   category1: '',
   category2: '',
   auth_required: false,
@@ -128,47 +118,25 @@ export const IDialogButtonForCreateApiSpec: React.FC<IDialogButtonForCreateApiSp
                 className="w-full bg-white border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg"
               />
 
-              <div className="grid grid-cols-2 gap-4">
-                <Select
-                  value={formData.service_name}
-                  onValueChange={(value) => handleChange('service_name', value)}
-                >
-                  <SelectTrigger className="w-full bg-white border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg">
-                    <SelectValue placeholder="서비스 선택" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white border-2 border-gray-200 shadow-lg rounded-lg">
-                    {SERVICE_OPTIONS.map((service) => (
-                      <SelectItem
-                        key={service.value}
-                        value={service.value}
-                        className="hover:bg-blue-50 cursor-pointer"
-                      >
-                        {service.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
-                <Select
-                  value={formData.method}
-                  onValueChange={(value) => handleChange('method', value)}
-                >
-                  <SelectTrigger className="w-full bg-white border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg">
-                    <SelectValue placeholder="HTTP 메소드 선택" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white border-2 border-gray-200 shadow-lg rounded-lg">
-                    {['GET', 'POST', 'PUT', 'DELETE', 'PATCH'].map((method) => (
-                      <SelectItem
-                        key={method}
-                        value={method}
-                        className="hover:bg-blue-50 cursor-pointer"
-                      >
-                        {method}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              <Select
+                value={formData.method}
+                onValueChange={(value) => handleChange('method', value)}
+              >
+                <SelectTrigger className="w-full bg-white border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg">
+                  <SelectValue placeholder="HTTP 메소드 선택" />
+                </SelectTrigger>
+                <SelectContent className="bg-white border-2 border-gray-200 shadow-lg rounded-lg">
+                  {['GET', 'POST', 'PUT', 'DELETE', 'PATCH'].map((method) => (
+                    <SelectItem
+                      key={method}
+                      value={method}
+                      className="hover:bg-blue-50 cursor-pointer"
+                    >
+                      {method}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
 
               <Input
                 value={formData.endpoint}

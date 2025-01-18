@@ -1,6 +1,6 @@
 // src/app/api/rooms/[roomId]/messages/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import getSupabase from '@/lib/supabaseClient';
+import getSupabase from '@/lib/supabase/browserClient';
 
 // Route segment config
 export const dynamic = 'force-dynamic';

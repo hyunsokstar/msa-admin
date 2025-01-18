@@ -1,30 +1,25 @@
 // src/hooks/useApiForDashboard.ts
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
-import { fetchApiSpecs, fetchApiStats, ApiSpec } from '@/api/apiForApiSpec';
+import { fetchApiSpecs, ApiSpec } from '@/api/apiForApiSpec';
 
 export const useApiForDashboard = () => {
     return useQuery({
-        queryKey: ['apiSpecs', 'dashboard'],
+        queryKey: ['apiSpecs'],
         queryFn: async () => {
             try {
-                const [specs, stats] = await Promise.all([
-                    fetchApiSpecs(),
-                    fetchApiStats()
-                ]);
+                const specs = await fetchApiSpecs();
 
-                if (!specs || !stats) {
-                    throw new Error('Failed to fetch API specifications');
+                if (!specs) {
+                    throw new Error('API 스펙을 불러오는데 실패했습니다');
                 }
 
-                return { specs, stats };
+                return { specs };
             } catch (error) {
-                const errorMessage = error instanceof Error ? error.message : 'An error occurred while fetching API data';
-                toast.error(`Failed to load API data: ${errorMessage}`);
+                const errorMessage = error instanceof Error ? error.message : 'API 데이터를 불러오는 중 오류가 발생했습니다';
+                toast.error(`데이터 로드 실패: ${errorMessage}`);
                 throw error;
             }
         }
     });
 };
-
-

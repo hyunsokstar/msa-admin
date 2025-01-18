@@ -1,5 +1,5 @@
 // 파일 경로: /src/api/apiForApiConverter.ts
-import getSupabase from '@/lib/supabaseClient';
+import getSupabase from '@/lib/supabase/browserClient';
 import { ApiNameType } from "@/types/typeForApiConverter";
 
 // api_names 에 대해 삭제 요청 with id

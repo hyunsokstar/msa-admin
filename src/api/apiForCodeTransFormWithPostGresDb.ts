@@ -1,5 +1,5 @@
 // src\api\apiForCodeTransFormWithPostGresDb.ts
-import getSupabase from '@/lib/supabaseClient';
+import getSupabase from '@/lib/supabase/browserClient';
 import { CodeTransformFormat, TransformStyle } from '@/types/typeForTransform';
 
 export const apiForCreateCodeTransformFormat = async (

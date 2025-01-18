@@ -1,130 +1,43 @@
 // C:\Users\terec\msa-admin\src\api\apiForApiSpec.ts
 
-import getSupabase from '@/lib/supabaseClient';
+import getSupabase from '@/lib/supabase/browserClient';
+import { ApiSpec } from '@/types/typeForApiSpec';
 import { SupabaseClient } from '@supabase/supabase-js';
-
-// API 스펙 타입 정의
-export interface ApiSpec {
-  id: string;
-  title: string;
-  method: string;
-  endpoint: string;
-  description?: string;
-  parameters?: any;
-  request_body_schema?: any;
-  response_schema?: any;
-  service_name?: string;
-  category1?: string;
-  category2?: string;
-  created_at?: string;
-  updated_at?: string;
-  auth_required?: boolean;
-  request_type: string;
-  response_type: string;
-}
-
-// 모든 API 스펙 데이터 조회
-export async function fetchApiSpecs(): Promise<ApiSpec[] | null> {
-  const supabase = getSupabase() as SupabaseClient;
-  
-  const { data, error } = await supabase
-    .from('api_specs')
-    .select('*')
-    .order('service_name')
-    .order('created_at', { ascending: false });
-
-  if (error) {
-    console.error('Error fetching API specs:', error);
-    return null;
-  }
-
-  return data;
-}
-
-// 서비스별로 그룹화된 API 스펙 데이터 조회
-export async function fetchGroupedApiSpecs(): Promise<Record<string, ApiSpec[]> | null> {
-  const data = await fetchApiSpecs();
-  
-  if (!data) return null;
-
-  const groupedData = data.reduce((acc, api) => {
-    const serviceName = api.service_name || 'UNCATEGORIZED';
-    if (!acc[serviceName]) {
-      acc[serviceName] = [];
-    }
-    acc[serviceName].push(api);
-    return acc;
-  }, {} as Record<string, ApiSpec[]>);
-
-  return groupedData;
-}
-
-// 특정 서비스의 API 스펙만 조회
-export async function fetchServiceApiSpecs(serviceName: string): Promise<ApiSpec[] | null> {
-  const supabase = getSupabase() as SupabaseClient;
-  
-  const { data, error } = await supabase
-    .from('api_specs')
-    .select('*')
-    .eq('service_name', serviceName)
-    .order('created_at', { ascending: false });
-
-  if (error) {
-    console.error(`Error fetching ${serviceName} API specs:`, error);
-    return null;
-  }
-
-  return data;
-}
-
-// API 서비스별 통계 조회
-export async function fetchApiStats(): Promise<Record<string, number> | null> {
-  const supabase = getSupabase() as SupabaseClient;
-  
-  const { data, error } = await supabase
-    .from('api_specs')
-    .select('service_name')
-    .not('service_name', 'is', null);
-
-  if (error) {
-    console.error('Error fetching API stats:', error);
-    return null;
-  }
-
-  const stats = data.reduce((acc, api) => {
-    const serviceName = api.service_name as string;
-    acc[serviceName] = (acc[serviceName] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-
-  return stats;
-}
 
 // API 스펙 추가
 export async function addApiSpec(apiSpec: Partial<ApiSpec>): Promise<ApiSpec[] | null> {
-  console.log('1. Starting addApiSpec with data:', apiSpec);
-  
-  const supabase = getSupabase() as SupabaseClient;
-  console.log('2. Supabase client created:', !!supabase);
-  
   try {
-    const { data, error } = await supabase
-      .from('api_specs')
-      .insert([apiSpec])
-      .select();
-    
-    console.log('3. Supabase response:', { data, error });
+    const response = await fetch('/api/api-specs', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(apiSpec),
+    });
 
-    if (error) {
-      console.error('4. Error adding API spec:', error);
-      return null;
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    console.log('5. Successfully added API spec:', data);
+    const { data } = await response.json();
     return data;
-  } catch (e) {
-    console.error('6. Exception in addApiSpec:', e);
-    throw e;
+  } catch (error) {
+    console.error('Error adding API spec:', error);
+    return null;
+  }
+}
+
+export async function fetchApiSpecs(): Promise<ApiSpec[] | null> {
+  try {
+    const response = await fetch('/api/api-specs');
+    if (!response.ok) {
+      throw new Error('Failed to fetch API specs');
+    }
+    const { data } = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching API specs:', error);
+    return null;
   }
 }
 

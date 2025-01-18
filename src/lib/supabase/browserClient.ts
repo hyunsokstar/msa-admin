@@ -1,3 +1,4 @@
+// C:\Users\terec\msa-admin\src\lib\browserClient.ts
 "use client";
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
