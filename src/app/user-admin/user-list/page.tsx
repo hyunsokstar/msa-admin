@@ -92,11 +92,11 @@ const UserListPage = () => {
 
   if (isLoading) {
     return (
-      <div className="h-screen flex justify-center items-center bg-white">
-        <div className="flex items-center space-x-2 text-gray-500">
-          <div className="w-3 h-3 rounded-full animate-pulse bg-gray-500"></div>
-          <div className="w-3 h-3 rounded-full animate-pulse bg-gray-500"></div>
-          <div className="w-3 h-3 rounded-full animate-pulse bg-gray-500"></div>
+      <div className="h-screen flex justify-center items-center bg-gray-50">
+        <div className="flex items-center space-x-2">
+          <div className="w-3 h-3 rounded-full animate-pulse bg-blue-500"></div>
+          <div className="w-3 h-3 rounded-full animate-pulse bg-blue-500"></div>
+          <div className="w-3 h-3 rounded-full animate-pulse bg-blue-500"></div>
         </div>
       </div>
     );
@@ -104,9 +104,9 @@ const UserListPage = () => {
 
   if (isError) {
     return (
-      <div className="h-screen flex justify-center items-center bg-white">
-        <div className="text-red-500 text-center space-y-2">
-          <p className="text-lg font-medium">데이터를 불러오는데 실패했습니다</p>
+      <div className="h-screen flex justify-center items-center bg-gray-50">
+        <div className="text-center space-y-2">
+          <p className="text-lg font-medium text-gray-900">데이터를 불러오는데 실패했습니다</p>
           <p className="text-sm text-gray-500">잠시 후 다시 시도해주세요</p>
         </div>
       </div>
@@ -114,66 +114,68 @@ const UserListPage = () => {
   }
 
   return (
-    <div className="h-screen bg-white">
+    <div className="min-h-screen bg-gray-50">
       <div className="p-8">
         {/* 헤더 영역 */}
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-2">
-            <Users className="h-6 w-6 text-gray-900" />
+            <Users className="h-6 w-6 text-blue-600" />
             <h1 className="text-2xl font-semibold text-gray-900">사용자 관리</h1>
           </div>
           <p className="text-sm text-gray-500">전체 {users?.length || 0}명의 사용자가 있습니다</p>
         </div>
 
         {/* 검색 및 필터 영역 */}
-        <div className="flex flex-wrap gap-4 mb-6">
-          <Select onValueChange={handleAdminFilter} defaultValue="all">
-            <SelectTrigger className="w-[140px] border-gray-200 bg-white">
-              <SelectValue placeholder="권한 유형" />
-            </SelectTrigger>
-            <SelectContent className="bg-white border-gray-200">
-              <SelectItem value="all">전체</SelectItem>
-              <SelectItem value="admin">관리자</SelectItem>
-              <SelectItem value="user">일반 사용자</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          <div className="flex gap-2 flex-1 min-w-[300px]">
-            <Select onValueChange={handleSearchFieldChange} defaultValue="email">
-              <SelectTrigger className="w-[140px] border-gray-200 bg-white">
-                <SelectValue placeholder="검색 조건" />
+        <Card className="mb-6">
+          <CardContent className="flex flex-wrap gap-4 p-6">
+            <Select onValueChange={handleAdminFilter} defaultValue="all">
+              <SelectTrigger className="w-[140px] bg-white">
+                <SelectValue placeholder="권한 유형" />
               </SelectTrigger>
-              <SelectContent className="bg-white border-gray-200">
-                {searchFieldOptions.map(option => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
+              <SelectContent>
+                <SelectItem value="all">전체</SelectItem>
+                <SelectItem value="admin">관리자</SelectItem>
+                <SelectItem value="user">일반 사용자</SelectItem>
               </SelectContent>
             </Select>
+            
+            <div className="flex gap-2 flex-1 min-w-[300px]">
+              <Select onValueChange={handleSearchFieldChange} defaultValue="email">
+                <SelectTrigger className="w-[140px] bg-white">
+                  <SelectValue placeholder="검색 조건" />
+                </SelectTrigger>
+                <SelectContent>
+                  {searchFieldOptions.map(option => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
 
-            <Input
-              placeholder={getSearchPlaceholder()}
-              value={searchTerm}
-              onChange={handleSearch}
-              onKeyPress={handleKeyPress}
-              className="flex-1 border-gray-200 focus:border-gray-300 bg-white"
-            />
-            <Button 
-              onClick={executeSearch}
-              className="bg-black text-white hover:bg-gray-900"
-            >
-              <Search className="h-4 w-4 mr-2" />
-              검색
-            </Button>
-          </div>
-        </div>
+              <Input
+                placeholder={getSearchPlaceholder()}
+                value={searchTerm}
+                onChange={handleSearch}
+                onKeyPress={handleKeyPress}
+                className="flex-1 bg-white"
+              />
+              <Button 
+                onClick={executeSearch}
+                className="bg-blue-600 text-white hover:bg-blue-700"
+              >
+                <Search className="h-4 w-4 mr-2" />
+                검색
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* 메인 컨텐츠 */}
-        <div className="border border-gray-200 rounded-xl overflow-hidden">
+        <Card>
           <div className="flex">
             {/* 왼쪽 사이드바 */}
-            <div className="w-[280px] min-w-[280px] p-6 bg-gray-50 border-r border-gray-200">
+            <div className="w-[280px] min-w-[280px] p-6 border-r border-gray-200">
               <ISideBarForUserList 
                 onSelectOrganization={handleSelectOrganization}
                 selectedOrgId={filter.organizationId || null}
@@ -181,7 +183,7 @@ const UserListPage = () => {
             </div>
 
             {/* 오른쪽 테이블 */}
-            <div className="flex-1 p-6 bg-white">
+            <div className="flex-1 p-6">
               <ITableForUserList 
                 users={users || []}
                 currentUser={currentUser}
@@ -189,7 +191,7 @@ const UserListPage = () => {
               />
             </div>
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   );
