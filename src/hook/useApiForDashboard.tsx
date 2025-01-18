@@ -1,10 +1,15 @@
 // src/hooks/useApiForDashboard.ts
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
-import { fetchApiSpecs, ApiSpec } from '@/api/apiForApiSpec';
+import { fetchApiSpecs } from '@/api/apiForApiSpec';
+import { ApiSpec } from '@/types/typeForApiSpec';
+
+interface DashboardData {
+  specs: ApiSpec[];
+}
 
 export const useApiForDashboard = () => {
-    return useQuery({
+    return useQuery<DashboardData, Error>({
         queryKey: ['apiSpecs'],
         queryFn: async () => {
             try {

@@ -3,8 +3,9 @@
 // src/hooks/useApiForDashboard.ts
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
-import { fetchApiSpecs, fetchApiStats, ApiSpec } from '@/api/apiForApiSpec';
+import { fetchApiSpecs, } from '@/api/apiForApiSpec';
 import { useEffect, useState } from 'react';
+import { ApiSpec } from '@/types/typeForApiSpec';
 
 export const useApiForSearch = (specs: ApiSpec[] | undefined) => {
     const [searchTerm, setSearchTerm] = useState('');
