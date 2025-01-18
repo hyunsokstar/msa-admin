@@ -33,7 +33,7 @@ interface RowData {
   category2?: string;
 }
 
-interface TestResult {
+export interface TestResult {
   id: string | number;
   title: string;
   method: string;

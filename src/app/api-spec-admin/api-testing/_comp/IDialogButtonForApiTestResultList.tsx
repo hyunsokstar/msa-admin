@@ -7,16 +7,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { TestResult } from '../page';
 
-interface TestResult {
-  id: string | number;
-  service_name: string;
-  title: string;
-  method: string;
-  status: 'loading' | 'success' | 'error' | undefined;
-  time?: string;
-  timestamp: string;
-}
 
 interface ApiTestResultDialogProps {
   isOpen: boolean;
@@ -48,7 +40,6 @@ const IDialogButtonForApiTestResultList: React.FC<ApiTestResultDialogProps> = ({
             <table className="w-full divide-y divide-gray-200">
               <thead className="bg-gray-50 sticky top-0">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Method</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
@@ -59,7 +50,6 @@ const IDialogButtonForApiTestResultList: React.FC<ApiTestResultDialogProps> = ({
               <tbody className="bg-white divide-y divide-gray-200">
                 {testResultsList.map((result, index) => (
                   <tr key={`${result.id}-${index}`} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{result.service_name}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{result.title}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
