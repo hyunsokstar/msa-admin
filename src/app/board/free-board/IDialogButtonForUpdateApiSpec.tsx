@@ -150,26 +150,6 @@ export const IDialogButtonForUpdateApiSpec: React.FC<IDialogButtonForUpdateApiSp
 
             <div className="grid grid-cols-2 gap-4">
               <Select
-                value={formData.service_name}
-                onValueChange={(value) => handleChange('service_name', value)}
-              >
-                <SelectTrigger className="w-full bg-white border-gray-200 hover:border-gray-300 focus:ring focus:ring-blue-500 transition-colors">
-                  <SelectValue placeholder="서비스 선택" />
-                </SelectTrigger>
-                <SelectContent className="bg-white border border-gray-200 shadow-lg">
-                  {SERVICE_OPTIONS.map((service) => (
-                    <SelectItem
-                      key={service.value}
-                      value={service.value}
-                      className="hover:bg-gray-100 cursor-pointer focus:bg-gray-100"
-                    >
-                      {service.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <Select
                 value={formData.method}
                 onValueChange={(value) => handleChange('method', value)}
               >
