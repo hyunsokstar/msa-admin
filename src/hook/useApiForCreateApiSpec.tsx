@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
-import { ApiSpec, addApiSpec } from '@/api/apiForApiSpec';
+import { addApiSpec } from '@/api/apiForApiSpec';
+import { ApiSpec } from '@/types/typeForApiSpec';
 
 export const useApiForCreateApiSpec = () => {
     const queryClient = useQueryClient();
