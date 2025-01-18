@@ -25,7 +25,6 @@ type HttpMethod = 'ALL' | 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 interface RowData {
   id: string | number;
-  service_name: string;
   title: string;
   method: string;
   endpoint: string;
@@ -36,7 +35,6 @@ interface RowData {
 
 interface TestResult {
   id: string | number;
-  service_name: string;
   title: string;
   method: string;
   status: TestStatus;
@@ -73,7 +71,6 @@ function ApiTesting() {
     if (!data?.specs) return [];
     return data.specs.filter(spec => 
       (selectedMethod === 'ALL' || spec.method === selectedMethod) &&
-      (selectedService === 'ALL' || spec.service_name === selectedService) &&
       (!category1 || spec.category1?.toLowerCase().includes(category1.toLowerCase())) &&
       (!category2 || spec.category2?.toLowerCase().includes(category2.toLowerCase()))
     );
@@ -172,7 +169,6 @@ function ApiTesting() {
 
         newTestResults.push({
           id: rowData.id,
-          service_name: rowData.service_name ?? 'Unknown Service',
           title: rowData.title,
           method: rowData.method,
           status,
@@ -184,7 +180,6 @@ function ApiTesting() {
         updatedResults[key] = 'error';
         newTestResults.push({
           id: rowData.id,
-          service_name: rowData.service_name ?? 'Unknown Service',
           title: rowData.title,
           method: rowData.method,
           status: 'error',
