@@ -1,9 +1,9 @@
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Trash2 } from 'lucide-react';
-import { ApiSpec } from '@/api/apiForApiSpec';
 import { useApiForDeleteApiSpec } from '@/hook/useApiForDeleteApiSpec';
 import CommonButton from '@/components/common/CommonButton';
+import { ApiSpec } from '@/types/typeForApiSpec';
 
 interface IDialogButtonForDeleteApiSpecProps {
   spec: ApiSpec;

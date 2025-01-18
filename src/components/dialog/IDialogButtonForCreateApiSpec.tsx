@@ -10,8 +10,8 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PlusCircle } from 'lucide-react';
 import Editor from '@monaco-editor/react';
-import { ApiSpec } from '@/api/apiForApiSpec';
 import useApiForCreateApiSpec from '@/hook/useApiForCreateApiSpec';
+import { ApiSpec } from '@/types/typeForApiSpec';
 
 interface IDialogButtonForCreateApiSpecProps {
   onSuccess?: () => void;

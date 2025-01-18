@@ -13,9 +13,9 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MonacoEditor from '@monaco-editor/react';
-import { ApiSpec } from '@/api/apiForApiSpec';
 import { useApiForUpdateApiSpec } from '@/hook/useApiForUpdateApiSpec';
 import { Edit2 } from 'lucide-react';
+import { ApiSpec } from '@/types/typeForApiSpec';
 
 interface IDialogButtonForUpdateApiSpecProps {
   spec: ApiSpec;
