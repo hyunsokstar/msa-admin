@@ -217,6 +217,10 @@ export default function TaskDashboardPage() {
               id={activeTask.id}
               title={activeTask.title}
               description={activeTask.description ?? ''}
+              screen_url={activeTask.screen_url}
+              figma_url={activeTask.figma_url}
+              created_by={activeTask.created_by}
+              isDragging={true}
             />
           ) : null}
         </DragOverlay>
