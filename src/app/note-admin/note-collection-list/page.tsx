@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useState } from 'react';
 import { useApiForNoteCollections } from '@/hook/notes/useApiForNoteCollections';
@@ -6,7 +6,7 @@ import { IDialogButtonForCreateNoteCollection } from '@/components/dialog/IDialo
 import { ITableForNoteCollectionList } from './_comp/ITableForNoteCollectionList';
 import { ITableForNoteListForSelectedCollection } from './_comp/ITableForNoteListForSelectedCollection';
 import { NotebookPen, Book } from "lucide-react";
-import CommonButton from "@/components/common/CommonButton";
+import CommonButton from '@/components/common/CommonButton';
 import { IDialogButtonForCreateNote } from '@/components/dialog/IDialogButtonForCreateNote';
 import 'rc-pagination/assets/index.css';
 
@@ -65,6 +65,7 @@ const NoteCollectionListPage = () => {
                 currentPage={currentPage}
                 onPageChange={setCurrentPage}
                 pageSize={pageSize}
+                className="hoverable-table"
               />
             </div>
           </div>
@@ -105,7 +106,7 @@ const NoteCollectionListPage = () => {
                                 key={pageNum}
                                 variant="outline"
                                 size="sm"
-                                className="h-7 min-w-[28px] px-2 py-1 text-xs font-normal bg-white hover:bg-blue-50"
+                                className="h-7 min-w-[28px] px-2 py-1 text-xs font-normal bg-white hover:bg-blue-50 hover:text-blue-600 hover:shadow-sm transition-all"
                               >
                                 {pageNum}
                               </CommonButton>
@@ -120,6 +121,7 @@ const NoteCollectionListPage = () => {
                 <div className="flex-1 overflow-auto min-h-0 p-6">
                   <ITableForNoteListForSelectedCollection
                     collectionId={selectedCollectionId}
+                    className="hoverable-table"
                   />
                 </div>
               </div>
@@ -132,3 +134,25 @@ const NoteCollectionListPage = () => {
 };
 
 export default NoteCollectionListPage;
+
+/* 스타일 추가 */
+<style jsx global>{`
+.hoverable-table tr {
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hoverable-table tr:hover {
+  background-color: #f0f9ff; /* 부드러운 파란색 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: scale(1.02); /* 살짝 확대 */
+  z-index: 1;
+}
+
+.hoverable-table tr td {
+  transition: color 0.2s ease;
+}
+
+.hoverable-table tr:hover td {
+  color: #2563eb; /* 파란색 강조 */
+}
+`}</style>

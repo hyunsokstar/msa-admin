@@ -6,7 +6,8 @@ import { useUserStore } from "@/store/useUserStore";
 import { IUser } from '@/types/typeForUser';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheck, ChevronRight } from 'lucide-react';
+import Link from 'next/link';
 import {
   Tooltip,
   TooltipContent,
@@ -24,9 +25,6 @@ const AuthMenus: React.FC = () => {
     const fetchUserData = async () => {
         try {
             const response = await fetch('/api/auth/user');
-
-            console.log("사용자 정보 응답 데이터 response at auth menu  : ", response);
-            
 
             if (response.ok) {
                 const data = await response.json();
@@ -57,8 +55,7 @@ const AuthMenus: React.FC = () => {
             }
         );
 
-        // 주기적으로 사용자 정보 갱신
-        const interval = setInterval(fetchUserData, 60000); // 1분마다 갱신
+        const interval = setInterval(fetchUserData, 60000);
 
         return () => {
             subscription.unsubscribe();
@@ -84,8 +81,11 @@ const AuthMenus: React.FC = () => {
         <div className="flex items-center space-x-4">
             {user ? (
                 <div className="flex items-center space-x-4">
-                    <div className="flex items-center gap-2">
-                        <Avatar className="h-10 w-10">
+                    <Link 
+                        href="/profile" 
+                        className="group flex items-center gap-2 p-2 rounded-lg transition-all duration-200 hover:bg-gray-100 hover:shadow-md"
+                    >
+                        <Avatar className="h-10 w-10 transition-transform duration-200 group-hover:scale-105">
                             {user.profile_image_url ? (
                                 <AvatarImage
                                     src={user.profile_image_url}
@@ -97,14 +97,14 @@ const AuthMenus: React.FC = () => {
                             </AvatarFallback>
                         </Avatar>
                         <div className="flex flex-col">
-                            <span className="text-sm font-medium flex items-center gap-1">
+                            <span className="text-sm font-medium flex items-center gap-1 group-hover:text-primary transition-colors duration-200">
                                 {user.full_name ?? user.email}
                                 {user.is_admin && (
                                     <TooltipProvider>
                                         <Tooltip>
                                             <TooltipTrigger asChild>
                                                 <ShieldCheck 
-                                                    className="h-4 w-4 text-primary"
+                                                    className="h-4 w-4 text-primary group-hover:scale-110 transition-transform duration-200"
                                                     aria-label="관리자"
                                                 />
                                             </TooltipTrigger>
@@ -121,7 +121,8 @@ const AuthMenus: React.FC = () => {
                                 </span>
                             )}
                         </div>
-                    </div>
+                        <ChevronRight className="w-4 h-4 text-muted-foreground opacity-0 -translate-x-2 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0" />
+                    </Link>
                     <Button
                         variant="outline"
                         onClick={handleSignOut}

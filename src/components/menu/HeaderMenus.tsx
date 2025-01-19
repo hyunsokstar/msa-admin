@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -122,8 +122,6 @@ export default function HeaderMenus() {
     const fullPath = currentPath ? `${currentPath}/${menu.path}` : menu.path;
     const isOpen = openMenus.has(fullPath);
 
-    // depth 0에서는 서브메뉴를 아래로(absolute top-full left-0),
-    // 서브메뉴 안쪽(depth>0)에서는 왼쪽 또는 모바일이거나 아닌지에 따라 위치 결정
     const position =
       depth === 0
         ? 'top-full left-0'
@@ -151,9 +149,8 @@ export default function HeaderMenus() {
             }`}
           >
             <Card
-              className={`bg-white/95 backdrop-blur-lg border ${
-                isMobile ? '' : 'border-gray-100/50'
-              } shadow-xl rounded-xl overflow-hidden`}
+              className={`bg-white/95 backdrop-blur-lg border $
+                shadow-xl rounded-xl overflow-hidden hover:shadow-2xl transition-shadow duration-200`}
             >
               <ul className={`py-2 ${isMobile ? '' : 'min-w-[220px]'}`}>
                 {menu.items.map((subMenu) => {
@@ -174,8 +171,7 @@ export default function HeaderMenus() {
                           }
                         }}
                         className={`w-full text-left px-4 py-2.5 text-sm rounded-lg 
-                          hover:bg-blue-50/80 text-gray-700 hover:text-blue-600 
-                          transition-all duration-200 ease-in-out flex items-center 
+                          hover:bg-blue-100/90 hover:text-primary transition-all duration-200 ease-in-out flex items-center 
                           justify-between group`}
                       >
                         <span className="font-medium">{subMenu.name}</span>
@@ -183,11 +179,8 @@ export default function HeaderMenus() {
                           <ChevronRight
                             className={`w-4 h-4 text-gray-400 
                             group-hover:text-blue-500 transition-colors 
-                            ${
-                              isMobile && openMenus.has(subPath)
-                                ? 'rotate-90'
-                                : ''
-                            }`}
+                            $
+                              isMobile && openMenus.has(subPath)}`}
                           />
                         )}
                       </button>
@@ -230,16 +223,7 @@ export default function HeaderMenus() {
               className={`px-4 py-2.5 text-sm font-medium rounded-lg 
                 transition-all duration-200 ease-in-out flex items-center 
                 space-x-1 group w-full
-                ${
-                  hasSubMenus
-                    ? isMobile
-                      ? ''
-                      : 'cursor-default text-gray-600 hover:text-gray-800'
-                    : 'hover:bg-blue-50/80 text-gray-700 hover:text-blue-600'
-                }
-                ${isMobile ? 'justify-between' : ''}
-                `}
-              disabled={!isMobile && hasSubMenus}
+                hover:bg-gradient-to-r from-blue-50 to-blue-100 text-gray-700 hover:text-primary-600`}
             >
               <span>{menu.name}</span>
               {hasSubMenus && (
@@ -247,7 +231,7 @@ export default function HeaderMenus() {
                   className={`w-4 h-4 transition-transform duration-200 
                   ${isMobile && isOpen ? 'rotate-180' : ''} 
                   ${isOpen ? 'rotate-180' : ''}
-                  text-gray-400 group-hover:text-gray-600`}
+                  text-gray-400 group-hover:text-primary-500`}
                 />
               )}
             </button>
@@ -270,12 +254,10 @@ export default function HeaderMenus() {
               <Menu className="h-6 w-6" />
             </button>
           )}
-          {/* 데스크톱에서는 메뉴 항목 바로 표시 */}
           {!isMobile && renderMenuItems(menuItems)}
         </div>
         <AuthMenus />
       </nav>
-      {/* 모바일 기기에서 햄버거 버튼을 눌렀을 때 표시되는 메뉴 영역 */}
       {isMobile && isMobileMenuOpen && (
         <div className="px-6 py-4 border-t border-gray-200 container mx-auto max-w-screen-xl">
           {renderMenuItems(menuItems)}
