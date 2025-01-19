@@ -4,7 +4,10 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
     images: {
-    domains: ['hyun-admin.s3.ap-northeast-2.amazonaws.com']
+    domains: [
+      'hyun-admin.s3.ap-northeast-2.amazonaws.com',
+      'img1.daumcdn.net'
+    ]
   }
 };
 

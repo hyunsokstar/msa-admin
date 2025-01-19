@@ -195,6 +195,9 @@ export default function TaskDashboardPage() {
                     id={task.id}
                     title={task.title}
                     description={task.description ?? ''}
+                    screen_url={task.screen_url}
+                    figma_url={task.figma_url}
+                    created_by={task.created_by}
                     isDragging={isDragging}
                   />
                 );

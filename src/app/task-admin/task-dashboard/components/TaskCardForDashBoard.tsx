@@ -1,12 +1,20 @@
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { Card, CardHeader, CardContent } from '@/components/ui/card';
+import React from 'react';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import Image from 'next/image';
+import { ExternalLink } from 'lucide-react';
+import { User } from '@/types/task/typeForTaskDashboard';
 
-interface TaskCardProps {
+interface Props {
   id: string;
   title: string;
-  description: string;
-  // 드래그 중인 아이템에 대한 스타일 변경을 위함
+  description: string | null;
+  screen_url: string | null;
+  figma_url: string | null;
+  created_by: User;
   isDragging?: boolean;
 }
 
@@ -14,43 +22,97 @@ export function TaskCardForDashBoard({
   id,
   title,
   description,
-  isDragging = false
-}: TaskCardProps) {
+  screen_url,
+  figma_url,
+  created_by,
+  isDragging
+}: Props) {
   const {
     attributes,
     listeners,
     setNodeRef,
     transform,
     transition,
-    isDragging: isSortingDragging
   } = useSortable({ id });
 
-  // 실제 마우스로 끌고 있는 "Overlay"가 아닌,
-  // 리스트 내 원본 카드의 드래깅 상태
-  // (isSortingDragging는 DnD Kit이 제공하는 boolean)
-  // isDragging prop은 상위에서 custom으로 내려준 것
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    // 아래와 같이 하시면 "원본 위치 카드"가 반투명
-    // 단, Overlay는 별도라 원본 카드가 반투명해져도 문제 없음
-    opacity: isSortingDragging ? 0.4 : 1,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  const handleFigmaClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (figma_url) {
+      window.open(figma_url, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  const handleScreenClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (screen_url) {
+      window.open(screen_url, '_blank', 'noopener,noreferrer');
+    }
   };
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes}>
+    <div className="relative">
       <Card
-        // 드래그 가능한 영역
+        ref={setNodeRef}
+        style={style}
+        className="p-4 mb-2 bg-white cursor-move hover:shadow-md transition-shadow"
+        {...attributes}
         {...listeners}
-        className="bg-white cursor-move hover:shadow-md transition-all duration-200 border-none shadow-sm hover:scale-[1.02]"
       >
-        <CardHeader className="p-3 pb-1">
-          <h3 className="font-medium text-gray-800">{title}</h3>
-        </CardHeader>
-        <CardContent className="p-3 pt-0 text-sm text-gray-600">
-          {description}
-        </CardContent>
+        <div className="flex flex-col gap-3">
+          {/* Avatar and Title Row */}
+          <div className="flex items-center gap-3">
+            <Avatar className="h-8 w-8">
+              <AvatarImage src={created_by?.profile_image_url || ''} alt={created_by?.full_name || 'User'} />
+              <AvatarFallback>{created_by?.full_name?.[0] || 'U'}</AvatarFallback>
+            </Avatar>
+            <h3 className="font-medium flex-1 line-clamp-1">{title}</h3>
+          </div>
+
+          {/* Description */}
+          <p className="text-sm text-gray-600 line-clamp-2">{description}</p>
+        </div>
       </Card>
+
+      {/* Links and Image - Outside of draggable area */}
+      <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+        {figma_url && (
+          <Button
+            size="icon"
+            variant="ghost"
+            className="h-8 w-8 p-2 hover:bg-gray-100 rounded-full"
+            onClick={handleFigmaClick}
+          >
+            <ExternalLink className="h-4 w-4 text-gray-600" />
+          </Button>
+        )}
+        
+        {screen_url && (
+          <Button
+            size="icon"
+            variant="ghost"
+            className="h-8 w-8 p-0 hover:bg-gray-100 rounded-full overflow-hidden"
+            onClick={handleScreenClick}
+          >
+            <div className="relative h-full w-full">
+              <Image
+                src={screen_url}
+                alt="Screen preview"
+                className="object-cover"
+                fill
+                sizes="32px"
+              />
+            </div>
+          </Button>
+        )}
+      </div>
     </div>
   );
 }
