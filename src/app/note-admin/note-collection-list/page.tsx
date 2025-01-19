@@ -65,7 +65,6 @@ const NoteCollectionListPage = () => {
                 currentPage={currentPage}
                 onPageChange={setCurrentPage}
                 pageSize={pageSize}
-                className="hoverable-table"
               />
             </div>
           </div>
