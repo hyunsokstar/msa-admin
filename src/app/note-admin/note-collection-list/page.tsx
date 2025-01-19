@@ -121,7 +121,6 @@ const NoteCollectionListPage = () => {
                 <div className="flex-1 overflow-auto min-h-0 p-6">
                   <ITableForNoteListForSelectedCollection
                     collectionId={selectedCollectionId}
-                    className="hoverable-table"
                   />
                 </div>
               </div>
