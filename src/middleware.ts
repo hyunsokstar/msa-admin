@@ -1,4 +1,3 @@
-// middleware.ts
 import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
@@ -12,6 +11,14 @@ export async function middleware(req: NextRequest) {
         const {
             data: { session },
         } = await supabase.auth.getSession();
+
+        // 프로필 페이지 접근 보호
+        if (req.nextUrl.pathname.startsWith('/profile')) {
+            if (!session) {
+                // 인증되지 않은 사용자는 홈페이지로 리다이렉트
+                return NextResponse.redirect(new URL('/', req.url));
+            }
+        }
 
         // 필요한 경우 토큰 갱신
         if (session) {
