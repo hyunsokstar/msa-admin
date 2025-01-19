@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Edit, Trash2, FileImage } from 'lucide-react';
 import { User } from '@/types/task/typeForTaskDashboard';
 
 interface Props {
@@ -16,6 +16,8 @@ interface Props {
   figma_url: string | null;
   created_by: User;
   isDragging?: boolean;
+  onEdit?: () => void;
+  onDelete?: () => void;
 }
 
 export function TaskCardForDashBoard({
@@ -25,7 +27,9 @@ export function TaskCardForDashBoard({
   screen_url,
   figma_url,
   created_by,
-  isDragging
+  isDragging,
+  onEdit,
+  onDelete,
 }: Props) {
   const {
     attributes,
@@ -41,24 +45,14 @@ export function TaskCardForDashBoard({
     opacity: isDragging ? 0.5 : 1,
   };
 
-  const handleFigmaClick = (e: React.MouseEvent) => {
+  const handleAction = (e: React.MouseEvent, action: () => void) => {
     e.preventDefault();
     e.stopPropagation();
-    if (figma_url) {
-      window.open(figma_url, '_blank', 'noopener,noreferrer');
-    }
-  };
-
-  const handleScreenClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (screen_url) {
-      window.open(screen_url, '_blank', 'noopener,noreferrer');
-    }
+    action();
   };
 
   return (
-    <div className="relative">
+    <div className="relative group">
       <Card
         ref={setNodeRef}
         style={style}
@@ -81,37 +75,60 @@ export function TaskCardForDashBoard({
         </div>
       </Card>
 
-      {/* Links and Image - Outside of draggable area */}
-      <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-        {figma_url && (
-          <Button
-            size="icon"
-            variant="ghost"
-            className="h-8 w-8 p-2 hover:bg-gray-100 rounded-full"
-            onClick={handleFigmaClick}
-          >
-            <ExternalLink className="h-4 w-4 text-gray-600" />
-          </Button>
-        )}
-        
-        {screen_url && (
-          <Button
-            size="icon"
-            variant="ghost"
-            className="h-8 w-8 p-0 hover:bg-gray-100 rounded-full overflow-hidden"
-            onClick={handleScreenClick}
-          >
+      {/* Action Buttons Container */}
+      <div 
+        className="absolute right-2 top-1/2 -translate-y-1/2 bg-gray-50 rounded-lg p-1 grid grid-cols-2 gap-1"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Top Row */}
+        <Button
+          size="icon"
+          variant="ghost"
+          className="h-8 w-8 p-2 hover:bg-gray-100 rounded-lg"
+          onClick={(e) => handleAction(e, () => figma_url && window.open(figma_url, '_blank', 'noopener,noreferrer'))}
+        >
+          <ExternalLink className="h-4 w-4 text-gray-600" />
+        </Button>
+
+        <Button
+          size="icon"
+          variant="ghost"
+          className="h-8 w-8 p-2 hover:bg-gray-100 rounded-lg"
+          onClick={(e) => handleAction(e, () => screen_url && window.open(screen_url, '_blank', 'noopener,noreferrer'))}
+        >
+          {screen_url ? (
             <div className="relative h-full w-full">
               <Image
                 src={screen_url}
                 alt="Screen preview"
-                className="object-cover"
+                className="object-cover rounded"
                 fill
                 sizes="32px"
               />
             </div>
-          </Button>
-        )}
+          ) : (
+            <FileImage className="h-4 w-4 text-gray-600" />
+          )}
+        </Button>
+
+        {/* Bottom Row */}
+        <Button
+          size="icon"
+          variant="ghost"
+          className="h-8 w-8 p-2 hover:bg-gray-100 rounded-lg"
+          onClick={(e) => onEdit && handleAction(e, onEdit)}
+        >
+          <Edit className="h-4 w-4 text-gray-600" />
+        </Button>
+
+        <Button
+          size="icon"
+          variant="ghost"
+          className="h-8 w-8 p-2 hover:bg-gray-100 rounded-lg"
+          onClick={(e) => onDelete && handleAction(e, onDelete)}
+        >
+          <Trash2 className="h-4 w-4 text-gray-600" />
+        </Button>
       </div>
     </div>
   );
