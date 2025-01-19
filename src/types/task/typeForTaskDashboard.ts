@@ -29,3 +29,12 @@ export interface TaskDashboard {
   updated_by: User | null;
   is_archived: boolean | null;
 }
+
+export interface ICreateForTaskBoard {
+  title: string;
+  description: string;
+  screen_url: string;
+  figmaUrl: string;
+  isArchived: boolean;
+  createdBy: string; // 사용자 ID 또는 유저 정보
+}
