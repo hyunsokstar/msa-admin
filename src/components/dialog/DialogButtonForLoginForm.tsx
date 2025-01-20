@@ -5,7 +5,6 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
     Dialog,
-    DialogTrigger,
     DialogContent,
     DialogTitle,
 } from "@/components/ui/dialog";
@@ -18,6 +17,13 @@ import { LogIn, Mail, Lock, X, Eye, EyeOff } from 'lucide-react';
 import { FaGoogle, FaComment } from 'react-icons/fa';
 import { SiNaver } from 'react-icons/si';
 import { useApiForLogin } from '@/hook/useApiForLogin';
+import DialogButtonForSignUp from './DialogButtonForSignUp';
+
+interface DialogButtonForLoginProps {
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
+    showTrigger?: boolean;
+}
 
 const contentVariants = {
     hidden: { 
@@ -36,7 +42,11 @@ const contentVariants = {
     }
 };
 
-const DialogButtonForLogin: React.FC = () => {
+const DialogButtonForLogin: React.FC<DialogButtonForLoginProps> = ({ 
+    open, 
+    onOpenChange,
+    showTrigger = true 
+}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -47,18 +57,18 @@ const DialogButtonForLogin: React.FC = () => {
     };
 
     return (
-        <Dialog>
-            <DialogTrigger asChild>
+        <Dialog open={open} onOpenChange={onOpenChange}>
+            {showTrigger && (
                 <CommonButton
                     size="sm"
                     startIcon={<LogIn className="h-4 w-4" />}
+                    onClick={() => onOpenChange?.(true)}
                 >
                     로그인
                 </CommonButton>
-            </DialogTrigger>
+            )}
 
-            <DialogContent className="p-0 bg-white w-[400px] max-w-[95vw] 
-                rounded-2xl border-none">
+            <DialogContent className="p-0 bg-white w-[400px] max-w-[95vw] rounded-2xl border-none">
                 <DialogTitle asChild>
                     <VisuallyHidden>로그인</VisuallyHidden>
                 </DialogTitle>
@@ -69,16 +79,6 @@ const DialogButtonForLogin: React.FC = () => {
                     animate="visible"
                     className="relative p-8"
                 >
-                    <button
-                        onClick={() => (document.querySelector('[role="dialog"]')?.closest('div')?.querySelector('button[aria-label="Close"]') as HTMLButtonElement)?.click()}
-                        className="absolute right-6 top-6 rounded-full p-2
-                            text-gray-400 hover:text-gray-600 hover:bg-gray-100
-                            transition-all duration-200"
-                    >
-                        <X className="h-4 w-4" />
-                        <VisuallyHidden>Close</VisuallyHidden>
-                    </button>
-
                     <form 
                         className="space-y-6"
                         onSubmit={(e) => {
@@ -201,12 +201,15 @@ const DialogButtonForLogin: React.FC = () => {
                         <div className="text-center pt-2">
                             <p className="text-sm text-gray-600">
                                 계정이 없으신가요?{' '}
-                                <CommonButton
-                                    variant="link"
-                                    className="text-primary hover:text-primary/90 font-medium"
-                                >
-                                    회원가입
-                                </CommonButton>
+                                <DialogButtonForSignUp>
+                                    <CommonButton
+                                        variant="link"
+                                        className="text-primary hover:text-primary/90 font-medium"
+                                        onClick={() => onOpenChange?.(false)}
+                                    >
+                                        회원가입
+                                    </CommonButton>
+                                </DialogButtonForSignUp>
                             </p>
                         </div>
                     </form>

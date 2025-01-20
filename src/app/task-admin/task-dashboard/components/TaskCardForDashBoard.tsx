@@ -5,9 +5,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
-import { ExternalLink, Edit, Trash2, FileImage } from 'lucide-react';
+import { Trash2, FileImage } from 'lucide-react';
+import { FaFigma } from 'react-icons/fa6';
 import { User } from '@/types/task/typeForTaskDashboard';
 import EditDialogForTask from './EditDialogForTask';
+import { cn } from '@/lib/utils';
 
 interface Props {
   id: string;
@@ -52,6 +54,8 @@ export function TaskCardForDashBoard({
     action();
   };
 
+  const buttonBaseClass = "h-8 w-8 p-1.5 hover:bg-gray-100 rounded-lg";
+
   return (
     <div className="relative group">
       <Card
@@ -62,7 +66,6 @@ export function TaskCardForDashBoard({
         {...listeners}
       >
         <div className="flex flex-col gap-3">
-          {/* Avatar and Title Row */}
           <div className="flex items-center gap-3">
             <Avatar className="h-8 w-8">
               <AvatarImage src={created_by?.profile_image_url || ''} alt={created_by?.full_name || 'User'} />
@@ -71,40 +74,55 @@ export function TaskCardForDashBoard({
             <h3 className="font-medium flex-1 line-clamp-1">{title}</h3>
           </div>
 
-          {/* Description */}
           <p className="text-sm text-gray-600 line-clamp-2">{description}</p>
         </div>
       </Card>
 
       {/* Action Buttons Container */}
       <div 
-        className="absolute right-2 top-1/2 -translate-y-1/2 bg-gray-50 rounded-lg p-1 grid grid-cols-2 gap-1"
+        className={cn(
+          "absolute right-2 top-1/2 -translate-y-1/2",
+          "bg-white rounded-lg p-1",
+          "grid grid-cols-2 gap-1",
+          "border border-gray-200"
+        )}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Top Row */}
         <Button
           size="icon"
           variant="ghost"
-          className="h-8 w-8 p-2 hover:bg-gray-100 rounded-lg"
+          className={cn(
+            buttonBaseClass,
+            figma_url 
+              ? "text-[#1E1E1E] hover:text-[#0E0E0E]" 
+              : "text-gray-300 cursor-not-allowed"
+          )}
           onClick={(e) => handleAction(e, () => figma_url && window.open(figma_url, '_blank', 'noopener,noreferrer'))}
+          disabled={!figma_url}
+          title={figma_url ? "피그마에서 보기" : "피그마 링크 없음"}
         >
-          <ExternalLink className="h-4 w-4 text-gray-600" />
+          <FaFigma className="h-4 w-4" />
         </Button>
 
         <Button
           size="icon"
           variant="ghost"
-          className="h-8 w-8 p-2 hover:bg-gray-100 rounded-lg"
+          className={buttonBaseClass}
           onClick={(e) => handleAction(e, () => screen_url && window.open(screen_url, '_blank', 'noopener,noreferrer'))}
+          disabled={!screen_url}
+          title={screen_url ? "스크린샷 보기" : "스크린샷 없음"}
         >
           {screen_url ? (
-            <div className="relative h-full w-full">
+            <div className="relative w-5 h-5 rounded-sm overflow-hidden border border-gray-200">
               <Image
                 src={screen_url}
                 alt="Screen preview"
-                className="object-cover rounded"
+                className="object-cover"
                 fill
-                sizes="32px"
+                sizes="20px"
+                quality={100}
+                priority
+                unoptimized
               />
             </div>
           ) : (
@@ -112,13 +130,14 @@ export function TaskCardForDashBoard({
           )}
         </Button>
 
-        {/* Bottom Row */}
-        <EditDialogForTask task= {{ id, title, description, screen_url, figma_url, is_archived: false }} />
+        <EditDialogForTask 
+          task={{ id, title, description, screen_url, figma_url, is_archived: false }}
+        />
 
         <Button
           size="icon"
           variant="ghost"
-          className="h-8 w-8 p-2 hover:bg-gray-100 rounded-lg"
+          className={buttonBaseClass}
           onClick={(e) => onDelete && handleAction(e, onDelete)}
         >
           <Trash2 className="h-4 w-4 text-gray-600" />

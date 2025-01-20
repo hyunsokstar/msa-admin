@@ -27,16 +27,38 @@ import {
   getStatusTextColor,
 } from "./utils/statusUtils";
 import { toast } from "react-toastify";
-import IDialogButtonForCreateTaskDashBoard from "./components/IDialogButtonForCreateTaskDashBoard"; // 추가
+import IDialogButtonForCreateTaskDashBoard from "./components/IDialogButtonForCreateTaskDashBoard";
 import { useApiForDragAndDropTask } from "@/hook/task/useApiForDragAndDropTask";
 import { TaskCardForDashBoard } from "./components/TaskCardForDashBoard";
+import { useUserStore } from "@/store/useUserStore";
+import { useRouter } from "next/navigation";
+import ICommonWarningCardForLogin from "@/components/common/ICommonWarningCardForLogin";
+
+const LoginCard = () => {
+  const router = useRouter();
+  
+  return (
+    <ICommonWarningCardForLogin
+      title="로그인이 필요합니다"
+      message="태스크 대시보드를 이용하기 위해서는 로그인이 필요합니다."
+      buttonText="로그인하러 가기"
+      onButtonClick={() => router.push('/login')}
+    />
+  );
+};
 
 export default function TaskDashboardPage() {
+  const { isAuthenticated } = useUserStore();
   const { data: tasksFromServer, isLoading, error } = useApiForGetTaskDashboard();
-  const dragAndDropTask = useApiForDragAndDropTask(); // 새 훅 사용
+  const dragAndDropTask = useApiForDragAndDropTask();
 
   const [tasksLocal, setTasksLocal] = React.useState<TaskDashboard[]>([]);
   const [activeTask, setActiveTask] = React.useState<TaskDashboard | null>(null);
+
+  // If not authenticated, show login card
+  if (!isAuthenticated) {
+    return <LoginCard />;
+  }
 
   React.useEffect(() => {
     if (tasksFromServer) {
@@ -171,7 +193,7 @@ export default function TaskDashboardPage() {
     <div className="p-6 bg-gray-50 min-h-screen">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Task Dashboard</h1>
-        <IDialogButtonForCreateTaskDashBoard /> {/* 추가 버튼 */}
+        <IDialogButtonForCreateTaskDashBoard />
       </div>
       <DndContext
         sensors={sensors}
