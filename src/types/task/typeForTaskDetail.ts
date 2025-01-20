@@ -1,3 +1,5 @@
+import { IUser } from "../typeForChatRoom";
+
 // types/task/typeForTaskDetail.ts
 export interface SubTodo {
   id: string;
@@ -16,5 +18,6 @@ export interface TaskDetail {
   figma_url: string | null;
   status: string;
   created_at: string;
+  created_by: IUser;
   sub_todos: SubTodo[];
 }
