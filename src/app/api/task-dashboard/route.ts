@@ -1,160 +1,189 @@
 // app/api/task-dashboard/route.ts
-import { getSupabaseAuth, getSupabaseService } from '@/lib/supabase/serverClient';
-import { NextResponse } from 'next/server';
+import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const supabaseAuth = getSupabaseAuth();
-    
-    const {
-      data: { session }
-    } = await supabaseAuth.auth.getSession();
+    // 쿠키 처리를 await로 수정
+    const cookieStore = await cookies();
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const {
+      data: { session },
+      error: sessionError
+    } = await supabase.auth.getSession();
+
+    if (sessionError || !session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const supabaseService = getSupabaseService();
-    const { data, error } = await supabaseService
-      .from('task_dashboard')
-      .select('*, created_by(*), updated_by(*)')
-      .order('created_at', { ascending: false });
+    // 관계 쿼리 수정
+    const { data, error } = await supabase
+      .from("task_dashboard")
+      .select(`
+        *,
+        created_by_user:users!created_by(id, full_name, profile_image_url),
+        updated_by_user:users!updated_by(id, full_name, profile_image_url)
+      `)
+      .order("created_at", { ascending: false });
 
     if (error) {
-      throw error;
+      console.error("Error fetching tasks:", error.message);
+      return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ data });
-  } catch (error: any) {
-    console.error('Task Dashboard Error:', error.message);
+    return NextResponse.json({ data }, { status: 200 });
+
+  } catch (error) {
+    console.error("Task Dashboard Error:", error);
     return NextResponse.json(
-      { error: 'Failed to fetch task dashboard' },
+      { error: "Failed to fetch task dashboard" },
       { status: 500 }
     );
   }
 }
 
-export async function PATCH(request: Request) {
+export async function PATCH(request: NextRequest) {
   try {
-    const supabaseAuth = getSupabaseAuth();
-    
-    const {
-      data: { session }
-    } = await supabaseAuth.auth.getSession();
+    const cookieStore = await cookies();
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const {
+      data: { session },
+      error: sessionError
+    } = await supabase.auth.getSession();
+
+    if (sessionError || !session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const body = await request.json();
     const { id, status } = body;
 
-    const supabaseService = getSupabaseService();
-    
-    // 해당 status의 최대 order 값 조회
-    const { data: maxOrderData, error: maxOrderError } = await supabaseService
-      .from('task_dashboard')
-      .select('order')
-      .eq('status', status)
-      .order('order', { ascending: false })
+    const { data: maxOrderData, error: maxOrderError } = await supabase
+      .from("task_dashboard")
+      .select("order")
+      .eq("status", status)
+      .order("order", { ascending: false })
       .limit(1)
       .single();
 
-    if (maxOrderError && maxOrderError.code !== 'PGRST116') { // PGRST116는 결과가 없는 경우
-      throw maxOrderError;
+    if (maxOrderError && maxOrderError.code !== "PGRST116") {
+      console.error("Error fetching max order:", maxOrderError);
+      return NextResponse.json({ error: maxOrderError.message }, { status: 500 });
     }
 
     const newOrder = (maxOrderData?.order || 0) + 1;
 
-    // 데이터 업데이트
-    const { data, error } = await supabaseService
-      .from('task_dashboard')
-      .update({ 
+    const { data, error } = await supabase
+      .from("task_dashboard")
+      .update({
         status,
         order: newOrder,
         updated_at: new Date().toISOString(),
         updated_by: session.user.id
       })
-      .eq('id', id)
-      .select()
+      .eq("id", id)
+      .select(`
+        *,
+        created_by_user:users!created_by(id, full_name, profile_image_url),
+        updated_by_user:users!updated_by(id, full_name, profile_image_url)
+      `)
       .single();
 
     if (error) {
-      throw error;
+      console.error("Error updating task:", error.message);
+      return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ data });
-  } catch (error: any) {
-    console.error('Task Update Error:', error.message);
+    return NextResponse.json({ data }, { status: 200 });
+
+  } catch (error) {
+    console.error("Task Update Error:", error);
     return NextResponse.json(
-      { error: 'Failed to update task status' },
+      { error: "Failed to update task status" },
       { status: 500 }
     );
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const supabaseAuth = getSupabaseAuth();
+    const cookieStore = await cookies();
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+
     const {
       data: { session },
-    } = await supabaseAuth.auth.getSession();
+      error: sessionError
+    } = await supabase.auth.getSession();
 
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (sessionError || !session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const body = await request.json();
-    const { title, description, screen_url, isArchived, figmaUrl, createdBy } = body;
+    const { 
+      title, 
+      description, 
+      screen_url, 
+      isArchived, 
+      figmaUrl, 
+      createdBy 
+    } = body;
 
-    const supabaseService = getSupabaseService();
-
-    // ready 상태의 최대 order 값 조회
-    const { data: maxOrderData, error: maxOrderError } = await supabaseService
-      .from('task_dashboard')
-      .select('order')
-      .eq('status', 'ready')
-      .order('order', { ascending: false })
+    const { data: maxOrderData, error: maxOrderError } = await supabase
+      .from("task_dashboard")
+      .select("order")
+      .eq("status", "ready")
+      .order("order", { ascending: false })
       .limit(1)
       .single();
 
-    if (maxOrderError && maxOrderError.code !== 'PGRST116') { // PGRST116는 결과가 없는 경우
-      throw maxOrderError;
+    if (maxOrderError && maxOrderError.code !== "PGRST116") {
+      console.error("Error fetching max order:", maxOrderError);
+      return NextResponse.json({ error: maxOrderError.message }, { status: 500 });
     }
 
     const newOrder = (maxOrderData?.order || 0) + 1;
 
-    const { data, error } = await supabaseService
-      .from('task_dashboard')
+    const { data, error } = await supabase
+      .from("task_dashboard")
       .insert([
         {
           title,
           description,
-          screen_url: screen_url,
+          screen_url,
           figma_url: figmaUrl,
           created_by: createdBy,
           is_archived: isArchived,
-          status: 'ready',
+          status: "ready",
           order: newOrder,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
           updated_by: session.user.id
-        },
+        }
       ])
-      .select()
+      .select(`
+        *,
+        created_by_user:users!created_by(id, full_name, profile_image_url),
+        updated_by_user:users!updated_by(id, full_name, profile_image_url)
+      `)
       .single();
 
     if (error) {
-      throw error;
+      console.error("Error creating task:", error.message);
+      return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ data });
-  } catch (error: any) {
-    console.error('Task Creation Error:', error.message);
+    return NextResponse.json({ data }, { status: 200 });
+
+  } catch (error) {
+    console.error("Task Creation Error:", error);
     return NextResponse.json(
-      { error: 'Failed to create task dashboard' },
+      { error: "Failed to create task dashboard" },
       { status: 500 }
     );
   }

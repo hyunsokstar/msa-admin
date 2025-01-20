@@ -2,7 +2,7 @@
 import { apiForGetTaskDashBoardList } from '@/api/task/apiForTaskDashBoard';
 import { useQuery } from '@tanstack/react-query';
 
-export const useApiForGetTaskDashboard = () => {
+export const useApiForGetTaskDashboard = (id: string) => {
   return useQuery({
     queryKey: ['taskDashboard'],
     queryFn: apiForGetTaskDashBoardList,
