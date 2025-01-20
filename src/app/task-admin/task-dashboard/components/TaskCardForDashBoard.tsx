@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { ExternalLink, Edit, Trash2, FileImage } from 'lucide-react';
 import { User } from '@/types/task/typeForTaskDashboard';
 import EditDialogForTask from './EditDialogForTask';
+import DeleteDialogForTask from './DeleteDialogForTask';
 
 interface Props {
   id: string;
@@ -115,14 +116,11 @@ export function TaskCardForDashBoard({
         {/* Bottom Row */}
         <EditDialogForTask task= {{ id, title, description, screen_url, figma_url, is_archived: false }} />
 
-        <Button
-          size="icon"
-          variant="ghost"
-          className="h-8 w-8 p-2 hover:bg-gray-100 rounded-lg"
-          onClick={(e) => onDelete && handleAction(e, onDelete)}
-        >
-          <Trash2 className="h-4 w-4 text-gray-600" />
-        </Button>
+        {/* Delete Dialog */}
+        <DeleteDialogForTask 
+          taskId={id} 
+          taskTitle={title} 
+        />
       </div>
     </div>
   );
