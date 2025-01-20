@@ -69,7 +69,7 @@ export async function apiForUpdateTask(task: TaskDashboardForUpdate): Promise<Ta
     console.log('Request payload:', task);
 
     const response = await fetch(`/api/task-dashboard/${task.id}`, {
-      method: "PATCH",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
