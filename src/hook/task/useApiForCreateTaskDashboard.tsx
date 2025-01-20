@@ -12,13 +12,20 @@ export const useApiForCreateTaskDashboard = () => {
     {
       title: string;
       description: string;
-      screen_url: string;
+      coverUrl: string;
       isArchived: boolean;
       figmaUrl: string;
       createdBy: string;
     }
   >({
-    mutationFn: async (task) => {
+    mutationFn: async (task: {
+      title: string;
+      description: string;
+      coverUrl: string;
+      isArchived: boolean;
+      figmaUrl: string;
+      createdBy: string;
+    }) => {
       try {
         const result = await apiForCreateTaskDashboard(task);
         toast.success("Task dashboard created successfully");
