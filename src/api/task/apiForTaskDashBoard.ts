@@ -1,6 +1,6 @@
 "use client";
 
-import { TaskDashboard } from "@/types/task/typeForTaskDashboard";
+import { TaskDashboard, TaskDashboardForUpdate } from "@/types/task/typeForTaskDashboard";
 
 export async function apiForGetTaskDashBoardList(): Promise<TaskDashboard[]> {
   const response = await fetch('/api/task-dashboard', {
@@ -61,4 +61,31 @@ export async function apiForCreateTaskDashboard(task: {
 
   const { data } = await response.json();
   return data as TaskDashboard;
+}
+
+// src/api/task/apiForTaskDashBoard.ts
+export async function apiForUpdateTask(task: TaskDashboardForUpdate): Promise<TaskDashboard> {
+  try {
+    console.log('Request payload:', task);
+
+    const response = await fetch(`/api/task-dashboard/${task.id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(task),
+    });
+
+    const responseData = await response.json();
+    console.log('Response:', responseData);
+
+    if (!response.ok) {
+      throw new Error(`Failed to update task: ${responseData.error || 'Unknown error'}`);
+    }
+
+    return responseData.data as TaskDashboard;
+  } catch (error) {
+    console.error('Task update error:', error);
+    throw error;
+  }
 }

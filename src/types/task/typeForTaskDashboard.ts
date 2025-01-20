@@ -30,6 +30,21 @@ export interface TaskDashboard {
   is_archived: boolean | null;
 }
 
+export interface TaskDashboardForUpdate {
+  id: string;
+  title: string;
+  description: string | null;
+  screen_url: string | null;
+  figma_url: string | null;
+  is_archived: boolean | null;
+  status?: TaskStatus;
+  order?: number;
+  created_at?: string;
+  created_by?: User;    
+  updated_at?: string | null;
+  updated_by?: User | null;
+}
+
 export interface ICreateForTaskBoard {
   title: string;
   description: string;

@@ -21,19 +21,19 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useApiForGetTaskDashboard } from "@/hook/task/useApiForGetTaskDashboard";
 import { TaskDashboard, TaskStatus } from "@/types/task/typeForTaskDashboard";
 import { TaskColumnForDashBoard } from "./components/TaskColumnForDashBoard";
-import { TaskCardForDashBoard } from "./components/TaskCardForDashBoard";
 import {
   getStatusColor,
   getStatusIcon,
   getStatusTextColor,
 } from "./utils/statusUtils";
-import { useApiForUpdateTaskStatus } from "@/hook/task/useApiForUpdateTaskStatus";
 import { toast } from "react-toastify";
 import IDialogButtonForCreateTaskDashBoard from "./components/IDialogButtonForCreateTaskDashBoard"; // 추가
+import { useApiForDragAndDropTask } from "@/hook/task/useApiForDragAndDropTask";
+import { TaskCardForDashBoard } from "./components/TaskCardForDashBoard";
 
 export default function TaskDashboardPage() {
   const { data: tasksFromServer, isLoading, error } = useApiForGetTaskDashboard();
-  const updateTaskStatus = useApiForUpdateTaskStatus();
+  const dragAndDropTask = useApiForDragAndDropTask(); // 새 훅 사용
 
   const [tasksLocal, setTasksLocal] = React.useState<TaskDashboard[]>([]);
   const [activeTask, setActiveTask] = React.useState<TaskDashboard | null>(null);
@@ -116,7 +116,7 @@ export default function TaskDashboardPage() {
             );
           });
 
-          await updateTaskStatus.mutateAsync({
+          await dragAndDropTask.mutateAsync({
             id: activeTaskData.id,
             status: activeContainer,
             order: newIndex,
@@ -142,7 +142,7 @@ export default function TaskDashboardPage() {
           return updatedTasks.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
         });
 
-        await updateTaskStatus.mutateAsync({
+        await dragAndDropTask.mutateAsync({
           id: activeTaskData.id,
           status: overContainer as TaskStatus,
           order: newOrder,
@@ -152,7 +152,6 @@ export default function TaskDashboardPage() {
     } catch (error) {
       console.error("Failed to update task:", error);
       toast.error("작업 상태 변경에 실패했습니다.");
-      // 실패시 원래 상태로 복구하는 로직 추가 가능
     }
   };
 

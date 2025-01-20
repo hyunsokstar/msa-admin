@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { ExternalLink, Edit, Trash2, FileImage } from 'lucide-react';
 import { User } from '@/types/task/typeForTaskDashboard';
+import EditDialogForTask from './EditDialogForTask';
 
 interface Props {
   id: string;
@@ -112,14 +113,7 @@ export function TaskCardForDashBoard({
         </Button>
 
         {/* Bottom Row */}
-        <Button
-          size="icon"
-          variant="ghost"
-          className="h-8 w-8 p-2 hover:bg-gray-100 rounded-lg"
-          onClick={(e) => onEdit && handleAction(e, onEdit)}
-        >
-          <Edit className="h-4 w-4 text-gray-600" />
-        </Button>
+        <EditDialogForTask task= {{ id, title, description, screen_url, figma_url, is_archived: false }} />
 
         <Button
           size="icon"
