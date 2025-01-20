@@ -24,7 +24,7 @@ const IDialogButtonForCreateTaskDashBoard = () => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    screen_url: "",
+    coverUrl: "",
     isArchived: false,
     figmaUrl: "",
   });
@@ -43,7 +43,7 @@ const IDialogButtonForCreateTaskDashBoard = () => {
   };
 
   const handleImageUploadComplete = (fileUrl: string) => {
-    setFormData((prev) => ({ ...prev, screen_url: fileUrl }));
+    setFormData((prev) => ({ ...prev, coverUrl: fileUrl }));
   };
 
   const handleSubmit = () => {
@@ -53,7 +53,7 @@ const IDialogButtonForCreateTaskDashBoard = () => {
       {
         title: formData.title,
         description: formData.description,
-        screen_url: formData.screen_url,
+        coverUrl: formData.coverUrl,
         isArchived: formData.isArchived,
         figmaUrl: formData.figmaUrl,
         createdBy: user.id,
@@ -65,7 +65,7 @@ const IDialogButtonForCreateTaskDashBoard = () => {
           setFormData({
             title: "",
             description: "",
-            screen_url: "",
+            coverUrl: "",
             isArchived: false,
             figmaUrl: "",
           });
