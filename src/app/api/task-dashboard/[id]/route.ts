@@ -1,17 +1,17 @@
 // app/api/task-dashboard/[id]/route.ts
 import { getSupabaseAuth, getSupabaseService } from '@/lib/supabase/serverClient';
-import { NextResponse } from 'next/server';
+import { type NextRequest } from 'next/server';
 
 export async function PATCH(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  context: { params: { id: string } }
 ) {
   try {
     const supabaseAuth = getSupabaseAuth();
     const { data: { session } } = await supabaseAuth.auth.getSession();
 
     if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const body = await request.json();
@@ -25,7 +25,7 @@ export async function PATCH(
         updated_at: new Date().toISOString(),
         updated_by: session.user.id
       })
-      .eq('id', params.id)
+      .eq('id', context.params.id)
       .select('*, created_by(*), updated_by(*)')
       .single();
 
@@ -34,10 +34,10 @@ export async function PATCH(
       throw error;
     }
 
-    return NextResponse.json({ data });
+    return Response.json({ data });
   } catch (error: any) {
     console.error('Task Update Error:', error);
-    return NextResponse.json(
+    return Response.json(
       { error: error.message },
       { status: 500 }
     );

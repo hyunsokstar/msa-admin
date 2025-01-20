@@ -18,6 +18,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { TaskDashboardForUpdate } from "@/types/task/typeForTaskDashboard";
 import { useApiForUpdateTask } from "@/hook/task/useApiForUpdateTask";
 import ImageUploaderForEdit from "@/components/file-uploader/ImageUploaderForEdit";
+import { toast } from 'react-toastify';
+import { Edit } from "lucide-react";
 
 interface EditDialogProps {
   task: TaskDashboardForUpdate;
@@ -33,25 +35,50 @@ const EditDialogForTask = ({ task }: EditDialogProps) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: checked }));
+  const handleCheckboxChange = (checked: boolean) => {
+    setFormData((prev) => ({ ...prev, is_archived: checked }));
   };
 
   const handleImageUploadComplete = (updatedImage: string | null) => {
     setFormData((prev) => ({ ...prev, screen_url: updatedImage }));
   };
 
-  const handleSubmit = () => {
-    updateTask.mutate(formData);
-    setIsDialogOpen(false);
+  const handleSubmit = async () => {
+    try {
+      await updateTask.mutateAsync(formData);
+      toast.success('Task updated successfully!', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      setIsDialogOpen(false);
+    } catch (error) {
+      toast.error('Failed to update task. Please try again.', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      console.error('Update error:', error);
+    }
   };
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-gray-100">
-          Edit
+        <Button
+          size="icon"
+          variant="ghost"
+          className="h-8 w-8 p-2 hover:bg-gray-100 rounded-lg"
+        >
+          <Edit className="h-4 w-4 text-gray-600" />
         </Button>
       </DialogTrigger>
       <DialogContent className="bg-gray-50 dark:bg-gray-800">
@@ -112,25 +139,31 @@ const EditDialogForTask = ({ task }: EditDialogProps) => {
           </div>
           <div className="flex items-center gap-4">
             <Checkbox
-              id="isArchived"
-              name="isArchived"
+              id="is_archived"
               checked={formData.is_archived ?? false}
-              onCheckedChange={(checked) =>
-                handleCheckboxChange({ target: { name: "isArchived", checked } } as React.ChangeEvent<HTMLInputElement>)
-              }
+              onCheckedChange={handleCheckboxChange}
               className="border-gray-300 dark:border-gray-600"
             />
-            <Label htmlFor="isArchived" className="text-gray-900 dark:text-gray-300">
+            <Label htmlFor="is_archived" className="text-gray-900 dark:text-gray-300">
               Is Archived
             </Label>
           </div>
         </div>
         <DialogFooter>
-          <Button variant="secondary" onClick={() => setIsDialogOpen(false)} className="bg-gray-200 dark:bg-gray-700">
+          <Button 
+            variant="secondary" 
+            onClick={() => setIsDialogOpen(false)} 
+            className="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600"
+          >
             Cancel
           </Button>
-          <Button variant="default" onClick={handleSubmit} className="bg-blue-500 hover:bg-blue-600 text-white">
-            Save
+          <Button 
+            variant="default" 
+            onClick={handleSubmit}
+            disabled={updateTask.isPending} 
+            className="bg-blue-500 hover:bg-blue-600 text-white"
+          >
+            {updateTask.isPending ? "Saving..." : "Save"}
           </Button>
         </DialogFooter>
       </DialogContent>
