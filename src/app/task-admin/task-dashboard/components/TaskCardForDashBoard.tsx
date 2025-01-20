@@ -9,7 +9,11 @@ import { Trash2, FileImage } from 'lucide-react';
 import { FaFigma } from 'react-icons/fa6';
 import { User } from '@/types/task/typeForTaskDashboard';
 import EditDialogForTask from './EditDialogForTask';
+<<<<<<< HEAD
 import { cn } from '@/lib/utils';
+=======
+import DeleteDialogForTask from './DeleteDialogForTask';
+>>>>>>> b05463cfcf99b77601f180f6af10ef00d3036af1
 
 interface Props {
   id: string;

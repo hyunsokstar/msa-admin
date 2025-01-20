@@ -202,13 +202,6 @@ const DialogButtonForLogin: React.FC<DialogButtonForLoginProps> = ({
                             <p className="text-sm text-gray-600">
                                 계정이 없으신가요?{' '}
                                 <DialogButtonForSignUp>
-                                    <CommonButton
-                                        variant="link"
-                                        className="text-primary hover:text-primary/90 font-medium"
-                                        onClick={() => onOpenChange?.(false)}
-                                    >
-                                        회원가입
-                                    </CommonButton>
                                 </DialogButtonForSignUp>
                             </p>
                         </div>

@@ -11,7 +11,7 @@ interface CommonButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
   className?: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 const CommonButton = ({

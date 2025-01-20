@@ -18,6 +18,29 @@ export async function apiForGetTaskDashBoardList(): Promise<TaskDashboard[]> {
   return data as TaskDashboard[];
 }
 
+// src/api/task/apiForTaskDashBoard.ts에 추가
+export async function apiForDeleteTaskDashboard(id: string): Promise<boolean> {
+  try {
+    const response = await fetch(`/api/task-dashboard/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to delete task dashboard');
+    }
+
+    const { success } = await response.json();
+    return success;
+  } catch (error) {
+    console.error('Delete task error:', error);
+    throw error;
+  }
+}
+
 export async function apiForUpdateTaskStatus(
   id: string,
   status: string,
