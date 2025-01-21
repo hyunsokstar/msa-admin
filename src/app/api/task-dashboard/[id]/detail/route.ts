@@ -5,22 +5,22 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(request: NextRequest) {
+export async function GET(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+): Promise<NextResponse> {
   try {
-    const cookieStore = cookies();
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
-    
-    // URL에서 taskId 추출
-    const urlParts = request.nextUrl.pathname.split("/");
-    const taskId = urlParts[urlParts.length - 2];
+    const supabase = createRouteHandlerClient({ cookies });
+    const params = await context.params;
+    const taskId = params.id;
 
     if (!taskId) {
       return NextResponse.json(
-        { 
-          error: "Task ID is required",
-          details: "Valid task ID must be provided",
-          data: null 
-        }, 
+        {
+          error: "Invalid Task ID",
+          details: "Task ID is required",
+          data: null,
+        },
         { status: 400 }
       );
     }
@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
         {
           error: "Failed to fetch task details",
           details: taskError.message,
-          data: null
+          data: null,
         },
         { status: 404 }
       );
@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
         {
           error: "Failed to fetch sub todos",
           details: subTodosError.message,
-          data: null
+          data: null,
         },
         { status: 404 }
       );
@@ -88,23 +88,97 @@ export async function GET(request: NextRequest) {
         data: {
           ...task,
           sub_todos: subTodos || [],
-        }
+        },
       },
       {
         status: 200,
         headers: {
-          'Cache-Control': 'no-store'
-        }
+          "Cache-Control": "no-store",
+        },
       }
     );
-
   } catch (error) {
     console.error("Server error:", error);
     return NextResponse.json(
       {
         error: "Internal server error",
         details: error instanceof Error ? error.message : "Unknown error",
-        data: null
+        data: null,
+      },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+): Promise<NextResponse> {
+  try {
+    const supabase = createRouteHandlerClient({ cookies });
+    const params = await context.params;
+    const taskId = params.id;
+
+    if (!taskId) {
+      return NextResponse.json(
+        {
+          error: "Invalid Task ID",
+          details: "Task ID is required",
+          data: null,
+        },
+        { status: 400 }
+      );
+    }
+
+    // sub todos 삭제
+    const { error: subTodosError } = await supabase
+      .from("sub_todos")
+      .delete()
+      .eq("task_id", taskId);
+
+    if (subTodosError) {
+      console.error("Sub todos deletion error:", subTodosError);
+      return NextResponse.json(
+        {
+          error: "Failed to delete sub todos",
+          details: subTodosError.message,
+          data: null,
+        },
+        { status: 500 }
+      );
+    }
+
+    // 태스크 삭제
+    const { error: taskError } = await supabase
+      .from("task_dashboard")
+      .delete()
+      .eq("id", taskId);
+
+    if (taskError) {
+      console.error("Task deletion error:", taskError);
+      return NextResponse.json(
+        {
+          error: "Failed to delete task",
+          details: taskError.message,
+          data: null,
+        },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json(
+      {
+        success: true,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Server error:", error);
+    return NextResponse.json(
+      {
+        error: "Internal server error",
+        details: error instanceof Error ? error.message : "Unknown error",
+        data: null,
       },
       { status: 500 }
     );
