@@ -14,7 +14,6 @@ import {
 } from "@dnd-kit/core";
 import {
   arrayMove,
-  SortableContext,
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -42,29 +41,20 @@ const LoginCard = () => {
       title="로그인이 필요합니다"
       message="태스크 대시보드를 이용하기 위해서는 로그인이 필요합니다."
       buttonText="로그인하러 가기"
-      onButtonClick={() => router.push('/login')}
+      onButtonClick={() => router.push('/login?returnTo=/task-dashboard')}
     />
   );
 };
 
+const statusOrder = ["ready", "progress", "test", "complete"] as const;
+
 export default function TaskDashboardPage() {
   const { isAuthenticated } = useUserStore();
-  const { data: tasksFromServer, isLoading, error } = useApiForGetTaskDashboard();
-  const dragAndDropTask = useApiForDragAndDropTask();
-
   const [tasksLocal, setTasksLocal] = React.useState<TaskDashboard[]>([]);
   const [activeTask, setActiveTask] = React.useState<TaskDashboard | null>(null);
+  const dragAndDropTask = useApiForDragAndDropTask();
 
-  // If not authenticated, show login card
-  if (!isAuthenticated) {
-    return <LoginCard />;
-  }
-
-  React.useEffect(() => {
-    if (tasksFromServer) {
-      setTasksLocal(tasksFromServer);
-    }
-  }, [tasksFromServer]);
+  const { data: tasksFromServer, isLoading, error } = useApiForGetTaskDashboard();
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -73,17 +63,31 @@ export default function TaskDashboardPage() {
     })
   );
 
+  React.useEffect(() => {
+    if (tasksFromServer) {
+      setTasksLocal(tasksFromServer);
+    }
+  }, [tasksFromServer]);
+
   const groupedTasks = React.useMemo(() => {
-    const groups: Record<string, TaskDashboard[]> = {};
+    const groups: Record<TaskStatus, TaskDashboard[]> = {
+      ready: [],
+      progress: [],
+      test: [],
+      complete: []
+    };
+    
     tasksLocal.forEach((task) => {
-      if (!groups[task.status]) {
-        groups[task.status] = [];
+      if (groups[task.status]) {
+        groups[task.status].push(task);
       }
-      groups[task.status].push(task);
     });
+    
+    // 각 상태별로 정렬
     Object.keys(groups).forEach((status) => {
-      groups[status].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+      groups[status as TaskStatus].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
     });
+    
     return groups;
   }, [tasksLocal]);
 
@@ -93,10 +97,6 @@ export default function TaskDashboardPage() {
     if (foundTask) {
       setActiveTask(foundTask);
     }
-  };
-
-  const handleDragOver = (event: DragEndEvent) => {
-    // 필요 시 중간 단계 로직
   };
 
   const handleDragEnd = async (event: DragEndEvent) => {
@@ -111,10 +111,11 @@ export default function TaskDashboardPage() {
     const activeContainer = activeTaskData.status;
     const overId = String(over.id);
     const overTask = tasksLocal.find((task) => task.id === over.id);
-    const overContainer = overTask ? overTask.status : overId;
+    const overContainer = overTask ? overTask.status : overId as TaskStatus;
 
     try {
       if (activeContainer === overContainer) {
+        // 같은 상태 내에서 순서 변경
         if (active.id !== over.id) {
           const oldIndex = groupedTasks[activeContainer].findIndex(
             (task) => task.id === active.id
@@ -132,9 +133,10 @@ export default function TaskDashboardPage() {
               order: index,
             }));
 
-            const filtered = prev.filter((t) => t.status !== activeContainer);
-            return [...filtered, ...updatedColumn].sort(
-              (a, b) => (a.order ?? 0) - (b.order ?? 0)
+            return prev.map(task => 
+              task.status === activeContainer 
+                ? updatedColumn.find(t => t.id === task.id) || task
+                : task
             );
           });
 
@@ -146,27 +148,21 @@ export default function TaskDashboardPage() {
           toast.success("작업 순서가 변경되었습니다.");
         }
       } else {
-        const newColumnTasks = groupedTasks[overContainer] || [];
+        // 다른 상태로 이동
+        const newColumnTasks = groupedTasks[overContainer];
         const newOrder = newColumnTasks.length;
 
-        setTasksLocal((prev) => {
-          const updatedTasks = prev.map((t) => {
-            if (t.id === activeTaskData.id) {
-              return {
-                ...t,
-                status: overContainer as TaskStatus,
-                order: newOrder,
-              };
-            }
-            return t;
-          });
-
-          return updatedTasks.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-        });
+        setTasksLocal((prev) => 
+          prev.map((t) => 
+            t.id === activeTaskData.id
+              ? { ...t, status: overContainer, order: newOrder }
+              : t
+          )
+        );
 
         await dragAndDropTask.mutateAsync({
           id: activeTaskData.id,
-          status: overContainer as TaskStatus,
+          status: overContainer,
           order: newOrder,
         });
         toast.success(`작업 상태가 ${overContainer}로 변경되었습니다.`);
@@ -174,20 +170,30 @@ export default function TaskDashboardPage() {
     } catch (error) {
       console.error("Failed to update task:", error);
       toast.error("작업 상태 변경에 실패했습니다.");
+      // 에러 발생 시 원래 상태로 복구
+      setTasksLocal(tasksFromServer || []);
     }
   };
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) {
-    toast.error("작업 목록을 불러오는데 실패했습니다.");
+  if (!isAuthenticated) {
+    return <LoginCard />;
+  }
+
+  if (isLoading) {
     return (
-      <Alert variant="destructive">
-        <AlertDescription>Failed to load tasks</AlertDescription>
-      </Alert>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary"></div>
+      </div>
     );
   }
 
-  const statusOrder = ["ready", "progress", "test", "complete"];
+  if (error) {
+    return (
+      <Alert variant="destructive">
+        <AlertDescription>작업 목록을 불러오는데 실패했습니다.</AlertDescription>
+      </Alert>
+    );
+  }
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -195,14 +201,14 @@ export default function TaskDashboardPage() {
         <h1 className="text-2xl font-bold">Task Dashboard</h1>
         <IDialogButtonForCreateTaskDashBoard />
       </div>
+      
       <DndContext
         sensors={sensors}
         collisionDetection={closestCorners}
         onDragStart={handleDragStart}
-        onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {statusOrder.map((status) => (
             <TaskColumnForDashBoard
               key={status}
@@ -214,21 +220,18 @@ export default function TaskDashboardPage() {
               textColor={getStatusTextColor(status)}
               tasks={groupedTasks[status] || []}
             >
-              {groupedTasks[status]?.map((task) => {
-                const isDragging = task.id === activeTask?.id;
-                return (
-                  <TaskCardForDashBoard
-                    key={task.id}
-                    id={task.id}
-                    title={task.title}
-                    description={task.description ?? ""}
-                    screen_url={task.screen_url}
-                    figma_url={task.figma_url}
-                    created_by={task.created_by}
-                    isDragging={isDragging}
-                  />
-                );
-              })}
+              {groupedTasks[status]?.map((task) => (
+                <TaskCardForDashBoard
+                  key={task.id}
+                  id={task.id}
+                  title={task.title}
+                  description={task.description ?? ""}
+                  screen_url={task.screen_url}
+                  figma_url={task.figma_url}
+                  created_by={task.created_by}
+                  isDragging={task.id === activeTask?.id}
+                />
+              ))}
             </TaskColumnForDashBoard>
           ))}
         </div>
@@ -239,7 +242,7 @@ export default function TaskDashboardPage() {
             easing: "ease",
           }}
         >
-          {activeTask ? (
+          {activeTask && (
             <TaskCardForDashBoard
               id={activeTask.id}
               title={activeTask.title}
@@ -249,7 +252,7 @@ export default function TaskDashboardPage() {
               created_by={activeTask.created_by}
               isDragging={true}
             />
-          ) : null}
+          )}
         </DragOverlay>
       </DndContext>
     </div>
