@@ -7,13 +7,14 @@ import {
     Dialog,
     DialogContent,
     DialogTitle,
+    DialogTrigger
 } from "@/components/ui/dialog";
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import CommonButton from '@/components/common/CommonButton';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { LogIn, Mail, Lock, X, Eye, EyeOff } from 'lucide-react';
+import { LogIn, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { FaGoogle, FaComment } from 'react-icons/fa';
 import { SiNaver } from 'react-icons/si';
 import { useApiForLogin } from '@/hook/useApiForLogin';
@@ -43,29 +44,56 @@ const contentVariants = {
 };
 
 const DialogButtonForLogin: React.FC<DialogButtonForLoginProps> = ({ 
-    open, 
-    onOpenChange,
+    open: externalOpen, 
+    onOpenChange: externalOnOpenChange,
     showTrigger = true 
 }) => {
+    const [internalOpen, setInternalOpen] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const loginMutation = useApiForLogin();
 
-    const handleLogin = () => {
-        loginMutation.mutate({ email, password });
+    // 제어/비제어 상태 관리
+    const isControlled = externalOpen !== undefined;
+    const open = isControlled ? externalOpen : internalOpen;
+    const onOpenChange = isControlled ? externalOnOpenChange : setInternalOpen;
+
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            await loginMutation.mutateAsync({ email, password });
+            onOpenChange?.(false);
+        } catch (error) {
+            console.error('Login failed:', error);
+        }
+    };
+
+    const resetForm = () => {
+        setEmail('');
+        setPassword('');
+        setShowPassword(false);
     };
 
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
+        <Dialog 
+            open={open} 
+            onOpenChange={(newOpen) => {
+                onOpenChange?.(newOpen);
+                if (!newOpen) {
+                    resetForm();
+                }
+            }}
+        >
             {showTrigger && (
-                <CommonButton
-                    size="sm"
-                    startIcon={<LogIn className="h-4 w-4" />}
-                    onClick={() => onOpenChange?.(true)}
-                >
-                    로그인
-                </CommonButton>
+                <DialogTrigger asChild>
+                    <CommonButton
+                        size="sm"
+                        startIcon={<LogIn className="h-4 w-4" />}
+                    >
+                        로그인
+                    </CommonButton>
+                </DialogTrigger>
             )}
 
             <DialogContent className="p-0 bg-white w-[400px] max-w-[95vw] rounded-2xl border-none">
@@ -81,10 +109,7 @@ const DialogButtonForLogin: React.FC<DialogButtonForLoginProps> = ({
                 >
                     <form 
                         className="space-y-6"
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            handleLogin();
-                        }}
+                        onSubmit={handleLogin}
                     >
                         <div className="space-y-4">
                             <div className="flex items-center gap-2">
@@ -177,6 +202,7 @@ const DialogButtonForLogin: React.FC<DialogButtonForLoginProps> = ({
                                 size="icon"
                                 className="w-11 h-11 rounded-full bg-[#FEE500] hover:bg-[#FDD800] border-none"
                                 aria-label="카카오로 로그인"
+                                onClick={() => {/* 카카오 로그인 구현 */}}
                             >
                                 <FaComment className="h-5 w-5 text-[#391B1B]" />
                             </CommonButton>
@@ -185,6 +211,7 @@ const DialogButtonForLogin: React.FC<DialogButtonForLoginProps> = ({
                                 size="icon"
                                 className="w-11 h-11 rounded-full bg-[#03C75A] hover:bg-[#02B351] border-none"
                                 aria-label="네이버로 로그인"
+                                onClick={() => {/* 네이버 로그인 구현 */}}
                             >
                                 <SiNaver className="h-5 w-5 text-white" />
                             </CommonButton>
@@ -193,6 +220,7 @@ const DialogButtonForLogin: React.FC<DialogButtonForLoginProps> = ({
                                 size="icon"
                                 className="w-11 h-11 rounded-full border-gray-200 hover:bg-gray-50"
                                 aria-label="구글로 로그인"
+                                onClick={() => {/* 구글 로그인 구현 */}}
                             >
                                 <FaGoogle className="h-5 w-5 text-[#EA4335]" />
                             </CommonButton>
@@ -201,8 +229,7 @@ const DialogButtonForLogin: React.FC<DialogButtonForLoginProps> = ({
                         <div className="text-center pt-2">
                             <p className="text-sm text-gray-600">
                                 계정이 없으신가요?{' '}
-                                <DialogButtonForSignUp>
-                                </DialogButtonForSignUp>
+                                <DialogButtonForSignUp />
                             </p>
                         </div>
                     </form>
