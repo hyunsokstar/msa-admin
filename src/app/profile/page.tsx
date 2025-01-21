@@ -29,13 +29,13 @@ const DevSpecTree = ({ items }: { items: PersonalDevSpec[] }) => {
             
             {/* 텍스트 영역 */}
             <span className="text-sm font-medium">{item.name}</span>
-            <span className={`ml-2 text-xs px-2 py-0.5 rounded-full ${
+            {/* <span className={`ml-2 text-xs px-2 py-0.5 rounded-full ${
               item.status === 'active' ? 'bg-green-100 text-green-800' : 
               item.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
               'bg-gray-100 text-gray-800'
             }`}>
               {item.status}
-            </span>
+            </span> */}
           </div>
           
           {/* 자식 요소들 */}
