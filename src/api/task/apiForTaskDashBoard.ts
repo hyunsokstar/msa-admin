@@ -54,6 +54,9 @@ export async function apiForUpdateTaskStatus(
     body: JSON.stringify({ id, status, order }),
   });
 
+  console.log("reponse check : ", response);
+  
+
   if (!response.ok) {
     throw new Error('Failed to update task status');
   }
