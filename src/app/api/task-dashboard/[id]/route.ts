@@ -4,13 +4,20 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-export async function PUT(
-    request: NextRequest,
-    context: { params: { id: string } }
-): Promise<NextResponse> {
+export async function PUT(request: NextRequest) {
     try {
         const supabase = createRouteHandlerClient({ cookies });
-        const taskId = context.params.id;
+        
+        // URL에서 ID 추출
+        const urlParts = request.nextUrl.pathname.split("/");
+        const taskId = urlParts[urlParts.length - 1];
+
+        if (!taskId) {
+            return NextResponse.json(
+                { error: "태스크 ID가 필요합니다." },
+                { status: 400 }
+            );
+        }
 
         // 요청 본문 파싱
         const body = await request.json();
@@ -39,7 +46,7 @@ export async function PUT(
         }
 
         // 업데이트할 데이터 준비
-        const updateData: { [key: string]: any } = {
+        const updateData = {
             title: body.title,
             description: body.description,
             screen_url: body.screen_url,
@@ -99,13 +106,20 @@ export async function PUT(
     }
 }
 
-export async function DELETE(
-    request: NextRequest,
-    context: { params: { id: string } }
-): Promise<NextResponse> {
+export async function DELETE(request: NextRequest) {
     try {
         const supabase = createRouteHandlerClient({ cookies });
-        const taskId = context.params.id;
+        
+        // URL에서 ID 추출
+        const urlParts = request.nextUrl.pathname.split("/");
+        const taskId = urlParts[urlParts.length - 1];
+
+        if (!taskId) {
+            return NextResponse.json(
+                { error: "태스크 ID가 필요합니다." },
+                { status: 400 }
+            );
+        }
 
         // 현재 사용자 세션 확인
         const { data: { session } } = await supabase.auth.getSession();
