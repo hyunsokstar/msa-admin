@@ -55,7 +55,7 @@
 // hook/useApiForLogin.tsx
 import { useMutation } from '@tanstack/react-query';
 import { useUserStore } from '@/store/useUserStore';
-import { apiForLoginUser } from '@/api/apiForAuth';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 interface LoginCredentials {
     email: string;
@@ -63,30 +63,40 @@ interface LoginCredentials {
 }
 
 export const useApiForLogin = () => {
+    const supabase = createClientComponentClient();
     const setAuth = useUserStore((state) => state.setAuth);
 
     return useMutation({
-        mutationFn: async (credentials: LoginCredentials) => {
-            const data = await apiForLoginUser(credentials);
-            
-            // API route에서 받아온 데이터로 상태 업데이트
+        mutationFn: async ({ email, password }: LoginCredentials) => {
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email,
+                password,
+            });
+
+            if (error) throw error;
+
+            // 사용자 추가 정보 가져오기
+            const { data: userData, error: userError } = await supabase
+                .from('users')
+                .select('*')
+                .eq('id', data.user.id)
+                .single();
+
+            if (userError) throw userError;
+
             setAuth(
                 {
                     ...data.user,
                     email: data.user.email || null,
-                    is_admin: data.isAdmin,
-                    profile_image_url: data.user.profile_image_url,
-                    full_name: data.user.full_name,
-                    phone_number: data.user.phone_number
+                    is_admin: userData.is_admin,
+                    profile_image_url: userData.profile_image_url,
+                    full_name: userData.full_name,
+                    phone_number: userData.phone_number
                 },
                 data.session
             );
 
             return data;
-        },
-        onError: (error) => {
-            console.error('Login error:', error);
-            throw error;
         }
     });
 };

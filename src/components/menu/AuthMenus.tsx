@@ -42,11 +42,12 @@ const AuthMenus: React.FC = () => {
     };
 
     useEffect(() => {
+        // 초기 사용자 데이터 로드
         fetchUserData();
-
+    
         const { data: { subscription } } = supabase.auth.onAuthStateChange(
             async (event) => {
-                if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+                if (event === 'SIGNED_IN') {  // TOKEN_REFRESHED 제거
                     await fetchUserData();
                 } else if (event === 'SIGNED_OUT') {
                     setUser(null);
@@ -54,12 +55,9 @@ const AuthMenus: React.FC = () => {
                 }
             }
         );
-
-        const interval = setInterval(fetchUserData, 60000);
-
+    
         return () => {
             subscription.unsubscribe();
-            clearInterval(interval);
         };
     }, [supabase, setAuth]);
 
