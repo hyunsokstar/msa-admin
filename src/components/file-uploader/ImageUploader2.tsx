@@ -82,6 +82,9 @@ const ImageUploader2 = ({
         },
       });
 
+      console.log("uploadResponse", uploadResponse);
+      
+
       if (uploadResponse.ok) {
         setUploadProgress(100);
         onUploadComplete?.(fileUrl);

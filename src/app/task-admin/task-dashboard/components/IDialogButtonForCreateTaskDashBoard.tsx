@@ -20,9 +20,17 @@ import ImageUploader2 from "@/components/file-uploader/ImageUploader2";
 import useApiForCreateTaskDashboard from "@/hook/task/useApiForCreateTaskDashboard";
 import { cn } from "@/lib/utils";
 
-const IDialogButtonForCreateTaskDashBoard = () => {
+interface TaskDashboardFormData {
+  title: string;
+  description: string;
+  coverUrl: string;
+  isArchived: boolean;
+  figmaUrl: string;
+}
+
+const TaskDashboardDialog = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<TaskDashboardFormData>({
     title: "",
     description: "",
     coverUrl: "",
@@ -38,9 +46,8 @@ const IDialogButtonForCreateTaskDashBoard = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: checked }));
+  const handleCheckboxChange = (checked: boolean) => {
+    setFormData((prev) => ({ ...prev, isArchived: checked }));
   };
 
   const handleImageUploadComplete = (fileUrl: string) => {
@@ -74,9 +81,6 @@ const IDialogButtonForCreateTaskDashBoard = () => {
     );
   };
 
-  // 공통 버튼 스타일
-  const buttonBaseClass = "w-8 h-8 flex items-center justify-center hover:bg-gray-100 rounded-lg";
-
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
@@ -104,23 +108,24 @@ const IDialogButtonForCreateTaskDashBoard = () => {
           </svg>
         </Button>
       </DialogTrigger>
+      
       <DialogContent className="max-w-6xl w-full h-[80vh] p-0 bg-white dark:bg-gray-800">
         <div className="flex h-full">
-          {/* 왼쪽 이미지 영역 */}
+          {/* 이미지 미리보기 영역 */}
           <div className="w-1/2 h-full bg-gray-100 dark:bg-gray-900 p-6 flex flex-col">
             <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
-              Task Preview
+              태스크 미리보기
             </h3>
             <div className="flex-1 flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-lg">
               {formData.coverUrl ? (
                 <img 
                   src={formData.coverUrl} 
-                  alt="Task preview" 
+                  alt="태스크 미리보기" 
                   className="max-w-full max-h-full object-contain"
                 />
               ) : (
                 <div className="text-gray-400 dark:text-gray-500">
-                  No image uploaded
+                  이미지가 없습니다
                 </div>
               )}
             </div>
@@ -131,26 +136,26 @@ const IDialogButtonForCreateTaskDashBoard = () => {
             </div>
           </div>
 
-          {/* 오른쪽 상세 정보 영역 */}
+          {/* 태스크 정보 입력 영역 */}
           <div className="w-1/2 h-full p-6 overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="text-2xl font-bold text-gray-900 dark:text-white">
-                Create New Task Dashboard
+                업무 추가
               </DialogTitle>
               <DialogDescription className="text-gray-700 dark:text-gray-400">
-                Fill out the details below to create a new task dashboard.
+                아래 양식을 작성해 주세요!
               </DialogDescription>
             </DialogHeader>
 
             <div className="space-y-6 mt-6">
               <div>
                 <Label htmlFor="title" className="text-gray-900 dark:text-gray-300 text-sm font-medium">
-                  Title
+                  제목
                 </Label>
                 <Input
                   id="title"
                   name="title"
-                  placeholder="Enter title"
+                  placeholder="제목을 입력하세요"
                   value={formData.title}
                   onChange={handleInputChange}
                   className="mt-1"
@@ -159,12 +164,12 @@ const IDialogButtonForCreateTaskDashBoard = () => {
 
               <div>
                 <Label htmlFor="description" className="text-gray-900 dark:text-gray-300 text-sm font-medium">
-                  Description
+                  설명
                 </Label>
                 <Textarea
                   id="description"
                   name="description"
-                  placeholder="Enter description"
+                  placeholder="설명을 입력하세요"
                   value={formData.description}
                   onChange={handleInputChange}
                   className="mt-1 min-h-[120px]"
@@ -173,12 +178,12 @@ const IDialogButtonForCreateTaskDashBoard = () => {
 
               <div>
                 <Label htmlFor="figmaUrl" className="text-gray-900 dark:text-gray-300 text-sm font-medium">
-                  Figma URL
+                  피그마 URL
                 </Label>
                 <Input
                   id="figmaUrl"
                   name="figmaUrl"
-                  placeholder="Enter Figma URL"
+                  placeholder="피그마 URL을 입력하세요"
                   value={formData.figmaUrl}
                   onChange={handleInputChange}
                   className="mt-1"
@@ -188,22 +193,14 @@ const IDialogButtonForCreateTaskDashBoard = () => {
               <div className="flex items-center gap-2">
                 <Checkbox
                   id="isArchived"
-                  name="isArchived"
                   checked={formData.isArchived}
-                  onCheckedChange={(checked) => 
-                    handleCheckboxChange({ 
-                      target: { 
-                        name: "isArchived", 
-                        checked 
-                      } 
-                    } as React.ChangeEvent<HTMLInputElement>)
-                  }
+                  onCheckedChange={handleCheckboxChange}
                 />
                 <Label 
                   htmlFor="isArchived" 
                   className="text-gray-900 dark:text-gray-300 text-sm font-medium"
                 >
-                  Archive this task
+                  태스크 보관처리
                 </Label>
               </div>
             </div>
@@ -214,7 +211,7 @@ const IDialogButtonForCreateTaskDashBoard = () => {
                 onClick={() => setIsDialogOpen(false)}
                 className="mr-2"
               >
-                Cancel
+                취소
               </Button>
               <Button
                 variant="default"
@@ -225,7 +222,7 @@ const IDialogButtonForCreateTaskDashBoard = () => {
                 )}
                 disabled={!isAuthenticated}
               >
-                Create Task
+                태스크 생성
               </Button>
             </DialogFooter>
           </div>
@@ -235,4 +232,4 @@ const IDialogButtonForCreateTaskDashBoard = () => {
   );
 };
 
-export default IDialogButtonForCreateTaskDashBoard;
+export default TaskDashboardDialog;
