@@ -64,6 +64,10 @@ const ImageUploaderForEdit = ({
         },
       });
 
+      console.log("fileUrl", fileUrl);
+      console.log("uploadResponse", uploadResponse);
+      
+
       if (uploadResponse.ok) {
         setUploadProgress(100);
         onUpdateImage(fileUrl);

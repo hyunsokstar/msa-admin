@@ -20,6 +20,7 @@ export async function apiForGetTaskDashBoardList(): Promise<TaskDashboard[]> {
 
 // src/api/task/apiForTaskDashBoard.ts에 추가
 export async function apiForDeleteTaskDashboard(id: string): Promise<boolean> {
+
   try {
     const response = await fetch(`/api/task-dashboard/${id}`, {
       method: 'DELETE',
@@ -89,7 +90,7 @@ export async function apiForCreateTaskDashboard(task: {
   return data as TaskDashboard;
 }
 
-// src/api/task/apiForTaskDashBoard.ts
+// src\api\task\apiForTaskDashBoard.ts
 export async function apiForUpdateTask(task: TaskDashboardForUpdate): Promise<TaskDashboard> {
   try {
     console.log('Request payload:', task);

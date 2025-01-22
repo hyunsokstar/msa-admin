@@ -9,6 +9,7 @@ import { User } from "@/types/task/typeForTaskDashboard";
 import EditDialogForTask from "./EditDialogForTask";
 import { cn } from "@/lib/utils";
 import IDialogButtonForTaskDashBoardDetail from "./IDialogButtonForTaskDashBoardDetail";
+import DeleteDialogForTask from "./DeleteDialogForTask";
 
 interface Props {
   id: string;
@@ -134,7 +135,7 @@ export function TaskCardForDashBoard({
         </div>
 
         {/* Delete Button */}
-        <div
+        {/* <div
           role="button"
           tabIndex={0}
           className={buttonBaseClass}
@@ -142,7 +143,9 @@ export function TaskCardForDashBoard({
           onKeyDown={(e) => e.key === 'Enter' && onDelete && handleAction(e as unknown as React.MouseEvent, onDelete)}
         >
           <Trash2 className={iconBaseClass} />
-        </div>
+        </div> */}
+        <DeleteDialogForTask taskId={id} taskTitle={title}        />
+
       </div>
     </div>
   );
