@@ -4,15 +4,12 @@ import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const cookieStore = cookies();
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+    const supabaseService = getSupabaseService();
 
-    // 관계 쿼리 수정
-    const { data, error } = await supabase
+    const { data, error } = await supabaseService
       .from("task_dashboard")
       .select(`
         *,
@@ -63,6 +60,7 @@ export async function GET() {
     );
   }
 }
+
 
 export async function PATCH(request: Request) {
   try {

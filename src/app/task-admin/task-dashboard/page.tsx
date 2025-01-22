@@ -29,27 +29,10 @@ import { toast } from "react-toastify";
 import IDialogButtonForCreateTaskDashBoard from "./components/IDialogButtonForCreateTaskDashBoard";
 import { useApiForDragAndDropTask } from "@/hook/task/useApiForDragAndDropTask";
 import { TaskCardForDashBoard } from "./components/TaskCardForDashBoard";
-import { useUserStore } from "@/store/useUserStore";
-import { useRouter } from "next/navigation";
-import ICommonWarningCardForLogin from "@/components/common/ICommonWarningCardForLogin";
-
-const LoginCard = () => {
-  const router = useRouter();
-  
-  return (
-    <ICommonWarningCardForLogin
-      title="로그인이 필요합니다"
-      message="태스크 대시보드를 이용하기 위해서는 로그인이 필요합니다."
-      buttonText="로그인하러 가기"
-      onButtonClick={() => router.push('/login?returnTo=/task-dashboard')}
-    />
-  );
-};
 
 const statusOrder = ["ready", "progress", "test", "complete"] as const;
 
 export default function TaskDashboardPage() {
-  const { isAuthenticated } = useUserStore();
   const [tasksLocal, setTasksLocal] = React.useState<TaskDashboard[]>([]);
   const [activeTask, setActiveTask] = React.useState<TaskDashboard | null>(null);
   const dragAndDropTask = useApiForDragAndDropTask();
@@ -83,7 +66,6 @@ export default function TaskDashboardPage() {
       }
     });
     
-    // 각 상태별로 정렬
     Object.keys(groups).forEach((status) => {
       groups[status as TaskStatus].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
     });
@@ -115,7 +97,6 @@ export default function TaskDashboardPage() {
 
     try {
       if (activeContainer === overContainer) {
-        // 같은 상태 내에서 순서 변경
         if (active.id !== over.id) {
           const oldIndex = groupedTasks[activeContainer].findIndex(
             (task) => task.id === active.id
@@ -148,7 +129,6 @@ export default function TaskDashboardPage() {
           toast.success("작업 순서가 변경되었습니다.");
         }
       } else {
-        // 다른 상태로 이동
         const newColumnTasks = groupedTasks[overContainer];
         const newOrder = newColumnTasks.length;
 
@@ -170,14 +150,9 @@ export default function TaskDashboardPage() {
     } catch (error) {
       console.error("Failed to update task:", error);
       toast.error("작업 상태 변경에 실패했습니다.");
-      // 에러 발생 시 원래 상태로 복구
       setTasksLocal(tasksFromServer || []);
     }
   };
-
-  if (!isAuthenticated) {
-    return <LoginCard />;
-  }
 
   if (isLoading) {
     return (
