@@ -46,7 +46,7 @@ export async function PUT(request: NextRequest) {
         }
 
         // 업데이트할 데이터 준비
-        const updateData = {
+        const updateData: { [key: string]: any } = {
             title: body.title,
             description: body.description,
             screen_url: body.screen_url,
