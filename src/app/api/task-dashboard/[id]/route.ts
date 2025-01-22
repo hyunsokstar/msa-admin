@@ -99,22 +99,13 @@ export async function PUT(
     }
 }
 
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
-
-export const dynamic = "force-dynamic";
-
-export async function PUT(
+export async function DELETE(
     request: NextRequest,
     context: { params: { id: string } }
 ): Promise<NextResponse> {
     try {
         const supabase = createRouteHandlerClient({ cookies });
         const taskId = context.params.id;
-
-        // 요청 본문 파싱
-        const body = await request.json();
 
         // 현재 사용자 세션 확인
         const { data: { session } } = await supabase.auth.getSession();
@@ -139,57 +130,21 @@ export async function PUT(
             );
         }
 
-        // 업데이트할 데이터 준비
-        const updateData: { [key: string]: any } = {
-            title: body.title,
-            description: body.description,
-            screen_url: body.screen_url,
-            figma_url: body.figma_url,
-            is_archived: body.is_archived,
-            status: body.status,
-            order: body.order,
-            updated_at: new Date().toISOString(),
-            updated_by: session.user.id
-        };
-
-        // null, undefined 값 제거
-        Object.keys(updateData).forEach(key => {
-            if (updateData[key] === undefined) {
-                delete updateData[key];
-            }
-        });
-
-        // 데이터 업데이트
-        const { data: updatedTask, error: updateError } = await supabase
+        // 태스크 삭제
+        const { error: deleteError } = await supabase
             .from("task_dashboard")
-            .update(updateData)
-            .eq("id", taskId)
-            .select(`
-                *,
-                created_by (
-                    id,
-                    email,
-                    full_name,
-                    profile_image_url
-                ),
-                updated_by (
-                    id,
-                    email,
-                    full_name,
-                    profile_image_url
-                )
-            `)
-            .single();
+            .delete()
+            .eq("id", taskId);
 
-        if (updateError) {
-            console.error("Update error:", updateError);
+        if (deleteError) {
+            console.error("Delete error:", deleteError);
             return NextResponse.json(
-                { error: "태스크 업데이트 중 오류가 발생했습니다." },
+                { error: "태스크 삭제 중 오류가 발생했습니다." },
                 { status: 500 }
             );
         }
 
-        return NextResponse.json({ data: updatedTask }, { status: 200 });
+        return NextResponse.json({ success: true }, { status: 200 });
 
     } catch (error) {
         console.error("Server error:", error);
