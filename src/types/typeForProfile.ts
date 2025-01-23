@@ -1,5 +1,5 @@
 // src/api/user/apiForProfile.ts
-interface PersonalDevSpec {
+export interface PersonalDevSpec {
  id: number;
  name: string;
  parent_id: number | null;
@@ -9,6 +9,7 @@ interface PersonalDevSpec {
  created_by: string;
  children?: PersonalDevSpec[];
  type?: 'folder' | 'item'; // 추가
+ is_folder?: boolean; // 추가
 }
 
 export interface PersonalDevSpecsResponse {

@@ -34,7 +34,6 @@ const ProfilePage = () => {
               <CardTitle>프로필 정보</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* ... Other content remains the same ... */}
             </CardContent>
           </Card>
         </div>
