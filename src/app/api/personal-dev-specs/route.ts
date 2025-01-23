@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
    
    // 로그인한 유저 가져오기
    const { data: { user }, error: userError } = await supabase.auth.getUser();
-   if (userError) throw userError;
+   if (userError || !user) throw new Error('User not authenticated');
 
    const { data, error } = await supabase
      .from('personal_dev_specs')
