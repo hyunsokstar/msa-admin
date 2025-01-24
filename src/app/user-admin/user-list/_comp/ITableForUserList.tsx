@@ -22,6 +22,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import IDialogButtonForUpdateUser from '@/components/dialog/IDialogButtonForUpdateUser';
 import { IUser } from '@/types/typeForUser';
+import Link from 'next/link';
 
 interface ITableForUserListProps {
     users: IUser[];
@@ -71,23 +72,30 @@ const ITableForUserList = ({ users, currentUser, onDeleteUser }: ITableForUserLi
                             <TableRow key={user.id} className="hover:bg-orange-50/30">
                                 <TableCell>
                                     <Avatar className="w-10 h-10 border-2 border-orange-100">
-                                        <AvatarImage 
-                                            src={user.profile_image_url || ''} 
-                                            alt={user.full_name || user.email || '사용자'} 
+                                        <AvatarImage
+                                            src={user.profile_image_url || ''}
+                                            alt={user.full_name || user.email || '사용자'}
                                         />
                                         <AvatarFallback className="bg-orange-100 text-orange-700">
                                             {getInitials(user)}
                                         </AvatarFallback>
                                     </Avatar>
                                 </TableCell>
-                                <TableCell className="font-medium">{user.email}</TableCell>
+                                <TableCell className="font-medium">
+                                        <Link
+                                            href={`/profile-public/${user.id}`}
+                                            className="text-blue-600 hover:underline"
+                                        >
+                                            {user.email}
+                                        </Link>
+                                </TableCell>
                                 <TableCell>{user.full_name || '-'}</TableCell>
                                 <TableCell>{user.phone_number || '-'}</TableCell>
                                 <TableCell>
-                                    <Badge 
+                                    <Badge
                                         variant={user.is_admin ? "destructive" : "secondary"}
-                                        className={user.is_admin 
-                                            ? "bg-red-100 text-red-700 hover:bg-red-200" 
+                                        className={user.is_admin
+                                            ? "bg-red-100 text-red-700 hover:bg-red-200"
                                             : "bg-orange-100 text-orange-700 hover:bg-orange-200"}
                                     >
                                         {user.is_admin ? '관리자' : '일반'}
@@ -99,11 +107,11 @@ const ITableForUserList = ({ users, currentUser, onDeleteUser }: ITableForUserLi
                                 <TableCell>
                                     {isCurrentUser && (
                                         <div className="flex gap-2">
-                                            <IDialogButtonForUpdateUser 
+                                            <IDialogButtonForUpdateUser
                                                 user={user}
                                                 isCurrentUser={isCurrentUser}
                                             />
-                                            <Button 
+                                            <Button
                                                 variant="ghost"
                                                 size="sm"
                                                 onClick={() => onDeleteUser(user.id)}
@@ -140,8 +148,8 @@ const ITableForUserList = ({ users, currentUser, onDeleteUser }: ITableForUserLi
                                     <PaginationLink
                                         onClick={() => setCurrentPage(i + 1)}
                                         isActive={currentPage === i + 1}
-                                        className={currentPage === i + 1 
-                                            ? 'bg-orange-500 text-white' 
+                                        className={currentPage === i + 1
+                                            ? 'bg-orange-500 text-white'
                                             : 'hover:bg-orange-50 border-orange-200'
                                         }
                                     >
