@@ -224,7 +224,7 @@ export default function TaskDashboardPage() {
               description={activeTask.description ?? ""}
               screen_url={activeTask.screen_url}
               figma_url={activeTask.figma_url}
-              created_by={activeTask.created_by}
+              created_by={activeTask.created_by_user}
               isDragging={true}
             />
           )}
