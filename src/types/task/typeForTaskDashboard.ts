@@ -23,7 +23,7 @@ export interface TaskDashboard {
   order: number;
   created_at: string;
   /** 수정: created_by가 유저 객체를 통째로 가진다고 가정 */
-  created_by: User;    
+  created_by_user: User;    
   updated_at: string | null;
   /** 수정: updated_by 또한 유저 객체 (null 가능) */
   updated_by: User | null;
