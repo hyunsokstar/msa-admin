@@ -20,4 +20,15 @@ export interface TaskDetail {
   created_at: string;
   created_by: IUser;
   sub_todos: SubTodo[];
+  ref_images: RefImage[];  // Added this line
+}
+
+// Add new interface
+export interface RefImage {
+  id: string;
+  task_id: string;
+  image_url: string;
+  sort_order: number;
+  created_at: string;
+  created_by: string;
 }
