@@ -57,7 +57,7 @@ const DevSpecTree = ({ items }: DevSpecTreeProps) => {
    const isFolder = hasChildren || node.is_folder;
 
    return (
-     <div key={node.id} className="my-2 group">
+     <div key={node.id} className="my-1 group">
        <div className="flex items-center justify-between hover:bg-gray-50 rounded">
          <div 
            className="flex items-center gap-2 cursor-pointer p-1 flex-1"
@@ -106,24 +106,25 @@ const DevSpecTree = ({ items }: DevSpecTreeProps) => {
    <div>
      <div className="flex items-center justify-between px-4 py-3 bg-gray-50 border-b">
        <span className="text-sm font-medium text-gray-700">개발 스펙</span>
-       <div className="flex items-center gap-3">
+       <div className="flex items-center gap-2">
+         <CommonButton
+           variant="outline"
+           size="icon"
+           onClick={handleToggleAll}
+           className="h-9 w-9 bg-white"
+         >
+           {isAllExpanded ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+         </CommonButton>
+         
          {user && (
            <DialogButtonForCreateDevSpecForProfilePage 
              parentId="0"
              parentName="Root"
            />
          )}
-         <CommonButton
-           variant="outline"
-           size="icon"
-           onClick={handleToggleAll}
-           className="h-8 w-8 min-w-[32px] bg-white"
-         >
-           {isAllExpanded ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-         </CommonButton>
        </div>
      </div>
-     <div className="pt-2">
+     <div className="p-2">
        {items.map(item => renderNode(item))}
      </div>
    </div>

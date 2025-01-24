@@ -19,11 +19,12 @@ export const DialogButtonForCreateDevSpecForProfilePage = ({ parentId, parentNam
         variant="ghost"
         size="icon"
         onClick={() => setOpen(true)}
-        className="h-6 w-6 min-w-[24px] bg-white"
+        // className="h-6 w-6 min-w-[24px] bg-white"
         disabled={!user}
         style={{ opacity: user ? 1 : 0.5 }}
       >
-        <Plus className="h-3 w-3 text-gray-500" />
+        {/* <Plus className="h-3 w-3 text-gray-500" /> */}
+        추가
       </CommonButton>
       
       {user && (
