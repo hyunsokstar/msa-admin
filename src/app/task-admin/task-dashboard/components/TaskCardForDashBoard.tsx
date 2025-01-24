@@ -119,7 +119,7 @@ export function TaskCardForDashBoard({
           {screen_url ? (
             <IDialogButtonForTaskDashBoardDetail
               title={title}
-              description={description}
+              description={description ?? ''}
               imageUrl={screen_url} 
               id={id}            
               />
