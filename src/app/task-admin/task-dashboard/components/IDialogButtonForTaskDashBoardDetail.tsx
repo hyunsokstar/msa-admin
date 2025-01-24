@@ -1,6 +1,14 @@
 "use client";
 
 import React from "react";
+
+interface IDialogButtonForTaskDashBoardDetailProps {
+  id: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+  className?: string;
+}
 import {
   Dialog,
   DialogContent,
@@ -9,19 +17,17 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import Image from "next/image";
-import { FileImage, PlusCircle, Clock, User, Calendar } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useApiForGetTaskSubTodoList } from "@/hook/task/useApiForGetTaskSubTodoList";
+import ThumbnailList from "./ThumbnailList";
+import SubTasks from "./SubTasks";
+import { Description } from "@radix-ui/react-toast";
+import TaskInformation from "./TaskInformation";
 
-interface IDialogButtonForTaskDashBoardDetailProps {
-  id: string;
-  title: string;
-  description: string | null;
-  imageUrl: string;
-  className?: string;
-}
 
+// Main Component
 const IDialogButtonForTaskDashBoardDetail: React.FC<IDialogButtonForTaskDashBoardDetailProps> = ({
   id,
   title,
@@ -69,12 +75,10 @@ const IDialogButtonForTaskDashBoardDetail: React.FC<IDialogButtonForTaskDashBoar
         <div className="grid grid-cols-5 gap-0 h-[calc(100%-2rem)]">
           {/* Left Section */}
           <div className="col-span-3 bg-white flex flex-col">
-            <DialogHeader className="py-4 px-0 border-b">
+            <DialogHeader className="py-4 px-2 border-b">
               <DialogTitle className="text-xl font-semibold">{title}</DialogTitle>
             </DialogHeader>
-
             <div className="flex-1 grid grid-rows-1 grid-cols-6">
-              {/* Main Image */}
               <div className="col-span-5 relative p-4">
                 <Image
                   src={validMainImageUrl}
@@ -84,99 +88,26 @@ const IDialogButtonForTaskDashBoardDetail: React.FC<IDialogButtonForTaskDashBoar
                   className="object-contain"
                 />
               </div>
-
-              {/* Thumbnails */}
-              <div className="col-span-1 border-l bg-gray-50 p-auto space-y-3 overflow-y-auto p-5">
-                {taskDetail?.ref_images && taskDetail.ref_images.length > 0 ? (
-                  taskDetail.ref_images.map((image, index) => (
-                    <button
-                      key={image.id}
-                      className="w-full aspect-square relative rounded-lg overflow-hidden border border-gray-200 hover:border-gray-300 transition-colors"
-                    >
-                      <Image
-                        src={getValidImageUrl(image.image_url)}
-                        alt={`Reference ${index + 1}`}
-                        className="object-cover"
-                        fill
-                      />
-                    </button>
-                  ))
-                ) : (
-                  <div className="text-xs text-gray-500 text-center">
-                    No reference images
-                  </div>
-                )}
-              </div>
+              <ThumbnailList
+                images={taskDetail?.ref_images || null}
+                getValidImageUrl={getValidImageUrl}
+              />
             </div>
-
-            <div className="p-4 bg-gray-50 border-t">
-              <h3 className="text-sm font-medium text-gray-700 mb-2">Description</h3>
-              <p className="text-sm text-gray-600">
-                {description || "No description available."}
-              </p>
-            </div>
+            <Description>{description}</Description>
           </div>
 
           {/* Right Section */}
           <div className="col-span-2 bg-gray-50 border-l flex flex-col gap-4 p-6">
-            <div className="bg-white rounded-lg p-4 shadow-sm">
-              <h3 className="text-sm font-medium text-gray-700 mb-3">Task Information</h3>
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">Status</span>
-                  <span className="font-medium">{taskDetail?.status || "Loading..."}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">Created by</span>
-                  <span className="font-medium">
-                    {taskDetail?.created_by?.full_name || "Loading..."}
-                  </span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">Created at</span>
-                  <span className="font-medium">
-                    {taskDetail?.created_at
-                      ? new Date(taskDetail.created_at).toLocaleDateString()
-                      : "Loading..."}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex-1 bg-white rounded-lg p-4 shadow-sm">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-medium text-gray-700">Sub Tasks</h3>
-                <button className="inline-flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-700">
-                  <PlusCircle className="w-4 h-4" />
-                  Add Task
-                </button>
-              </div>
-
-              <div className="space-y-2">
-                {isLoading ? (
-                  <div className="text-sm text-gray-500">Loading tasks...</div>
-                ) : taskDetail?.sub_todos && taskDetail.sub_todos.length > 0 ? (
-                  taskDetail.sub_todos.map((todo) => (
-                    <div
-                      key={todo.id}
-                      className="flex items-start gap-3 p-2 hover:bg-gray-50 rounded-lg"
-                    >
-                      <Checkbox checked={todo.is_completed} className="mt-0.5" />
-                      <span
-                        className={cn(
-                          "text-sm text-gray-700",
-                          todo.is_completed && "text-gray-400 line-through"
-                        )}
-                      >
-                        {todo.content}
-                      </span>
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-sm text-gray-500">No tasks added yet</div>
-                )}
-              </div>
-            </div>
+            <TaskInformation
+              status={taskDetail?.status || null}
+              createdBy={taskDetail?.created_by?.full_name || null}
+              createdAt={
+                taskDetail?.created_at
+                  ? new Date(taskDetail.created_at).toLocaleDateString()
+                  : null
+              }
+            />
+            <SubTasks isLoading={isLoading} subTodos={taskDetail?.sub_todos || null} />
           </div>
         </div>
       </DialogContent>
