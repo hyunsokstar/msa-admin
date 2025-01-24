@@ -63,6 +63,8 @@ export function TaskCardForDashBoard({
   const buttonBaseClass = "w-8 h-8 flex items-center justify-center hover:bg-gray-100 rounded-lg";
   const iconBaseClass = "w-4 h-4";
 
+  console.log("created_by : ", created_by);
+
   return (
     <div className="relative group">
       <Card
@@ -75,6 +77,7 @@ export function TaskCardForDashBoard({
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-3">
             <Avatar className="h-8 w-8">
+              
               <AvatarImage src={created_by?.profile_image_url || ""} alt={created_by?.full_name || "User"} />
               <AvatarFallback>{created_by?.full_name?.[0] || "U"}</AvatarFallback>
             </Avatar>
