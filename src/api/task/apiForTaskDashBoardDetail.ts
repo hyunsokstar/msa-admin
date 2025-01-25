@@ -1,9 +1,25 @@
 // C:\Users\terec\msa-admin\src\api\task\apiForTaskDashBoardDetail.ts
 import { TaskDetail } from "@/types/task/typeForTaskDetail";
 
-// 참조 이미지 저장 요청 함수
-// apiForCreateReferenceImageForTask
+export const apiForDeleteRefImageForTaskId = async (imageId: string): Promise<boolean> => {
+  const response = await fetch(`/api/task-dashboard/${imageId}/reference-image`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ imageId }),
+  });
 
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Failed to delete reference image');
+  }
+
+  const { success } = await response.json();
+  return success;
+};
+
+// apiForDeleteReferenceImageForTask
 export const apiForCreateReferenceImageForTask = async (taskId: string, imageUrls: string[]): Promise<boolean> => {
   const response = await fetch(`/api/task-dashboard/${taskId}/reference-image`, {
     method: 'POST',

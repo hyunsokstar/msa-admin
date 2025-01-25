@@ -2,7 +2,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { apiForGetTaskSubTodoList } from '@/api/task/apiForTaskDashBoardDetail';
 
-export function useApiForGetTaskSubTodoList(id: string | undefined) {
+export function useApiForGetTaskDashBoardDetail(id: string | undefined) {
   return useQuery({
     queryKey: ['taskDetail', id],
     queryFn: () => apiForGetTaskSubTodoList(id as string),

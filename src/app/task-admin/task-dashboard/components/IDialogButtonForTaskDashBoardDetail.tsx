@@ -19,10 +19,10 @@ import {
 } from "@/components/ui/dialog";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { useApiForGetTaskSubTodoList } from "@/hook/task/useApiForGetTaskSubTodoList";
 import ThumbnailList from "./ThumbnailList";
 import SubTasks from "./SubTasks";
 import TaskInformation from "./TaskInformation";
+import { useApiForGetTaskDashBoardDetail } from "@/hook/task/useApiForGetTaskDashBoardDetail";
 
 const IDialogButtonForTaskDashBoardDetail: React.FC<IDialogButtonForTaskDashBoardDetailProps> = ({
   id,
@@ -31,7 +31,7 @@ const IDialogButtonForTaskDashBoardDetail: React.FC<IDialogButtonForTaskDashBoar
   imageUrl,
   className,
 }) => {
-  const { data: taskDetail, isLoading } = useApiForGetTaskSubTodoList(id);
+  const { data: taskDetail, isLoading } = useApiForGetTaskDashBoardDetail(id);
 
   const getValidImageUrl = (url: string) => {
     try {
