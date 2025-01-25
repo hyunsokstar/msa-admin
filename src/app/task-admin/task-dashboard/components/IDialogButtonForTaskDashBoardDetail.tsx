@@ -9,6 +9,7 @@ interface IDialogButtonForTaskDashBoardDetailProps {
   imageUrl: string;
   className?: string;
 }
+
 import {
   Dialog,
   DialogContent,
@@ -17,17 +18,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import Image from "next/image";
-import { PlusCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useApiForGetTaskSubTodoList } from "@/hook/task/useApiForGetTaskSubTodoList";
 import ThumbnailList from "./ThumbnailList";
 import SubTasks from "./SubTasks";
-import { Description } from "@radix-ui/react-toast";
 import TaskInformation from "./TaskInformation";
 
-
-// Main Component
 const IDialogButtonForTaskDashBoardDetail: React.FC<IDialogButtonForTaskDashBoardDetailProps> = ({
   id,
   title,
@@ -71,8 +67,8 @@ const IDialogButtonForTaskDashBoardDetail: React.FC<IDialogButtonForTaskDashBoar
         </button>
       </DialogTrigger>
 
-      <DialogContent className="w-screen h-[calc(100vh-2rem)] max-w-none p-0 mx-0 mb-0 mt-0 rounded-lg bg-gray-50 shadow-xl">
-        <div className="grid grid-cols-5 gap-0 h-[calc(100%-2rem)]">
+      <DialogContent className="w-screen h-screen max-w-none p-0 m-0 rounded-none bg-gray-50 shadow-none">
+        <div className="grid grid-cols-5 gap-0 h-full">
           {/* Left Section */}
           <div className="col-span-3 bg-white flex flex-col">
             <DialogHeader className="py-4 px-2 border-b">
@@ -89,11 +85,14 @@ const IDialogButtonForTaskDashBoardDetail: React.FC<IDialogButtonForTaskDashBoar
                 />
               </div>
               <ThumbnailList
+                taskId={id}
                 images={taskDetail?.ref_images || null}
                 getValidImageUrl={getValidImageUrl}
               />
             </div>
-            <Description>{description}</Description>
+            <div className="p-4 bg-gray-50 border-t">
+              <p className="text-sm text-gray-600">{description}</p>
+            </div>
           </div>
 
           {/* Right Section */}
