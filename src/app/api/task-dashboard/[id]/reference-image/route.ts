@@ -4,7 +4,7 @@ import { getSupabaseAuth, getSupabaseService } from "@/lib/supabase/serverClient
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
     const supabaseAuth = getSupabaseAuth();
@@ -15,7 +15,7 @@ export async function POST(
     }
 
     const { imageUrls } = await request.json();
-    const taskId = params.id;
+    const taskId = context.params.id;
     
     if (!imageUrls?.length) {
       return NextResponse.json({ error: 'No image URLs provided' }, { status: 400 });
