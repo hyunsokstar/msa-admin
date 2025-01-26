@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { Trash, Eye, Download } from "lucide-react";
+import { CommonAlertDialog } from "@/components/common/CommonAlertDialog.tsx";
 
 interface ThumbnailImageProps {
   imageId: string;
@@ -44,7 +45,6 @@ const ThumbnailImage: React.FC<ThumbnailImageProps> = ({
 
       {isHovered && (
         <div className="absolute top-2 right-2 flex space-x-2">
-
           <button
             className="p-1 bg-white rounded-full hover:bg-gray-200"
             onClick={() => handleView(getValidImageUrl(imageUrl))}
@@ -64,15 +64,20 @@ const ThumbnailImage: React.FC<ThumbnailImageProps> = ({
           >
             <Download size={16} className="text-green-500" />
           </button>
-          <button
-            className="p-1 bg-white rounded-full hover:bg-gray-200"
-            onClick={() => onDelete(imageId)}
-            title="Delete"
-          >
-            <Trash size={16} className="text-red-500" />
-          </button>
-
-
+          
+          <CommonAlertDialog
+            title="이미지 삭제"
+            description="이 이미지를 삭제하시겠습니까?"
+            onConfirm={() => onDelete(imageId)}
+            triggerContent={
+              <button
+                className="p-1 bg-white rounded-full hover:bg-gray-200"
+                title="Delete"
+              >
+                <Trash size={16} className="text-red-500" />
+              </button>
+            }
+          />
         </div>
       )}
     </div>

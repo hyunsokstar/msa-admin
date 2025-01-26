@@ -90,8 +90,8 @@ const IDialogButtonForTaskDashBoardDetail: React.FC<IDialogButtonForTaskDashBoar
                 getValidImageUrl={getValidImageUrl}
               />
             </div>
-            <div className="p-4 bg-gray-50 border-t">
-              <p className="text-sm text-gray-600">{description}</p>
+            <div className="p-6 bg-gray-50 border-t min-h-[300px]">
+              <p className="text-sm text-gray-600 leading-relaxed">{description}</p>
             </div>
           </div>
 
