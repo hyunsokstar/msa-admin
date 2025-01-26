@@ -38,6 +38,8 @@ export default function TaskDashboardPage() {
   const dragAndDropTask = useApiForDragAndDropTask();
 
   const { data: tasksFromServer, isLoading, error } = useApiForGetTaskDashboard();
+  console.log("tasksFromServer", tasksFromServer);
+  
 
   const sensors = useSensors(
     useSensor(PointerSensor),

@@ -1,15 +1,7 @@
+// components/TaskDialog.tsx
 "use client";
 
-import React from "react";
-
-interface IDialogButtonForTaskDashBoardDetailProps {
-  id: string;
-  title: string;
-  description: string;
-  imageUrl: string;
-  className?: string;
-}
-
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -20,9 +12,17 @@ import {
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import ThumbnailList from "./ThumbnailList";
-import SubTasks from "./SubTasks";
 import TaskInformation from "./TaskInformation";
 import { useApiForGetTaskDashBoardDetail } from "@/hook/task/useApiForGetTaskDashBoardDetail";
+import TabMenu from "./TabMenu";
+
+interface IDialogButtonForTaskDashBoardDetailProps {
+  id: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+  className?: string;
+}
 
 const IDialogButtonForTaskDashBoardDetail: React.FC<IDialogButtonForTaskDashBoardDetailProps> = ({
   id,
@@ -31,7 +31,10 @@ const IDialogButtonForTaskDashBoardDetail: React.FC<IDialogButtonForTaskDashBoar
   imageUrl,
   className,
 }) => {
-  const { data: taskDetail, isLoading } = useApiForGetTaskDashBoardDetail(id);
+  const [open, setOpen] = useState(false);
+  const { data: taskDetail, isLoading } = useApiForGetTaskDashBoardDetail(id, open);
+
+  console.log("taskDetail check: ", taskDetail);
 
   const getValidImageUrl = (url: string) => {
     try {
@@ -45,7 +48,7 @@ const IDialogButtonForTaskDashBoardDetail: React.FC<IDialogButtonForTaskDashBoar
   const validMainImageUrl = getValidImageUrl(imageUrl);
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <button
           className={cn(
@@ -69,7 +72,6 @@ const IDialogButtonForTaskDashBoardDetail: React.FC<IDialogButtonForTaskDashBoar
 
       <DialogContent className="w-screen h-screen max-w-none p-0 m-0 rounded-none bg-gray-50 shadow-none">
         <div className="grid grid-cols-5 gap-0 h-full">
-          {/* Left Section */}
           <div className="col-span-3 bg-white flex flex-col">
             <DialogHeader className="py-4 px-2 border-b">
               <DialogTitle className="text-xl font-semibold">{title}</DialogTitle>
@@ -95,7 +97,6 @@ const IDialogButtonForTaskDashBoardDetail: React.FC<IDialogButtonForTaskDashBoar
             </div>
           </div>
 
-          {/* Right Section */}
           <div className="col-span-2 bg-gray-50 border-l flex flex-col gap-4 p-6">
             <TaskInformation
               status={taskDetail?.status || null}
@@ -106,7 +107,7 @@ const IDialogButtonForTaskDashBoardDetail: React.FC<IDialogButtonForTaskDashBoar
                   : null
               }
             />
-            <SubTasks isLoading={isLoading} subTodos={taskDetail?.sub_todos || null} />
+            {open && <TabMenu taskDetail={taskDetail} isLoading={isLoading} />}
           </div>
         </div>
       </DialogContent>
