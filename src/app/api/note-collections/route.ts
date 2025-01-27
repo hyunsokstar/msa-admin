@@ -1,4 +1,4 @@
-// app/api/note-collections/route.ts
+// C:\Users\terec\msa-admin\src\app\api\note-collections\route.ts
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';

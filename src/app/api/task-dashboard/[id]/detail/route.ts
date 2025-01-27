@@ -25,26 +25,27 @@ export async function GET(
     const { data: task, error: taskError } = await supabase
       .from("task_dashboard")
       .select(`
-       *,
-       created_by:users!task_dashboard_created_by_fkey(
-         id,
-         full_name,
-         profile_image_url
-       ),
-       updated_by_user:users!task_dashboard_updated_by_fkey(
-         id,
-         full_name,
-         profile_image_url
-       ),
-       sub_todos(
-        id,
-        content,
-        is_completed,
-        created_at,
-        updated_at,
-        task_id
-      )
-     `)
+    *,
+    created_by:users!task_dashboard_created_by_fkey(
+      id,
+      full_name,
+      profile_image_url
+    ),
+    updated_by_user:users!task_dashboard_updated_by_fkey(
+      id,
+      full_name,
+      profile_image_url
+    ),
+    sub_todos(
+      id,
+      content,
+      is_completed,
+      created_at,
+      updated_at,
+      task_id
+    ),
+    task_api_mappings(*)  // 추가된 부분
+  `)
       .eq("id", taskId)
       .single();
 

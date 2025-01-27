@@ -1,4 +1,3 @@
-// components/TaskDialog.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -71,8 +70,9 @@ const IDialogButtonForTaskDashBoardDetail: React.FC<IDialogButtonForTaskDashBoar
       </DialogTrigger>
 
       <DialogContent className="w-screen h-screen max-w-none p-0 m-0 rounded-none bg-gray-50 shadow-none">
-        <div className="grid grid-cols-5 gap-0 h-full">
-          <div className="col-span-3 bg-white flex flex-col">
+        <div className="grid grid-cols-12 gap-0 h-full">
+          {/* 왼쪽 영역 (이미지와 설명) */}
+          <div className="col-span-6 bg-white flex flex-col">
             <DialogHeader className="py-4 px-2 border-b">
               <DialogTitle className="text-xl font-semibold">{title}</DialogTitle>
             </DialogHeader>
@@ -97,7 +97,8 @@ const IDialogButtonForTaskDashBoardDetail: React.FC<IDialogButtonForTaskDashBoar
             </div>
           </div>
 
-          <div className="col-span-2 bg-gray-50 border-l flex flex-col gap-4 p-6">
+          {/* 오른쪽 영역 (태스크 정보와 탭 메뉴) */}
+          <div className="col-span-6 bg-gray-50 border-l flex flex-col gap-4 p-6">
             <TaskInformation
               status={taskDetail?.status || null}
               createdBy={taskDetail?.created_by?.full_name || null}

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import { PlusCircle } from "lucide-react";
 import SubTasks from "./SubTasks";
+import ApiSpecs from "./ApiSpecs";
 
 interface TabMenuProps {
     taskDetail: any; // API 응답 타입에 맞게 수정 가능
@@ -49,7 +50,14 @@ const TabMenu: React.FC<TabMenuProps> = ({ taskDetail, isLoading }) => {
                         subTodos={taskDetail?.sub_todos || []}
                     />
                 )}
-                {activeTab === "api" && <div className="p-4">API Content</div>}
+                {/* {activeTab === "api" && <div className="p-4">API Content</div>} */}
+                {activeTab === "api" && (
+                    <ApiSpecs
+                        taskId={taskDetail?.id}
+                        isLoading={isLoading}
+                        apiSpecs={taskDetail?.task_api_mappings || []}
+                    />
+                )}
                 {activeTab === "code_review" && (
                     <div className="p-4">Code Review Content</div>
                 )}
