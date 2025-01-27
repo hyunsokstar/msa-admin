@@ -45,21 +45,13 @@ const ApiSpecs: React.FC<ApiSpecsProps> = ({ taskId, isLoading, apiSpecs }) => {
         console.log('Delete spec:', spec);
     };
 
-    const handleCreateApi = (formData: any) => {
-        // TODO: API 생성 로직 구현
-        console.log('Create API spec:', formData);
-    };
-
     if (isLoading) return <div className="text-sm text-gray-500">Loading API specs...</div>;
 
     return (
         <div className="flex-1 bg-white rounded-lg p-4 shadow-sm">
             <div className="mb-4 flex justify-between items-center">
                 <h2 className="text-lg font-semibold">API Specifications</h2>
-                <IDialogButtonForCreateApi
-                    taskId={taskId}
-                    onSubmit={handleCreateApi}
-                />
+                <IDialogButtonForCreateApi taskId={taskId} />
             </div>
 
             <ApiSpecTable
