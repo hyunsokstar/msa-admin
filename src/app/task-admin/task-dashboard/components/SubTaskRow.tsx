@@ -96,6 +96,7 @@ const SubTaskRow: React.FC<SubTaskRowProps> = ({
                         isEditing={isEditing}
                         setIsEditing={setIsEditing}
                         editContent={editContent}
+                        originalContent={todo.content}
                     />
                 </div>
             </TableCell>
