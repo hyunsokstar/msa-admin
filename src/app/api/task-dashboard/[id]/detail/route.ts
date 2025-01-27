@@ -2,6 +2,7 @@
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import { TaskDetail } from "@/types/task/typeForTaskDetail";
 
 export const dynamic = "force-dynamic";
 
@@ -25,54 +26,33 @@ export async function GET(
     const { data: task, error: taskError } = await supabase
       .from("task_dashboard")
       .select(`
-    *,
-    created_by:users!task_dashboard_created_by_fkey(
-      id,
-      full_name,
-      profile_image_url
-    ),
-    updated_by_user:users!task_dashboard_updated_by_fkey(
-      id,
-      full_name,
-      profile_image_url
-    ),
-    sub_todos(
-      id,
-      content,
-      is_completed,
-      created_at,
-      updated_at,
-      task_id
-    ),
-    task_api_mappings(*)  // 추가된 부분
-  `)
+        *,
+        created_by:users!task_dashboard_created_by_fkey(
+          id,
+          full_name,
+          profile_image_url
+        ),
+        updated_by_user:users!task_dashboard_updated_by_fkey(
+          id,
+          full_name,
+          profile_image_url
+        ),
+        sub_todos(
+          id,
+          content,
+          is_completed,
+          created_at,
+          updated_at,
+          task_id
+        ),
+        task_api_mappings(*)
+      `)
       .eq("id", taskId)
       .single();
 
     if (taskError) {
       return NextResponse.json(
         { error: "Failed to fetch task details", details: taskError.message, data: null },
-        { status: 404 }
-      );
-    }
-
-    // Sub todos query
-    const { data: subTodos, error: subTodosError } = await supabase
-      .from("sub_todos")
-      .select(`
-       id,
-       content,
-       is_completed,
-       created_at,
-       updated_at,
-       task_id
-     `)
-      .eq("task_id", taskId)
-      .order("created_at", { ascending: true });
-
-    if (subTodosError) {
-      return NextResponse.json(
-        { error: "Failed to fetch sub todos", details: subTodosError.message, data: null },
         { status: 404 }
       );
     }
@@ -91,13 +71,14 @@ export async function GET(
       );
     }
 
+    const responseData: TaskDetail = {
+      ...task,
+      ref_images: refImages || [],
+    } as TaskDetail;
+
     return NextResponse.json(
       {
-        data: {
-          ...task,
-          sub_todos: subTodos || [],
-          ref_images: refImages || [],
-        },
+        data: responseData,
       },
       {
         status: 200,
@@ -149,6 +130,42 @@ export async function DELETE(
         {
           error: "Failed to delete sub todos",
           details: subTodosError.message,
+          data: null,
+        },
+        { status: 500 }
+      );
+    }
+
+    // task_api_mappings 삭제
+    const { error: apiMappingsError } = await supabase
+      .from("task_api_mappings")
+      .delete()
+      .eq("task_id", taskId);
+
+    if (apiMappingsError) {
+      console.error("API mappings deletion error:", apiMappingsError);
+      return NextResponse.json(
+        {
+          error: "Failed to delete API mappings",
+          details: apiMappingsError.message,
+          data: null,
+        },
+        { status: 500 }
+      );
+    }
+
+    // 참조 이미지 삭제
+    const { error: refImagesError } = await supabase
+      .from("ref_screen_images")
+      .delete()
+      .eq("task_id", taskId);
+
+    if (refImagesError) {
+      console.error("Reference images deletion error:", refImagesError);
+      return NextResponse.json(
+        {
+          error: "Failed to delete reference images",
+          details: refImagesError.message,
           data: null,
         },
         { status: 500 }
