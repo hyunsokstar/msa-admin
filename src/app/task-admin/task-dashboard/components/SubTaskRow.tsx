@@ -1,15 +1,16 @@
 // SubTaskRow.tsx
-"use client";
-import React from "react";
+import React, { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { cn } from "@/lib/utils";
+import { Check } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import SubTaskActions from "./SubTaskActions";
 import CommonSwitch from "@/components/common/CommonSwitch";
 import { UseMutationResult } from "@tanstack/react-query";
 import { toast, ToastPosition } from "react-toastify";
 
 interface SubTaskRowProps {
+    taskId: string;
     todo: {
         id: string;
         content: string;
@@ -24,10 +25,12 @@ const SubTaskRow: React.FC<SubTaskRowProps> = ({
     todo,
     isSelected,
     onSelect,
-    updateStatusMutation
+    updateStatusMutation,
+    taskId
 }) => {
+    const [isEditing, setIsEditing] = useState(false);
+    const [editContent, setEditContent] = useState(todo.content);
 
-    // react-toastify 선언
     const toastOptions = {
         position: "top-center" as ToastPosition,
         autoClose: 5000,
@@ -53,26 +56,48 @@ const SubTaskRow: React.FC<SubTaskRowProps> = ({
 
     return (
         <TableRow>
-            <TableCell>
+            <TableCell className="text-center">
                 <Checkbox checked={isSelected} onCheckedChange={onSelect} />
             </TableCell>
-            <TableCell>
-                <span className={cn(
-                    "text-sm text-gray-700",
-                    todo.is_completed && "text-gray-400 line-through"
-                )}>
-                    {todo.content}
-                </span>
+            <TableCell className="text-center">
+                {isEditing ? (
+                    <Input
+                        value={editContent}
+                        onChange={(e) => setEditContent(e.target.value)}
+                        className="max-w-sm mx-auto"
+                    />
+                ) : (
+                    <div className="flex items-center justify-center gap-2">
+                        <span className="text-sm text-gray-700">
+                            {todo.content}
+                        </span>
+                        {todo.is_completed && (
+                            <div className="flex items-center justify-center w-5 h-5 rounded-full bg-green-500">
+                                <Check className="w-3 h-3 text-white" />
+                            </div>
+                        )}
+                    </div>
+                )}
             </TableCell>
-            <TableCell>
-                <CommonSwitch
-                    id={`task-${todo.id}`}
-                    checked={todo.is_completed}
-                    onCheckedChange={handleStatusChange}
-                />
+            <TableCell className="text-center">
+                <div className="flex justify-center">
+                    <CommonSwitch
+                        id={`task-${todo.id}`}
+                        checked={todo.is_completed}
+                        onCheckedChange={handleStatusChange}
+                    />
+                </div>
             </TableCell>
-            <TableCell>
-                <SubTaskActions todoId={todo.id} />
+            <TableCell className="text-center">
+                <div className="flex justify-center">
+                    <SubTaskActions
+                        taskId={taskId}
+                        todoId={todo.id}
+                        isEditing={isEditing}
+                        setIsEditing={setIsEditing}
+                        editContent={editContent}
+                    />
+                </div>
             </TableCell>
         </TableRow>
     );

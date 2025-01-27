@@ -41,9 +41,10 @@ const TabMenu: React.FC<TabMenuProps> = ({ taskDetail, isLoading }) => {
                 </nav>
             </div>
 
-            <div className="mt-4">
+            <div className="mt-0">
                 {activeTab === "subtodo" && (
                     <SubTasks
+                        taskId={taskDetail?.id}
                         isLoading={isLoading}
                         subTodos={taskDetail?.sub_todos || []}
                     />

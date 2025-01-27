@@ -1,4 +1,3 @@
-// SubTasks.tsx
 "use client";
 import React, { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -8,11 +7,12 @@ import SubTaskHeader from "./SubTaskHeader";
 import { useUpdateSubTodoStatus } from "@/hook/task/useUpdateSubTodoStatus";
 
 interface SubTasksProps {
+  taskId: string;
   isLoading: boolean;
   subTodos: { id: string; content: string; is_completed: boolean }[] | null;
 }
 
-const SubTasks: React.FC<SubTasksProps> = ({ isLoading, subTodos }) => {
+const SubTasks: React.FC<SubTasksProps> = ({ taskId, isLoading, subTodos }) => {
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
   const [isAllSelected, setIsAllSelected] = useState(false);
   const updateStatusMutation = useUpdateSubTodoStatus();
@@ -41,22 +41,23 @@ const SubTasks: React.FC<SubTasksProps> = ({ isLoading, subTodos }) => {
 
   return (
     <div className="flex-1 bg-white rounded-lg p-4 shadow-sm">
-      <SubTaskHeader selectedCount={selectedItems.size} />
+      <SubTaskHeader taskId={taskId} selectedCount={selectedItems.size} />
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-12">
+            <TableHead className="w-12 text-center">
               <Checkbox checked={isAllSelected} onCheckedChange={handleSelectAll} />
             </TableHead>
-            <TableHead>Content</TableHead>
-            <TableHead className="w-20">Status</TableHead>
-            <TableHead className="w-20">Actions</TableHead>
+            <TableHead className="text-center">Content</TableHead>
+            <TableHead className="w-20 text-center">Status</TableHead>
+            <TableHead className="w-20 text-center">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {subTodos && subTodos.length > 0 ? (
             subTodos.map((todo) => (
               <SubTaskRow
+                taskId={taskId}
                 key={todo.id}
                 todo={todo}
                 isSelected={selectedItems.has(todo.id)}
