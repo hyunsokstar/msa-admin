@@ -16,10 +16,8 @@ export async function PUT(
 ): Promise<NextResponse> {
   try {
     const supabase = createRouteHandlerClient({ cookies });
-    const params = await context.params;
-    const noteId = params.id;
-    const body = await request.json();
-    const items: OrderChangeItem[] = body.items;
+    const { id: noteId } = await context.params;
+    const { items }: { items: OrderChangeItem[] } = await request.json();
 
     console.log('Updating note contents order:', { noteId, items });
 
@@ -31,7 +29,7 @@ export async function PUT(
     }
 
     // 모든 업데이트 작업을 Promise 배열로 생성
-    const updatePromises = items.map(item => 
+    const updatePromises = items.map(item =>
       supabase
         .from("note_contents")
         .update({ order: item.order })
