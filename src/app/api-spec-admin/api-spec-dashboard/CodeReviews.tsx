@@ -1,10 +1,12 @@
 // components/CodeReviews.tsx
 import React, { useState, useRef } from "react";
-import { Edit2, Plus } from "lucide-react";
+import { Edit2 } from "lucide-react";
 import { TaskCodeReview } from "@/types/task/typeForCodeReviews";
-import CommonButton2 from "@/components/common/CommonButton2";
 import { Button } from "@/components/ui/button";
 import ICardForCodeReview from "@/app/task-admin/task-dashboard/components/ICardForCodeReview";
+import IDialogButtonForCreateCodeReview from "@/app/task-admin/task-dashboard/components/IDialogButtonForCreateCodeReview";
+import { toast } from "react-toastify";
+import { useCreateCodeReview } from "@/hook/task/useCreateCodeReview";
 
 interface CodeReviewsProps {
     taskId: string;
@@ -21,6 +23,9 @@ const CodeReviews: React.FC<CodeReviewsProps> = ({
     const [selectedReview, setSelectedReview] = useState<TaskCodeReview | null>(null);
     const [deletingId, setDeletingId] = useState<number | null>(null);
     const contentRefs = useRef<{ [key: string]: HTMLDivElement }>({});
+
+    // useCreateCodeReview 훅 사용
+    const { mutate: createCodeReview, isPending: isCreating } = useCreateCodeReview(taskId);
 
     const handleScrollToContent = (reviewId: string) => {
         const element = contentRefs.current[reviewId];
@@ -41,6 +46,7 @@ const CodeReviews: React.FC<CodeReviewsProps> = ({
             // await deleteCodeReview(reviewId);
         } catch (error) {
             console.error('Failed to delete review:', error);
+            toast.error("Failed to delete code review");
         } finally {
             setDeletingId(null);
         }
@@ -54,6 +60,16 @@ const CodeReviews: React.FC<CodeReviewsProps> = ({
     const handleContentChange = (reviewId: number, newContent: string) => {
         // 내용 변경 로직
         console.log('Update content:', reviewId, newContent);
+    };
+
+    const handleCreateReview = (data: { title: string; content: string }) => {
+        createCodeReview({
+            title: data.title,
+            content: data.content,
+            path: "",
+            writer: "",
+            order: 0
+        });
     };
 
     if (isLoading) {
@@ -80,12 +96,11 @@ const CodeReviews: React.FC<CodeReviewsProps> = ({
                         {isUpdateMode ? '수정 모드 끄기' : '수정 모드'}
                     </Button>
                 </div>
-                <CommonButton2
-                    variant="primary"
-                    icon={<Plus className="h-4 w-4" />}
-                >
-                    Add Review
-                </CommonButton2>
+                <IDialogButtonForCreateCodeReview
+                    taskId={taskId}
+                    onSubmit={handleCreateReview}
+                    isLoading={isCreating}
+                />
             </div>
 
             {/* 스크롤 가능한 컨텐츠 영역 */}
