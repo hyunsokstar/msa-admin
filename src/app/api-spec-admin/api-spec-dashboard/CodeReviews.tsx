@@ -1,11 +1,10 @@
 // components/CodeReviews.tsx
-import React, { useState } from "react";
-import { Pencil, Plus } from "lucide-react";
-import CommonButton2 from "@/components/common/CommonButton2";
-import CommonDialogButton from "@/components/common/CommonDialogButton";
+import React, { useState, useRef } from "react";
+import { Edit2, Plus } from "lucide-react";
 import { TaskCodeReview } from "@/types/task/typeForCodeReviews";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { format } from "date-fns";
+import CommonButton2 from "@/components/common/CommonButton2";
+import { Button } from "@/components/ui/button";
+import ICardForCodeReview from "@/app/task-admin/task-dashboard/components/ICardForCodeReview";
 
 interface CodeReviewsProps {
     taskId: string;
@@ -18,81 +17,108 @@ const CodeReviews: React.FC<CodeReviewsProps> = ({
     isLoading,
     codeReviews = []
 }) => {
-    const [isAddReviewOpen, setIsAddReviewOpen] = useState(false);
-    const [editingReview, setEditingReview] = useState<TaskCodeReview | null>(null);
+    const [isUpdateMode, setIsUpdateMode] = useState(false);
+    const [selectedReview, setSelectedReview] = useState<TaskCodeReview | null>(null);
+    const [deletingId, setDeletingId] = useState<number | null>(null);
+    const contentRefs = useRef<{ [key: string]: HTMLDivElement }>({});
 
-    const handleAddCodeReview = () => {
-        setIsAddReviewOpen(true);
+    const handleScrollToContent = (reviewId: string) => {
+        const element = contentRefs.current[reviewId];
+        if (element) {
+            element.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+                inline: 'nearest'
+            });
+        }
     };
 
-    const handleEditCodeReview = (review: TaskCodeReview) => {
-        setEditingReview(review);
+    const handleDelete = async (reviewId: number) => {
+        try {
+            setDeletingId(reviewId);
+            // 실제 삭제 API 호출
+            console.log('Delete review:', reviewId);
+            // await deleteCodeReview(reviewId);
+        } catch (error) {
+            console.error('Failed to delete review:', error);
+        } finally {
+            setDeletingId(null);
+        }
+    };
+
+    const handleTitleChange = (reviewId: number, newTitle: string) => {
+        // 제목 변경 로직
+        console.log('Update title:', reviewId, newTitle);
+    };
+
+    const handleContentChange = (reviewId: number, newContent: string) => {
+        // 내용 변경 로직
+        console.log('Update content:', reviewId, newContent);
     };
 
     if (isLoading) {
-        return <div className="p-4">Loading...</div>;
+        return (
+            <div className="flex items-center justify-center h-[calc(100vh-200px)]">
+                <div className="animate-spin rounded-full h-8 w-8 border-2 border-gray-900"></div>
+            </div>
+        );
     }
 
     return (
-        <div className="p-4">
-            <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-medium">Code Reviews</h2>
+        <section className="bg-white rounded-lg shadow-sm flex flex-col h-[calc(100vh-200px)]">
+            {/* 헤더 영역 */}
+            <div className="flex items-center justify-between p-4 border-b">
+                <div className="flex items-center gap-4">
+                    <h2 className="text-lg font-semibold">Code Reviews</h2>
+                    <Button
+                        variant="outline"
+                        onClick={() => setIsUpdateMode(!isUpdateMode)}
+                        className="flex items-center gap-2"
+                        size="sm"
+                    >
+                        <Edit2 className="h-4 w-4" />
+                        {isUpdateMode ? '수정 모드 끄기' : '수정 모드'}
+                    </Button>
+                </div>
                 <CommonButton2
                     variant="primary"
                     icon={<Plus className="h-4 w-4" />}
-                    onClick={handleAddCodeReview}
                 >
                     Add Review
                 </CommonButton2>
             </div>
 
-            <div className="space-y-4">
-                {codeReviews.map((review) => (
-                    <div
-                        key={review.id}
-                        className="p-4 border rounded-lg bg-white shadow-sm"
-                    >
-                        <div className="flex justify-between items-start mb-3">
-                            <div className="flex items-start gap-3">
-                                <Avatar className="h-8 w-8">
-                                    <AvatarImage
-                                        src={review.writer.profile_image_url || ''}
-                                        alt={review.writer.full_name || 'No Name'}
-                                    />
-                                    <AvatarFallback>
-                                        {(review.writer.full_name?.slice(0, 2) || '').toUpperCase()}
-                                    </AvatarFallback>
-                                </Avatar>
-                                <div>
-                                    <h3 className="font-medium">{review.title}</h3>
-                                    <p className="text-sm text-gray-500">
-                                        {review.writer.full_name} · {format(new Date(review.created_at), 'MMM d, yyyy')}
-                                    </p>
-                                </div>
-                            </div>
-                            <CommonButton2
-                                variant="ghost"
-                                icon={<Pencil className="h-4 w-4" />}
-                                onClick={() => handleEditCodeReview(review)}
-                                className="px-2"
+            {/* 스크롤 가능한 컨텐츠 영역 */}
+            <div className="flex-1 overflow-y-auto px-4 py-2">
+                <div className="space-y-4">
+                    {codeReviews.map((review) => (
+                        <div
+                            key={review.id}
+                            ref={(el) => {
+                                if (el) contentRefs.current[review.id.toString()] = el;
+                            }}
+                        >
+                            <ICardForCodeReview
+                                review={review}
+                                isSelected={selectedReview?.id === review.id}
+                                isUpdateMode={isUpdateMode}
+                                onClick={() => setSelectedReview(review)}
+                                onDelete={() => handleDelete(review.id)}
+                                isDeleting={deletingId === review.id}
+                                onTitleChange={(newTitle) => handleTitleChange(review.id, newTitle)}
+                                onContentChange={(newContent) => handleContentChange(review.id, newContent)}
+                                taskId={taskId}
                             />
                         </div>
-                        <div className="whitespace-pre-wrap text-sm text-gray-600 pl-11">
-                            {review.content}
+                    ))}
+                    {codeReviews.length === 0 && (
+                        <div className="flex items-center justify-center h-[400px] text-gray-500">
+                            No code reviews yet. Add your first review!
                         </div>
-                        <div className="mt-2 text-xs text-gray-400 pl-11">
-                            Last updated: {format(new Date(review.updated_at), 'MMM d, yyyy HH:mm')}
-                        </div>
-                    </div>
-                ))}
-
-                {codeReviews.length === 0 && (
-                    <div className="text-center py-8 text-gray-500">
-                        No code reviews yet. Add your first review!
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
-        </div>
+        </section>
     );
 };
 
