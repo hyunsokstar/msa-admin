@@ -66,8 +66,7 @@ const IDialogButtonForCreateApi: React.FC<IDialogButtonForCreateApiProps> = ({
     return (
         <CommonDialogButton
             isOpen={isOpen}
-            onClose={() => setIsOpen(false)}
-            onOpen={() => setIsOpen(true)}
+            onOpenChange={() => setIsOpen(true)}
             trigger={
                 <CommonButton2
                     variant="primary"
