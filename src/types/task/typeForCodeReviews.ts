@@ -16,7 +16,7 @@ export interface TaskCodeReview {
     title: string;
     content: string;
     path: string;
-    writer: string;
+    writer: IUser;
     order: number;
     created_at: string;
     updated_at: string;

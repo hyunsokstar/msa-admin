@@ -1,4 +1,6 @@
 // components/CodeReviews.tsx
+"use client";
+
 import React, { useState, useRef } from "react";
 import { Edit2 } from "lucide-react";
 import { TaskCodeReview } from "@/types/task/typeForCodeReviews";
@@ -6,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import ICardForCodeReview from "@/app/task-admin/task-dashboard/components/ICardForCodeReview";
 import IDialogButtonForCreateCodeReview from "@/app/task-admin/task-dashboard/components/IDialogButtonForCreateCodeReview";
 import { toast } from "react-toastify";
-import { useCreateCodeReview } from "@/hook/task/useCreateCodeReview";
 
 interface CodeReviewsProps {
     taskId: string;
@@ -23,9 +24,6 @@ const CodeReviews: React.FC<CodeReviewsProps> = ({
     const [selectedReview, setSelectedReview] = useState<TaskCodeReview | null>(null);
     const [deletingId, setDeletingId] = useState<number | null>(null);
     const contentRefs = useRef<{ [key: string]: HTMLDivElement }>({});
-
-    // useCreateCodeReview 훅 사용
-    const { mutate: createCodeReview, isPending: isCreating } = useCreateCodeReview(taskId);
 
     const handleScrollToContent = (reviewId: string) => {
         const element = contentRefs.current[reviewId];
@@ -62,16 +60,6 @@ const CodeReviews: React.FC<CodeReviewsProps> = ({
         console.log('Update content:', reviewId, newContent);
     };
 
-    const handleCreateReview = (data: { title: string; content: string }) => {
-        createCodeReview({
-            title: data.title,
-            content: data.content,
-            path: "",
-            writer: "",
-            order: 0
-        });
-    };
-
     if (isLoading) {
         return (
             <div className="flex items-center justify-center h-[calc(100vh-200px)]">
@@ -96,11 +84,7 @@ const CodeReviews: React.FC<CodeReviewsProps> = ({
                         {isUpdateMode ? '수정 모드 끄기' : '수정 모드'}
                     </Button>
                 </div>
-                <IDialogButtonForCreateCodeReview
-                    taskId={taskId}
-                    onSubmit={handleCreateReview}
-                    isLoading={isCreating}
-                />
+                <IDialogButtonForCreateCodeReview taskId={taskId} />
             </div>
 
             {/* 스크롤 가능한 컨텐츠 영역 */}

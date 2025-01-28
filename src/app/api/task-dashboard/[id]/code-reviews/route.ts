@@ -5,14 +5,15 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
-export async function POST(
-    request: NextRequest,
-    context: { params: { id: string } }
-) {
+export async function POST(request: NextRequest) {
     try {
         const cookieStore = cookies();
         const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
-        const taskId = context.params.id;
+
+        // URL에서 task ID 추출
+        const urlParts = request.nextUrl.pathname.split('/');
+        const taskId = urlParts[urlParts.length - 2];
+
         const data = await request.json();
 
         const { data: review, error } = await supabase
@@ -27,16 +28,25 @@ export async function POST(
                     order: data.order
                 }
             ])
-            .select()
+            .select(`
+                *,
+                writer:users(id, email, full_name)
+            `)
             .single();
 
-        if (error) throw error;
+        if (error) {
+            console.error('Error creating code review:', error);
+            return NextResponse.json(
+                { error: error.message },
+                { status: 500 }
+            );
+        }
 
-        return NextResponse.json({ data: review });
+        return NextResponse.json({ data: review }, { status: 201 });
     } catch (error) {
-        console.error('Error creating code review:', error);
+        console.error('Server error:', error);
         return NextResponse.json(
-            { error: 'Failed to create code review' },
+            { error: 'Internal server error' },
             { status: 500 }
         );
     }

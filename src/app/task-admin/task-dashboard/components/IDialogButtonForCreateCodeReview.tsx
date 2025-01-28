@@ -25,6 +25,8 @@ import { toast } from "react-toastify";
 
 interface Props {
     taskId: string;
+    onSubmit?: (data: { title: string; content: string; }) => void; // optional prop
+    isLoading?: boolean;
 }
 
 const formSchema = z.object({
@@ -57,7 +59,7 @@ export default function IDialogButtonForCreateCodeReview({ taskId }: Props) {
 
         createCodeReview({
             ...data,
-            writer: user.id,  // email 대신 id를 사용
+            writer: user.id,
             order: 0
         }, {
             onSuccess: () => {
