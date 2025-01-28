@@ -57,7 +57,7 @@ const CodeReviews: React.FC<CodeReviewsProps> = ({
                                 <Avatar className="h-8 w-8">
                                     <AvatarImage
                                         src={review.writer.profile_image_url || ''}
-                                        alt={review.writer.full_name}
+                                        alt={review.writer.full_name || 'No Name'}
                                     />
                                     <AvatarFallback>
                                         {(review.writer.full_name?.slice(0, 2) || '').toUpperCase()}
