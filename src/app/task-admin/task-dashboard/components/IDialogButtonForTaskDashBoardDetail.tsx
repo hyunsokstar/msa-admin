@@ -108,7 +108,7 @@ const IDialogButtonForTaskDashBoardDetail: React.FC<IDialogButtonForTaskDashBoar
                   : null
               }
             />
-            {open && <TabMenu taskDetail={taskDetail} isLoading={isLoading} />}
+            {open && taskDetail && <TabMenu taskDetail={taskDetail} isLoading={isLoading} />}
           </div>
         </div>
       </DialogContent>
