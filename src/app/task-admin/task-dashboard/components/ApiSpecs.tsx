@@ -35,16 +35,6 @@ const ApiSpecs: React.FC<ApiSpecsProps> = ({ taskId, isLoading, apiSpecs }) => {
         setIsAllSelected(newSelected.size === (apiSpecs?.length || 0));
     };
 
-    const handleEdit = (spec: TaskApiSpec) => {
-        // TODO: Implement edit functionality
-        console.log('Edit spec:', spec);
-    };
-
-    const handleDelete = (spec: TaskApiSpec) => {
-        // TODO: Implement delete functionality
-        console.log('Delete spec:', spec);
-    };
-
     if (isLoading) return <div className="text-sm text-gray-500">Loading API specs...</div>;
 
     return (
@@ -60,8 +50,7 @@ const ApiSpecs: React.FC<ApiSpecsProps> = ({ taskId, isLoading, apiSpecs }) => {
                 isAllSelected={isAllSelected}
                 onSelectAll={handleSelectAll}
                 onSelectItem={handleSelectItem}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
+                taskId={taskId}
             />
         </div>
     );

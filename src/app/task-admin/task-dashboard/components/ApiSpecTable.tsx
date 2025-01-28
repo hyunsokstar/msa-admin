@@ -7,27 +7,25 @@ import { TaskApiSpec } from "@/types/task/typeForTaskDashboard";
 import { cn } from "@/lib/utils";
 import { getMethodColor } from "@/lib/utils";
 import IDialogButtonForTestApi from "./IDialogButtonForTestApi";
-import CommonButton2 from "@/components/common/CommonButton2";
-import { Pencil, Trash2 } from "lucide-react";
+import IDialogButtonForEditApi from "./IDialogButtonForEditApi";
+import IDialogButtonForDeleteApi from "./IDialogButtonForDeleteApi";
 
 interface ApiSpecTableProps {
+    taskId: string;
     apiSpecs: TaskApiSpec[] | null;
     selectedItems: Set<string>;
     isAllSelected: boolean;
     onSelectAll: () => void;
     onSelectItem: (id: string) => void;
-    onEdit: (spec: TaskApiSpec) => void;
-    onDelete: (spec: TaskApiSpec) => void;
 }
 
 const ApiSpecTable: React.FC<ApiSpecTableProps> = ({
+    taskId,
     apiSpecs,
     selectedItems,
     isAllSelected,
     onSelectAll,
     onSelectItem,
-    onEdit,
-    onDelete,
 }) => {
     return (
         <Table>
@@ -65,18 +63,14 @@ const ApiSpecTable: React.FC<ApiSpecTableProps> = ({
                             </TableCell>
                             <TableCell>
                                 <div className="flex justify-center gap-2">
-                                    <CommonButton2
-                                        variant="ghost"
-                                        icon={<Pencil className="h-4 w-4" />}
-                                        onClick={() => onEdit(spec)}
-                                        className="px-2"
+                                    <IDialogButtonForEditApi
+                                        taskId={taskId}
+                                        apiSpec={spec}
                                     />
                                     <IDialogButtonForTestApi apiSpec={spec} />
-                                    <CommonButton2
-                                        variant="ghost"
-                                        icon={<Trash2 className="h-4 w-4" />}
-                                        onClick={() => onDelete(spec)}
-                                        className="text-red-600 hover:text-red-700 px-2"
+                                    <IDialogButtonForDeleteApi
+                                        taskId={taskId}
+                                        apiSpec={spec}
                                     />
                                 </div>
                             </TableCell>

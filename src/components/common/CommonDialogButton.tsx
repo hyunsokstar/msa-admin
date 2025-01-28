@@ -1,78 +1,62 @@
-// src/components/common/CommonDialogButton.tsx
+// CommonDialogButton.tsx
 "use client";
 
 import React from "react";
-import { Transition, TransitionChild } from "@headlessui/react";
-import CommonButton2 from "./CommonButton2";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface CommonDialogButtonProps {
-    isOpen: boolean;
-    onClose: () => void;
-    onOpen: () => void;
+    isOpen?: boolean;
+    onOpenChange?: (open: boolean) => void;
     trigger: React.ReactNode;
     title: string | React.ReactNode;
     children: React.ReactNode;
+    size?: "sm" | "md" | "lg" | "xl" | "full";
 }
 
 const CommonDialogButton: React.FC<CommonDialogButtonProps> = ({
     isOpen,
-    onClose,
-    onOpen,
+    onOpenChange,
     trigger,
     title,
     children,
+    size = "md",
 }) => {
+    const sizeClasses = {
+        sm: "sm:max-w-sm",
+        md: "sm:max-w-md",
+        lg: "sm:max-w-lg",
+        xl: "sm:max-w-xl",
+        full: "sm:max-w-[98vw] w-[98vw] h-[98vh]"
+    };
+
+    const contentClass = size === "full"
+        ? `${sizeClasses[size]} bg-white p-0 border-none`
+        : `${sizeClasses[size]} bg-white`;
+
+    const headerClass = size === "full"
+        ? "border-b px-6 py-4"
+        : "";
+
+    const bodyClass = size === "full"
+        ? "flex-1 p-6 overflow-y-auto h-[calc(98vh-80px)]"
+        : "flex-1 p-4";
+
     return (
-        <>
-            <div onClick={onOpen}>{trigger}</div>
-
-            <Transition show={isOpen}>
-                <TransitionChild
-                    enter="ease-out duration-300"
-                    enterFrom="opacity-0"
-                    enterTo="opacity-100"
-                    leave="ease-in duration-200"
-                    leaveFrom="opacity-100"
-                    leaveTo="opacity-0"
-                >
-                    <div className="fixed inset-0 bg-black/30 z-50" />
-                </TransitionChild>
-
-                <div className="fixed inset-0 z-50 overflow-y-auto">
-                    <TransitionChild
-                        enter="ease-out duration-300"
-                        enterFrom="opacity-0 scale-95"
-                        enterTo="opacity-100 scale-100"
-                        leave="ease-in duration-200"
-                        leaveFrom="opacity-100 scale-100"
-                        leaveTo="opacity-0 scale-95"
-                    >
-                        <div className="flex min-h-full items-center justify-center">
-                            <div className="w-screen h-screen bg-white">
-                                <div className="flex flex-col h-full">
-                                    {/* Header */}
-                                    <div className="flex items-center justify-between px-6 py-4 border-b bg-white/80 backdrop-blur-sm sticky top-0">
-                                        <div className="flex-1">{title}</div>
-                                        <CommonButton2
-                                            variant="ghost"
-                                            onClick={onClose}
-                                            className="ml-auto p-2"
-                                            icon={<X className="h-4 w-4" />}
-                                        />
-                                    </div>
-
-                                    {/* Content */}
-                                    <div className="flex-1 overflow-auto">
-                                        {children}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </TransitionChild>
+        <Dialog open={isOpen} onOpenChange={onOpenChange}>
+            <DialogTrigger asChild>{trigger}</DialogTrigger>
+            <DialogContent className={contentClass}>
+                <DialogHeader className={headerClass}>
+                    <div className="flex items-center justify-between">
+                        <DialogTitle>{title}</DialogTitle>
+                    </div>
+                </DialogHeader>
+                <div className={bodyClass}>
+                    {children}
                 </div>
-            </Transition>
-        </>
+            </DialogContent>
+        </Dialog>
     );
 };
 
