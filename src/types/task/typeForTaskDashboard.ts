@@ -1,6 +1,4 @@
 // src/types/task/typeForTaskDashboard.ts
-
-// 기존 타입들...
 export type TaskStatus = 'ready' | 'progress' | 'test' | 'complete';
 
 export interface User {
@@ -15,21 +13,32 @@ export interface User {
   profile_image_url?: string | null;
 }
 
-// API 스펙 관련 새로운 타입들
 export interface TaskApiSpec {
   id: string;
   task_id: string;
   endpoint: string;
   method: string;
   description: string | null;
-  request_spec: Record<string, any>;  // JSONB 타입
-  response_spec: Record<string, any>; // JSONB 타입
-  headers: Record<string, any>;       // JSONB 타입
+  request_spec: Record<string, any> | null;  // null 허용으로 수정
+  response_spec: Record<string, any> | null; // null 허용으로 수정
+  headers: Record<string, any> | null;       // null 허용으로 수정
   created_at: string;
   updated_at: string;
 }
 
-// TaskDashboard 인터페이스 업데이트
+export interface TaskCodeReview {
+  id: number;
+  task_id: string;
+  content: string;
+  title: string;
+  created_at: string;
+  updated_at: string;
+  page: number;
+  order: number;
+  writer: User;
+  path: string;
+}
+
 export interface TaskDashboard {
   id: string;
   title: string;
@@ -43,12 +52,12 @@ export interface TaskDashboard {
   updated_at: string | null;
   updated_by: User | null;
   is_archived: boolean | null;
-  task_api_mappings?: TaskApiSpec[]; // API 스펙 정보 추가
-  sub_todos?: SubTodo[];            // 기존 sub_todos 타입도 명시적으로 추가
-  ref_images?: RefImage[];          // 기존 ref_images 타입도 명시적으로 추가
+  task_api_mappings?: TaskApiSpec[];
+  task_code_reviews?: TaskCodeReview[];
+  sub_todos?: SubTodo[];
+  ref_images?: RefImage[];
 }
 
-// SubTodo 인터페이스 (이미 있다면 그대로 사용)
 export interface SubTodo {
   id: string;
   content: string;
@@ -58,7 +67,6 @@ export interface SubTodo {
   task_id: string;
 }
 
-// RefImage 인터페이스 (이미 있다면 그대로 사용)
 export interface RefImage {
   id: string;
   task_id: string;
@@ -92,18 +100,29 @@ export interface ICreateForTaskBoard {
   createdBy: string;
 }
 
-// API 스펙 생성을 위한 인터페이스
 export interface ICreateTaskApiSpec {
   task_id: string;
   endpoint: string;
   method: string;
   description?: string;
-  request_spec?: Record<string, any>;
-  response_spec?: Record<string, any>;
-  headers?: Record<string, any>;
+  request_spec?: Record<string, any> | null;
+  response_spec?: Record<string, any> | null;
+  headers?: Record<string, any> | null;
 }
 
-// API 스펙 업데이트를 위한 인터페이스
+export interface ICreateTaskCodeReview {
+  task_id: string;
+  content: string;
+  title: string;
+  page?: number;
+  order?: number;
+  writer: string;
+}
+
 export interface IUpdateTaskApiSpec extends Partial<Omit<ICreateTaskApiSpec, 'task_id'>> {
   id: string;
+}
+
+export interface IUpdateTaskCodeReview extends Partial<Omit<ICreateTaskCodeReview, 'task_id' | 'writer'>> {
+  id: number;
 }
