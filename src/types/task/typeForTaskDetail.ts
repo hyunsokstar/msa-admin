@@ -1,6 +1,7 @@
-// types/task/typeForTaskDetail.ts
-import { IUser } from "../typeForChatRoom";
+import { IUser } from "../typeForUser";
+import { TaskCodeReview } from "./typeForCodeReviews";
 
+// types/task/typeForTaskDetail.ts
 export interface SubTodo {
   id: string;
   task_id: string;
@@ -48,4 +49,5 @@ export interface TaskDetail {
   sub_todos: SubTodo[];
   ref_images: RefImage[];
   task_api_mappings: TaskApiMapping[];
+  task_code_reviews: TaskCodeReview[]; // 추가된 부분
 }

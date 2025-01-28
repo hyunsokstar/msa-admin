@@ -1,13 +1,15 @@
+// components/TabMenu.tsx
 "use client";
 
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
-import { PlusCircle } from "lucide-react";
 import SubTasks from "./SubTasks";
 import ApiSpecs from "./ApiSpecs";
+import { TaskDetail } from "@/types/task/typeForTaskDetail";
+import CodeReviews from "@/app/api-spec-admin/api-spec-dashboard/CodeReviews";
 
 interface TabMenuProps {
-    taskDetail: any; // API 응답 타입에 맞게 수정 가능
+    taskDetail: TaskDetail;
     isLoading: boolean;
 }
 
@@ -20,6 +22,39 @@ const TabMenu: React.FC<TabMenuProps> = ({ taskDetail, isLoading }) => {
         { id: "code_review", label: "Code Review" },
         { id: "messages", label: "Messages" },
     ];
+
+    const renderTabContent = () => {
+        switch (activeTab) {
+            case "subtodo":
+                return (
+                    <SubTasks
+                        taskId={taskDetail?.id}
+                        isLoading={isLoading}
+                        subTodos={taskDetail?.sub_todos || []}
+                    />
+                );
+            case "api":
+                return (
+                    <ApiSpecs
+                        taskId={taskDetail?.id}
+                        isLoading={isLoading}
+                        apiSpecs={taskDetail?.task_api_mappings || []}
+                    />
+                );
+            case "code_review":
+                return (
+                    <CodeReviews
+                        taskId={taskDetail?.id}
+                        isLoading={isLoading}
+                        codeReviews={taskDetail?.task_code_reviews || []}
+                    />
+                );
+            case "messages":
+                return <div className="p-4">Messages Content</div>;
+            default:
+                return null;
+        }
+    };
 
     return (
         <div className="w-full">
@@ -43,25 +78,7 @@ const TabMenu: React.FC<TabMenuProps> = ({ taskDetail, isLoading }) => {
             </div>
 
             <div className="mt-0">
-                {activeTab === "subtodo" && (
-                    <SubTasks
-                        taskId={taskDetail?.id}
-                        isLoading={isLoading}
-                        subTodos={taskDetail?.sub_todos || []}
-                    />
-                )}
-                {/* {activeTab === "api" && <div className="p-4">API Content</div>} */}
-                {activeTab === "api" && (
-                    <ApiSpecs
-                        taskId={taskDetail?.id}
-                        isLoading={isLoading}
-                        apiSpecs={taskDetail?.task_api_mappings || []}
-                    />
-                )}
-                {activeTab === "code_review" && (
-                    <div className="p-4">Code Review Content</div>
-                )}
-                {activeTab === "messages" && <div className="p-4">Messages Content</div>}
+                {renderTabContent()}
             </div>
         </div>
     );

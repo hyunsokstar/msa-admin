@@ -45,7 +45,21 @@ export async function GET(
           updated_at,
           task_id
         ),
-        task_api_mappings(*)
+        task_api_mappings(*),
+        task_code_reviews(
+          id,
+          content,
+          title,
+          created_at,
+          updated_at,
+          page,
+          order,
+          writer:users(
+            id,
+            full_name,
+            profile_image_url
+          )
+        )
       `)
       .eq("id", taskId)
       .single();

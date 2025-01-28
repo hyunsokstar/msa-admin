@@ -61,7 +61,6 @@ export async function GET() {
   }
 }
 
-
 export async function PATCH(request: Request) {
   try {
     const supabaseAuth = getSupabaseAuth();
