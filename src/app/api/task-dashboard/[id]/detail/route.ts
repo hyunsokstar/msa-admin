@@ -24,6 +24,7 @@ export async function GET(
 
     // Task query
     // Task query 부분 수정
+    // app/api/task-dashboard/[id]/detail/route.ts
     const { data: task, error: taskError } = await supabase
       .from("task_dashboard")
       .select(`
@@ -62,12 +63,12 @@ export async function GET(
         profile_image_url
       )
     ),
-    task_chattings!inner(
+    task_chattings!left(
       id,
       message,
       created_at,
       created_by,
-      created_by_user:users!task_chattings_created_by_fkey(
+      created_by_user:users(
         id,
         full_name,
         profile_image_url

@@ -1,8 +1,10 @@
 // components/TaskChattings.tsx
+"use client";
+
 import React from 'react';
 import { format } from 'date-fns';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Loader2 } from 'lucide-react';
+import { Loader2, MessageSquare } from 'lucide-react';
 import { TaskChat } from '@/types/task/typeForTaskDetail';
 
 interface Props {
@@ -13,6 +15,7 @@ interface Props {
 }
 
 const TaskChattings = ({ taskId, ownerId, isLoading, chattings = [] }: Props) => {
+    // 로딩 상태
     if (isLoading) {
         return (
             <div className="flex items-center justify-center h-64">
@@ -21,6 +24,17 @@ const TaskChattings = ({ taskId, ownerId, isLoading, chattings = [] }: Props) =>
         );
     }
 
+    // 채팅 데이터가 없는 경우
+    if (!isLoading && chattings.length === 0) {
+        return (
+            <div className="flex flex-col items-center justify-center h-64 bg-gray-50">
+                <MessageSquare className="w-10 h-10 text-gray-400 mb-2" />
+                <p className="text-gray-500 text-sm">아직 채팅 메시지가 없습니다.</p>
+            </div>
+        );
+    }
+
+    // 채팅 데이터가 있는 경우
     return (
         <div className="flex flex-col h-[calc(100vh-300px)] bg-gray-50">
             {/* 채팅 메시지 영역 */}
