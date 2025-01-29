@@ -1,4 +1,3 @@
-// components/CodeReviews.tsx
 "use client";
 
 import React, { useState, useRef } from "react";
@@ -7,7 +6,7 @@ import { TaskCodeReview } from "@/types/task/typeForCodeReviews";
 import { Button } from "@/components/ui/button";
 import ICardForCodeReview from "@/app/task-admin/task-dashboard/components/ICardForCodeReview";
 import IDialogButtonForCreateCodeReview from "@/app/task-admin/task-dashboard/components/IDialogButtonForCreateCodeReview";
-import { toast } from "react-toastify";
+import { useApiForDeleteCodeReview } from "@/hook/task/useApiForDeleteCodeReview";
 
 interface CodeReviewsProps {
     taskId: string;
@@ -22,8 +21,8 @@ const CodeReviews: React.FC<CodeReviewsProps> = ({
 }) => {
     const [isUpdateMode, setIsUpdateMode] = useState(false);
     const [selectedReview, setSelectedReview] = useState<TaskCodeReview | null>(null);
-    const [deletingId, setDeletingId] = useState<number | null>(null);
     const contentRefs = useRef<{ [key: string]: HTMLDivElement }>({});
+    const deleteCodeReview = useApiForDeleteCodeReview();
 
     const handleScrollToContent = (reviewId: string) => {
         const element = contentRefs.current[reviewId];
@@ -37,27 +36,10 @@ const CodeReviews: React.FC<CodeReviewsProps> = ({
     };
 
     const handleDelete = async (reviewId: number) => {
-        try {
-            setDeletingId(reviewId);
-            // 실제 삭제 API 호출
-            console.log('Delete review:', reviewId);
-            // await deleteCodeReview(reviewId);
-        } catch (error) {
-            console.error('Failed to delete review:', error);
-            toast.error("Failed to delete code review");
-        } finally {
-            setDeletingId(null);
-        }
-    };
-
-    const handleTitleChange = (reviewId: number, newTitle: string) => {
-        // 제목 변경 로직
-        console.log('Update title:', reviewId, newTitle);
-    };
-
-    const handleContentChange = (reviewId: number, newContent: string) => {
-        // 내용 변경 로직
-        console.log('Update content:', reviewId, newContent);
+        deleteCodeReview.mutate({
+            taskId,
+            reviewId
+        });
     };
 
     if (isLoading) {
@@ -70,7 +52,6 @@ const CodeReviews: React.FC<CodeReviewsProps> = ({
 
     return (
         <section className="bg-white rounded-lg shadow-sm flex flex-col h-[calc(100vh-200px)]">
-            {/* 헤더 영역 */}
             <div className="flex items-center justify-between p-4 border-b">
                 <div className="flex items-center gap-4">
                     <h2 className="text-lg font-semibold">Code Reviews</h2>
@@ -87,7 +68,6 @@ const CodeReviews: React.FC<CodeReviewsProps> = ({
                 <IDialogButtonForCreateCodeReview taskId={taskId} />
             </div>
 
-            {/* 스크롤 가능한 컨텐츠 영역 */}
             <div className="flex-1 overflow-y-auto px-4 py-2">
                 <div className="space-y-4">
                     {codeReviews.map((review) => (
@@ -103,9 +83,7 @@ const CodeReviews: React.FC<CodeReviewsProps> = ({
                                 isUpdateMode={isUpdateMode}
                                 onClick={() => setSelectedReview(review)}
                                 onDelete={() => handleDelete(review.id)}
-                                isDeleting={deletingId === review.id}
-                                onTitleChange={(newTitle) => handleTitleChange(review.id, newTitle)}
-                                onContentChange={(newContent) => handleContentChange(review.id, newContent)}
+                                isDeleting={deleteCodeReview.isPending && selectedReview?.id === review.id}
                                 taskId={taskId}
                             />
                         </div>

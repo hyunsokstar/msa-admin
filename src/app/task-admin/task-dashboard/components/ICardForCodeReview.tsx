@@ -1,7 +1,4 @@
-// components/ICardForCodeReview.tsx
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TaskCodeReview } from "@/types/task/typeForCodeReviews";
 import { format } from "date-fns";
@@ -13,9 +10,6 @@ interface ICardForCodeReviewProps {
     isSelected: boolean;
     isUpdateMode?: boolean;
     onClick: () => void;
-    onTitleChange?: (value: string) => void;
-    onPathChange?: (value: string) => void; // path 변경 핸들러 추가
-    onContentChange?: (value: string) => void;
     taskId: string;
     onDelete: () => void;
     isDeleting: boolean;
@@ -26,9 +20,6 @@ const ICardForCodeReview: React.FC<ICardForCodeReviewProps> = ({
     isSelected,
     isUpdateMode = false,
     onClick,
-    onTitleChange,
-    onPathChange,
-    onContentChange,
     taskId,
     onDelete,
     isDeleting
@@ -51,7 +42,6 @@ const ICardForCodeReview: React.FC<ICardForCodeReviewProps> = ({
             onClick={onClick}
         >
             <CardContent className="p-6">
-                {/* 상단 영역 */}
                 <div className="flex items-start gap-5 mb-5">
                     <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center">
                         <span className="text-sm font-medium text-gray-600">{review.order}</span>
@@ -76,39 +66,22 @@ const ICardForCodeReview: React.FC<ICardForCodeReviewProps> = ({
                     <div className="flex-grow space-y-3">
                         <div className="grid grid-cols-[1fr,auto] gap-4 items-start">
                             <div className="space-y-3">
-                                <Input
-                                    value={review.title || ''}
-                                    onChange={(e) => onTitleChange?.(e.target.value)}
-                                    placeholder="리뷰 제목"
-                                    className="h-10 px-4 bg-gray-50 border-gray-200 focus:border-blue-300 focus:ring-1 focus:ring-blue-300 rounded-lg transition-all"
-                                />
-                                <Input
-                                    value={review.path || ''}
-                                    onChange={(e) => onPathChange?.(e.target.value)}
-                                    placeholder="파일 경로"
-                                    className="h-10 px-4 bg-gray-50 border-gray-200 focus:border-blue-300 focus:ring-1 focus:ring-blue-300 rounded-lg transition-all"
-                                />
+                                <h3 className="font-medium text-gray-900">{review.title}</h3>
+                                <p className="text-sm text-gray-600">{review.path}</p>
                             </div>
                             <IDialogButtonForDeleteCodeReview
                                 onConfirm={onDelete}
                                 isLoading={isDeleting}
                             />
                         </div>
-                        {/* <p className="text-sm text-gray-500">
-                            작성일: {format(new Date(review.created_at), 'yyyy.MM.dd HH:mm')}
-                        </p> */}
                     </div>
                 </div>
 
-                {/* 컨텐츠 영역 */}
                 <div className="overflow-y-auto">
-                    <Textarea
-                        value={review.content || ''}
-                        onChange={(e) => onContentChange?.(e.target.value)}
-                        placeholder="리뷰 내용을 입력하세요"
-                        className="min-h-[180px] max-h-[400px] overflow-y-auto p-5 border border-gray-200 rounded-lg bg-gray-50 prose prose-sm max-w-none
-                           hover:bg-white transition-colors duration-200 resize-none mb-4"
-                    />
+                    <div className="min-h-[180px] max-h-[400px] overflow-y-auto p-5 border border-gray-200 
+                         rounded-lg bg-gray-50 prose prose-sm max-w-none mb-4 whitespace-pre-wrap">
+                        {review.content}
+                    </div>
                 </div>
 
                 <div className="text-xs text-gray-400 text-right">

@@ -1,4 +1,3 @@
-// components/ICardForUpdateCodeReview.tsx
 import React, { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -7,51 +6,57 @@ import { TaskCodeReview } from "@/types/task/typeForCodeReviews";
 import CommonButton2 from "@/components/common/CommonButton2";
 import { Save, X } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useApiForUpdateCodeReview } from '@/hook/task/useApiForUpdateCodeReview';
 
 interface ICardForUpdateCodeReviewProps {
     review: TaskCodeReview;
     isSelected?: boolean;
     onClick?: () => void;
     taskId: string;
-    onSave?: (updatedReview: Partial<TaskCodeReview>) => void;
-    onCancel?: () => void;
 }
 
 const ICardForUpdateCodeReview: React.FC<ICardForUpdateCodeReviewProps> = ({
     review,
     isSelected,
     onClick,
-    taskId,
-    onSave,
-    onCancel
+    taskId
 }) => {
     const [title, setTitle] = useState(review.title);
     const [path, setPath] = useState(review.path);
     const [content, setContent] = useState(review.content);
-    const [isSaving, setIsSaving] = useState(false);
+    const updateCodeReview = useApiForUpdateCodeReview();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (onSave) {
-            setIsSaving(true);
-            try {
-                await onSave({
-                    id: review.id,
-                    title,
-                    path,
-                    content
-                });
-            } finally {
-                setIsSaving(false);
+        e.stopPropagation();
+
+        updateCodeReview.mutate({
+            taskId,
+            reviewId: review.id,
+            data: {
+                title,
+                path,
+                content,
+                order: review.order,
+                writer: review.writer.id
             }
-        }
+        }, {
+            onSuccess: () => {
+                onClick?.();
+            }
+        });
+    };
+
+    const handleCancel = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onClick?.();
     };
 
     return (
         <Card
             className={`mb-4 transition-all relative bg-white rounded-xl border border-gray-200
                ${isSelected ? 'ring-1 ring-blue-400 shadow-md' : ''}`}
-            onClick={onClick}
         >
             <CardContent className="p-6">
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -106,7 +111,7 @@ const ICardForUpdateCodeReview: React.FC<ICardForUpdateCodeReviewProps> = ({
                             type="button"
                             variant="ghost"
                             icon={<X className="h-4 w-4" />}
-                            onClick={onCancel}
+                            onClick={handleCancel}
                         >
                             취소
                         </CommonButton2>
@@ -114,7 +119,7 @@ const ICardForUpdateCodeReview: React.FC<ICardForUpdateCodeReviewProps> = ({
                             type="submit"
                             variant="primary"
                             icon={<Save className="h-4 w-4" />}
-                            loading={isSaving}
+                            loading={updateCodeReview.isPending}
                         >
                             저장
                         </CommonButton2>
