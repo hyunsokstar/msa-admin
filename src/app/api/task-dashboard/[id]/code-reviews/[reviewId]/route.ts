@@ -1,9 +1,17 @@
-// C:\Users\terec\msa-admin\src\app\api\task-dashboard\[id]\code-reviews\[reviewId]\route.ts
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
+
+interface UpdateData {
+    title?: string;
+    content?: string;
+    path?: string;
+    order?: number;
+    updated_at: string;
+    [key: string]: string | number | undefined;  // 인덱스 시그니처 추가
+}
 
 export async function PUT(request: NextRequest) {
     try {
@@ -65,7 +73,7 @@ export async function PUT(request: NextRequest) {
         }
 
         // 업데이트할 데이터 준비
-        const updateData = {
+        const updateData: UpdateData = {
             title: body.title,
             content: body.content,
             path: body.path,
