@@ -36,6 +36,8 @@ const IDialogButtonForTaskDashBoardDetail: React.FC<IDialogButtonForTaskDashBoar
   console.log("taskDetail check: ", taskDetail);
 
   const getValidImageUrl = (url: string) => {
+    console.log("url check: ", url);
+    
     try {
       new URL(url);
       return url;

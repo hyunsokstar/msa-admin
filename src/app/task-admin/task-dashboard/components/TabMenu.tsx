@@ -7,6 +7,7 @@ import ApiSpecs from "./ApiSpecs";
 import { TaskDetail } from "@/types/task/typeForTaskDetail";
 import CommonTabMenu, { TabItem } from "@/components/common/CommonTabMenu";
 import CodeReviews from "@/app/api-spec-admin/api-spec-dashboard/CodeReviews";
+import { TaskIssues } from "./TaskIssues";
 
 interface TabMenuProps {
     taskDetail: TaskDetail;
@@ -49,9 +50,14 @@ const TabMenu: React.FC<TabMenuProps> = ({ taskDetail, isLoading }) => {
             )
         },
         {
-            id: "messages",
-            label: "Messages",
-            content: <div className="p-4">Messages Content</div>
+            id: "task-issues",
+            label: "Task Issues",
+            content: (
+                <TaskIssues
+                    taskId={taskDetail?.id}
+                    isLoading={isLoading}
+                />
+            )
         }
     ];
 

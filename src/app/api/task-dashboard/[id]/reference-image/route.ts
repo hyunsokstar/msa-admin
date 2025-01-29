@@ -42,12 +42,15 @@ export async function DELETE(
   }
 }
 
+// src/app/api/task-dashboard/[id]/reference-image/route.ts
+
+// src/app/api/task-dashboard/[id]/reference-image/route.ts
+
 export async function POST(
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ): Promise<NextResponse> {
   try {
-    // Initialize Supabase
     const supabaseAuth = getSupabaseAuth();
     const { data: { session } } = await supabaseAuth.auth.getSession();
 
@@ -55,18 +58,16 @@ export async function POST(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Parse request body and parameters
     const { imageUrls } = await request.json();
     const params = await context.params;
     const taskId = params.id;
 
-    if (!imageUrls?.length) {
+    if (!Array.isArray(imageUrls) || imageUrls.length === 0) {
       return NextResponse.json({ error: "No image URLs provided" }, { status: 400 });
     }
 
     const supabase = getSupabaseService();
 
-    // Insert data into the database
     const { error: dbError } = await supabase
       .from("ref_screen_images")
       .insert(
@@ -74,7 +75,7 @@ export async function POST(
           task_id: taskId,
           image_url: url,
           sort_order: index,
-          created_by: session.user.id,
+          created_by: session.user.id
         }))
       );
 

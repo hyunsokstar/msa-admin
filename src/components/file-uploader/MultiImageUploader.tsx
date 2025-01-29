@@ -11,8 +11,9 @@ interface MultiImageUploaderProps {
 
 const MultiImageUploader = ({ onUploadComplete, maxFiles = 5 }: MultiImageUploaderProps) => {
   const [isDragging, setIsDragging] = useState(false);
-  const [previews, setPreviews] = useState<string[]>([]);
+  const [previews, setPreviews] = useState<Array<{ url: string, file: File }>>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<number[]>([]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -31,21 +32,75 @@ const MultiImageUploader = ({ onUploadComplete, maxFiles = 5 }: MultiImageUpload
       alert(`최대 ${maxFiles}개의 이미지만 업로드할 수 있습니다.`);
       return;
     }
+
     imageFiles.forEach(file => {
       const previewUrl = URL.createObjectURL(file);
-      setPreviews(prev => [...prev, previewUrl]);
+      setPreviews(prev => [...prev, { url: previewUrl, file }]);
+      setUploadProgress(prev => [...prev, 0]);
     });
   };
 
   const removeFile = (index: number) => {
-    URL.revokeObjectURL(previews[index]);
+    URL.revokeObjectURL(previews[index].url);
     setPreviews(prev => prev.filter((_, i) => i !== index));
+    setUploadProgress(prev => prev.filter((_, i) => i !== index));
   };
 
-  const handleStartUpload = () => {
+  const handleStartUpload = async () => {
     if (previews.length === 0) return;
-    onUploadComplete?.(previews);
-    setPreviews([]);
+    setIsUploading(true);
+
+    try {
+      const uploadedUrls = await Promise.all(
+        previews.map(async ({ file }, index) => {
+          // 1. Get presigned URL
+          const presignedResponse = await fetch("/api/upload", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              filename: file.name,
+              contentType: file.type,
+            }),
+          });
+
+          const { presignedUrl, fileUrl } = await presignedResponse.json();
+
+          // 2. Upload to S3
+          const uploadResponse = await fetch(presignedUrl, {
+            method: "PUT",
+            body: file,
+            headers: {
+              "Content-Type": file.type,
+            },
+          });
+
+          if (!uploadResponse.ok) {
+            throw new Error(`Failed to upload file ${file.name}`);
+          }
+
+          // Update progress
+          setUploadProgress(prev => {
+            const newProgress = [...prev];
+            newProgress[index] = 100;
+            return newProgress;
+          });
+
+          return fileUrl;
+        })
+      );
+
+      onUploadComplete?.(uploadedUrls);
+      setPreviews([]);
+      setUploadProgress([]);
+
+    } catch (error) {
+      console.error('Upload error:', error);
+      alert('일부 이미지 업로드에 실패했습니다.');
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
@@ -89,14 +144,22 @@ const MultiImageUploader = ({ onUploadComplete, maxFiles = 5 }: MultiImageUpload
       {previews.length > 0 && (
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-            {previews.map((preview, index) => (
+            {previews.map(({ url }, index) => (
               <div key={index} className="relative group">
                 <div className="aspect-square rounded-lg overflow-hidden ring-1 ring-slate-200">
                   <img
-                    src={preview}
+                    src={url}
                     alt={`Preview ${index + 1}`}
                     className="object-cover w-full h-full transition-transform duration-200 group-hover:scale-105"
                   />
+                  {uploadProgress[index] > 0 && uploadProgress[index] < 100 && (
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-200">
+                      <div
+                        className="h-full bg-blue-600 transition-all duration-300"
+                        style={{ width: `${uploadProgress[index]}%` }}
+                      />
+                    </div>
+                  )}
                 </div>
                 <button
                   onClick={() => removeFile(index)}
@@ -109,7 +172,7 @@ const MultiImageUploader = ({ onUploadComplete, maxFiles = 5 }: MultiImageUpload
             ))}
           </div>
 
-          <Button 
+          <Button
             onClick={handleStartUpload}
             disabled={isUploading}
             className={cn(
