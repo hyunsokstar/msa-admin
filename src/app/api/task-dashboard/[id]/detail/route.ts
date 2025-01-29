@@ -49,6 +49,7 @@ export async function GET(
         task_code_reviews(
           id,
           content,
+          path,
           title,
           created_at,
           updated_at,

@@ -1,5 +1,4 @@
-// api/task/apiForTaskCodeReviews.ts
-import { CreateCodeReviewRequest, TaskCodeReview } from "@/types/task/typeForCodeReviews";
+import { CreateCodeReviewRequest, TaskCodeReview, UpdateCodeReviewRequest } from "@/types/task/typeForCodeReviews";
 
 export const apiForCreateCodeReview = async (
     taskId: string,
@@ -24,7 +23,7 @@ export const apiForCreateCodeReview = async (
 export const apiForUpdateCodeReview = async (
     taskId: string,
     reviewId: number,
-    data: Partial<CreateCodeReviewRequest>
+    data: UpdateCodeReviewRequest
 ): Promise<TaskCodeReview> => {
     const response = await fetch(`/api/task-dashboard/${taskId}/code-reviews/${reviewId}`, {
         method: 'PUT',

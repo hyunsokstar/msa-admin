@@ -21,9 +21,9 @@ const ICardForUpdateCodeReview: React.FC<ICardForUpdateCodeReviewProps> = ({
     onClick,
     taskId
 }) => {
-    const [title, setTitle] = useState(review.title);
-    const [path, setPath] = useState(review.path);
-    const [content, setContent] = useState(review.content);
+    const [title, setTitle] = useState(review?.title ?? '');
+    const [path, setPath] = useState(review?.path ?? '');
+    const [content, setContent] = useState(review?.content ?? '');
     const updateCodeReview = useApiForUpdateCodeReview();
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -37,8 +37,7 @@ const ICardForUpdateCodeReview: React.FC<ICardForUpdateCodeReviewProps> = ({
                 title,
                 path,
                 content,
-                order: review.order,
-                writer: review.writer.id
+                order: review.order
             }
         }, {
             onSuccess: () => {
@@ -60,8 +59,7 @@ const ICardForUpdateCodeReview: React.FC<ICardForUpdateCodeReviewProps> = ({
         >
             <CardContent className="p-6">
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    {/* 상단 영역 */}
-                    <div className="flex items-start gap-5">
+                    <div className="flex items-start gap-5 mb-5">
                         <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center">
                             <span className="text-sm font-medium text-gray-600">{review.order}</span>
                         </div>
@@ -79,33 +77,37 @@ const ICardForUpdateCodeReview: React.FC<ICardForUpdateCodeReviewProps> = ({
                         </div>
 
                         <div className="flex-grow space-y-3">
-                            <Input
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                                placeholder="리뷰 제목"
-                                className="h-10 px-4 bg-gray-50 border-gray-200 focus:border-blue-300 focus:ring-1 focus:ring-blue-300 rounded-lg transition-all"
-                            />
-                            <Input
-                                value={path}
-                                onChange={(e) => setPath(e.target.value)}
-                                placeholder="파일 경로"
-                                className="h-10 px-4 bg-gray-50 border-gray-200 focus:border-blue-300 focus:ring-1 focus:ring-blue-300 rounded-lg transition-all"
-                            />
+                            <div className="grid grid-cols-[1fr,auto] gap-4 items-start">
+                                <div className="space-y-3">
+                                    <div className="space-y-1">
+                                        <Input
+                                            value={title}
+                                            onChange={(e) => setTitle(e.target.value)}
+                                            placeholder="리뷰 제목"
+                                            className="h-10 px-4 bg-gray-50 border-gray-200 focus:border-blue-300 focus:ring-1 focus:ring-blue-300 rounded-lg transition-all font-medium"
+                                        />
+                                        <Input
+                                            value={path}
+                                            onChange={(e) => setPath(e.target.value)}
+                                            placeholder="파일 경로"
+                                            className="h-10 px-4 bg-gray-50 border-gray-200 focus:border-blue-300 focus:ring-1 focus:ring-blue-300 rounded-lg transition-all font-mono text-sm text-gray-500"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    {/* 컨텐츠 영역 */}
                     <div className="overflow-y-auto">
                         <Textarea
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
                             placeholder="리뷰 내용을 입력하세요"
                             className="min-h-[180px] max-h-[400px] overflow-y-auto p-5 border border-gray-200 rounded-lg bg-gray-50 prose prose-sm max-w-none
-                               hover:bg-white transition-colors duration-200"
+                               hover:bg-white transition-colors duration-200 resize-none mb-4"
                         />
                     </div>
 
-                    {/* 버튼 영역 */}
                     <div className="flex justify-end gap-2 pt-2">
                         <CommonButton2
                             type="button"

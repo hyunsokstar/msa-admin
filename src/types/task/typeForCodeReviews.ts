@@ -1,6 +1,4 @@
-// C:\Users\terec\msa-admin\src\types\task\typeForCodeReviews.ts
 import { IUser } from "../typeForChatRoom";
-
 
 export interface CreateCodeReviewRequest {
     title: string;
@@ -8,6 +6,13 @@ export interface CreateCodeReviewRequest {
     path: string;
     writer: string;
     order: number;
+}
+
+export interface UpdateCodeReviewRequest {
+    title?: string;
+    content?: string;
+    path?: string;
+    order?: number;
 }
 
 export interface TaskCodeReview {

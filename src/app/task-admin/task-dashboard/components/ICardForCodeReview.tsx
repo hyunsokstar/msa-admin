@@ -1,9 +1,12 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
 import { TaskCodeReview } from "@/types/task/typeForCodeReviews";
 import { format } from "date-fns";
+import { Copy } from "lucide-react";
 import IDialogButtonForDeleteCodeReview from "./IDialogButtonForDeleteCodeReview";
 import ICardForUpdateCodeReview from "./ICardForUpdateCodeReview";
+import CommonButton2 from "@/components/common/CommonButton2";
 
 interface ICardForCodeReviewProps {
     review: TaskCodeReview;
@@ -24,6 +27,11 @@ const ICardForCodeReview: React.FC<ICardForCodeReviewProps> = ({
     onDelete,
     isDeleting
 }) => {
+    const handleCopy = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        navigator.clipboard.writeText(review.content);
+    };
+
     if (isUpdateMode) {
         return (
             <ICardForUpdateCodeReview
@@ -34,6 +42,9 @@ const ICardForCodeReview: React.FC<ICardForCodeReviewProps> = ({
             />
         );
     }
+
+    console.log("review : ", review);
+    
 
     return (
         <Card
@@ -66,13 +77,34 @@ const ICardForCodeReview: React.FC<ICardForCodeReviewProps> = ({
                     <div className="flex-grow space-y-3">
                         <div className="grid grid-cols-[1fr,auto] gap-4 items-start">
                             <div className="space-y-3">
-                                <h3 className="font-medium text-gray-900">{review.title}</h3>
-                                <p className="text-sm text-gray-600">{review.path}</p>
+                                <div className="space-y-1">
+                                    <Input
+                                        value={review.title}
+                                        readOnly
+                                        placeholder="리뷰 제목"
+                                        className="h-10 px-4 bg-gray-50 border-gray-200 focus:border-blue-300 focus:ring-1 focus:ring-blue-300 rounded-lg transition-all font-medium text-gray-900"
+                                    />
+                                    <Input
+                                        value={review.path}
+                                        readOnly
+                                        placeholder="파일 경로"
+                                        className="h-10 px-4 bg-gray-50 border-gray-200 focus:border-blue-300 focus:ring-1 focus:ring-blue-300 rounded-lg transition-all font-mono text-sm text-gray-500"
+                                    />
+                                </div>
                             </div>
-                            <IDialogButtonForDeleteCodeReview
-                                onConfirm={onDelete}
-                                isLoading={isDeleting}
-                            />
+                            <div className="flex gap-2">
+                                <CommonButton2
+                                    type="button"
+                                    variant="ghost"
+                                    icon={<Copy className="h-4 w-4" />}
+                                    onClick={handleCopy}
+                                    className="px-2"
+                                />
+                                <IDialogButtonForDeleteCodeReview
+                                    onConfirm={onDelete}
+                                    isLoading={isDeleting}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
