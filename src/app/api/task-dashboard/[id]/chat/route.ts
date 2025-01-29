@@ -3,14 +3,24 @@ import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST(
-    request: NextRequest,
-    { params }: { params: { id: string } }
-) {
+export async function POST(request: NextRequest) {
     try {
-        const supabase = createRouteHandlerClient({ cookies });
+        const cookieStore = cookies();
+        const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+
+        // Get taskId from URL
+        const urlParts = request.nextUrl.pathname.split('/');
+        const taskId = urlParts[urlParts.length - 2];
+
+        // Get message from request body
         const { message } = await request.json();
-        const taskId = params.id;
+
+        if (!taskId) {
+            return NextResponse.json(
+                { error: 'Invalid Task ID', details: 'Task ID is required' },
+                { status: 400 }
+            );
+        }
 
         // Get user session
         const { data: { session } } = await supabase.auth.getSession();
@@ -32,13 +42,29 @@ export async function POST(
             .select('*, created_by_user:created_by(id, full_name, profile_image_url)')
             .single();
 
-        if (error) throw error;
+        if (error) {
+            console.error('Error creating chat message:', error);
+            return NextResponse.json(
+                { error: '메시지 전송에 실패했습니다.', details: error.message },
+                { status: 500 }
+            );
+        }
 
-        return NextResponse.json(data);
-    } catch (error) {
-        console.error('Chat creation error:', error);
         return NextResponse.json(
-            { error: '메시지 전송에 실패했습니다.' },
+            {
+                data,
+                message: '메시지가 성공적으로 전송되었습니다.'
+            },
+            { status: 201 }
+        );
+
+    } catch (error) {
+        console.error('Server error:', error);
+        return NextResponse.json(
+            {
+                error: '메시지 전송 중 오류가 발생했습니다.',
+                details: error instanceof Error ? error.message : '알 수 없는 오류'
+            },
             { status: 500 }
         );
     }
