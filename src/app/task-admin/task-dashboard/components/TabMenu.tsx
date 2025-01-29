@@ -1,4 +1,4 @@
-// components/TabMenu.tsx (수정된 버전)
+// components/TabMenu.tsx
 "use client";
 
 import React from "react";
@@ -7,7 +7,7 @@ import ApiSpecs from "./ApiSpecs";
 import { TaskDetail } from "@/types/task/typeForTaskDetail";
 import CommonTabMenu, { TabItem } from "@/components/common/CommonTabMenu";
 import CodeReviews from "@/app/api-spec-admin/api-spec-dashboard/CodeReviews";
-import { TaskIssues } from "./TaskIssues";
+import TaskChattings from "./TaskChattings";
 
 interface TabMenuProps {
     taskDetail: TaskDetail;
@@ -50,12 +50,14 @@ const TabMenu: React.FC<TabMenuProps> = ({ taskDetail, isLoading }) => {
             )
         },
         {
-            id: "task-issues",
-            label: "Task Issues",
+            id: "task-chattings",
+            label: "Task Chattings",
             content: (
-                <TaskIssues
+                <TaskChattings
                     taskId={taskDetail?.id}
+                    ownerId={taskDetail?.created_by?.id}
                     isLoading={isLoading}
+                    chattings={taskDetail?.task_chattings || []}
                 />
             )
         }

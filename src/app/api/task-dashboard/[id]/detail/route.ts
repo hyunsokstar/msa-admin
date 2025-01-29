@@ -23,44 +23,56 @@ export async function GET(
     }
 
     // Task query
+    // Task query 부분 수정
     const { data: task, error: taskError } = await supabase
       .from("task_dashboard")
       .select(`
-        *,
-        created_by:users!task_dashboard_created_by_fkey(
-          id,
-          full_name,
-          profile_image_url
-        ),
-        updated_by_user:users!task_dashboard_updated_by_fkey(
-          id,
-          full_name,
-          profile_image_url
-        ),
-        sub_todos(
-          id,
-          content,
-          is_completed,
-          created_at,
-          updated_at,
-          task_id
-        ),
-        task_api_mappings(*),
-        task_code_reviews(
-          id,
-          content,
-          path,
-          title,
-          created_at,
-          updated_at,
-          page,
-          order,
-          writer:users(
-            id,
-            full_name,
-            profile_image_url
-          )
-        )
+    *,
+    created_by:users!task_dashboard_created_by_fkey(
+      id,
+      full_name,
+      profile_image_url
+    ),
+    updated_by_user:users!task_dashboard_updated_by_fkey(
+      id,
+      full_name,
+      profile_image_url
+    ),
+    sub_todos(
+      id,
+      content,
+      is_completed,
+      created_at,
+      updated_at,
+      task_id
+    ),
+    task_api_mappings(*),
+    task_code_reviews(
+      id,
+      content,
+      path,
+      title,
+      created_at,
+      updated_at,
+      page,
+      order,
+      writer:users(
+        id,
+        full_name,
+        profile_image_url
+      )
+    ),
+    task_chattings!inner(
+      id,
+      message,
+      created_at,
+      created_by,
+      created_by_user:users!task_chattings_created_by_fkey(
+        id,
+        full_name,
+        profile_image_url
+      )
+    )
       `)
       .eq("id", taskId)
       .single();

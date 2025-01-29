@@ -1,7 +1,7 @@
+// types/task/typeForTaskDetail.ts
 import { IUser } from "../typeForUser";
 import { TaskCodeReview } from "./typeForCodeReviews";
 
-// types/task/typeForTaskDetail.ts
 export interface SubTodo {
   id: string;
   task_id: string;
@@ -33,6 +33,18 @@ export interface TaskApiMapping {
   updated_at: string;
 }
 
+export interface TaskChat {
+  id: string;
+  task_id: string;
+  message: string;
+  created_at: string;
+  created_by_user: {
+    id: string;
+    full_name: string;
+    profile_image_url: string | null;
+  };
+}
+
 export interface TaskDetail {
   id: string;
   title: string;
@@ -49,5 +61,6 @@ export interface TaskDetail {
   sub_todos: SubTodo[];
   ref_images: RefImage[];
   task_api_mappings: TaskApiMapping[];
-  task_code_reviews: TaskCodeReview[]; // 추가된 부분
+  task_code_reviews: TaskCodeReview[];
+  task_chattings: TaskChat[]; // 추가된 부분
 }
