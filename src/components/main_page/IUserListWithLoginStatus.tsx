@@ -61,7 +61,7 @@ const IUserListWithLoginStatus = ({ className }: Props) => {
                                 </Avatar>
                                 <span
                                     className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white
-                                        ${getStatusColor(user.status)}`}
+                                        ${getStatusColor(user.status ?? 'offline')}`}
                                     title={`Status: ${user.status}`} // 마우스 오버시 상태 표시
                                 />
                             </div>
