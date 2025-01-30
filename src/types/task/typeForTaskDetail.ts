@@ -35,6 +35,7 @@ export interface TaskApiMapping {
 
 export interface TaskChat {
   id: string;
+  is_left: boolean;
   task_id: string;
   message: string;
   created_at: string;
