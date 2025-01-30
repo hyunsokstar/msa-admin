@@ -31,13 +31,31 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Insert chat message
+        // 1. 이전 메시지 조회
+        const { data: lastMessage } = await supabase
+            .from('task_chattings')
+            .select('created_by, is_left')
+            .eq('task_id', taskId)  // 같은 task의 채팅만 조회
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .single();
+
+        // 2. is_left 값 결정
+        let is_left = true;
+        if (lastMessage) {
+            is_left = lastMessage.created_by !== session.user.id
+                ? !lastMessage.is_left
+                : lastMessage.is_left;
+        }
+
+        // 3. 새 메시지 삽입
         const { data, error } = await supabase
             .from('task_chattings')
             .insert({
                 task_id: taskId,
                 message: message,
                 created_by: session.user.id,
+                is_left: is_left  // 계산된 is_left 값 저장
             })
             .select('*, created_by_user:created_by(id, full_name, profile_image_url)')
             .single();

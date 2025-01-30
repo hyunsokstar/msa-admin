@@ -68,6 +68,7 @@ export async function GET(
       message,
       created_at,
       created_by,
+      is_left,
       created_by_user:users(
         id,
         full_name,

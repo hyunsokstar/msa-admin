@@ -8,6 +8,7 @@ import { Loader2, MessageSquare } from 'lucide-react';
 import { TaskChat } from '@/types/task/typeForTaskDetail';
 import TaskChattingInput from './TaskChattingInput';
 import { useTaskChattings } from '@/hook/task/useTaskChattings';
+import { cn } from '@/lib/utils';
 
 interface Props {
     taskId?: string;
@@ -19,10 +20,8 @@ interface Props {
 const TaskChattings = ({ taskId, ownerId, isLoading, chattings = [] }: Props) => {
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    // Enable realtime subscription
     useTaskChattings(taskId);
 
-    // Auto scroll to bottom when new messages arrive
     useEffect(() => {
         if (chattings.length > 0) {
             messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -44,7 +43,6 @@ const TaskChattings = ({ taskId, ownerId, isLoading, chattings = [] }: Props) =>
                 ) : (
                     <div className="p-4 space-y-4">
                         {chattings?.map((chat) => {
-                            const isOwner = chat.created_by_user.id === ownerId;
                             const messageTime = format(new Date(chat.created_at), 'HH:mm');
                             const userName = chat.created_by_user.full_name || '';
                             const userInitial = userName.charAt(0).toUpperCase();
@@ -52,9 +50,12 @@ const TaskChattings = ({ taskId, ownerId, isLoading, chattings = [] }: Props) =>
                             return (
                                 <div
                                     key={chat.id}
-                                    className={`flex items-end gap-2 ${isOwner ? 'justify-start' : 'justify-end'}`}
+                                    className={cn(
+                                        "flex items-end gap-2",
+                                        !chat.is_left ? "justify-end" : "justify-start"
+                                    )}
                                 >
-                                    {isOwner ? (
+                                    {chat.is_left ? (
                                         <div className="flex items-end gap-2">
                                             <Avatar className="w-8 h-8">
                                                 {chat.created_by_user.profile_image_url ? (
