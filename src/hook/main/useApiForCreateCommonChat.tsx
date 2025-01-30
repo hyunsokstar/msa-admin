@@ -3,8 +3,8 @@ import { apiForCreateCommonChatting } from "@/api/main/apiForCommonChattings";
 
 export function useApiForCreateCommonChat() {
     return useMutation({
-        mutationFn: async ({ message, userId }: { message: string; userId: string }) => {
-            return apiForCreateCommonChatting(message, userId);
+        mutationFn: async ({ message, created_by }: { message: string; created_by: string }) => {
+            return apiForCreateCommonChatting(message, created_by);
         }
     });
 }   

@@ -33,7 +33,7 @@ export async function apiForGetCommonChattings(): Promise<CommonChattingResponse
 
 export async function apiForCreateCommonChatting(
     message: string,
-    userId: string
+    created_by: string
 ): Promise<CommonChattingResponse> {
     try {
         const response = await fetch('/api/common-chattings', {
@@ -43,7 +43,7 @@ export async function apiForCreateCommonChatting(
             },
             body: JSON.stringify({
                 message,
-                user_id: userId,
+                created_by: created_by,
             }),
         });
 

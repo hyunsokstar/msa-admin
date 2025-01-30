@@ -1,5 +1,4 @@
 // src/components/dialog/DialogButtonForSignUp.tsx
-
 'use client';
 
 import { useState } from 'react';
@@ -13,30 +12,25 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Lock, Mail, UserPlus, X, Eye, EyeOff } from 'lucide-react';
+import { Lock, Mail, UserPlus, X, Eye, EyeOff, User } from 'lucide-react';
 import { FaGoogle, FaFacebook, FaComment } from 'react-icons/fa';
 import { useSignUp } from "@/hook/useApiForSignUp";
+import { SignUpFormData } from '@/types/typeForAuth';
 
-type FormFields = {
-  email: string;
-  password: string;
-  confirmPassword: string;
-};
-
-const initialFormData: FormFields = {
+const initialFormData: SignUpFormData = {
   email: '',
   password: '',
-  confirmPassword: ''
+  confirmPassword: '',
+  full_name: ''
 };
 
 const DialogButtonForSignUp: React.FC = () => {
-  const [formData, setFormData] = useState<FormFields>(initialFormData);
+  const [formData, setFormData] = useState<SignUpFormData>(initialFormData);
   const [isOpen, setIsOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const { signUp, isLoading, validationErrors, validateForm } = useSignUp();
 
-  const handleChange = <T extends keyof FormFields>(field: T) => (
+  const handleChange = <T extends keyof SignUpFormData>(field: T) => (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     setFormData((prev) => ({
@@ -52,12 +46,17 @@ const DialogButtonForSignUp: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateForm(formData)) return;
+
     try {
-      await signUp({ email: formData.email, password: formData.password });
+      await signUp({
+        email: formData.email,
+        password: formData.password,
+        full_name: formData.full_name
+      });
       setIsOpen(false);
       setFormData(initialFormData);
     } catch (error) {
-      console.error('회원가입 오류:', error);
+      console.error('회원가입 처리 중 오류:', error);
     }
   };
 
@@ -76,7 +75,7 @@ const DialogButtonForSignUp: React.FC = () => {
         </DialogClose>
 
         <div className="flex flex-col md:flex-row">
-          {/* Left Section: Image & Text */}
+          {/* Left Section */}
           <div className="bg-[#4171d6] text-white p-8 flex flex-col justify-center items-center w-full md:w-1/2">
             <h2 className="text-3xl font-bold mb-4">업무 관리 + Util</h2>
             <p className="text-blue-100 text-center leading-relaxed">
@@ -85,7 +84,7 @@ const DialogButtonForSignUp: React.FC = () => {
             </p>
           </div>
 
-          {/* Right Section: Sign-Up Form */}
+          {/* Right Section */}
           <div className="p-8 w-full md:w-1/2">
             <form onSubmit={handleSubmit} className="space-y-6">
               <DialogHeader className="mb-2">
@@ -93,6 +92,22 @@ const DialogButtonForSignUp: React.FC = () => {
                   회원가입
                 </DialogTitle>
               </DialogHeader>
+
+              {/* Full Name Input */}
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Input
+                  type="text"
+                  value={formData.full_name}
+                  onChange={handleChange('full_name')}
+                  className="pl-10 pr-4 py-2 w-full border-gray-200 rounded-lg"
+                  placeholder="이름을 입력해주세요"
+                  disabled={isLoading}
+                />
+                {validationErrors?.full_name && (
+                  <p className="text-sm text-red-500 mt-1">{validationErrors.full_name}</p>
+                )}
+              </div>
 
               {/* Email Input */}
               <div className="relative">
@@ -175,7 +190,6 @@ const DialogButtonForSignUp: React.FC = () => {
               </div>
 
               <div className="flex justify-center gap-4">
-                {/* Social Login Buttons */}
                 <Button variant="outline" className="w-10 h-10 p-0 rounded-full">
                   <FaGoogle className="w-5 h-5 text-[#EA4335]" />
                   <span className="sr-only">Google로 로그인</span>

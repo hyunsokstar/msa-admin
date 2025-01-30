@@ -29,7 +29,7 @@ const ICommonChattingInput: React.FC<Props> = ({ onSuccess }) => {
         }
 
         createChat(
-            { message: message.trim(), userId: user.id },
+            { message: message.trim(), created_by: user.id },  // userId를 created_by로 변경
             {
                 onSuccess: () => {
                     setMessage('');

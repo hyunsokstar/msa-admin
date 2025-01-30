@@ -1,51 +1,51 @@
 // src/hooks/useApiForSignUp.ts
 import { useMutation } from '@tanstack/react-query';
-import { AuthCredentials, AuthApiResponse, AuthApiError } from '@/types/typeForAuth';
+import { AuthCredentials, AuthApiResponse, AuthApiError, SignUpFormData, ValidationErrors, signUpSchema } from '@/types/typeForAuth';
 import { apiForSignUpUser } from '@/api/apiForAuth';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import { useState } from 'react';
 import { z } from 'zod';
 
-// 유효성 검사 스키마 정의
-const signUpSchema = z.object({
-    email: z.string().email('Invalid email address'),
-    password: z.string().min(6, 'Password must be at least 6 characters'),
-    confirmPassword: z.string()
-}).refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-});
-
-// 타입 정의
-export type SignUpFormData = z.infer<typeof signUpSchema>;
-
-// 유효성 검사 에러 타입 명시적 정의
-export type ValidationErrors = {
-    email?: string;
-    password?: string;
-    confirmPassword?: string;
-};
-
 export const useSignUp = () => {
     const router = useRouter();
     const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
 
-    const signUpMutation = useMutation({
+    const signUpMutation = useMutation<
+        AuthApiResponse,
+        AuthApiError,
+        AuthCredentials
+    >({
         mutationFn: async (credentials: AuthCredentials) => {
             const result = await apiForSignUpUser(credentials);
             return result;
         },
         onSuccess: () => {
-            toast.success('Sign up successful! Please check your email for verification.');
+            toast.success('회원가입이 완료되었습니다! 이메일을 확인해주세요.');
             // router.push('/auth/verify-email');
         },
         onError: (error: AuthApiError) => {
-            toast.error(error.message);
+            let errorMessage = '회원가입 중 오류가 발생했습니다.';
+
+            // Supabase 에러 메시지 처리
+            if (error.message) {
+                switch (error.message) {
+                    case 'User already registered':
+                        errorMessage = '이미 등록된 이메일 주소입니다.';
+                        break;
+                    case 'Password should be at least 6 characters':
+                        errorMessage = '비밀번호는 최소 6자 이상이어야 합니다.';
+                        break;
+                    default:
+                        errorMessage = error.message;
+                }
+            }
+
+            toast.error(errorMessage);
         },
     });
 
-    const validateForm = (data: SignUpFormData) => {
+    const validateForm = (data: SignUpFormData): boolean => {
         try {
             signUpSchema.parse(data);
             setValidationErrors({});

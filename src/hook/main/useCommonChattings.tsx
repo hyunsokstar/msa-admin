@@ -1,3 +1,4 @@
+// hooks/main/useCommonChattings.ts
 import { useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import getSupabaseClient from '@/lib/supabase/browserClient';
@@ -7,27 +8,30 @@ export function useCommonChattings() {
     const supabase = getSupabaseClient();
 
     useEffect(() => {
-        // Supabase realtime subscription
         const channel = supabase
-            .channel('common_chattings_changes')
+            .channel('public:common_chattings')
             .on(
                 'postgres_changes',
                 {
                     event: '*',
                     schema: 'public',
-                    table: 'common_chattings'
+                    table: 'common_chattings',
                 },
                 (payload) => {
-                    // Invalidate and refetch when there's a change
+                    // 변경 사항에 따라 즉시 쿼리 무효화
                     queryClient.invalidateQueries({
                         queryKey: ['commonChattings']
                     });
                 }
             )
-            .subscribe();
+            .subscribe((status) => {
+                if (status !== 'SUBSCRIBED') {
+                    console.warn('Realtime subscription failed:', status);
+                }
+            });
 
         return () => {
-            supabase.removeChannel(channel);
+            channel.unsubscribe();
         };
     }, [queryClient, supabase]);
 }
