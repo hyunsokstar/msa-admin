@@ -1,5 +1,4 @@
 import { IUser } from "@/types/typeForUser";
-import { User } from "@supabase/auth-js";
 import { Session } from "@supabase/supabase-js";
 import { create } from "zustand";
 import { persist, devtools } from "zustand/middleware";

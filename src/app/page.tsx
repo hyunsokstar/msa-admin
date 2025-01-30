@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 
 export default function HomePage() {
   return (
-    <div className="min-h-[calc(100vh-4rem)] p-4 pb-6 flex flex-col">
+    <div className="h-[calc(100vh-4rem)] p-4 pb-6 flex flex-col">
       {/* 상단 4개 영역 */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
         <Card className="p-6 h-40 flex items-center justify-center">
@@ -22,9 +22,9 @@ export default function HomePage() {
       </div>
 
       {/* 하단 2개 영역 */}
-      <div className="flex-1 grid grid-cols-1 md:grid-cols-7 gap-4 min-h-0 mb-4">
-        <div className="md:col-span-4 h-full">
-          <ICommonChattings className="h-full w-full" />
+      <div className="flex-1 grid grid-cols-1 md:grid-cols-7 gap-4 mb-4 overflow-hidden">
+        <div className="md:col-span-4 h-full overflow-hidden">
+          <ICommonChattings className="h-full" />
         </div>
         <div className="md:col-span-3 h-full">
           <IUserListWithLoginStatus className="h-full" />

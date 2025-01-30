@@ -7,11 +7,12 @@ export interface IUser {
     phone_number: string | null;
     created_at: string;
     updated_at: string;
-    email: string;
+    email? : string;
     is_admin: boolean;
     organization_id: string | null;
     status?: 'online' | 'offline' | 'away';
 }
+
 
 export interface UserFilter {
     isAdmin?: boolean;

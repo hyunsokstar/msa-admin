@@ -2,7 +2,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { apiForGetCommonChattings } from "@/api/main/apiForCommonChattings";
 import { Card } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useCommonChattings } from "@/hook/main/useCommonChattings";
 import { useUserStore } from "@/store/useUserStore";
@@ -37,8 +36,11 @@ export default function ICommonChattings({ className }: ICommonChattingsProps) {
                 <h3 className="text-lg font-medium">공용 채팅방</h3>
             </div>
 
-            <ScrollArea ref={scrollRef} className="flex-1">
-                <div className="space-y-4 p-4">
+            <div
+                ref={scrollRef}
+                className="flex-1 overflow-y-auto px-4 py-4"
+            >
+                <div className="space-y-4">
                     {chattingsData?.data?.map((chat) => {
                         const isMyMessage = chat.user_id === user?.id;
 
@@ -80,7 +82,7 @@ export default function ICommonChattings({ className }: ICommonChattingsProps) {
                         );
                     })}
                 </div>
-            </ScrollArea>
+            </div>
 
             <div className="pt-2">
                 <ICommonChattingInput onSuccess={refetch} />

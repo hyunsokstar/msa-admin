@@ -1,7 +1,7 @@
-// // hook/useApiForLogin.tsx
 import { useMutation } from '@tanstack/react-query';
 import { useUserStore } from '@/store/useUserStore';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { IUser } from '@/types/typeForUser';
 
 interface LoginCredentials {
     email: string;
@@ -30,18 +30,22 @@ export const useApiForLogin = () => {
 
             if (userError) throw userError;
 
+            // IUser 타입에 맞게 데이터 매핑
+            const userWithCustomData: IUser = {
+                id: data.user.id,
+                email: data.user.email,
+                full_name: userData.full_name || '',
+                profile_image_url: userData.profile_image_url || null,
+                phone_number: userData.phone_number || null,
+                created_at: userData.created_at || new Date().toISOString(),
+                updated_at: userData.updated_at || new Date().toISOString(),
+                is_admin: userData.is_admin || false,
+                organization_id: userData.organization_id || null,
+                status: userData.status || 'offline'
+            };
+
             // 상태 업데이트
-            setAuth(
-                {
-                    ...data.user,
-                    email: data.user.email || null,
-                    is_admin: userData.is_admin,
-                    profile_image_url: userData.profile_image_url,
-                    full_name: userData.full_name,
-                    phone_number: userData.phone_number
-                },
-                data.session
-            );
+            setAuth(userWithCustomData, data.session);
 
             return data;
         },
@@ -51,42 +55,3 @@ export const useApiForLogin = () => {
         }
     });
 };
-
-// hook/useApiForLogin.tsx
-// import { useMutation } from '@tanstack/react-query';
-// import { useUserStore } from '@/store/useUserStore';
-// import { apiForLoginUser } from '@/api/apiForAuth';
-
-// interface LoginCredentials {
-//     email: string;
-//     password: string;
-// }
-
-// export const useApiForLogin = () => {
-//     const setAuth = useUserStore((state) => state.setAuth);
-
-//     return useMutation({
-//         mutationFn: async (credentials: LoginCredentials) => {
-//             const data = await apiForLoginUser(credentials);
-            
-//             // API route에서 받아온 데이터로 상태 업데이트
-//             setAuth(
-//                 {
-//                     ...data.user,
-//                     email: data.user.email || null,
-//                     is_admin: data.isAdmin,
-//                     profile_image_url: data.user.profile_image_url,
-//                     full_name: data.user.full_name,
-//                     phone_number: data.user.phone_number
-//                 },
-//                 data.session
-//             );
-
-//             return data;
-//         },
-//         onError: (error) => {
-//             console.error('Login error:', error);
-//             throw error;
-//         }
-//     });
-// };
