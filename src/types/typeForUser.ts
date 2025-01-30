@@ -2,13 +2,15 @@
 
 export interface IUser {
     id: string;
-    email: string | null;
-    full_name?: string | null;
-    phone_number?: string | null;
-    is_admin?: boolean;
+    full_name: string;
+    profile_image_url: string | null;
+    phone_number: string | null;
     created_at: string;
-    updated_at?: string;
-    profile_image_url?: string | null;  // null도 허용하도록 수정
+    updated_at: string;
+    email: string;
+    is_admin: boolean;
+    organization_id: string | null;
+    status?: 'online' | 'offline' | 'away';
 }
 
 export interface UserFilter {
