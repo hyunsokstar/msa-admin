@@ -32,7 +32,7 @@ export async function PUT(request: NextRequest) {
             .update({
                 content,
                 updated_at: new Date().toISOString(),
-                updated_by: session.user.id
+                // updated_by: session.user.id
             })
             .eq("id", id);
 
