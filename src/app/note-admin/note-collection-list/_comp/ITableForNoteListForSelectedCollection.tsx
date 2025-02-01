@@ -92,7 +92,7 @@ export const ITableForNoteListForSelectedCollection: React.FC<ITableForNoteListF
 
   if (error) {
     return (
-      <div className="p-6 text-center text-red-600">Failed to load notes</div>
+      <div className="p-6 text-center text-red-600">노트를 불러오는데 실패했습니다</div>
     );
   }
 
@@ -136,7 +136,7 @@ export const ITableForNoteListForSelectedCollection: React.FC<ITableForNoteListF
                 </TableCell>
 
                 <TableCell className="min-w-[320px]">
-                  <Link 
+                  <Link
                     href={`/note-admin/notes/${note.id}/note-contents`}
                     className="block text-slate-900 hover:text-blue-600 transition-colors duration-200"
                   >
@@ -157,16 +157,19 @@ export const ITableForNoteListForSelectedCollection: React.FC<ITableForNoteListF
                 </TableCell>
 
                 <TableCell className="w-[140px] pr-2">
+                  
                   <div className="flex gap-2 justify-center">
                     <IDialogButtonForUpdateNote
                       noteId={note.id}
                       initialTitle={note.title}
                       collectionId={collectionId}
+                      writerEmail={note.writer?.email || ''}
                     />
                     <IDialogButtonForDeleteNote
                       noteId={note.id}
                       noteTitle={note.title}
                       collectionId={collectionId}
+                      writerEmail={note.writer?.email || ''}
                     />
                   </div>
                 </TableCell>

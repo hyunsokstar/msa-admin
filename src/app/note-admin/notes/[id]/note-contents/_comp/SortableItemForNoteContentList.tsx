@@ -10,16 +10,16 @@ interface SortableItemProps {
   content: NoteContent;
   isSelected: boolean;
   onClick: () => void;
-  onDelete: (contentId: string) => void;
-  isDeleting?: boolean;
+  noteId: string;
+  pageNum?: number;
 }
 
-export function SortableItemForNoteContentList({ 
-  content, 
-  isSelected, 
-  onClick, 
-  onDelete,
-  isDeleting 
+export function SortableItemForNoteContentList({
+  content,
+  isSelected,
+  onClick,
+  noteId,
+  pageNum
 }: SortableItemProps) {
   const {
     attributes,
@@ -45,7 +45,6 @@ export function SortableItemForNoteContentList({
         ${isDragging ? 'shadow-lg bg-white opacity-90' : ''}
         ${isSelected ? 'bg-blue-50/50' : 'hover:bg-gray-50/50'}`}
     >
-      {/* Drag Handle */}
       <div
         {...attributes}
         {...listeners}
@@ -54,9 +53,8 @@ export function SortableItemForNoteContentList({
         <GripVertical className="h-4 w-4 text-gray-400" />
       </div>
 
-      {/* Content - Clickable area */}
-      <div 
-        className="flex-1 flex items-center gap-3 cursor-pointer" 
+      <div
+        className="flex-1 flex items-center gap-3 cursor-pointer"
         onClick={onClick}
       >
         <span className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100/80 font-medium text-gray-600">
@@ -72,11 +70,12 @@ export function SortableItemForNoteContentList({
         </div>
       </div>
 
-      {/* Delete Dialog Button */}
       <div className="opacity-0 group-hover:opacity-100 transition-opacity">
         <IDialogButtonForDeleteNoteContents
-          onConfirm={() => onDelete(content.id.toString())}
-          isLoading={isDeleting}
+          contentId={content.id}
+          writerEmail={content.writer?.email || ''}
+          noteId={noteId}
+          pageNum={pageNum}
         />
       </div>
     </div>

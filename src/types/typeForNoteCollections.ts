@@ -6,6 +6,7 @@ export interface Writer {
   id: string;
   full_name: string | null;
   profile_image_url: string | null;  // API 응답과 일치하도록 유지
+  email: string;
 }
 
 // types/typeForNoteCollections.ts

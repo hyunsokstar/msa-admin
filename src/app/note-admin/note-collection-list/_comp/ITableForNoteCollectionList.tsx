@@ -163,13 +163,15 @@ export const ITableForNoteCollectionList: React.FC<ITableForNoteCollectionListPr
                       <IDialogButtonForEditNoteCollection
                         collectionId={collection.id}
                         initialName={collection.name}
+                        writerEmail={collection.writer?.email || ''}
                       />
                       <IDialogButtonForDeleteNoteCollection
                         collectionId={collection.id}
                         collectionName={collection.name}
+                        writerEmail={collection.writer?.email || ''}
                       />
                     </div>
-                  </TableCell>  
+                  </TableCell>
                 </TableRow>
               ))
             )}
