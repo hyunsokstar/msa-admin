@@ -18,7 +18,7 @@ interface Props {
   collectionId: string;
   noteId: number;
   noteTitle: string;
-  writerEmail: string;  // 작성자 이메일 추가
+  writerEmail?: string;  // 작성자 이메일 추가
 }
 
 export const IDialogButtonForDeleteNote = ({

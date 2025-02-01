@@ -38,7 +38,7 @@ interface Props {
   collectionId: string;
   noteId: number;
   initialTitle: string;
-  writerEmail: string;
+  writerEmail?: string;
 }
 
 export const IDialogButtonForUpdateNote = ({

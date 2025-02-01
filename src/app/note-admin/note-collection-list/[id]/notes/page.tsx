@@ -173,13 +173,15 @@ const NotesListForCollection = ({ params }: Props) => {
                     <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <IDialogButtonForUpdateNote
                         noteId={note.id}
-                        initialTitle={note.title} 
-                        collectionId={collectionId}                  
-                      />
+                        initialTitle={note.title}
+                        collectionId={collectionId} 
+                        writerEmail={note.writer?.email}                      
+                        />
                       <IDialogButtonForDeleteNote
                         noteId={note.id}
                         noteTitle={note.title} 
-                        collectionId={collectionId}                  
+                        collectionId={collectionId}
+                        writerEmail={note.writer?.email}                      
                       />
                     </div>
                   </TableCell>
