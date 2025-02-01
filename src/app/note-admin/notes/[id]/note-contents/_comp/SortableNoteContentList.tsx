@@ -2,24 +2,24 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { 
-  DndContext, 
-  closestCenter, 
-  DragEndEvent, 
-  DragStartEvent, 
+import {
+  DndContext,
+  closestCenter,
+  DragEndEvent,
+  DragStartEvent,
   DragOverlay,
   PointerSensor,
   useSensor,
   useSensors
 } from '@dnd-kit/core';
-import { 
-  SortableContext, 
-  arrayMove, 
+import {
+  SortableContext,
+  arrayMove,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { NoteContent } from '@/types/notes/typeForNoteContents';
-import { SortableItemForNoteContentList } from './SortableItemForNoteContentList';
 import { useApiForUpdateNoteContentOrder } from '@/hook/notes/useApiForUpdateNoteContentOrder';
+import { SortableItemForNoteContentList } from './SortableItemForNoteContentList';
 
 interface SortableNoteListProps {
   contents: NoteContent[];
@@ -67,7 +67,7 @@ const SortableNoteList = ({
     if (over && active.id !== over.id) {
       const oldIndex = items.findIndex(item => item.id === active.id);
       const newIndex = items.findIndex(item => item.id === over.id);
-      
+
       const newItems = arrayMove(items, oldIndex, newIndex);
       setItems(newItems);
 
@@ -95,8 +95,8 @@ const SortableNoteList = ({
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <SortableContext 
-        items={items.map(item => item.id)} 
+      <SortableContext
+        items={items.map(item => item.id)}
         strategy={verticalListSortingStrategy}
       >
         <div className="space-y-2 p-2">
@@ -106,8 +106,9 @@ const SortableNoteList = ({
               content={content}
               isSelected={selectedNoteId === content.id.toString()}
               onClick={() => setSelectedNote(content)}
-              onDelete={onDelete}
-              isDeleting={isDeletingId === content.id.toString()}
+              noteId={noteId}
+            // onDelete={onDelete}
+            // isDeleting={isDeletingId === content.id.toString()}
             />
           ))}
         </div>
@@ -117,8 +118,7 @@ const SortableNoteList = ({
           <SortableItemForNoteContentList
             content={activeItem}
             isSelected={selectedNoteId === activeItem.id.toString()}
-            onClick={() => {}}
-            onDelete={() => {}}
+            noteId={noteId}
           />
         ) : null}
       </DragOverlay>
