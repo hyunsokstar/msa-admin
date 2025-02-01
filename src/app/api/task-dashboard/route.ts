@@ -132,7 +132,14 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { title, description, screen_url, isArchived, figmaUrl, createdBy } = body;
+    const { title, description, coverUrl, isArchived, figmaUrl, createdBy } = body;
+
+    if (!title || !coverUrl || !createdBy) {
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
+    }
 
     const supabaseService = getSupabaseService();
 
@@ -157,7 +164,7 @@ export async function POST(request: Request) {
         {
           title,
           description,
-          screen_url: screen_url,
+          screen_url: coverUrl, // coverUrl을 screen_url로 매핑
           figma_url: figmaUrl,
           created_by: createdBy,
           is_archived: isArchived,

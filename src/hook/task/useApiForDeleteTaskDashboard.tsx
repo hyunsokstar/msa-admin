@@ -15,10 +15,10 @@ export const useApiForDeleteTaskDashboard = () => {
     mutationFn: async (params: DeleteTaskParams) => {
       console.log('Delete mutation started:', params);
 
-      if (!window.confirm(`"${params.title}" 태스크를 삭제하시겠습니까?`)) {
-        console.log('User cancelled deletion');
-        throw new Error('사용자가 삭제를 취소했습니다.');
-      }
+      // if (!window.confirm(`"${params.title}" 태스크를 삭제하시겠습니까?`)) {
+      //   console.log('User cancelled deletio  n');
+      //   throw new Error('사용자가 삭제를 취소했습니다.');
+      // }
 
       const success = await apiForDeleteTaskDashboard(params.id);
       console.log('API response:', success);

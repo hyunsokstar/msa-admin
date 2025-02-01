@@ -1,5 +1,18 @@
 // C:\Users\terec\msa-admin\src\api\task\apiForSubTodos.ts
 
+export const apiForUpdateSubTodoImage = async (id: string, taskResultImage: string) => {
+    const response = await fetch(`/api/sub-todos/${id}/image`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ task_result_image: taskResultImage }),
+    });
+
+    if (!response.ok) throw new Error('Failed to update sub todo image');
+    return response.json();
+};
+
 export interface CreateSubTodoDto {
     task_id: string;
     content: string;

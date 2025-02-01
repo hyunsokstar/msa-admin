@@ -66,7 +66,6 @@ const TabMenu: React.FC<TabMenuProps> = ({ taskDetail, isLoading }) => {
     return (
         <CommonTabMenu
             tabs={tabs}
-            variant="underline"
             className="w-full"
         />
     );

@@ -51,34 +51,34 @@ const TaskDashboardDialog = () => {
   };
 
   const handleImageUploadComplete = (fileUrl: string) => {
+    console.log("Image upload completed:", fileUrl); // 디버깅용 로그
     setFormData((prev) => ({ ...prev, coverUrl: fileUrl }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!user) return;
 
-    createTaskDashboard.mutate(
-      {
+    try {
+      await createTaskDashboard.mutateAsync({
         title: formData.title,
         description: formData.description,
         coverUrl: formData.coverUrl,
         isArchived: formData.isArchived,
         figmaUrl: formData.figmaUrl,
         createdBy: user.id,
-      },
-      {
-        onSuccess: () => {
-          setIsDialogOpen(false);
-          setFormData({
-            title: "",
-            description: "",
-            coverUrl: "",
-            isArchived: false,
-            figmaUrl: "",
-          });
-        },
-      }
-    );
+      });
+
+      setIsDialogOpen(false);
+      setFormData({
+        title: "",
+        description: "",
+        coverUrl: "",
+        isArchived: false,
+        figmaUrl: "",
+      });
+    } catch (error) {
+      console.error("Task dashboard creation failed:", error);
+    }
   };
 
   return (
@@ -93,22 +93,22 @@ const TaskDashboardDialog = () => {
           )}
           disabled={!isAuthenticated}
         >
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            width="16" 
-            height="16" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2" 
-            strokeLinecap="round" 
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <path d="M12 5v14M5 12h14"/>
+            <path d="M12 5v14M5 12h14" />
           </svg>
         </Button>
       </DialogTrigger>
-      
+
       <DialogContent className="max-w-6xl w-full h-[80vh] p-0 bg-white dark:bg-gray-800">
         <div className="flex h-full">
           {/* 이미지 미리보기 영역 */}
@@ -118,9 +118,9 @@ const TaskDashboardDialog = () => {
             </h3>
             <div className="flex-1 flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-lg">
               {formData.coverUrl ? (
-                <img 
-                  src={formData.coverUrl} 
-                  alt="태스크 미리보기" 
+                <img
+                  src={formData.coverUrl}
+                  alt="태스크 미리보기"
                   className="max-w-full max-h-full object-contain"
                 />
               ) : (
@@ -130,8 +130,10 @@ const TaskDashboardDialog = () => {
               )}
             </div>
             <div className="mt-4">
-              <ImageUploader2 
+              <ImageUploader2
                 onUploadComplete={handleImageUploadComplete}
+                initialImage={formData.coverUrl}
+                isUpdate={false}
               />
             </div>
           </div>
@@ -196,8 +198,8 @@ const TaskDashboardDialog = () => {
                   checked={formData.isArchived}
                   onCheckedChange={handleCheckboxChange}
                 />
-                <Label 
-                  htmlFor="isArchived" 
+                <Label
+                  htmlFor="isArchived"
                   className="text-gray-900 dark:text-gray-300 text-sm font-medium"
                 >
                   태스크 보관처리

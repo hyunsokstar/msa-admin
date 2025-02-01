@@ -1,13 +1,12 @@
-// SubTaskRow.tsx
 import React, { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { Check } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import SubTaskActions from "./SubTaskActions";
-import CommonSwitch from "@/components/common/CommonSwitch";
 import { UseMutationResult } from "@tanstack/react-query";
 import { toast, ToastPosition } from "react-toastify";
+import { cn } from "@/lib/utils";
+import ImageForSubTodo from "./ImageForSubTodo";
 
 interface SubTaskRowProps {
     taskId: string;
@@ -15,6 +14,7 @@ interface SubTaskRowProps {
         id: string;
         content: string;
         is_completed: boolean;
+        task_result_image: string | null;
     };
     isSelected: boolean;
     onSelect: () => void;
@@ -47,48 +47,55 @@ const SubTaskRow: React.FC<SubTaskRowProps> = ({
                 id: todo.id,
                 isCompleted: checked
             });
-            toast.success(`Task status ${checked ? 'completed' : 'uncompleted'} successfully`, toastOptions);
+            toast.success(`Task ${checked ? 'completed' : 'uncompleted'} successfully`, toastOptions);
         } catch (error) {
             console.error('Failed to update status:', error);
             toast.error('Failed to update task status', toastOptions);
         }
     };
 
+    const handleImageUpdate = (newImage: string) => {
+        // TODO: Implement image update API call
+        console.log('Image update:', newImage);
+        toast.info('Image update will be implemented soon');
+    };
+
     return (
-        <TableRow>
-            <TableCell className="text-center">
-                <Checkbox checked={isSelected} onCheckedChange={onSelect} />
+        <TableRow className="hover:bg-gray-50">
+            <TableCell className="text-center w-12">
+                <Checkbox
+                    checked={todo.is_completed}
+                    onCheckedChange={handleStatusChange}
+                    className="data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500"
+                />
             </TableCell>
-            <TableCell className="text-center">
+            <TableCell>
                 {isEditing ? (
                     <Input
                         value={editContent}
                         onChange={(e) => setEditContent(e.target.value)}
-                        className="max-w-sm mx-auto"
+                        className="max-w-sm"
                     />
                 ) : (
-                    <div className="flex items-center justify-center gap-2">
-                        <span className="text-sm text-gray-700">
+                    <div className="flex items-center gap-2">
+                        <span className={cn(
+                            "text-sm text-gray-700",
+                            todo.is_completed && "text-gray-400"
+                        )}>
                             {todo.content}
                         </span>
-                        {todo.is_completed && (
-                            <div className="flex items-center justify-center w-5 h-5 rounded-full bg-green-500">
-                                <Check className="w-3 h-3 text-white" />
-                            </div>
-                        )}
                     </div>
                 )}
             </TableCell>
-            <TableCell className="text-center">
-                <div className="flex justify-center">
-                    <CommonSwitch
-                        id={`task-${todo.id}`}
-                        checked={todo.is_completed}
-                        onCheckedChange={handleStatusChange}
+            <TableCell className="text-center w-20">
+                <ImageForSubTodo
+                    image={todo.task_result_image}
+                    onImageUpdate={handleImageUpdate} 
+                    todoId={todo.id} 
+                    taskId={taskId}                
                     />
-                </div>
             </TableCell>
-            <TableCell className="text-center">
+            <TableCell className="text-center w-24">
                 <div className="flex justify-center">
                     <SubTaskActions
                         taskId={taskId}

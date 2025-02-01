@@ -4,12 +4,7 @@
 import React from "react";
 import { Tab } from "@headlessui/react";
 import { cn } from "@/lib/utils";
-
-export interface TabItem {
-    id: string;
-    label: React.ReactNode;  // string에서 ReactNode로 변경
-    content: React.ReactNode;
-}
+import { TabItem } from "./CommonTabMenu";
 
 interface CommonTabMenu2Props {
     tabs: TabItem[];

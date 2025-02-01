@@ -7,6 +7,7 @@ export interface SubTodo {
   task_id: string;
   content: string;
   is_completed: boolean;
+  task_result_image: string | null;
   created_at: string;
   updated_at: string;
 }

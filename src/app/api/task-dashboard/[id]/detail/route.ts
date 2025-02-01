@@ -42,6 +42,7 @@ export async function GET(
     sub_todos(
       id,
       content,
+      task_result_image,
       is_completed,
       created_at,
       updated_at,

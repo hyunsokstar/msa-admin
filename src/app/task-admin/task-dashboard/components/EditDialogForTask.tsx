@@ -17,7 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { TaskDashboardForUpdate } from "@/types/task/typeForTaskDashboard";
 import { useApiForUpdateTask } from "@/hook/task/useApiForUpdateTask";
-import ImageUploaderForEdit from "@/components/file-uploader/ImageUploaderForEdit";
+import ImageUploader2 from "@/components/file-uploader/ImageUploader2";
 import { toast } from 'react-toastify';
 import { Edit } from "lucide-react";
 
@@ -39,8 +39,8 @@ const EditDialogForTask = ({ task }: EditDialogProps) => {
     setFormData((prev) => ({ ...prev, is_archived: checked }));
   };
 
-  const handleImageUploadComplete = (updatedImage: string | null) => {
-    setFormData((prev) => ({ ...prev, screen_url: updatedImage }));
+  const handleImageUploadComplete = (fileUrl: string) => {
+    setFormData((prev) => ({ ...prev, screen_url: fileUrl }));
   };
 
   const handleSubmit = async () => {
@@ -119,9 +119,10 @@ const EditDialogForTask = ({ task }: EditDialogProps) => {
             <Label htmlFor="screen_url" className="text-gray-900 dark:text-gray-300">
               Screen URL
             </Label>
-            <ImageUploaderForEdit
+            <ImageUploader2
+              onUploadComplete={handleImageUploadComplete}
               initialImage={formData.screen_url ?? ""}
-              onUpdateImage={handleImageUploadComplete}
+              isUpdate={true}
             />
           </div>
           <div>
@@ -150,17 +151,17 @@ const EditDialogForTask = ({ task }: EditDialogProps) => {
           </div>
         </div>
         <DialogFooter>
-          <Button 
-            variant="secondary" 
-            onClick={() => setIsDialogOpen(false)} 
+          <Button
+            variant="secondary"
+            onClick={() => setIsDialogOpen(false)}
             className="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600"
           >
             Cancel
           </Button>
-          <Button 
-            variant="default" 
+          <Button
+            variant="default"
             onClick={handleSubmit}
-            disabled={updateTask.isPending} 
+            disabled={updateTask.isPending}
             className="bg-blue-500 hover:bg-blue-600 text-white"
           >
             {updateTask.isPending ? "Saving..." : "Save"}
