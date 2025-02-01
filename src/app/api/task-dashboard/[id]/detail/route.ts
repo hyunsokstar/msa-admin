@@ -91,7 +91,7 @@ export async function GET(
 
     // 완료된 항목이 맨 아래로 가도록 정렬
     if (task?.sub_todos) {
-      task.sub_todos.sort((a, b) => {
+      task.sub_todos.sort((a: any, b: any) => {
         if (a.is_completed !== b.is_completed) {
           return a.is_completed ? 1 : -1;
         }
