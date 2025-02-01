@@ -20,11 +20,13 @@ const TabMenu: React.FC<TabMenuProps> = ({ taskDetail, isLoading }) => {
             id: "subtodo",
             label: "Sub Todo",
             content: (
-                <SubTasks
-                    taskId={taskDetail?.id}
-                    isLoading={isLoading}
-                    subTodos={taskDetail?.sub_todos || []}
-                />
+                <div className="h-[calc(100vh-250px)] overflow-y-auto">
+                    <SubTasks
+                        taskId={taskDetail?.id}
+                        isLoading={isLoading}
+                        subTodos={taskDetail?.sub_todos || []}
+                    />
+                </div>
             )
         },
         {

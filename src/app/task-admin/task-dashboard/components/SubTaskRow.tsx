@@ -62,7 +62,7 @@ const SubTaskRow: React.FC<SubTaskRowProps> = ({
 
     return (
         <TableRow className="hover:bg-gray-50">
-            <TableCell className="text-center w-12">
+            <TableCell className="text-center w-12 p-0">
                 <Checkbox
                     checked={todo.is_completed}
                     onCheckedChange={handleStatusChange}
