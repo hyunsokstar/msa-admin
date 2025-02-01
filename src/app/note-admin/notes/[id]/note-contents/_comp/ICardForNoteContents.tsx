@@ -18,9 +18,9 @@ interface ICardForNoteContentsProps {
   pageNum?: number;
 }
 
-const ICardForNoteContents = ({ 
-  content, 
-  isSelected, 
+const ICardForNoteContents = ({
+  content,
+  isSelected,
   isUpdateMode = false,
   onClick,
   onTitleChange,
@@ -50,7 +50,7 @@ const ICardForNoteContents = ({
   }
 
   return (
-    <Card 
+    <Card
       className={`mb-4 transition-all hover:shadow-md relative bg-white rounded-xl border border-gray-200
         ${isSelected ? 'ring-1 ring-blue-400 shadow-md' : 'hover:border-gray-300'}`}
       onClick={onClick}
@@ -63,9 +63,9 @@ const ICardForNoteContents = ({
 
           <div className="relative group">
             <Avatar className="h-10 w-10">
-              <AvatarImage 
-                src={content.writer?.profile_image_url} 
-                alt={content.writer?.full_name || '사용자'} 
+              <AvatarImage
+                src={content.writer?.profile_image_url}
+                alt={content.writer?.full_name || '사용자'}
               />
               <AvatarFallback>
                 {content.writer?.full_name?.charAt(0)?.toUpperCase() || 'U'}
@@ -92,13 +92,14 @@ const ICardForNoteContents = ({
             />
 
             <IDialogButtonForDeleteNoteContents
-              onConfirm={handleDelete}
-              isLoading={isLoading}
+              contentId={content.id}
+              writerEmail={content.writer?.email || ""}
+              noteId={noteId}
             />
           </div>
         </div>
 
-        <div 
+        <div
           className="min-h-[180px] p-5 border border-gray-200 rounded-lg bg-gray-50 prose prose-sm max-w-none
             hover:bg-white transition-colors duration-200"
           dangerouslySetInnerHTML={{ __html: content.content }}
