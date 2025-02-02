@@ -1,7 +1,7 @@
 // hooks/task/useApiForUpdateSubTodoAll.ts
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
-import { apiForUpdateSubTodoAll, UpdateSubTodoAllDto } from '@/api/task/apiForSubTodos';
+import { apiForUpdateSubTodoAll } from '@/api/task/apiForSubTodos';
 
 interface UpdateSubTodoAllParams {
     id: string;
