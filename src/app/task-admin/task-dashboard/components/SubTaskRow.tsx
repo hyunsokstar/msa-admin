@@ -5,9 +5,9 @@ import { Input } from "@/components/ui/input";
 import SubTaskActions from "./SubTaskActions";
 import { UseMutationResult } from "@tanstack/react-query";
 import { toast, ToastPosition } from "react-toastify";
-import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Notebook } from "lucide-react";
 import ImageForSubTodo from "./ImageForSubTodo";
-import { Notebook, Link } from "lucide-react";
 
 interface SubTaskRowProps {
     taskId: string;
@@ -99,16 +99,12 @@ const SubTaskRow: React.FC<SubTaskRowProps> = ({
                 </div>
             </TableCell>
 
-            {/* ✅ 참고 노트 (아이콘으로 표시) */}
+            {/* ✅ 참고 노트 (아이콘으로 표시, 클릭 시 새 탭 열림) */}
             <TableCell className="w-16">
                 <div className="flex justify-center items-center">
-                    {todo.ref_task_note ? (
-                        <a href={todo.ref_task_note} target="_blank" rel="noopener noreferrer">
-                            <Link className="h-5 w-5 text-blue-500" />
-                        </a>
-                    ) : (
-                        <Notebook className="h-5 w-5 text-gray-200" />
-                    )}
+                    <a href={todo.ref_task_note ?? "#"} target="_blank" rel="noopener noreferrer">
+                        <Notebook className="h-5 w-5 text-gray-500 hover:text-blue-500" />
+                    </a>
                 </div>
             </TableCell>
 
@@ -121,8 +117,13 @@ const SubTaskRow: React.FC<SubTaskRowProps> = ({
                         isEditing={isEditing}
                         setIsEditing={setIsEditing}
                         editContent={editContent}
-                        originalContent={todo.content}
-                    />
+                        originalContent={todo.content} 
+                        todo={{
+                            content: todo.content,
+                            task_result_image: todo.task_result_image,
+                            ref_task_note: todo.ref_task_note
+                        }}                    
+                        />
                 </div>
             </TableCell>
         </TableRow>
@@ -130,3 +131,4 @@ const SubTaskRow: React.FC<SubTaskRowProps> = ({
 };
 
 export default SubTaskRow;
+    

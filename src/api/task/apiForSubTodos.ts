@@ -69,3 +69,16 @@ export const apiForUpdateSubTodo = async (id: string, content: string) => {
     if (!response.ok) throw new Error('Failed to update sub todo');
     return response.json();
 };
+
+export const apiForUpdateSubTodoAll = async (id: string, data: UpdateSubTodoAllDto) => {
+    const response = await fetch(`/api/sub-todos/${id}/all`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    });
+
+    if (!response.ok) throw new Error('Failed to update sub todo');
+    return response.json();
+};
