@@ -1,8 +1,8 @@
     // hooks/task/useApiForCreateSubTodo.ts
     import { useMutation, useQueryClient } from '@tanstack/react-query';
     import { toast } from 'react-toastify';
-    import { CreateSubTodoDto } from '@/api/task/apiForSubTodos';
     import { apiForCreateSubTodo } from '@/api/task/apiForSubTodos';
+import { CreateSubTodoDto } from '@/types/task/typeForSubTodo';
 
     export const useApiForCreateSubTodo = (taskId: string) => {
         const queryClient = useQueryClient();
