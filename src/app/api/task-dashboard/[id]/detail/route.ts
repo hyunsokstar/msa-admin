@@ -1,5 +1,3 @@
-// /app/api/task-dashboard/[id]/detail/route.ts
-// /app/api/task-dashboard/[id]/detail/route.ts
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
@@ -27,7 +25,7 @@ export async function GET(
     const { data: task, error: taskError } = await supabase
       .from("task_dashboard")
       .select(`
-       *,
+       * ,
        created_by:users!task_dashboard_created_by_fkey(
          id,
          full_name,
@@ -45,11 +43,10 @@ export async function GET(
          is_completed,
          created_at,
          updated_at,
-         task_id
+         task_id,
+         ref_task_note
        ),
-       ref_screen_images(
-         *
-       ),
+       ref_screen_images(*),
        task_api_mappings(*),
        task_code_reviews(
          id,
@@ -112,117 +109,6 @@ export async function GET(
         status: 200,
         headers: { "Cache-Control": "no-store" },
       }
-    );
-  } catch (error) {
-    console.error("Server error:", error);
-    return NextResponse.json(
-      {
-        error: "Internal server error",
-        details: error instanceof Error ? error.message : "Unknown error",
-        data: null,
-      },
-      { status: 500 }
-    );
-  }
-}
-
-export async function DELETE(
-  request: NextRequest,
-  context: { params: Promise<{ id: string }> }
-): Promise<NextResponse> {
-  try {
-    const supabase = createRouteHandlerClient({ cookies });
-    const params = await context.params;
-    const taskId = params.id;
-
-    if (!taskId) {
-      return NextResponse.json(
-        {
-          error: "Invalid Task ID",
-          details: "Task ID is required",
-          data: null,
-        },
-        { status: 400 }
-      );
-    }
-
-    // sub todos 삭제
-    const { error: subTodosError } = await supabase
-      .from("sub_todos")
-      .delete()
-      .eq("task_id", taskId);
-
-    if (subTodosError) {
-      console.error("Sub todos deletion error:", subTodosError);
-      return NextResponse.json(
-        {
-          error: "Failed to delete sub todos",
-          details: subTodosError.message,
-          data: null,
-        },
-        { status: 500 }
-      );
-    }
-
-    // task_api_mappings 삭제
-    const { error: apiMappingsError } = await supabase
-      .from("task_api_mappings")
-      .delete()
-      .eq("task_id", taskId);
-
-    if (apiMappingsError) {
-      console.error("API mappings deletion error:", apiMappingsError);
-      return NextResponse.json(
-        {
-          error: "Failed to delete API mappings",
-          details: apiMappingsError.message,
-          data: null,
-        },
-        { status: 500 }
-      );
-    }
-
-    // 참조 이미지 삭제
-    const { error: refImagesError } = await supabase
-      .from("ref_screen_images")
-      .delete()
-      .eq("task_id", taskId);
-
-    if (refImagesError) {
-      console.error("Reference images deletion error:", refImagesError);
-      return NextResponse.json(
-        {
-          error: "Failed to delete reference images",
-          details: refImagesError.message,
-          data: null,
-        },
-        { status: 500 }
-      );
-    }
-
-    // 태스크 삭제
-    const { error: taskError } = await supabase
-      .from("task_dashboard")
-      .delete()
-      .eq("id", taskId);
-
-    if (taskError) {
-      console.error("Task deletion error:", taskError);
-      return NextResponse.json(
-        {
-          error: "Failed to delete task",
-          details: taskError.message,
-          data: null,
-        },
-        { status: 500 }
-      );
-    }
-
-    return NextResponse.json(
-      {
-        success: true,
-      },
-      { status: 200 }
     );
   } catch (error) {
     console.error("Server error:", error);

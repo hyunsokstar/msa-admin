@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import SubTaskRow from "./SubTaskRow";
 import SubTaskHeader from "./SubTaskHeader";
 import { useUpdateSubTodoStatus } from "@/hook/task/useUpdateSubTodoStatus";
-import { Image as ImageIcon, ImageIcon as ImageRef } from "lucide-react";
+import { Notebook, Link } from "lucide-react";
 
 interface SubTasksProps {
   taskId: string;
@@ -15,6 +15,7 @@ interface SubTasksProps {
     content: string;
     is_completed: boolean;
     task_result_image: string | null;
+    ref_task_note: string | null;
   }[] | null;
 }
 
@@ -51,24 +52,23 @@ const SubTasks: React.FC<SubTasksProps> = ({ taskId, isLoading, subTodos }) => {
         <SubTaskHeader taskId={taskId} selectedCount={selectedItems.size} />
       </div>
       <div className="flex-1 overflow-hidden">
-        <Table>
+        <Table className="table-fixed">
           <TableHeader className="sticky top-0 bg-white">
             <TableRow>
-              <TableHead className="w-16 p-0">
-                <div className="flex justify-center">
+
+              <TableHead className="w-12 text-center p-0">
+                <div className="flex justify-center items-center h-full min-h-[40px]">
                   <Checkbox checked={isAllSelected} onCheckedChange={handleSelectAll} />
                 </div>
               </TableHead>
-              <TableHead className="flex-1 text-center">content</TableHead>
-              <TableHead className="w-28 text-center">
-                <div className="flex items-center justify-center gap-2">
-                  <span className="text-sm">참고 이미지</span>
-                </div>
-              </TableHead>
-              <TableHead className="w-20 text-center">액션</TableHead>
+
+              <TableHead className="text-center">Content</TableHead>
+              <TableHead className="w-16 text-center">참고 이미지</TableHead>
+              <TableHead className="w-16 text-center">참고 노트</TableHead>
+              <TableHead className="w-24 text-center">액션</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody className="overflow-y-auto">
+          <TableBody>
             {subTodos && subTodos.length > 0 ? (
               subTodos.map((todo) => (
                 <SubTaskRow
@@ -82,7 +82,7 @@ const SubTasks: React.FC<SubTasksProps> = ({ taskId, isLoading, subTodos }) => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={4} className="text-center text-sm text-gray-500">
+                <TableCell colSpan={5} className="text-center text-sm text-gray-500">
                   No tasks added yet
                 </TableCell>
               </TableRow>

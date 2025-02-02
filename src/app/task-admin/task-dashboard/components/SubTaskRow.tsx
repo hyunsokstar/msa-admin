@@ -7,6 +7,7 @@ import { UseMutationResult } from "@tanstack/react-query";
 import { toast, ToastPosition } from "react-toastify";
 import { cn } from "@/lib/utils";
 import ImageForSubTodo from "./ImageForSubTodo";
+import { Notebook, Link } from "lucide-react";
 
 interface SubTaskRowProps {
     taskId: string;
@@ -15,6 +16,7 @@ interface SubTaskRowProps {
         content: string;
         is_completed: boolean;
         task_result_image: string | null;
+        ref_task_note: string | null;
     };
     isSelected: boolean;
     onSelect: () => void;
@@ -55,21 +57,25 @@ const SubTaskRow: React.FC<SubTaskRowProps> = ({
     };
 
     const handleImageUpdate = (newImage: string) => {
-        // TODO: Implement image update API call
         console.log('Image update:', newImage);
         toast.info('Image update will be implemented soon');
     };
 
     return (
-        <TableRow className="hover:bg-gray-50">
-            <TableCell className="text-center w-12 p-0">
-                <Checkbox
-                    checked={todo.is_completed}
-                    onCheckedChange={handleStatusChange}
-                    className="data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500"
-                />
+        <TableRow className="hover:bg-gray-50 text-center">
+            {/* ✅ 체크박스 중앙 정렬 */}
+            <TableCell className="w-12 text-center p-0">
+                <div className="flex justify-center items-center h-full min-h-[40px]">
+                    <Checkbox
+                        checked={todo.is_completed}
+                        onCheckedChange={handleStatusChange}
+                        className="data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500"
+                    />
+                </div>
             </TableCell>
-            <TableCell>
+
+            {/* ✅ 내용 */}
+            <TableCell className="text-left">
                 {isEditing ? (
                     <Input
                         value={editContent}
@@ -77,25 +83,37 @@ const SubTaskRow: React.FC<SubTaskRowProps> = ({
                         className="max-w-sm"
                     />
                 ) : (
-                    <div className="flex items-center gap-2">
-                        <span className={cn(
-                            "text-sm text-gray-700",
-                            todo.is_completed && "text-gray-400"
-                        )}>
-                            {todo.content}
-                        </span>
-                    </div>
+                    <span className="text-sm text-gray-700">{todo.content}</span>
                 )}
             </TableCell>
-            <TableCell className="text-center w-20">
-                <ImageForSubTodo
-                    image={todo.task_result_image}
-                    onImageUpdate={handleImageUpdate} 
-                    todoId={todo.id} 
-                    taskId={taskId}                
+
+            {/* ✅ 참고 이미지 (정사각형 & 크기 조정) */}
+            <TableCell className="w-16">
+                <div className="flex justify-center items-center">
+                    <ImageForSubTodo
+                        image={todo.task_result_image}
+                        onImageUpdate={handleImageUpdate}
+                        todoId={todo.id}
+                        taskId={taskId}
                     />
+                </div>
             </TableCell>
-            <TableCell className="text-center w-24">
+
+            {/* ✅ 참고 노트 (아이콘으로 표시) */}
+            <TableCell className="w-16">
+                <div className="flex justify-center items-center">
+                    {todo.ref_task_note ? (
+                        <a href={todo.ref_task_note} target="_blank" rel="noopener noreferrer">
+                            <Link className="h-5 w-5 text-blue-500" />
+                        </a>
+                    ) : (
+                        <Notebook className="h-5 w-5 text-gray-200" />
+                    )}
+                </div>
+            </TableCell>
+
+            {/* ✅ 액션 버튼 */}
+            <TableCell className="w-24">
                 <div className="flex justify-center">
                     <SubTaskActions
                         taskId={taskId}

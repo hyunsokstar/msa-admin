@@ -64,5 +64,13 @@ export interface TaskDetail {
   ref_images: RefImage[];
   task_api_mappings: TaskApiMapping[];
   task_code_reviews: TaskCodeReview[];
-  task_chattings: TaskChat[]; // 추가된 부분
+  task_chattings: TaskChat[];
+}
+
+export interface SubTodo {
+  id: string;
+  content: string;
+  is_completed: boolean;
+  task_result_image: string | null;
+  ref_task_note: string | null; // ✅ 추가된 필드
 }

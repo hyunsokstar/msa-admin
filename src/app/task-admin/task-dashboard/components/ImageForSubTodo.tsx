@@ -106,7 +106,7 @@ const ImageForSubTodo: React.FC<ImageForSubTodoProps> = ({
     return (
         <>
             {/* 이미지 썸네일 크기 증가 */}
-            <div className="w-20 h-20 mx-auto relative group cursor-pointer" onClick={handleClick}>
+            <div className="w-10 h-10 mx-auto relative group cursor-pointer" onClick={handleClick}>
                 {image ? (
                     <>
                         <img
