@@ -74,7 +74,6 @@ const IDialogButtonForCreateApi: React.FC<IDialogButtonForCreateApiProps> = ({
                 </CommonButton2>
             }
             title="Add New API Specification"
-            className="w-screen h-screen max-w-full max-h-full m-0 p-0"
         >
             <div className="h-full flex">
                 {/* Left Section */}
