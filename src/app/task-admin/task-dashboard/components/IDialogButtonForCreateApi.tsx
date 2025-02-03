@@ -1,4 +1,3 @@
-// src/app/task-admin/task-dashboard/components/IDialogButtonForCreateApi.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -37,7 +36,6 @@ const IDialogButtonForCreateApi: React.FC<IDialogButtonForCreateApiProps> = ({
         e.preventDefault();
 
         try {
-            // JSON 필드 파싱
             const parsedData = {
                 ...formData,
                 request_spec: JSON.parse(formData.request_spec),
@@ -76,108 +74,119 @@ const IDialogButtonForCreateApi: React.FC<IDialogButtonForCreateApiProps> = ({
                 </CommonButton2>
             }
             title="Add New API Specification"
+            className="w-screen h-screen max-w-full max-h-full m-0 p-0"
         >
-            <div className="p-6">
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label>HTTP Method</Label>
-                            <Select
-                                value={formData.method}
-                                onValueChange={(value) =>
-                                    setFormData(prev => ({ ...prev, method: value }))
-                                }
+            <div className="h-full flex">
+                {/* Left Section */}
+                <div className="w-1/2 p-6 border-r">
+                    <form onSubmit={handleSubmit} className="space-y-6 h-full flex flex-col">
+                        <div className="space-y-6 flex-grow">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label>HTTP Method</Label>
+                                    <Select
+                                        value={formData.method}
+                                        onValueChange={(value) =>
+                                            setFormData(prev => ({ ...prev, method: value }))
+                                        }
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {HTTP_METHODS.map(method => (
+                                                <SelectItem key={method} value={method}>
+                                                    {method}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label>Endpoint</Label>
+                                    <Input
+                                        value={formData.endpoint}
+                                        onChange={(e) =>
+                                            setFormData(prev => ({ ...prev, endpoint: e.target.value }))
+                                        }
+                                        placeholder="https://api.example.com/users"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label>Description</Label>
+                                <Input
+                                    value={formData.description}
+                                    onChange={(e) =>
+                                        setFormData(prev => ({ ...prev, description: e.target.value }))
+                                    }
+                                    placeholder="Brief description of the API"
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label>Headers</Label>
+                                <Textarea
+                                    value={formData.headers}
+                                    onChange={(e) =>
+                                        setFormData(prev => ({ ...prev, headers: e.target.value }))
+                                    }
+                                    placeholder="{}"
+                                    className="font-mono h-32"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end gap-2 pt-4 border-t">
+                            <CommonButton2
+                                variant="ghost"
+                                onClick={() => setIsOpen(false)}
+                                type="button"
                             >
-                                <SelectTrigger>
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {HTTP_METHODS.map(method => (
-                                        <SelectItem key={method} value={method}>
-                                            {method}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                                Cancel
+                            </CommonButton2>
+                            <CommonButton2
+                                variant="primary"
+                                type="submit"
+                                loading={createTaskApiSpec.isPending}
+                            >
+                                Create
+                            </CommonButton2>
+                        </div>
+                    </form>
+                </div>
+
+                {/* Right Section */}
+                <div className="w-1/2 p-6 bg-gray-50">
+                    <div className="space-y-6 h-full">
+                        <div className="space-y-2">
+                            <Label>Request Specification</Label>
+                            <Textarea
+                                value={formData.request_spec}
+                                onChange={(e) =>
+                                    setFormData(prev => ({ ...prev, request_spec: e.target.value }))
+                                }
+                                placeholder="{}"
+                                className="font-mono h-64"
+                            />
                         </div>
 
                         <div className="space-y-2">
-                            <Label>Endpoint</Label>
-                            <Input
-                                value={formData.endpoint}
+                            <Label>Response Specification</Label>
+                            <Textarea
+                                value={formData.response_spec}
                                 onChange={(e) =>
-                                    setFormData(prev => ({ ...prev, endpoint: e.target.value }))
+                                    setFormData(prev => ({ ...prev, response_spec: e.target.value }))
                                 }
-                                placeholder="https://api.example.com/users"
-                                required
+                                placeholder="{}"
+                                className="font-mono h-64"
                             />
                         </div>
                     </div>
-
-                    <div className="space-y-2">
-                        <Label>Description</Label>
-                        <Input
-                            value={formData.description}
-                            onChange={(e) =>
-                                setFormData(prev => ({ ...prev, description: e.target.value }))
-                            }
-                            placeholder="Brief description of the API"
-                        />
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label>Headers</Label>
-                        <Textarea
-                            value={formData.headers}
-                            onChange={(e) =>
-                                setFormData(prev => ({ ...prev, headers: e.target.value }))
-                            }
-                            placeholder="{}"
-                            className="font-mono"
-                        />
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label>Request Specification</Label>
-                        <Textarea
-                            value={formData.request_spec}
-                            onChange={(e) =>
-                                setFormData(prev => ({ ...prev, request_spec: e.target.value }))
-                            }
-                            placeholder="{}"
-                            className="font-mono"
-                        />
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label>Response Specification</Label>
-                        <Textarea
-                            value={formData.response_spec}
-                            onChange={(e) =>
-                                setFormData(prev => ({ ...prev, response_spec: e.target.value }))
-                            }
-                            placeholder="{}"
-                            className="font-mono"
-                        />
-                    </div>
-
-                    <div className="flex justify-end gap-2">
-                        <CommonButton2
-                            variant="ghost"
-                            onClick={() => setIsOpen(false)}
-                            type="button"
-                        >
-                            Cancel
-                        </CommonButton2>
-                        <CommonButton2
-                            variant="primary"
-                            type="submit"
-                            loading={createTaskApiSpec.isPending}
-                        >
-                            Create
-                        </CommonButton2>
-                    </div>
-                </form>
+                </div>
             </div>
         </CommonDialogButton>
     );
