@@ -18,7 +18,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { TaskDashboardForUpdate } from "@/types/task/typeForTaskDashboard";
 import { useApiForUpdateTask } from "@/hook/task/useApiForUpdateTask";
 import ImageUploader2 from "@/components/file-uploader/ImageUploader2";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import { Edit } from "lucide-react";
 
 interface EditDialogProps {
@@ -30,43 +30,45 @@ const EditDialogForTask = ({ task }: EditDialogProps) => {
   const [formData, setFormData] = useState(task);
   const updateTask = useApiForUpdateTask();
 
+  // 텍스트 입력 핸들러
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // 체크박스 상태 변경 핸들러
   const handleCheckboxChange = (checked: boolean) => {
     setFormData((prev) => ({ ...prev, is_archived: checked }));
   };
 
+  // 이미지 업로드 완료 시 URL 저장
   const handleImageUploadComplete = (fileUrl: string) => {
     setFormData((prev) => ({ ...prev, screen_url: fileUrl }));
   };
 
+  // 제출 핸들러
   const handleSubmit = async () => {
     try {
       await updateTask.mutateAsync(formData);
-      toast.success('Task updated successfully!', {
+      toast.success("Task updated successfully!", {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-        progress: undefined,
       });
       setIsDialogOpen(false);
     } catch (error) {
-      toast.error('Failed to update task. Please try again.', {
+      toast.error("Failed to update task. Please try again.", {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-        progress: undefined,
       });
-      console.error('Update error:', error);
+      console.error("Update error:", error);
     }
   };
 
@@ -89,6 +91,7 @@ const EditDialogForTask = ({ task }: EditDialogProps) => {
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
+          {/* 제목 입력 */}
           <div>
             <Label htmlFor="title" className="text-gray-900 dark:text-gray-300">
               Title
@@ -102,6 +105,8 @@ const EditDialogForTask = ({ task }: EditDialogProps) => {
               className="bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600"
             />
           </div>
+
+          {/* 설명 입력 */}
           <div>
             <Label htmlFor="description" className="text-gray-900 dark:text-gray-300">
               Description
@@ -115,6 +120,8 @@ const EditDialogForTask = ({ task }: EditDialogProps) => {
               className="bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600"
             />
           </div>
+
+          {/* 이미지 업로드 */}
           <div>
             <Label htmlFor="screen_url" className="text-gray-900 dark:text-gray-300">
               Screen URL
@@ -125,6 +132,8 @@ const EditDialogForTask = ({ task }: EditDialogProps) => {
               isUpdate={true}
             />
           </div>
+
+          {/* Figma URL 입력 */}
           <div>
             <Label htmlFor="figma_url" className="text-gray-900 dark:text-gray-300">
               Figma URL
@@ -138,6 +147,8 @@ const EditDialogForTask = ({ task }: EditDialogProps) => {
               className="bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600"
             />
           </div>
+
+          {/* 체크박스로 is_archived 값 수정 */}
           <div className="flex items-center gap-4">
             <Checkbox
               id="is_archived"
@@ -150,6 +161,7 @@ const EditDialogForTask = ({ task }: EditDialogProps) => {
             </Label>
           </div>
         </div>
+
         <DialogFooter>
           <Button
             variant="secondary"
