@@ -29,6 +29,7 @@ import { toast } from "react-toastify";
 import IDialogButtonForCreateTaskDashBoard from "./components/IDialogButtonForCreateTaskDashBoard";
 import { useApiForDragAndDropTask } from "@/hook/task/useApiForDragAndDropTask";
 import { TaskCardForDashBoard } from "./components/TaskCardForDashBoard";
+import ArchivedTaskList from "./components/ArchivedTaskList";
 
 const statusOrder = ["ready", "progress", "test", "complete"] as const;
 
@@ -38,8 +39,6 @@ export default function TaskDashboardPage() {
   const dragAndDropTask = useApiForDragAndDropTask();
 
   const { data: tasksFromServer, isLoading, error } = useApiForGetTaskDashboard();
-  console.log("tasksFromServer", tasksFromServer);
-  
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -61,18 +60,24 @@ export default function TaskDashboardPage() {
       test: [],
       complete: []
     };
-    
-    tasksLocal.forEach((task) => {
+
+    const activeTasks = tasksLocal.filter(task => !task.is_archived);
+
+    activeTasks.forEach((task) => {
       if (groups[task.status]) {
         groups[task.status].push(task);
       }
     });
-    
+
     Object.keys(groups).forEach((status) => {
       groups[status as TaskStatus].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
     });
-    
+
     return groups;
+  }, [tasksLocal]);
+
+  const archivedTasks = React.useMemo(() => {
+    return tasksLocal.filter(task => task.is_archived);
   }, [tasksLocal]);
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -116,8 +121,8 @@ export default function TaskDashboardPage() {
               order: index,
             }));
 
-            return prev.map(task => 
-              task.status === activeContainer 
+            return prev.map(task =>
+              task.status === activeContainer
                 ? updatedColumn.find(t => t.id === task.id) || task
                 : task
             );
@@ -134,8 +139,8 @@ export default function TaskDashboardPage() {
         const newColumnTasks = groupedTasks[overContainer];
         const newOrder = newColumnTasks.length;
 
-        setTasksLocal((prev) => 
-          prev.map((t) => 
+        setTasksLocal((prev) =>
+          prev.map((t) =>
             t.id === activeTaskData.id
               ? { ...t, status: overContainer, order: newOrder }
               : t
@@ -178,7 +183,7 @@ export default function TaskDashboardPage() {
         <h1 className="text-2xl font-bold">Task Dashboard</h1>
         <IDialogButtonForCreateTaskDashBoard />
       </div>
-      
+
       <DndContext
         sensors={sensors}
         collisionDetection={closestCorners}
@@ -232,6 +237,8 @@ export default function TaskDashboardPage() {
           )}
         </DragOverlay>
       </DndContext>
+
+      <ArchivedTaskList archivedTasks={archivedTasks} />
     </div>
   );
 }

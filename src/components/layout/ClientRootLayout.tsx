@@ -8,6 +8,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { usePathname } from "next/navigation";
 import { useRef, useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import 'react-data-grid/lib/styles.css';
+
 
 const HeaderMenus = dynamic(() => import("@/components/menu/HeaderMenus"), {
   ssr: false,
