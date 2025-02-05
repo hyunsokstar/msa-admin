@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { PlusCircle } from 'lucide-react';
+import { PlusCircle, X } from 'lucide-react';
 import Editor from '@monaco-editor/react';
 import useApiForCreateApiSpec from '@/hook/useApiForCreateApiSpec';
 import { ApiSpec } from '@/types/typeForApiSpec';
@@ -101,171 +101,107 @@ export const IDialogButtonForCreateApiSpec: React.FC<IDialogButtonForCreateApiSp
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-[98vw] max-h-[98vh] w-full h-full sm:max-w-full sm:max-h-full sm:w-[98vw] sm:h-[98vh] bg-white p-0 shadow-2xl rounded-lg overflow-hidden">
-        <DialogHeader className="px-6 py-4 border-b bg-white sticky top-0 z-50">
-          <DialogTitle className="text-xl font-semibold text-gray-900">API 스펙 추가</DialogTitle>
+      <DialogContent
+        className="fixed inset-0 flex flex-col w-full h-full max-w-[98vw] max-h-[98vh] bg-white p-0 shadow-2xl rounded-lg overflow-hidden"
+        aria-labelledby="dialog-title"
+      >
+        {/* Modal Header */}
+        <DialogHeader className="px-6 py-4 border-b bg-white sticky top-0 z-50 flex justify-between items-center">
+          <DialogTitle id="dialog-title" className="text-xl font-semibold text-gray-900">
+            API 스펙 추가
+          </DialogTitle>
+          <button onClick={handleCancel} className="text-gray-600 hover:text-gray-900">
+            <X className="w-6 h-6" />
+          </button>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row flex-1 h-full overflow-hidden">
+        {/* Modal Content */}
+        <form onSubmit={handleSubmit} className="flex flex-1 flex-col sm:flex-row h-full overflow-hidden">
           {/* Left Column - Form */}
           <div className="w-full sm:w-1/2 p-6 overflow-y-auto border-r space-y-5">
-            <div className="space-y-4">
-              <Input
-                value={formData.title}
-                onChange={(e) => handleChange('title', e.target.value)}
-                placeholder="API 제목"
-                required
-                className="w-full bg-white border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg"
+            <Input
+              value={formData.title}
+              onChange={(e) => handleChange('title', e.target.value)}
+              placeholder="API 제목"
+              required
+            />
+
+            <Select value={formData.method} onValueChange={(value) => handleChange('method', value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="HTTP 메소드 선택" />
+              </SelectTrigger>
+              <SelectContent>
+                {['GET', 'POST', 'PUT', 'DELETE', 'PATCH'].map((method) => (
+                  <SelectItem key={method} value={method}>{method}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Input
+              value={formData.endpoint}
+              onChange={(e) => handleChange('endpoint', e.target.value)}
+              placeholder="/api/v1/example"
+              required
+            />
+
+            <Label className="text-sm font-medium">Request Body Schema</Label>
+            <div className="h-64 border rounded-lg overflow-hidden">
+              <Editor
+                height="100%"
+                defaultLanguage="json"
+                value={formData.request_body_schema}
+                onChange={(value) => handleChange('request_body_schema', value)}
+                options={EDITOR_OPTIONS}
+                theme="vs-light"
               />
+            </div>
 
-              <Select
-                value={formData.method}
-                onValueChange={(value) => handleChange('method', value)}
-              >
-                <SelectTrigger className="w-full bg-white border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg">
-                  <SelectValue placeholder="HTTP 메소드 선택" />
-                </SelectTrigger>
-                <SelectContent className="bg-white border-2 border-gray-200 shadow-lg rounded-lg">
-                  {['GET', 'POST', 'PUT', 'DELETE', 'PATCH'].map((method) => (
-                    <SelectItem
-                      key={method}
-                      value={method}
-                      className="hover:bg-blue-50 cursor-pointer"
-                    >
-                      {method}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <Input
-                value={formData.endpoint}
-                onChange={(e) => handleChange('endpoint', e.target.value)}
-                placeholder="/api/v1/example"
-                required
-                className="w-full bg-white border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg"
+            <div className="flex items-center justify-between py-4">
+              <Label>인증 필요 여부</Label>
+              <Switch
+                checked={formData.auth_required}
+                onCheckedChange={(checked) => handleChange('auth_required', checked)}
               />
-
-              <div className="grid grid-cols-2 gap-4">
-                <Input
-                  value={formData.category1}
-                  onChange={(e) => handleChange('category1', e.target.value)}
-                  placeholder="카테고리1"
-                  className="bg-white border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg"
-                />
-
-                <Input
-                  value={formData.category2}
-                  onChange={(e) => handleChange('category2', e.target.value)}
-                  placeholder="카테고리2"
-                  className="bg-white border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg"
-                />
-              </div>
-
-              <Input
-                value={formData.description}
-                onChange={(e) => handleChange('description', e.target.value)}
-                placeholder="API 설명"
-                className="bg-white border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 rounded-lg"
-              />
-
-              <div className="space-y-2">
-                <Label className="text-sm font-medium text-gray-700">Request Body Schema</Label>
-                <div className="h-64 border-2 rounded-lg overflow-hidden">
-                  <Editor
-                    height="100%"
-                    defaultLanguage="json"
-                    value={formData.request_body_schema}
-                    onChange={(value) => handleChange('request_body_schema', value)}
-                    options={EDITOR_OPTIONS}
-                    theme="vs-light"
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between py-4 bg-white border rounded-lg px-4">
-                <Label htmlFor="auth-switch" className="text-sm font-medium text-gray-700">
-                  인증 필요 여부
-                </Label>
-                <Switch
-                  id="auth-switch"
-                  checked={formData.auth_required}
-                  onCheckedChange={(checked) => handleChange('auth_required', checked)}
-                  className="data-[state=checked]:bg-blue-600 data-[state=unchecked]:bg-gray-200"
-                />
-              </div>
             </div>
           </div>
 
           {/* Right Column - Type Definitions */}
-          <div className="w-full sm:w-1/2 p-6 bg-gray-50">
+          <div className="w-full sm:w-1/2 p-6 bg-gray-50 overflow-y-auto">
             <Tabs defaultValue="request" className="h-full flex flex-col">
               <TabsList className="flex w-full p-1 bg-white rounded-lg border-2 shadow-sm mb-6 gap-2">
-                <TabsTrigger
-                  value="request"
-                  className="flex-1 py-3 text-sm font-medium rounded-md transition-all duration-200
-                    data-[state=active]:bg-blue-600 data-[state=active]:text-white
-                    hover:bg-blue-50"
-                >
-                  Request Type
-                </TabsTrigger>
-                <TabsTrigger
-                  value="response"
-                  className="flex-1 py-3 text-sm font-medium rounded-md transition-all duration-200
-                    data-[state=active]:bg-blue-600 data-[state=active]:text-white
-                    hover:bg-blue-50"
-                >
-                  Response Type
-                </TabsTrigger>
+                <TabsTrigger value="request">Request Type</TabsTrigger>
+                <TabsTrigger value="response">Response Type</TabsTrigger>
               </TabsList>
 
-              <div className="flex-1 relative">
-                <TabsContent value="request" className="absolute inset-0">
-                  <div className="h-full border-2 rounded-lg overflow-hidden bg-white shadow-sm">
-                    <Editor
-                      height="100%"
-                      defaultLanguage="typescript"
-                      value={formData.request_type}
-                      onChange={(value) => handleChange('request_type', value)}
-                      options={EDITOR_OPTIONS}
-                      theme="vs-light"
-                    />
-                  </div>
-                </TabsContent>
+              <TabsContent value="request">
+                <Editor
+                  height="100%"
+                  defaultLanguage="typescript"
+                  value={formData.request_type}
+                  onChange={(value) => handleChange('request_type', value)}
+                  options={EDITOR_OPTIONS}
+                  theme="vs-light"
+                />
+              </TabsContent>
 
-                <TabsContent value="response" className="absolute inset-0">
-                  <div className="h-full border-2 rounded-lg overflow-hidden bg-white shadow-sm">
-                    <Editor
-                      height="100%"
-                      defaultLanguage="typescript"
-                      value={formData.response_type}
-                      onChange={(value) => handleChange('response_type', value)}
-                      options={EDITOR_OPTIONS}
-                      theme="vs-light"
-                    />
-                  </div>
-                </TabsContent>
-              </div>
+              <TabsContent value="response">
+                <Editor
+                  height="100%"
+                  defaultLanguage="typescript"
+                  value={formData.response_type}
+                  onChange={(value) => handleChange('response_type', value)}
+                  options={EDITOR_OPTIONS}
+                  theme="vs-light"
+                />
+              </TabsContent>
             </Tabs>
           </div>
         </form>
 
+        {/* Modal Footer */}
         <div className="px-6 py-4 bg-white border-t flex justify-end gap-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleCancel}
-            disabled={createApiSpec.isPending}
-            className="min-w-[120px] py-2 px-4 text-sm font-medium bg-white hover:bg-gray-50 border-2 border-gray-300 rounded-lg"
-          >
-            취소
-          </Button>
-          <Button
-            type="submit"
-            onClick={handleSubmit}
-            disabled={createApiSpec.isPending}
-            className="min-w-[120px] py-2 px-4 text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md hover:shadow-lg"
-          >
+          <Button variant="outline" onClick={handleCancel}>취소</Button>
+          <Button type="submit" onClick={handleSubmit} disabled={createApiSpec.isPending}>
             {createApiSpec.isPending ? '생성 중...' : '생성'}
           </Button>
         </div>

@@ -64,7 +64,7 @@ const IDialogButtonForCreateApi: React.FC<IDialogButtonForCreateApiProps> = ({
     return (
         <CommonDialogButton
             isOpen={isOpen}
-            onOpenChange={() => setIsOpen(true)}
+            onOpenChange={setIsOpen}  // 수정: 함수 직접 전달
             trigger={
                 <CommonButton2
                     variant="primary"
@@ -74,14 +74,15 @@ const IDialogButtonForCreateApi: React.FC<IDialogButtonForCreateApiProps> = ({
                 </CommonButton2>
             }
             title="Add New API Specification"
+            size="full"
         >
-            <div className="h-full flex">
+            <div className="flex h-full gap-6 px-6">
                 {/* Left Section */}
-                <div className="w-1/2 p-6 border-r">
-                    <form onSubmit={handleSubmit} className="space-y-6 h-full flex flex-col">
-                        <div className="space-y-6 flex-grow">
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
+                <div className="w-1/2 flex flex-col">
+                    <form onSubmit={handleSubmit} className="space-y-8 h-full flex flex-col">
+                        <div className="space-y-8 flex-grow overflow-y-auto pr-6">
+                            <div className="grid grid-cols-2 gap-6">
+                                <div className="space-y-3">
                                     <Label>HTTP Method</Label>
                                     <Select
                                         value={formData.method}
@@ -102,7 +103,7 @@ const IDialogButtonForCreateApi: React.FC<IDialogButtonForCreateApiProps> = ({
                                     </Select>
                                 </div>
 
-                                <div className="space-y-2">
+                                <div className="space-y-3">
                                     <Label>Endpoint</Label>
                                     <Input
                                         value={formData.endpoint}
@@ -115,7 +116,7 @@ const IDialogButtonForCreateApi: React.FC<IDialogButtonForCreateApiProps> = ({
                                 </div>
                             </div>
 
-                            <div className="space-y-2">
+                            <div className="space-y-3">
                                 <Label>Description</Label>
                                 <Input
                                     value={formData.description}
@@ -126,7 +127,7 @@ const IDialogButtonForCreateApi: React.FC<IDialogButtonForCreateApiProps> = ({
                                 />
                             </div>
 
-                            <div className="space-y-2">
+                            <div className="space-y-3">
                                 <Label>Headers</Label>
                                 <Textarea
                                     value={formData.headers}
@@ -134,12 +135,12 @@ const IDialogButtonForCreateApi: React.FC<IDialogButtonForCreateApiProps> = ({
                                         setFormData(prev => ({ ...prev, headers: e.target.value }))
                                     }
                                     placeholder="{}"
-                                    className="font-mono h-32"
+                                    className="font-mono h-40"
                                 />
                             </div>
                         </div>
 
-                        <div className="flex justify-end gap-2 pt-4 border-t">
+                        <div className="flex justify-end gap-2 pt-6 border-t">
                             <CommonButton2
                                 variant="ghost"
                                 onClick={() => setIsOpen(false)}
@@ -159,9 +160,9 @@ const IDialogButtonForCreateApi: React.FC<IDialogButtonForCreateApiProps> = ({
                 </div>
 
                 {/* Right Section */}
-                <div className="w-1/2 p-6 bg-gray-50">
-                    <div className="space-y-6 h-full">
-                        <div className="space-y-2">
+                <div className="w-1/2 flex flex-col bg-gray-50 rounded-lg">
+                    <div className="space-y-8 h-full overflow-y-auto p-6">
+                        <div className="space-y-3">
                             <Label>Request Specification</Label>
                             <Textarea
                                 value={formData.request_spec}
@@ -169,11 +170,11 @@ const IDialogButtonForCreateApi: React.FC<IDialogButtonForCreateApiProps> = ({
                                     setFormData(prev => ({ ...prev, request_spec: e.target.value }))
                                 }
                                 placeholder="{}"
-                                className="font-mono h-64"
+                                className="font-mono h-[calc(35vh)]"
                             />
                         </div>
 
-                        <div className="space-y-2">
+                        <div className="space-y-3">
                             <Label>Response Specification</Label>
                             <Textarea
                                 value={formData.response_spec}
@@ -181,7 +182,7 @@ const IDialogButtonForCreateApi: React.FC<IDialogButtonForCreateApiProps> = ({
                                     setFormData(prev => ({ ...prev, response_spec: e.target.value }))
                                 }
                                 placeholder="{}"
-                                className="font-mono h-64"
+                                className="font-mono h-[calc(35vh)]"
                             />
                         </div>
                     </div>

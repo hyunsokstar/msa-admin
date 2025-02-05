@@ -95,7 +95,7 @@ const MSADashboard = () => {
         </div>
       </div>
 
-      <div className="flex justify-between items-center mt-2">
+      <div className="flex  mt-2">
         <MethodFilterToggle 
           selectedMethods={selectedMethods}
           onMethodToggle={handleMethodToggle}
