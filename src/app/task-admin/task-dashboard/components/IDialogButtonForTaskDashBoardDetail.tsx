@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -8,12 +8,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import ThumbnailList from "./ThumbnailList";
 import TaskInformation from "./TaskInformation";
 import { useApiForGetTaskDashBoardDetail } from "@/hook/task/useApiForGetTaskDashBoardDetail";
 import TabMenu from "./TabMenu";
+import { TaskDetail } from "@/types/task/typeForTaskDetail";
 
 interface IDialogButtonForTaskDashBoardDetailProps {
   id: string;
@@ -21,6 +23,9 @@ interface IDialogButtonForTaskDashBoardDetailProps {
   description: string;
   imageUrl: string;
   className?: string;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  taskDetail?: TaskDetail; // 새로 추가
 }
 
 const IDialogButtonForTaskDashBoardDetail: React.FC<IDialogButtonForTaskDashBoardDetailProps> = ({
@@ -29,15 +34,30 @@ const IDialogButtonForTaskDashBoardDetail: React.FC<IDialogButtonForTaskDashBoar
   description,
   imageUrl,
   className,
+  defaultOpen = false,
+  onOpenChange,
+  taskDetail: initialTaskDetail, // 페이지에서 전달받은 데이터
 }) => {
-  const [open, setOpen] = useState(false);
-  const { data: taskDetail, isLoading } = useApiForGetTaskDashBoardDetail(id, open);
+  const [open, setOpen] = useState(defaultOpen);
 
-  console.log("taskDetail check: ", taskDetail);
+  // 페이지에서 전달받은 데이터가 있으면 그것을 사용하고, 없으면 API 호출
+  const { data: fetchedTaskDetail, isLoading } = useApiForGetTaskDashBoardDetail(
+    id,
+    open && !initialTaskDetail
+  );
+
+  const taskDetail = initialTaskDetail || fetchedTaskDetail;
+
+  useEffect(() => {
+    setOpen(defaultOpen);
+  }, [defaultOpen]);
+
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen);
+    onOpenChange?.(newOpen);
+  };
 
   const getValidImageUrl = (url: string) => {
-    console.log("url check: ", url);
-    
     try {
       new URL(url);
       return url;
@@ -49,7 +69,7 @@ const IDialogButtonForTaskDashBoardDetail: React.FC<IDialogButtonForTaskDashBoar
   const validMainImageUrl = getValidImageUrl(imageUrl);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <button
           className={cn(
@@ -73,16 +93,25 @@ const IDialogButtonForTaskDashBoardDetail: React.FC<IDialogButtonForTaskDashBoar
 
       <DialogContent className="w-screen h-screen max-w-none p-0 m-0 rounded-none bg-gray-50 shadow-none">
         <div className="grid grid-cols-12 gap-0 h-full">
-          {/* 왼쪽 영역 (이미지와 설명) */}
           <div className="col-span-6 bg-white flex flex-col">
-            <DialogHeader className="py-4 px-2 border-b">
-              <DialogTitle className="text-xl font-semibold">{title}</DialogTitle>
+            <DialogHeader className="py-4 px-2 border-b relative">
+              {defaultOpen && (
+                <button
+                  onClick={() => handleOpenChange(false)}
+                  className="absolute left-2 top-1/2 -translate-y-1/2 p-2 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <ArrowLeft className="h-5 w-5" />
+                </button>
+              )}
+              <DialogTitle className="text-xl font-semibold text-center">
+                {taskDetail?.title || title}
+              </DialogTitle>
             </DialogHeader>
             <div className="flex-1 grid grid-rows-1 grid-cols-6">
               <div className="col-span-5 relative p-4">
                 <Image
                   src={validMainImageUrl}
-                  alt={title}
+                  alt={taskDetail?.title || title}
                   fill
                   priority
                   className="object-contain"
@@ -95,11 +124,12 @@ const IDialogButtonForTaskDashBoardDetail: React.FC<IDialogButtonForTaskDashBoar
               />
             </div>
             <div className="p-6 bg-gray-50 border-t min-h-[300px]">
-              <p className="text-sm text-gray-600 leading-relaxed">{description}</p>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                {taskDetail?.description || description}
+              </p>
             </div>
           </div>
 
-          {/* 오른쪽 영역 (태스크 정보와 탭 메뉴) */}
           <div className="col-span-6 bg-gray-50 border-l flex flex-col gap-4 p-6">
             <TaskInformation
               status={taskDetail?.status || null}

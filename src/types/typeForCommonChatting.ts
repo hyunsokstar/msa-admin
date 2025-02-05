@@ -7,11 +7,16 @@ export interface CommonChatting {
     user_id: string;
     created_at: string;
     message_type: string;
-    users: {
+    sender: {
         id: string;
         full_name: string;
         profile_image_url: string | null;
     };
+    recipient: {
+        id: string;
+        full_name: string;
+        profile_image_url: string | null;
+    } | null;
     is_left: boolean;
 }
 

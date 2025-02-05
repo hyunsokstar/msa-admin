@@ -6,8 +6,14 @@ import { ChatMessageProps } from '@/types/typeForCommonChatting';
 const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
     const isLeft = message.is_left;
 
-    const displayName = message.users?.full_name || 'Unknown';
+    // sender 정보 사용
+    const displayName = message.sender?.full_name || 'Unknown';
     const userInitial = displayName[0] || 'U';
+
+    // recipient 정보 표시
+    const recipientDisplay = message.recipient
+        ? ` → @${message.recipient.full_name}`
+        : '';
 
     return (
         <div className={cn(
@@ -15,7 +21,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
             !isLeft ? "flex-row-reverse space-x-reverse" : "flex-row"
         )}>
             <Avatar className="flex-shrink-0">
-                <AvatarImage src={message.users?.profile_image_url || ''} />
+                <AvatarImage src={message.sender?.profile_image_url || ''} />
                 <AvatarFallback>{userInitial}</AvatarFallback>
             </Avatar>
 
@@ -27,7 +33,18 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
                     "flex items-center space-x-2 mb-1",
                     !isLeft ? "flex-row-reverse space-x-reverse" : "flex-row"
                 )}>
-                    <span className="font-medium text-sm">{displayName}</span>
+                    <div className={cn(
+                        "flex items-center",
+                        !isLeft ? "flex-row-reverse" : "flex-row",
+                        !isLeft ? "space-x-reverse" : "space-x-1"
+                    )}>
+                        <span className="font-medium text-sm">{displayName}</span>
+                        {message.recipient && (
+                            <span className="text-sm text-gray-500">
+                                {recipientDisplay}
+                            </span>
+                        )}
+                    </div>
                     <span className="text-xs text-gray-500">
                         {new Date(message.created_at).toLocaleTimeString()}
                     </span>
