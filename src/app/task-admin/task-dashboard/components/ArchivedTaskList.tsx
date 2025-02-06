@@ -5,7 +5,7 @@ import DataGrid, { Column, SelectColumn } from 'react-data-grid';
 import { TaskDashboard, TaskDashboardForUpdate, User } from '@/types/task/typeForTaskDashboard';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Save } from "lucide-react";
+import { Save, ExternalLink } from "lucide-react"; // ExternalLink 아이콘 추가
 import 'react-data-grid/lib/styles.css';
 import useApiForSaveTaskGridRows from '@/hook/task/useApiForSaveTaskGridRows';
 import { toast } from 'react-toastify';
@@ -42,6 +42,11 @@ const ArchivedTaskList = ({ archivedTasks = [] }: Props) => {
         setLocalRows(rows);
     }, [rows]);
 
+    // 새 탭에서 디테일 페이지 열기
+    const openTaskDetail = useCallback((taskId: string) => {
+        window.open(`/task-admin/task-dashboard/${taskId}`, '_blank');
+    }, []);
+
     const columns: Column<TaskDashboardWithUserName>[] = useMemo(() => [
         SelectColumn,
         {
@@ -70,7 +75,17 @@ const ArchivedTaskList = ({ archivedTasks = [] }: Props) => {
             renderCell: ({ row }) => row.formatted_updated_at
         },
         {
-            key: 'is archieved',
+            key: 'task_detail',
+            name: '링크',
+            width: 150, // 크기 조절
+            renderCell: ({ row }) => (
+                <button onClick={() => openTaskDetail(row.id)} className="text-blue-500 hover:text-blue-700">
+                    <ExternalLink size={18} />
+                </button>
+            )
+        },
+        {
+            key: 'is_archived',
             name: '보관 여부',
             renderCell: ({ row }) => (
                 <CommonCheckForGridEdit
@@ -84,7 +99,7 @@ const ArchivedTaskList = ({ archivedTasks = [] }: Props) => {
             ),
             renderEditCell: CommonCheckForGridEdit
         }
-    ], []);
+    ], [openTaskDetail]);
 
     const { mutate: saveTasksMutate, status } = useApiForSaveTaskGridRows();
     const isSaveLoading = status === 'pending';

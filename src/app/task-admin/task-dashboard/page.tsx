@@ -237,8 +237,10 @@ export default function TaskDashboardPage() {
           )}
         </DragOverlay>
       </DndContext>
-
-      <ArchivedTaskList archivedTasks={archivedTasks} />
+      
+      <div className="mt-8">
+        <ArchivedTaskList archivedTasks={archivedTasks} />
+      </div>
     </div>
   );
 }
