@@ -70,7 +70,7 @@ const ArchivedTaskList = ({ archivedTasks = [] }: Props) => {
             renderCell: ({ row }) => row.formatted_updated_at
         },
         {
-            key: 'is_archived',
+            key: 'is archieved',
             name: '보관 여부',
             renderCell: ({ row }) => (
                 <CommonCheckForGridEdit
