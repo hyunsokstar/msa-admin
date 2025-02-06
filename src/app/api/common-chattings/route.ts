@@ -87,7 +87,8 @@ export async function POST(request: NextRequest) {
                 user_id: body.created_by,
                 message_type: 'text',
                 is_left: is_left,
-                recipient_id: body.recipient_id
+                recipient_id: body.recipient_id,
+                task_link: body.task_link
             }])
             .select(`
                 *,

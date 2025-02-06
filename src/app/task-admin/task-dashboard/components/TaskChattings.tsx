@@ -30,7 +30,7 @@ const TaskChattings = ({ taskId, ownerId, isLoading, chattings = [] }: Props) =>
 
     return (
         <div className="flex flex-col h-[calc(100vh-300px)]">
-            <div className="flex-1 overflow-y-auto bg-gray-50">
+            <div className="flex-1 overflow-y-scroll bg-gray-50">
                 {isLoading ? (
                     <div className="flex items-center justify-center h-64">
                         <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
@@ -42,7 +42,7 @@ const TaskChattings = ({ taskId, ownerId, isLoading, chattings = [] }: Props) =>
                     </div>
                 ) : (
                     <div className="p-4 space-y-4">
-                        {chattings?.map((chat) => {
+                        {chattings.map((chat) => {
                             const messageTime = format(new Date(chat.created_at), 'HH:mm');
                             const userName = chat.created_by_user.full_name || '';
                             const userInitial = userName.charAt(0).toUpperCase();

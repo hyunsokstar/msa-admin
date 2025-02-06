@@ -1,19 +1,14 @@
 import React from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ExternalLink } from "lucide-react";
 import { cn } from '@/lib/utils';
 import { ChatMessageProps } from '@/types/typeForCommonChatting';
 
 const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
     const isLeft = message.is_left;
-
-    // sender 정보 사용
     const displayName = message.sender?.full_name || 'Unknown';
     const userInitial = displayName[0] || 'U';
-
-    // recipient 정보 표시
-    const recipientDisplay = message.recipient
-        ? ` → @${message.recipient.full_name}`
-        : '';
+    const recipientDisplay = message.recipient ? ` → @${message.recipient.full_name}` : '';
 
     return (
         <div className={cn(
@@ -49,11 +44,23 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
                         {new Date(message.created_at).toLocaleTimeString()}
                     </span>
                 </div>
-                <div className={cn(
-                    "p-3 rounded-lg break-words",
-                    !isLeft ? "bg-blue-500 text-white" : "bg-gray-100 text-gray-800"
-                )}>
-                    {message.message}
+                <div className="flex items-start space-x-2">
+                    <div className={cn(
+                        "p-3 rounded-lg break-words",
+                        !isLeft ? "bg-blue-500 text-white" : "bg-gray-100 text-gray-800"
+                    )}>
+                        {message.message}
+                    </div>
+                    {message.recipient && message.task_link && (
+                        <a
+                            href={message.task_link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-shrink-0 p-2 text-gray-500 hover:text-blue-500 transition-colors"
+                        >
+                            <ExternalLink size={16} />
+                        </a>
+                    )}
                 </div>
             </div>
         </div>

@@ -17,8 +17,6 @@ const TaskChattingInput: React.FC<Props> = ({ taskId, onSuccess }) => {
     const [message, setMessage] = useState('');
     const [selectedUserId, setSelectedUserId] = useState('all');
     const { isAuthenticated, user } = useUserStore();
-
-    // 두 개의 mutate 함수 사용
     const { mutate: createCommonChat, isPending: isCommonPending } = useApiForCreateCommonChat();
     const { mutate: createTaskChat, isPending: isTaskPending } = useApiForCreateTaskChat(taskId);
 
@@ -42,7 +40,6 @@ const TaskChattingInput: React.FC<Props> = ({ taskId, onSuccess }) => {
         };
 
         if (selectedUserId === 'all') {
-            // 전체 메시지는 task chat으로 전송
             createTaskChat(
                 {
                     taskId,
@@ -56,7 +53,6 @@ const TaskChattingInput: React.FC<Props> = ({ taskId, onSuccess }) => {
                 }
             );
         } else {
-            // 특정 사용자에게는 common chat으로 전송
             createCommonChat(
                 {
                     message: message.trim(),
@@ -74,13 +70,14 @@ const TaskChattingInput: React.FC<Props> = ({ taskId, onSuccess }) => {
     };
 
     return (
-        <div className="border-t bg-white p-4">
-            <form onSubmit={handleSubmit} className="flex gap-2">
-                <div className="flex">
+        <div className="border-t bg-white p-4 w-full">
+            taskId:{taskId}
+            <form onSubmit={handleSubmit} className="flex gap-2 w-full">
+                <div className="flex flex-1">
                     <ISelectBoxForTaskChatting
                         selectedUserId={selectedUserId}
                         onUserSelect={setSelectedUserId}
-                        className="w-24 rounded-l-full rounded-r-none border-r-0"
+                        className="w-32 rounded-none border-r-0"
                         disabled={isPending}
                     />
                     <input
@@ -88,13 +85,13 @@ const TaskChattingInput: React.FC<Props> = ({ taskId, onSuccess }) => {
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         placeholder={selectedUserId === 'all' ? "태스크 대화방에 메시지 보내기" : "메시지 보내기"}
-                        className="flex-1 rounded-r-full rounded-l-none border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="flex-1 border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                         disabled={isPending}
                     />
                 </div>
                 <button
                     type="submit"
-                    className="px-4 py-2 bg-blue-500 text-white rounded-full text-sm font-medium hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-6 py-2 bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={isPending}
                 >
                     {isPending ? '전송 중...' : '전송'}

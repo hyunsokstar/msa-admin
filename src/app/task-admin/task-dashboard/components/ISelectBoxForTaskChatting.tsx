@@ -4,6 +4,7 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { useApiForGetAllUsers } from '@/hook/useApiForGetAllUsers';
+import CommonSelectBox, { SelectOption } from './CommonSelectBox';
 
 interface ISelectBoxForTaskChattingProps {
     selectedUserId: string;
@@ -20,54 +21,39 @@ const ISelectBoxForTaskChatting: React.FC<ISelectBoxForTaskChattingProps> = ({
 }) => {
     const { data: users, isLoading } = useApiForGetAllUsers();
 
-    const sortedUsers = React.useMemo(() => {
-        if (!users) return [];
+    const options: SelectOption[] = React.useMemo(() => {
+        if (!users) return [{ value: 'all', label: '@모두' }];
         return [
-            { id: 'all', full_name: '@모두' },
+            { value: 'all', label: '@모두' },
             ...users.map(user => ({
-                id: user.id,
-                full_name: `@${user.full_name}`
+                value: user.id,
+                label: `@${user.full_name}`
             }))
         ];
     }, [users]);
 
     if (isLoading) {
         return (
-            <select
-                disabled
-                className={cn(
-                    "border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50",
-                    className
-                )}
-            >
-                <option>로딩중...</option>
-            </select>
+            <CommonSelectBox
+                options={[{ value: 'loading', label: '로딩중...' }]}
+                value="loading"
+                onChange={() => { }}
+                className={className}
+            />
         );
     }
 
     return (
-        <select
+        <CommonSelectBox
+            options={options}
             value={selectedUserId}
-            onChange={(e) => onUserSelect(e.target.value)}
+            onChange={onUserSelect}
             className={cn(
-                "border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 hover:bg-gray-100 transition-colors",
+                "min-w-[150px]",
                 className
             )}
             disabled={disabled}
-        >
-            {sortedUsers.map((user) => (
-                <option
-                    key={user.id}
-                    value={user.id}
-                    className={cn(
-                        "bg-white",
-                        user.id === 'all' ? 'font-bold' : ''
-                    )}
-                >
-                    {user.full_name}
-                </option>
-            ))}
-        </select>
+        />
     );
 };
 
