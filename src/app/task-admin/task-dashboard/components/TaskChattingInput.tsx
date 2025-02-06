@@ -57,7 +57,8 @@ const TaskChattingInput: React.FC<Props> = ({ taskId, onSuccess }) => {
                 {
                     message: message.trim(),
                     created_by: user.id,
-                    recipient_id: selectedUserId
+                    recipient_id: selectedUserId,
+                    task_link: `/task-admin/task-dashboard/${taskId}`
                 },
                 {
                     onSuccess: handleSuccess,
@@ -71,7 +72,7 @@ const TaskChattingInput: React.FC<Props> = ({ taskId, onSuccess }) => {
 
     return (
         <div className="border-t bg-white p-4 w-full">
-            taskId:{taskId}
+            {/* taskId:{taskId} */}
             <form onSubmit={handleSubmit} className="flex gap-2 w-full">
                 <div className="flex flex-1">
                     <ISelectBoxForTaskChatting

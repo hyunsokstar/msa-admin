@@ -16,6 +16,7 @@ export async function GET() {
                 is_left,
                 user_id,
                 recipient_id,
+                task_link,
                 sender:user_id (
                     id,
                     full_name,
@@ -79,7 +80,7 @@ export async function POST(request: NextRequest) {
             is_left = lastMessage.user_id !== body.created_by ? !lastMessage.is_left : lastMessage.is_left;
         }
 
-        // 3. 새 메시지 삽입
+        // 3. 새 메시지 삽입 및 관련 사용자 정보 조회
         const { data, error } = await supabaseService
             .from("common_chattings")
             .insert([{
@@ -91,8 +92,19 @@ export async function POST(request: NextRequest) {
                 task_link: body.task_link
             }])
             .select(`
-                *,
-                users (
+                id,
+                message,
+                created_at,
+                message_type,
+                is_left,
+                user_id,
+                recipient_id,
+                sender:user_id (
+                    id,
+                    full_name,
+                    profile_image_url
+                ),
+                recipient:recipient_id (
                     id,
                     full_name,
                     profile_image_url
@@ -114,7 +126,6 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // CommonChattingResponse 형식에 맞게 응답 반환
         return NextResponse.json({
             data: [data],
             error: null,

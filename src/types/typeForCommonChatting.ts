@@ -7,6 +7,7 @@ export interface CommonChatting {
     user_id: string;
     created_at: string;
     message_type: string;
+    task_link: string | null;
     sender: {
         id: string;
         full_name: string;
