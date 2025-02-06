@@ -34,7 +34,7 @@ const ArchivedTaskList = ({ archivedTasks = [] }: Props) => {
         {
             key: 'created_by_user_name',
             name: '생성자',
-            formatter: ({ row }) => row.created_by_user_name, // Use formatter, not renderCell
+            renderCell: ({ row }) => row.created_by_user_name,
         },
     ];
 
