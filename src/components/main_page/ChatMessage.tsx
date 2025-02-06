@@ -1,14 +1,26 @@
-import React from 'react';
+import React, { useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ExternalLink } from "lucide-react";
-import { cn } from '@/lib/utils';
-import { ChatMessageProps } from '@/types/typeForCommonChatting';
+import { cn } from "@/lib/utils";
+import { ChatMessageProps } from "@/types/typeForCommonChatting";
+import { useUserStore } from "@/store/useUserStore"; // 로그인 유저 정보 가져오기
+
+const notificationSound = "/sounds/message-notification.mp3"; // 알림 사운드 파일 경로
 
 const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
+    const { user } = useUserStore(); // 로그인 유저 정보 가져오기
     const isLeft = message.is_left;
-    const displayName = message.sender?.full_name || 'Unknown';
-    const userInitial = displayName[0] || 'U';
-    const recipientDisplay = message.recipient ? ` → @${message.recipient.full_name}` : '';
+    const displayName = message.sender?.full_name || "Unknown";
+    const userInitial = displayName[0] || "U";
+    const recipientDisplay = message.recipient ? ` → @${message.recipient.full_name}` : "";
+
+    // 메시지가 로그인 유저에게 온 경우 알림 소리 재생
+    useEffect(() => {
+        if (message.recipient?.id === user?.id) {
+            const sound = new Audio(notificationSound);
+            sound.play().catch((error) => console.error("Error playing sound:", error));
+        }
+    }, [message, user?.id]);
 
     return (
         <div className={cn(
@@ -16,7 +28,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
             !isLeft ? "flex-row-reverse space-x-reverse" : "flex-row"
         )}>
             <Avatar className="flex-shrink-0">
-                <AvatarImage src={message.sender?.profile_image_url || ''} />
+                <AvatarImage src={message.sender?.profile_image_url || ""} />
                 <AvatarFallback>{userInitial}</AvatarFallback>
             </Avatar>
 
