@@ -15,3 +15,5 @@ export const useApiForUpdateTask = () => {
     },
   });
 };
+
+export default useApiForUpdateTask;

@@ -2,6 +2,32 @@
 
 import { TaskDashboard, TaskDashboardForUpdate } from "@/types/task/typeForTaskDashboard";
 
+export async function apiForSaveTashDashBoardRowsForGrid(tasks: TaskDashboardForUpdate[]): Promise<boolean> {
+  try {
+    console.log('Request payload for grid save:', tasks);
+
+    const response = await fetch(`/api/task-dashboard/grid-save`, { // grid-save 엔드포인트
+      method: "PUT", // PUT 메서드
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ tasks }), // tasks 배열 body에 담기
+    });
+
+    const responseData = await response.json();
+    console.log('Grid save Response:', responseData);
+
+    if (!response.ok) {
+      throw new Error(`Failed to save task grid data: ${responseData.error || 'Unknown error'}`);
+    }
+
+    return responseData.success as boolean; // 성공 여부 boolean으로 반환
+  } catch (error) {
+    console.error('Task grid save error:', error);
+    throw error;
+  }
+}
+
 export async function apiForGetTaskDashBoardList(): Promise<TaskDashboard[]> {
   const response = await fetch('/api/task-dashboard', {
     method: 'GET',
