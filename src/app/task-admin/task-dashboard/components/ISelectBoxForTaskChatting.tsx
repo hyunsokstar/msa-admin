@@ -52,7 +52,6 @@ const ISelectBoxForTaskChatting: React.FC<ISelectBoxForTaskChattingProps> = ({
                 "min-w-[150px]",
                 className
             )}
-            disabled={disabled}
         />
     );
 };

@@ -35,6 +35,7 @@ const TaskChattingInput: React.FC<Props> = ({ taskId, onSuccess }) => {
         }
 
         const handleSuccess = () => {
+            toast.success('메시지가 전송되었습니다.');
             setMessage('');
             onSuccess?.();
         };
