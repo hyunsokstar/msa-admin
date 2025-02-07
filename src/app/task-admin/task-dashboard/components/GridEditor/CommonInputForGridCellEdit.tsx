@@ -25,6 +25,10 @@ const CommonInputForGridCellEdit = ({
         if (event.key === 'Enter') {
             handleSubmit()
         }
+        if (event.key === 'Escape') {
+            onRowChange({ ...row, [column.key]: initialValue })
+            onClose(true, false)
+        }
     }
 
     const handleBlur = () => {
@@ -44,7 +48,7 @@ const CommonInputForGridCellEdit = ({
 
     return (
         <input
-            className="w-full h-full px-2 py-1 border rounded"
+            className="w-full h-full px-3 bg-white focus:outline-none"
             value={row[column.key]}
             onChange={handleChange}
             onBlur={handleBlur}

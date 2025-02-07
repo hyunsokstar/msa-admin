@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import DataGrid, { Column, SelectColumn } from 'react-data-grid';
-import { TaskDashboard, TaskDashboardForUpdate, User } from '@/types/task/typeForTaskDashboard';
+import { TaskDashboard, TaskDashboardForUpdate } from '@/types/task/typeForTaskDashboard';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Save, ExternalLink } from "lucide-react";
@@ -10,49 +10,9 @@ import 'react-data-grid/lib/styles.css';
 import useApiForSaveTaskGridRows from '@/hook/task/useApiForSaveTaskGridRows';
 import { toast } from 'react-toastify';
 import { format } from 'date-fns';
-import CommonInputForGridCellEdit from './GridEditor/CommonInputForGridCellEdit';
 import ISelectBoxForUserAtGrid from './GridEditor/ISelectBoxForUserAtGrid';
 import CommonCheckForGridEdit from './GridEditor/CommonCheckForGridEdit';
-
-// 커스텀 스타일 정의
-const customStyles = `
-  .rdg {
-    block-size: 100% !important;
-    border: 1px solid #e5e7eb !important;
-    border-radius: 0.5rem !important;
-  }
-
-  .rdg-header-row {
-    background-color: #f9fafb !important;
-    font-weight: 600 !important;
-    color: #374151 !important;
-  }
-
-  .rdg-cell {
-    padding: 0.75rem 1rem !important;
-    border-bottom: 1px solid #e5e7eb !important;
-  }
-
-  .rdg-row:hover {
-    background-color: #f3f4f6 !important;
-  }
-
-  .rdg-row.rdg-row-selected {
-    background-color: #e5e7eb !important;
-  }
-
-  .external-link-button {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    transition: all 0.2s;
-  }
-
-  .external-link-button:hover {
-    background-color: #e5e7eb;
-  }
-`;
+import CommonInputForGridCellEdit from './GridEditor/CommonInputForGridCellEdit';
 
 interface TaskDashboardWithUserName extends TaskDashboard {
     created_by_user_name: string;
@@ -65,6 +25,7 @@ interface Props {
 
 const ArchivedTaskList = ({ archivedTasks = [] }: Props) => {
     const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
+    const [localRows, setLocalRows] = useState<TaskDashboardWithUserName[]>([]);
 
     const rows = useMemo(() =>
         archivedTasks.map(task => ({
@@ -73,8 +34,6 @@ const ArchivedTaskList = ({ archivedTasks = [] }: Props) => {
             formatted_updated_at: task.updated_at ? format(new Date(task.updated_at), 'yyyy-MM-dd HH:mm:ss') : '',
         })), [archivedTasks]
     );
-
-    const [localRows, setLocalRows] = useState<TaskDashboardWithUserName[]>(rows);
 
     useEffect(() => {
         setLocalRows(rows);
@@ -86,9 +45,10 @@ const ArchivedTaskList = ({ archivedTasks = [] }: Props) => {
 
     const customSelectColumn = {
         ...SelectColumn,
-        width: 'clamp(50px, 4vw, 65px)',  // 최소 50px, 최대 65px
-        minWidth: 50,
-        maxWidth: 65,
+        width: 45,
+        minWidth: 45,
+        maxWidth: 45,
+        resizable: false
     };
 
     const columns: Column<TaskDashboardWithUserName>[] = useMemo(() => [
@@ -96,33 +56,41 @@ const ArchivedTaskList = ({ archivedTasks = [] }: Props) => {
         {
             key: 'title',
             name: '제목',
-            width: 'clamp(200px, 35%, 600px)',  // 최소 200px, 기본 35%, 최대 600px
-            renderEditCell: (props) => (
-                <CommonInputForGridCellEdit {...props} />
-            )
+            width: '35%',
+            minWidth: 200,
+            resizable: true,
+            sortable: true,
+            renderEditCell: CommonInputForGridCellEdit
         },
         {
             key: 'created_by_user',
             name: '담당자',
-            width: 'clamp(120px, 15%, 200px)',  // 최소 120px, 기본 15%, 최대 200px
+            width: '15%',
+            minWidth: 120,
+            resizable: true,
+            sortable: true,
             renderCell: ({ row }) => row.created_by_user_name,
             renderEditCell: ISelectBoxForUserAtGrid
         },
         {
             key: 'formatted_updated_at',
             name: '완료 일시',
-            width: 'clamp(150px, 20%, 250px)',  // 최소 150px, 기본 20%, 최대 250px
+            width: '20%',
+            minWidth: 150,
+            resizable: true,
+            sortable: true,
             renderCell: ({ row }) => row.formatted_updated_at
         },
         {
             key: 'task_detail',
             name: '링크',
-            width: 'clamp(100px, 5%, 80px)',     // 최소 60px, 기본 5%, 최대 80px
+            width: 60,
+            minWidth: 60,
+            maxWidth: 60,
+            resizable: false,
+            sortable: false,
             renderCell: ({ row }) => (
-                <button
-                    onClick={() => openTaskDetail(row.id)}
-                    className="external-link-button"
-                >
+                <button onClick={() => openTaskDetail(row.id)}>
                     <ExternalLink size={18} />
                 </button>
             )
@@ -130,7 +98,10 @@ const ArchivedTaskList = ({ archivedTasks = [] }: Props) => {
         {
             key: 'is_archived',
             name: '보관 여부',
-            width: 'clamp(80px, 10%, 120px)',   // 최소 80px, 기본 10%, 최대 120px
+            width: '10%',
+            minWidth: 100,
+            resizable: true,
+            sortable: true,
             renderCell: ({ row }) => (
                 <CommonCheckForGridEdit
                     row={row}
@@ -184,18 +155,6 @@ const ArchivedTaskList = ({ archivedTasks = [] }: Props) => {
         setLocalRows(newRows);
     }, []);
 
-    useEffect(() => {
-        // 스타일 태그 추가
-        const styleElement = document.createElement('style');
-        styleElement.textContent = customStyles;
-        document.head.appendChild(styleElement);
-
-        // 컴포넌트 언마운트 시 스타일 제거
-        return () => {
-            document.head.removeChild(styleElement);
-        };
-    }, []);
-
     return (
         <Card className="mt-8">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6">
@@ -213,7 +172,7 @@ const ArchivedTaskList = ({ archivedTasks = [] }: Props) => {
                 </div>
             </CardHeader>
             <CardContent className="p-6">
-                <div className="h-[600px] w-full">
+                <div className="h-[calc(100vh-300px)] min-h-[400px] w-full">
                     <DataGrid
                         columns={columns}
                         rows={localRows}
@@ -221,7 +180,11 @@ const ArchivedTaskList = ({ archivedTasks = [] }: Props) => {
                         onSelectedRowsChange={onSelectedRowsChange}
                         onRowsChange={onRowsChange}
                         rowKeyGetter={rowKeyGetter}
-                        className="h-full"
+                        className="h-full w-full"
+                        rowHeight={40}
+                        headerRowHeight={40}
+                        enableVirtualization={true}
+                    // defaultColumnOptions는 여기서 생략하고 각 컬럼에 직접 옵션을 설정했습니다
                     />
                 </div>
             </CardContent>
