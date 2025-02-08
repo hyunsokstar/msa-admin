@@ -9,25 +9,25 @@ export async function GET() {
         const { data, error } = await supabase
             .from("common_chattings")
             .select(`
-                id,
-                message,
-                created_at,
-                message_type,
-                is_left,
-                user_id,
-                recipient_id,
-                task_link,
-                sender:user_id (
-                    id,
-                    full_name,
-                    profile_image_url
-                ),
-                recipient:recipient_id (
-                    id,
-                    full_name,
-                    profile_image_url
-                )
-            `)
+               id,
+               message,
+               created_at,
+               message_type,
+               is_left,
+               user_id,
+               recipient_id,
+               task_link,
+               sender:user_id (
+                   id,
+                   full_name,
+                   profile_image_url
+               ),
+               recipient:users!recipient_id (
+                   id,
+                   full_name,
+                   profile_image_url
+               )
+           `)
             .order('created_at', { ascending: true });
 
         if (error) {
@@ -92,24 +92,24 @@ export async function POST(request: NextRequest) {
                 task_link: body.task_link
             }])
             .select(`
-                id,
-                message,
-                created_at,
-                message_type,
-                is_left,
-                user_id,
-                recipient_id,
-                sender:user_id (
-                    id,
-                    full_name,
-                    profile_image_url
-                ),
-                recipient:recipient_id (
-                    id,
-                    full_name,
-                    profile_image_url
-                )
-            `)
+               id,
+               message,
+               created_at,
+               message_type,
+               is_left,
+               user_id,
+               recipient_id,
+               sender:user_id (
+                   id,
+                   full_name,
+                   profile_image_url
+               ),
+               recipient:users!recipient_id (
+                   id,
+                   full_name,
+                   profile_image_url
+               )
+           `)
             .single();
 
         console.log('Supabase response:', data);
