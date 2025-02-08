@@ -65,7 +65,7 @@ const TiptapBubbleMenu: React.FC<TiptapBubbleMenuProps> = ({ editor }) => {
     <BubbleMenu
       editor={editor}
       tippyOptions={{ duration: 100 }}
-      className="bg-background border shadow-md rounded-lg overflow-visible p-2"
+      className="bg-background border shadow-md rounded-lg overflow-visible p-2 bg-white"
     >
       <div className="flex flex-wrap items-center gap-2">
         {/* Font Size and Color Group */}

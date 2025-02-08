@@ -1,7 +1,7 @@
 "use client";
 
 import { useEditor, EditorContent } from "@tiptap/react";
-import { Extension } from '@tiptap/core'
+import { Extension } from "@tiptap/core";
 import TextStyle from "@tiptap/extension-text-style";
 import Highlight from "@tiptap/extension-highlight";
 import TextAlign from "@tiptap/extension-text-align";
@@ -25,21 +25,74 @@ import HardBreak from '@tiptap/extension-hard-break';
 import Text from '@tiptap/extension-text';
 import Document from '@tiptap/extension-document';
 import { FigmaEmbed } from './extensions/FigmaEmbed';
-
-import React from "react";
+import React, { useState } from "react";
 import TiptapToolbar from "./TiptapToolbar";
+import { Plugin } from '@tiptap/pm/state';
 
-const EnterKeyExtension = Extension.create({
-  name: 'enterKey',
-  addKeyboardShortcuts() {
-    return {
-      Enter: ({ editor }) => {
-        editor.commands.insertContent('<br />')
-        return true
-      },
-    }
+const uploadImageToS3 = async (file: File): Promise<string | null> => {
+  try {
+    const metadataResponse = await fetch("/api/upload", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        filename: file.name,
+        contentType: file.type,
+      }),
+    });
+
+    if (!metadataResponse.ok) throw new Error("Failed to get presigned URL from server");
+
+    const { presignedUrl, fileUrl } = await metadataResponse.json();
+
+    await fetch(presignedUrl, {
+      method: "PUT",
+      body: file,
+      headers: { "Content-Type": file.type },
+    });
+
+    return fileUrl;
+  } catch (error) {
+    console.error("Error during image upload process:", error);
+    return null;
+  }
+};
+
+const ImagePasteHandler = TiptapImage.extend({
+  addProseMirrorPlugins() {
+    return [
+      new Plugin({
+        props: {
+          handlePaste: (view, event, slice) => {
+            const items = event.clipboardData?.items;
+            if (!items) return false;
+
+            for (const item of items) {
+              if (item.type.startsWith("image/")) {
+                const file = item.getAsFile();
+                if (file) {
+                  view.dom.dispatchEvent(new CustomEvent("image-upload-start"));
+                  uploadImageToS3(file).then(imageUrl => {
+                    view.dom.dispatchEvent(new CustomEvent("image-upload-end"));
+                    if (imageUrl) {
+                      // 이미지 URL을 사용하여 이미지 노드 삽입
+                      const { state } = view;
+                      const pos = state.selection.from;
+                      const node = state.schema.nodes.image.create({ src: imageUrl });
+                      const transaction = state.tr.insert(pos, node);
+                      view.dispatch(transaction);
+                    }
+                  });
+                  return true;
+                }
+              }
+            }
+            return false;
+          },
+        },
+      }),
+    ];
   },
-})
+});
 
 interface TiptapEditorProps {
   content: string;
@@ -48,13 +101,14 @@ interface TiptapEditorProps {
 }
 
 const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps) => {
+  const [isUploading, setIsUploading] = useState(false);
+
   const editor = useEditor({
     extensions: [
       Document,
       Paragraph,
       Text,
       HardBreak,
-      EnterKeyExtension,
       TextStyle,
       FontColor,
       Highlight.configure({ multicolor: true }),
@@ -62,20 +116,8 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
       FontFamily.configure({ types: ["textStyle"], defaultFamily: "sans-serif" }),
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       Underline,
-      TiptapImage.configure({ 
-        inline: true,
-        HTMLAttributes: {
-          style: 'margin: 0 4px; padding: 0 4px; vertical-align: middle;',
-          class: 'editor-image',
-        }
-      }),
-      ResizeImage.configure({ 
-        allowBase64: true,
-        HTMLAttributes: {
-          style: 'margin: 0 4px; padding: 0 4px; vertical-align: middle;',
-          class: 'editor-image',
-        }
-      }),
+      ImagePasteHandler.configure({ inline: true }),
+      ResizeImage.configure({ allowBase64: false }),
       HorizontalRule,
       Link.configure({
         openOnClick: true,
@@ -123,14 +165,13 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
           if (imageUrl && editor) {
             const attributes = size
               ? {
-                  src: imageUrl,
-                  width: size.width,
-                  height: size.height,
-                  style: `width: ${size.width}px; height: ${size.height}px;`,
-                }
-              : { 
-                  src: imageUrl
-                };
+                src: imageUrl,
+                width: size.width,
+                height: size.height,
+                style: `width: ${size.width}px; height: ${size.height}px;`,
+              }
+              : { src: imageUrl };
+
             editor.commands.setImage(attributes);
           }
         } catch (error) {
@@ -142,42 +183,32 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
     fileInput.click();
   };
 
-  const uploadImageToS3 = async (file: File): Promise<string | null> => {
-    try {
-      const metadataResponse = await fetch("/api/upload", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          filename: file.name,
-          contentType: file.type,
-        }),
-      });
+  React.useEffect(() => {
+    if (!editor) return;
 
-      if (!metadataResponse.ok) throw new Error("Failed to get presigned URL from server");
+    const handleUploadStart = () => setIsUploading(true);
+    const handleUploadEnd = () => setIsUploading(false);
 
-      const { presignedUrl, fileUrl } = await metadataResponse.json();
+    editor.view.dom.addEventListener("image-upload-start", handleUploadStart);
+    editor.view.dom.addEventListener("image-upload-end", handleUploadEnd);
 
-      await fetch(presignedUrl, {
-        method: "PUT",
-        body: file,
-        headers: { "Content-Type": file.type },
-      });
-
-      return fileUrl;
-    } catch (error) {
-      console.error("Error during image upload process:", error);
-      return null;
-    }
-  };
+    return () => {
+      editor.view.dom.removeEventListener("image-upload-start", handleUploadStart);
+      editor.view.dom.removeEventListener("image-upload-end", handleUploadEnd);
+    };
+  }, [editor]);
 
   return (
-    <div className="flex flex-col w-full h-[calc(100vh-220px)] bg-white shadow-md rounded-md">
+    <div className="flex flex-col w-full h-[calc(100vh-220px)] bg-white shadow-md rounded-md relative">
+      {isUploading && (
+        <div className="absolute inset-0 bg-white bg-opacity-75 flex justify-center items-center text-gray-700 font-semibold text-lg z-50">
+          이미지 업로드 중...
+        </div>
+      )}
+
       {editor && (
         <>
-          <TiptapToolbar
-            editor={editor}
-            addImage={addImage}
-          />
+          <TiptapToolbar editor={editor} addImage={addImage} />
           <TiptapBubbleMenu editor={editor} />
         </>
       )}
@@ -185,9 +216,9 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
         className="flex-1 relative border-t bg-white overflow-y-auto rounded-b-md"
         onClick={() => editor?.commands.focus()}
       >
-        <EditorContent 
-          editor={editor} 
-          className="w-full h-full p-4 [&_.ProseMirror]:caret-blue-500 [&_.ProseMirror]:caret-2 [&_.editor-image]:outline-2 [&_.editor-image]:outline-transparent hover:[&_.editor-image]:outline-blue-500" 
+        <EditorContent
+          editor={editor}
+          className="w-full h-full p-4 [&_.ProseMirror]:caret-blue-500 [&_.ProseMirror]:caret-2 [&_.editor-image]:outline-2 [&_.editor-image]:outline-transparent hover:[&_.editor-image]:outline-blue-500"
         />
       </div>
     </div>
