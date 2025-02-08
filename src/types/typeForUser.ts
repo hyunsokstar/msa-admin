@@ -36,6 +36,7 @@ export interface UpdateUserDto {
     phone_number?: string;
     email?: string;
     is_admin?: boolean;
+    status?: 'working' | 'break' | 'away' | 'vacation' | 'studying' | 'meeting' | 'offline';
 }
 
 // 상단에 타입 추가

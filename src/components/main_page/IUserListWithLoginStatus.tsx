@@ -1,4 +1,3 @@
-// components/IUserListWithLoginStatus.tsx
 "use client";
 
 import React from 'react';
@@ -6,6 +5,8 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { IUser } from '@/types/typeForUser';
 import { useApiForGetAllUsers } from '@/hook/useApiForGetAllUsers';
+import { useUserStore } from '@/store/useUserStore';
+import IDialogButtonForUpdateUserStatus from './IDialogButtonForUpdateUserStatus';
 
 interface Props {
     className?: string;
@@ -13,19 +14,45 @@ interface Props {
 
 const getStatusColor = (status: string) => {
     switch (status) {
-        case 'online':
-            return 'bg-emerald-500'; // 밝은 초록색
-        case 'offline':
-            return 'bg-gray-400';    // 회색
+        case 'working':
+            return 'bg-emerald-500';
+        case 'break':
+            return 'bg-yellow-500';
         case 'away':
-            return 'bg-amber-500';   // 주황빛 노란색
+            return 'bg-orange-500';
+        case 'vacation':
+            return 'bg-red-500';
+        case 'studying':
+            return 'bg-blue-500';
+        case 'meeting':
+            return 'bg-purple-500';
         default:
             return 'bg-gray-400';
     }
 };
 
+const getStatusLabel = (status: string) => {
+    switch (status) {
+        case 'working':
+            return '업무중';
+        case 'break':
+            return '휴식중';
+        case 'away':
+            return '자리 비움';
+        case 'vacation':
+            return '휴가';
+        case 'studying':
+            return '스터디중';
+        case 'meeting':
+            return '회의중';
+        default:
+            return '오프라인';
+    }
+};
+
 const IUserListWithLoginStatus = ({ className }: Props) => {
     const { data: users, isLoading, error } = useApiForGetAllUsers();
+    const currentUser = useUserStore((state) => state.user);
 
     if (isLoading) {
         return (
@@ -49,7 +76,7 @@ const IUserListWithLoginStatus = ({ className }: Props) => {
                 <CardTitle className="text-lg">접속 중인 사용자</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-                <div className="h-[calc(100%-4rem)] overflow-y-auto">
+                <div className="max-h-[400px] overflow-y-auto">
                     {users?.map((user: IUser) => (
                         <div key={user.id} className="flex items-center gap-3 p-4 hover:bg-gray-50 border-b">
                             <div className="relative">
@@ -60,17 +87,18 @@ const IUserListWithLoginStatus = ({ className }: Props) => {
                                     </AvatarFallback>
                                 </Avatar>
                                 <span
-                                    className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white
-                                        ${getStatusColor(user.status ?? 'offline')}`}
-                                    title={`Status: ${user.status}`} // 마우스 오버시 상태 표시
+                                    className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${getStatusColor(user.status ?? 'offline')}`}
+                                    title={`Status: ${user.status}`}
                                 />
                             </div>
                             <div className="flex-1 min-w-0">
                                 <div className="flex items-center justify-between">
                                     <p className="font-medium truncate">{user.full_name || 'Unknown User'}</p>
-                                    <span className="text-xs text-gray-500">
-                                        {new Date(user.created_at).toLocaleDateString()}
-                                    </span>
+                                    {currentUser?.id !== user.id && (
+                                        <span className="text-sm text-gray-600">
+                                            {getStatusLabel(user.status ?? 'offline')}
+                                        </span>
+                                    )}
                                 </div>
                                 <p className="text-sm text-gray-500 truncate">{user.email}</p>
                             </div>
@@ -78,6 +106,9 @@ const IUserListWithLoginStatus = ({ className }: Props) => {
                                 <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
                                     Admin
                                 </span>
+                            )}
+                            {currentUser?.id === user.id && (
+                                <IDialogButtonForUpdateUserStatus userId={user.id} currentStatus={user.status ?? "offline"} />
                             )}
                         </div>
                     ))}
