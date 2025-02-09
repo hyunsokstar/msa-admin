@@ -20,11 +20,7 @@ interface TaskDashboard {
     created_at: string;
 }
 
-interface Props {
-    className?: string;
-}
-
-const WbsBoard: React.FC<Props> = ({ className }) => {
+const WbsBoard: React.FC = () => {
     const [sortColumns, setSortColumns] = useState<SortColumn[]>([]);
 
     const initialRows: TaskDashboard[] = [
@@ -117,7 +113,7 @@ const WbsBoard: React.FC<Props> = ({ className }) => {
     }
 
     return (
-        <div className={`flex flex-col items-center ${className}`}>
+        <div className="flex flex-col items-center">
             {/* 상단 타이틀 */}
             <h2 className="text-2xl font-semibold my-4">업무 관리 보드</h2>
 
