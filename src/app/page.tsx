@@ -1,33 +1,39 @@
+"use client";
+
+import React from "react";
 import ICommonChattings from "@/components/main_page/ICommonChattings";
 import IUserListWithLoginStatus from "@/components/main_page/IUserListWithLoginStatus";
-import { Card } from "@/components/ui/card";
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 export default function HomePage() {
   return (
-    <div className="h-[calc(100vh-4rem)] p-4 pb-6 flex flex-col">
-      {/* 상단 4개 영역 */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-        <Card className="p-6 h-40 flex items-center justify-center">
-          <h3 className="text-lg font-medium">영역 1</h3>
-        </Card>
-        <Card className="p-6 h-40 flex items-center justify-center">
-          <h3 className="text-lg font-medium">영역 2</h3>
-        </Card>
-        <Card className="p-6 h-40 flex items-center justify-center">
-          <h3 className="text-lg font-medium">영역 3</h3>
-        </Card>
-        <Card className="p-6 h-40 flex items-center justify-center">
-          <h3 className="text-lg font-medium">영역 4</h3>
-        </Card>
+    <div className="h-[calc(100vh-8rem)] flex flex-col">
+
+      {/* 탭 영역 */}
+      <div className="mx-4 mt-3 flex items-center justify-between shadow-sm border border-gray-200 dark:border-gray-800 h-12 rounded-md bg-white dark:bg-slate-900 px-2">
+        <div className="flex-1 flex items-center space-x-2">
+          <div className="flex items-center space-x-2">
+            {/* 탭 영역 - 추후 탭 컴포넌트로 대체 */}
+            <div className="text-sm text-gray-500">탭 영역</div>
+          </div>
+        </div>
+        <Separator orientation="vertical" className="h-8 mx-4" />
+        <Button variant="outline" size="icon" className="h-8 w-8">
+          <Plus className="h-4 w-4" />
+        </Button>
       </div>
 
-      {/* 하단 2개 영역 */}
-      <div className="flex-1 grid grid-cols-1 md:grid-cols-7 gap-4 mb-4 overflow-hidden">
-        <div className="md:col-span-4 h-full overflow-hidden">
-          <ICommonChattings className="h-full" />
-        </div>
-        <div className="md:col-span-3 h-full">
-          <IUserListWithLoginStatus className="h-full" />
+      {/* 메인 컨텐츠 */}
+      <div className="flex-1 mx-4 mt-4 flex flex-col overflow-hidden">
+        <div className="flex-1 grid grid-cols-1 md:grid-cols-7 gap-4 overflow-hidden">
+          <div className="md:col-span-4 h-full overflow-hidden">
+            <ICommonChattings className="h-full" />
+          </div>
+          <div className="md:col-span-3 h-full overflow-hidden">
+            <IUserListWithLoginStatus className="h-full" />
+          </div>
         </div>
       </div>
     </div>

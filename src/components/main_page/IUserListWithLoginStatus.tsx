@@ -76,7 +76,7 @@ const IUserListWithLoginStatus = ({ className }: Props) => {
                 <CardTitle className="text-lg">접속 중인 사용자</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-                <div className="max-h-[400px] overflow-y-auto">
+                <div className="overflow-y-auto">
                     {users?.map((user: IUser) => (
                         <div key={user.id} className="flex items-center gap-3 p-4 hover:bg-gray-50 border-b">
                             <div className="relative">
