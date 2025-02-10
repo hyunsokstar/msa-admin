@@ -5,11 +5,12 @@ import DataGrid, { Column, SelectColumn } from "react-data-grid";
 import { TaskDashboard, TaskDashboardForUpdate } from "@/types/task/typeForTaskDashboard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Save, ExternalLink } from "lucide-react";
+import { Save, Archive, ExternalLink } from "lucide-react";
 import "react-data-grid/lib/styles.css";
 import useApiForSaveTaskGridRows from "@/hook/task/useApiForSaveTaskGridRows";
 import { toast } from "react-toastify";
 import { format } from "date-fns";
+import { useApiForMoveTaskToHistory } from "@/hook/task/useApiForMoveTaskToHistory";
 import ISelectBoxForUserAtGrid from "./GridEditor/ISelectBoxForUserAtGrid";
 import CommonCheckForGridEdit from "./GridEditor/CommonCheckForGridEdit";
 import CommonInputForGridCellEdit from "./GridEditor/CommonInputForGridCellEdit";
@@ -24,40 +25,78 @@ interface Props {
 }
 
 const ArchivedTaskList = ({ archivedTasks = [] }: Props) => {
-    const [selectedRows, setSelectedRows] = useState(() => new Set<React.Key>());
+    const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
     const [localRows, setLocalRows] = useState<TaskDashboardWithUserName[]>([]);
 
-    const rows = useMemo(
-        () =>
+    useEffect(() => {
+        setLocalRows(
             archivedTasks.map((task) => ({
                 ...task,
                 created_by_user_name: task.created_by_user?.full_name || "",
                 formatted_updated_at: task.updated_at
                     ? format(new Date(task.updated_at), "yyyy-MM-dd HH:mm:ss")
                     : "",
-            })),
-        [archivedTasks]
-    );
+            }))
+        );
+    }, [archivedTasks]);
 
-    useEffect(() => {
-        setLocalRows(rows);
-    }, [rows]);
+    const { mutate: moveToHistory, isPending } = useApiForMoveTaskToHistory();
+    const { mutate: saveTasksMutate, status: saveStatus } = useApiForSaveTaskGridRows();
+    const isSaveLoading = saveStatus === "pending";
+
+    const handleMoveToHistory = useCallback(() => {
+        const selectedIds = Array.from(selectedRows);
+        if (selectedIds.length === 0) return;
+
+        moveToHistory(selectedIds, {
+            onSuccess: () => {
+                toast.success("Tasks moved to history.");
+                setLocalRows((prev) => prev.filter((row) => !selectedIds.includes(row.id)));
+                setSelectedRows(new Set());
+            },
+            onError: (error) => {
+                toast.error(`Error moving tasks: ${error.message}`);
+            },
+        });
+    }, [selectedRows, moveToHistory]);
+
+    const handleSave = useCallback(() => {
+        const selectedRowsArray = Array.from(selectedRows);
+        const modifiedRows = localRows.filter((row) => selectedRowsArray.includes(row.id));
+
+        const tasksToUpdate: TaskDashboardForUpdate[] = modifiedRows.map((row) => ({
+            id: row.id,
+            title: row.title,
+            description: row.description,
+            created_by_user: row.created_by_user ? { id: row.created_by_user.id } : null,
+            screen_url: row.screen_url || "",
+            figma_url: row.figma_url || "",
+            is_archived: row.is_archived || false,
+        }));
+
+        saveTasksMutate(tasksToUpdate, {
+            onSuccess: () => {
+                toast.success("Tasks saved successfully");
+                setSelectedRows(new Set());
+            },
+            onError: (error: any) => {
+                console.error("Error saving grid data:", error);
+                toast.error(`Error saving grid data: ${error.message}`);
+            },
+        });
+    }, [selectedRows, localRows, saveTasksMutate]);
 
     const openTaskDetail = useCallback((taskId: string) => {
         window.open(`/task-admin/task-dashboard/${taskId}`, "_blank");
     }, []);
 
-    const customSelectColumn = {
-        ...SelectColumn,
-        width: 45,
-        minWidth: 45,
-        maxWidth: 45,
-        resizable: false,
-    };
-
     const columns: Column<TaskDashboardWithUserName>[] = useMemo(
         () => [
-            customSelectColumn,
+            {
+                ...SelectColumn,
+                width: 45,
+                resizable: false,
+            },
             {
                 key: "title",
                 name: "제목",
@@ -68,7 +107,7 @@ const ArchivedTaskList = ({ archivedTasks = [] }: Props) => {
                 renderEditCell: CommonInputForGridCellEdit,
             },
             {
-                key: "created_by_user",
+                key: "created_by_user_name",
                 name: "담당자",
                 width: "13%",
                 minWidth: 130,
@@ -125,49 +164,10 @@ const ArchivedTaskList = ({ archivedTasks = [] }: Props) => {
         [openTaskDetail]
     );
 
-    const { mutate: saveTasksMutate, status } = useApiForSaveTaskGridRows();
-    const isSaveLoading = status === "pending";
-
-    const handleSave = useCallback(async () => {
-        const selectedRowsArray = Array.from(selectedRows);
-        const modifiedRows = localRows.filter((row) => selectedRowsArray.includes(row.id));
-
-        const tasksToUpdate: TaskDashboardForUpdate[] = modifiedRows.map((row) => ({
-            id: row.id,
-            title: row.title,
-            description: row.description,
-            created_by_user: row.created_by_user ? { id: row.created_by_user.id } : null,
-            screen_url: row.screen_url || "",
-            figma_url: row.figma_url || "",
-            is_archived: row.is_archived || false,
-        }));
-
-        saveTasksMutate(tasksToUpdate, {
-            onSuccess: () => {
-                toast.success("Tasks saved successfully");
-                setSelectedRows(new Set());
-            },
-            onError: (error: any) => {
-                console.error("Error saving grid data:", error);
-                toast.error(`Error saving grid data: ${error.message}`);
-            },
-        });
-    }, [selectedRows, localRows, saveTasksMutate]);
-
-    const onSelectedRowsChange = useCallback((newSelectedRows: Set<React.Key>) => {
-        setSelectedRows(newSelectedRows);
-    }, []);
-
-    const rowKeyGetter = useCallback((row: TaskDashboardWithUserName) => row.id, []);
-
-    const onRowsChange = useCallback((newRows: TaskDashboardWithUserName[]) => {
-        setLocalRows(newRows);
-    }, []);
-
     return (
         <Card className="mt-8 w-full">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6">
-                <CardTitle className="text-xl font-semibold">작업 완료 목록</CardTitle>
+            <CardHeader className="flex justify-between pb-6">
+                <CardTitle>작업 완료 목록</CardTitle>
                 <div className="flex gap-2">
                     <Button
                         size="sm"
@@ -178,17 +178,25 @@ const ArchivedTaskList = ({ archivedTasks = [] }: Props) => {
                         <Save className="mr-2 h-4 w-4" />
                         Save ({selectedRows.size})
                     </Button>
+                    <Button
+                        size="sm"
+                        onClick={handleMoveToHistory}
+                        disabled={selectedRows.size === 0 || isPending}
+                        className="px-4 py-2 h-9"
+                    >
+                        <Archive className="mr-2 h-4 w-4" />
+                        Move to History
+                    </Button>
                 </div>
             </CardHeader>
-            <CardContent className="p-6 w-full">
+            <CardContent className="p-6">
                 <div className="h-[calc(100vh-320px)] min-h-[500px] w-full max-w-full">
                     <DataGrid
                         columns={columns}
                         rows={localRows}
                         selectedRows={selectedRows}
-                        onSelectedRowsChange={onSelectedRowsChange}
-                        onRowsChange={onRowsChange}
-                        rowKeyGetter={rowKeyGetter}
+                        onSelectedRowsChange={setSelectedRows}
+                        rowKeyGetter={(row) => row.id}
                         className="h-full w-full"
                         rowHeight={42}
                         headerRowHeight={42}

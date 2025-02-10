@@ -19,3 +19,21 @@ export async function apiForGetTaskHistoryList(): Promise<TaskDashboard[]> {
     const { data } = await response.json();
     return data as TaskDashboard[];
 }
+
+// todo:
+// apiForMoveTaskInfoFromArchivedListToTaskHistory 함수 구현
+// 필요한것 서버 라우트
+// custom hook 
+
+export async function apiForMoveTaskInfoFromArchivedListToTaskHistory(taskIds: string[]): Promise<void> {
+    const response = await fetch("/api/task-history", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ taskIds }),
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to move tasks to history");
+    }
+}
