@@ -26,12 +26,6 @@ const ResourceBoard = () => {
     const handleAddResource = () => {
         if (!newTitle || !newDescription) return;
 
-        // TODO: API 추가 구현 필요
-        // const newResource = {
-        //     title: newTitle,
-        //     description: newDescription,
-        // };
-
         setNewTitle("");
         setNewDescription("");
         titleInputRef.current?.focus();
