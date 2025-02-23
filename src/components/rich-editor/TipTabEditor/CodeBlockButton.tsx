@@ -21,7 +21,7 @@ const CodeBlockButton = ({ editor }: CodeBlockButtonProps) => {
             initialCode = node.textContent;
         } else {
             // 선택된 텍스트가 있다면 그것을 초기 코드로 사용
-            initialCode = editor.state.selection.content().content.textContent || "";
+            initialCode = editor.state.selection.content().toString() || "";
         }
 
         setIsDialogOpen(true);
