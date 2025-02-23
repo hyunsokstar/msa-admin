@@ -41,7 +41,7 @@ export default function IDialogButtonForCreateNoteContents({ noteId, pageNum }: 
   const { user, isAuthenticated } = useUserStore();
   const [open, setOpen] = useState(false);
   const createMutation = useCreateNoteContent();
-  const { data: noteContents } = useApiForGetNoteContents({noteId, pageNum});
+  const { data: noteContents } = useApiForGetNoteContents({ noteId, pageNum });
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -67,7 +67,7 @@ export default function IDialogButtonForCreateNoteContents({ noteId, pageNum }: 
         return;
       }
 
-      const maxOrder = noteContents?.data?.reduce((max, content) => 
+      const maxOrder = noteContents?.data?.reduce((max, content) =>
         Math.max(max, content.order || 0), 0) ?? 0;
 
       await createMutation.mutateAsync({
@@ -161,7 +161,7 @@ export default function IDialogButtonForCreateNoteContents({ noteId, pageNum }: 
                   <FormItem className="flex-1">
                     <FormControl>
                       <div className="border rounded-lg overflow-hidden bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                        <div className="h-[500px] overflow-y-auto">
+                        <div className="h-[500px]">
                           <TiptapEditor
                             content={field.value}
                             onChange={field.onChange}

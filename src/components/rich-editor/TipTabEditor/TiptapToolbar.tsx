@@ -12,6 +12,7 @@ import FontSizeAdjuster from "./FontSizeAdjuster";
 import FontFamilySelector from "./FontFamilySelector";
 import TableActionsPopover from "./TableActionsPopover";
 import FontColorSelector from "./FontColorSelector";
+import CodeBlockButton from "./CodeBlockButton";
 
 interface TiptapToolbarProps {
   editor: Editor | null;
@@ -149,6 +150,15 @@ const TiptapToolbar = ({ editor, addImage }: TiptapToolbarProps) => {
 
         {/* Table Controls */}
         <TableActionsPopover editor={editor} />
+
+        <Separator orientation="vertical" className="h-8" />
+
+        {/* Code Block Control */}
+        <div className="flex items-center space-x-1">
+          <CodeBlockButton editor={editor} />
+        </div>
+
+        <Separator orientation="vertical" className="h-8" />
 
         {/* Media Controls */}
         <div className="flex items-center space-x-2 ml-auto">
