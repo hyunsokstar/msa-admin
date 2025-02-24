@@ -49,6 +49,14 @@ interface TodoListProps {
     overId: string | null;
 }
 
+{/* <TodoList
+    title="✅ Completed List"
+    items={completedTasks}
+    listId="completed"
+    activeId={activeId}
+    overId={overId}
+/> */}
+
 const TodoList = ({ items, title, listId, activeId, overId }: TodoListProps) => {
     const { setNodeRef, isOver } = useDroppable({
         id: `container-${listId}`,
@@ -124,133 +132,117 @@ const StudyJournal = () => {
         setOverId(over ? over.id as string : null);
     };
 
-    // Helper functions for container management
-    const getContainerItems = (container: string) => {
-        switch (container) {
-            case "study": return studyTasks;
-            case "framer": return framerMotionTasks;
-            case "completed": return completedTasks;
-            default: return [];
-        }
-    };
-
-    const updateContainer = (container: string, items: string[]) => {
-        switch (container) {
-            case "study":
-                setStudyTasks(items);
-                break;
-            case "framer":
-                setFramerMotionTasks(items);
-                break;
-            case "completed":
-                setCompletedTasks(items);
-                break;
-        }
-    };
-
-    const removeFromContainer = (container: string, itemId: string) => {
-        switch (container) {
-            case "study":
-                setStudyTasks(prev => prev.filter(item => item !== itemId));
-                break;
-            case "framer":
-                setFramerMotionTasks(prev => prev.filter(item => item !== itemId));
-                break;
-            case "completed":
-                setCompletedTasks(prev => prev.filter(item => item !== itemId));
-                break;
-        }
-    };
-
-    const addToContainer = (container: string, itemId: string) => {
-        switch (container) {
-            case "study":
-                setStudyTasks(prev => [...prev, itemId]);
-                break;
-            case "framer":
-                setFramerMotionTasks(prev => [...prev, itemId]);
-                break;
-            case "completed":
-                setCompletedTasks(prev => [...prev, itemId]);
-                break;
-        }
-    };
-
-    const addToContainerAtPosition = (container: string, itemId: string, targetId: string) => {
-        const addAtPosition = (prev: string[]) => {
-            const index = prev.indexOf(targetId);
-            return [
-                ...prev.slice(0, index + 1),
-                itemId,
-                ...prev.slice(index + 1)
-            ];
-        };
-
-        switch (container) {
-            case "study":
-                setStudyTasks(addAtPosition);
-                break;
-            case "framer":
-                setFramerMotionTasks(addAtPosition);
-                break;
-            case "completed":
-                setCompletedTasks(addAtPosition);
-                break;
-        }
-    };
-
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
 
+        // 드롭한 위치에 아이템이나 컨테이너가 없는 경우 그냥 리턴
         if (!over) {
             setActiveId(null);
             setOverId(null);
             return;
         }
 
+        // sourceId 는 현재 이동중인 요소이고 voerId 는 드롭한 위치의 요소
         const sourceId = active.id as string;
         const overId = over.id as string;
-        const sourceContainer = findContainer(sourceId);
 
-        // 컨테이너에 직접 드래그하는 경우
+        // 컨테이너로 드래그된 경우
         if (overId.startsWith('container-')) {
             const targetListId = overId.replace('container-', '');
+            const sourceContainer = findContainer(sourceId);
 
-            // 같은 컨테이너로 이동하는 경우
             if (sourceContainer === targetListId) {
                 setActiveId(null);
                 setOverId(null);
                 return;
             }
 
-            // 다른 컨테이너로 이동하는 경우
             if (sourceContainer) {
-                removeFromContainer(sourceContainer, sourceId);
-                addToContainer(targetListId, sourceId);
+                // 원래 리스트에서 제거
+                if (sourceContainer === "study") {
+                    setStudyTasks(prev => prev.filter(item => item !== sourceId));
+                } else if (sourceContainer === "framer") {
+                    setFramerMotionTasks(prev => prev.filter(item => item !== sourceId));
+                } else {
+                    setCompletedTasks(prev => prev.filter(item => item !== sourceId));
+                }
+
+                // 새 리스트의 맨 뒤에 추가
+                if (targetListId === "study") {
+                    setStudyTasks(prev => [...prev, sourceId]);
+                } else if (targetListId === "framer") {
+                    setFramerMotionTasks(prev => [...prev, sourceId]);
+                } else {
+                    setCompletedTasks(prev => [...prev, sourceId]);
+                }
             }
+
+            
         } else {
-            const destinationContainer = findContainer(overId);
+            const sourceContainer = findContainer(sourceId);
+            const destinationContainer = findContainer(overId as string);
 
-            if (!sourceContainer || !destinationContainer) {
-                setActiveId(null);
-                setOverId(null);
-                return;
-            }
+            if (
+                !sourceContainer ||
+                !destinationContainer ||
+                sourceContainer === destinationContainer
+            ) {
+                // 같은 컨테이너 내에서의 이동
+                const items = sourceContainer === "study"
+                    ? studyTasks
+                    : sourceContainer === "framer"
+                        ? framerMotionTasks
+                        : completedTasks;
 
-            if (sourceContainer === destinationContainer) {
-                // 같은 컨테이너 내 이동
-                const items = getContainerItems(sourceContainer);
                 const oldIndex = items.indexOf(sourceId);
                 const newIndex = items.indexOf(overId);
 
                 if (oldIndex !== newIndex) {
                     const newItems = arrayMove(items, oldIndex, newIndex);
-                    updateContainer(sourceContainer, newItems);
+                    if (sourceContainer === "study") setStudyTasks(newItems);
+                    else if (sourceContainer === "framer") setFramerMotionTasks(newItems);
+                    else setCompletedTasks(newItems);
                 }
             } else {
-                // 다른 컨테이너로 이동
-                removeFromContainer(sourceContainer, sourceId);
-                addToContainerAtPosition(destinationContainer, sourceId, overId);
+                // 다른 컨테이너로의 이동
+                // 원래 리스트에서 제거
+                if (sourceContainer === "study") {
+                    setStudyTasks(prev => prev.filter(item => item !== sourceId));
+                } else if (sourceContainer === "framer") {
+                    setFramerMotionTasks(prev => prev.filter(item => item !== sourceId));
+                } else {
+                    setCompletedTasks(prev => prev.filter(item => item !== sourceId));
+                }
+
+                // 새 리스트에 추가 (대상 아이템 위치에)
+                if (destinationContainer === "study") {
+                    setStudyTasks(prev => {
+                        const index = prev.indexOf(overId);
+                        return [
+                            ...prev.slice(0, index + 1),
+                            sourceId,
+                            ...prev.slice(index + 1)
+                        ];
+                    });
+                } else if (destinationContainer === "framer") {
+                    setFramerMotionTasks(prev => {
+                        const index = prev.indexOf(overId);
+                        return [
+                            ...prev.slice(0, index + 1),
+                            sourceId,
+                            ...prev.slice(index + 1)
+                        ];
+                    });
+                } else {
+                    setCompletedTasks(prev => {
+                        const index = prev.indexOf(overId);
+                        return [
+                            ...prev.slice(0, index + 1),
+                            sourceId,
+                            ...prev.slice(index + 1)
+                        ];
+                    });
+                }
             }
         }
 
