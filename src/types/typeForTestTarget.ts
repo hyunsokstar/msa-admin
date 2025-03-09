@@ -1,8 +1,5 @@
-// C: \Users\terec\msa - admin\src\types\typeForTestTarget.ts
-
-// C:\Users\terec\msa-admin\src\types\typeForTestTarget.ts
-
 // src/types/typeForTestTarget.ts
+
 export interface TestTarget {
     id: string;
     name: string;
@@ -12,7 +9,8 @@ export interface TestTarget {
     completion_percentage: number;
     created_at: string;
     updated_at: string;
-    target_image_url: string | null; // 새로 추가된 필드
+    target_image_url: string | null;
+    item_count?: number; // 테스트 아이템 개수 필드 추가
 }
 
 export interface TestItem {

@@ -1,13 +1,15 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { TestTarget } from '@/types/typeForTestTarget';
-import { X } from 'lucide-react';
+import { X, Edit, Trash2, ExternalLink } from 'lucide-react';
+import EditTestTargetModal from './EditTestTargetModal';
 
 interface TestTargetListProps {
     testTargets: TestTarget[];
     user: any; // 실제 타입으로 변경
+    assignees: { id: string; name: string }[];
     getAssigneeName: (assigneeId: string | null) => string;
     getProgressColor: (percentage: number) => string;
     onDelete: (id: string) => void;
@@ -16,6 +18,7 @@ interface TestTargetListProps {
 const TestTargetList: React.FC<TestTargetListProps> = ({
     testTargets,
     user,
+    assignees,
     getAssigneeName,
     getProgressColor,
     onDelete
@@ -23,6 +26,10 @@ const TestTargetList: React.FC<TestTargetListProps> = ({
     // 이미지 다이얼로그 상태 관리
     const [isImageDialogOpen, setImageDialogOpen] = useState(false);
     const [selectedImage, setSelectedImage] = useState<{ url: string, name: string } | null>(null);
+
+    // 수정 모달 상태 관리
+    const [isEditModalOpen, setEditModalOpen] = useState(false);
+    const [targetToEdit, setTargetToEdit] = useState<TestTarget | null>(null);
 
     // 이미지 클릭 핸들러
     const handleImageClick = (imageUrl: string, targetName: string) => {
@@ -34,6 +41,37 @@ const TestTargetList: React.FC<TestTargetListProps> = ({
     const closeImageDialog = () => {
         setImageDialogOpen(false);
     };
+
+    // 수정 버튼 클릭 핸들러
+    const handleEditClick = (target: TestTarget) => {
+        setTargetToEdit(target);
+        setEditModalOpen(true);
+    };
+
+    // 수정 모달 닫기 핸들러
+    const handleCloseEditModal = () => {
+        setEditModalOpen(false);
+        setTargetToEdit(null);
+    };
+
+    // ESC 키 이벤트 리스너 추가
+    useEffect(() => {
+        const handleEscKey = (event: KeyboardEvent) => {
+            if (event.key === 'Escape' && isImageDialogOpen) {
+                closeImageDialog();
+            }
+        };
+
+        // 이벤트 리스너 등록
+        if (isImageDialogOpen) {
+            window.addEventListener('keydown', handleEscKey);
+        }
+
+        // 컴포넌트 언마운트시 이벤트 리스너 제거
+        return () => {
+            window.removeEventListener('keydown', handleEscKey);
+        };
+    }, [isImageDialogOpen]);
 
     return (
         <>
@@ -92,12 +130,21 @@ const TestTargetList: React.FC<TestTargetListProps> = ({
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                         {/* 테스트 주제를 클릭하면 상세 페이지로 이동 */}
-                                        <Link
-                                            href={`/task-admin/test-docu/${target.id}`}
-                                            className="text-indigo-600 hover:text-indigo-900 hover:underline cursor-pointer"
-                                        >
-                                            <div>{target.name}</div>
-                                        </Link>
+                                        <div className="flex items-center">
+                                            <Link
+                                                href={`/task-admin/test-docu/${target.id}`}
+                                                className="text-indigo-600 hover:text-indigo-900 hover:underline cursor-pointer mr-2"
+                                            >
+                                                {target.name}
+                                            </Link>
+
+                                            {/* 아이템 개수 표시 */}
+                                            {target.item_count !== undefined && (
+                                                <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-indigo-100 bg-indigo-600 rounded">
+                                                    {target.item_count}
+                                                </span>
+                                            )}
+                                        </div>
                                     </td>
                                     <td className="px-6 py-4 text-sm text-gray-900 max-w-xs truncate">
                                         <div className="text-sm text-gray-900">{target.description || '-'}</div>
@@ -123,19 +170,27 @@ const TestTargetList: React.FC<TestTargetListProps> = ({
                                         <div className="flex space-x-2">
                                             <Link
                                                 href={`/task-admin/test-docu/${target.id}`}
-                                                className="text-indigo-600 hover:text-indigo-900"
+                                                className="text-indigo-600 hover:text-indigo-900 p-1 rounded hover:bg-gray-100"
+                                                title="세부 항목"
                                             >
-                                                세부 항목
+                                                <ExternalLink className="w-4 h-4" />
                                             </Link>
                                             {/* 내가 담당자인 경우만 수정/삭제 가능 */}
                                             {user && target.assignee_id === user.id && (
                                                 <>
-                                                    <button className="text-indigo-600 hover:text-indigo-900">수정</button>
                                                     <button
-                                                        className="text-red-600 hover:text-red-900"
-                                                        onClick={() => onDelete(target.id)}
+                                                        className="text-indigo-600 hover:text-indigo-900 p-1 rounded hover:bg-gray-100"
+                                                        onClick={() => handleEditClick(target)}
+                                                        title="수정"
                                                     >
-                                                        삭제
+                                                        <Edit className="w-4 h-4" />
+                                                    </button>
+                                                    <button
+                                                        className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-gray-100"
+                                                        onClick={() => onDelete(target.id)}
+                                                        title="삭제"
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
                                                     </button>
                                                 </>
                                             )}
@@ -181,6 +236,15 @@ const TestTargetList: React.FC<TestTargetListProps> = ({
                     </div>
                 </div>
             )}
+
+            {/* 수정 모달 */}
+            <EditTestTargetModal
+                show={isEditModalOpen}
+                targetToEdit={targetToEdit}
+                user={user}
+                assignees={assignees}
+                onClose={handleCloseEditModal}
+            />
         </>
     );
 };

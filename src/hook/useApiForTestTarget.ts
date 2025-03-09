@@ -99,27 +99,6 @@ export const useGetTestItems = (targetId: string) => {
 //     });
 // };
 
-// 테스트 대상 수정 훅
-export const useUpdateTestTarget = () => {
-    const queryClient = useQueryClient();
-
-    return useMutation({
-        mutationFn: ({ id, updates }: { id: string, updates: UpdateTestTargetParams }) =>
-            updateTestTarget(id, updates),
-        onSuccess: (_, variables) => {
-            toast.success('테스트 대상이 수정되었습니다.');
-            queryClient.invalidateQueries({ queryKey: ['testTargets'] });
-            queryClient.invalidateQueries({ queryKey: ['testTarget', variables.id] });
-        },
-        onError: (error) => {
-            const errorMessage = error instanceof Error
-                ? error.message
-                : '테스트 대상 수정에 실패했습니다.';
-            toast.error(`오류 발생: ${errorMessage}`);
-        }
-    });
-};
-
 // 테스트 대상 삭제 훅
 export const useDeleteTestTarget = () => {
     const queryClient = useQueryClient();

@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState, use } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useUserStore } from "@/store/useUserStore";
 import {
@@ -8,9 +7,13 @@ import {
     useGetTestTarget,
     useToggleTestItemCompletion,
     useUpdateTestItem,
-    useDeleteTestItem
+    useDeleteTestItem,
+    useAddTestItem
 } from "@/hook/useApiForTestTarget";
-import { TestItem, TestTarget } from "@/types/typeForTestTarget";
+import { TestItem, CreateTestItemParams } from "@/types/typeForTestTarget";
+import TestTargetInfoComponent from "./component/TestTargetInfoComponent";
+import TestCategoryComponent from "./component/TestCategoryComponent";
+import AddTestItemModal from "./component/AddTestItemModal";
 
 // Props 타입 정의
 interface TestDetailProps {
@@ -45,6 +48,9 @@ const TestDetail = ({ params }: TestDetailProps) => {
         error: itemsError,
     } = useGetTestItems(testId);
 
+    // 테스트 항목 추가 훅
+    const addTestItemMutation = useAddTestItem();
+
     // 테스트 항목 업데이트 훅
     const updateTestItemMutation = useUpdateTestItem(testId);
 
@@ -56,18 +62,27 @@ const TestDetail = ({ params }: TestDetailProps) => {
 
     // 카테고리별로 그룹화된 테스트 항목
     const [testCategories, setTestCategories] = useState<TestCategory[]>([]);
+    const [existingCategories, setExistingCategories] = useState<string[]>([]);
 
-    // "수정" 버튼 클릭 시 활성화되는 편집 상태를 저장
-    const [editItemId, setEditItemId] = useState<string | null>(null);
-    const [editDescription, setEditDescription] = useState("");
-    const [editNotes, setEditNotes] = useState("");
+    // 항목 추가 모달 상태
+    const [isAddModalOpen, setAddModalOpen] = useState(false);
 
     // 테스트 항목 데이터가 로드되면 카테고리별로 그룹화
     useEffect(() => {
         if (testItems) {
             const categoriesMap = new Map<string, TestItem[]>();
+            const categories = new Set<string>();
+
+            // 데이터가 없는 경우에 빈 Map 생성
+            if (testItems.length === 0) {
+                setTestCategories([]);
+                setExistingCategories([]);
+                return;
+            }
 
             testItems.forEach((item) => {
+                categories.add(item.category);
+
                 if (!categoriesMap.has(item.category)) {
                     categoriesMap.set(item.category, []);
                 }
@@ -83,49 +98,54 @@ const TestDetail = ({ params }: TestDetailProps) => {
             );
 
             setTestCategories(categoriesArray);
+            setExistingCategories(Array.from(categories));
         }
     }, [testItems]);
 
-    // 아이템 삭제
-    const handleDeleteItem = (itemId: string) => {
-        if (confirm("정말 삭제하시겠습니까?")) {
-            deleteTestItemMutation.mutate(itemId);
-        }
-    };
-
-    // 아이템 수정 모드 진입
-    const handleEditItem = (item: TestItem) => {
-        setEditItemId(item.id);
-        setEditDescription(item.description);
-        setEditNotes(item.notes || "");
-    };
-
-    // 아이템 수정 취소
-    const handleCancelEdit = () => {
-        setEditItemId(null);
-        setEditDescription("");
-        setEditNotes("");
-    };
-
-    // 아이템 수정 저장
-    const handleSaveEdit = (itemId: string) => {
-        updateTestItemMutation.mutate({
-            id: itemId,
-            updates: {
-                description: editDescription,
-                notes: editNotes,
-            },
+    // 테스트 항목 추가 핸들러
+    const handleAddItem = (newItem: CreateTestItemParams) => {
+        addTestItemMutation.mutate(newItem, {
+            onSuccess: () => {
+                setAddModalOpen(false);
+            }
         });
-        setEditItemId(null);
-        setEditDescription("");
-        setEditNotes("");
+    };
+
+    // 테스트 항목 업데이트 핸들러
+    const handleUpdateItem = (id: string, updates: { description?: string; notes?: string | null }) => {
+        updateTestItemMutation.mutate({
+            id,
+            updates: {
+                ...updates,
+                notes: updates.notes ?? undefined
+            }
+        });
+    };
+
+    // 테스트 항목 토글 핸들러
+    const handleToggleCompletion = (id: string, isCompleted: boolean) => {
+        toggleCompletionMutation.mutate({
+            id,
+            isCompleted
+        });
+    };
+
+    // 테스트 항목 삭제 핸들러
+    const handleDeleteItem = (id: string) => {
+        deleteTestItemMutation.mutate(id);
     };
 
     // 로딩 및 에러 처리
     if (isLoadingTarget || isLoadingItems) {
         return (
             <div className="container mx-auto px-4 py-8 flex justify-center items-center h-64">
-                로딩 중...
+                <div className="flex items-center space-x-2">
+                    <svg className="animate-spin h-5 w-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>로딩 중...</span>
+                </div>
             </div>
         );
     }
@@ -133,7 +153,10 @@ const TestDetail = ({ params }: TestDetailProps) => {
     if (targetError || itemsError) {
         return (
             <div className="container mx-auto px-4 py-8 text-red-500">
-                데이터를 불러오는 중 오류가 발생했습니다.
+                <div className="bg-red-100 border-l-4 border-red-500 p-4 rounded">
+                    <p className="font-medium">데이터를 불러오는 중 오류가 발생했습니다.</p>
+                    <p className="text-sm mt-1">{targetError?.message || itemsError?.message || '알 수 없는 오류'}</p>
+                </div>
             </div>
         );
     }
@@ -141,140 +164,84 @@ const TestDetail = ({ params }: TestDetailProps) => {
     if (!testTarget) {
         return (
             <div className="container mx-auto px-4 py-8">
-                존재하지 않는 테스트 대상입니다.
+                <div className="bg-yellow-100 border-l-4 border-yellow-500 p-4 rounded">
+                    <p className="font-medium">존재하지 않는 테스트 대상입니다.</p>
+                    <p className="text-sm mt-2">
+                        <Link href="/task-admin/test-docu" className="text-indigo-600 hover:text-indigo-900">
+                            테스트 목록으로 돌아가기
+                        </Link>
+                    </p>
+                </div>
             </div>
         );
     }
 
+    // 현재 사용자가 담당자인지 확인
+    const isCurrentUserAssignee = user && testTarget.assignee_id === user.id;
+
     return (
         <div className="container mx-auto px-4 py-8">
+            {/* 뒤로 가기 링크 */}
             <Link href="/task-admin/test-docu" className="text-indigo-600 hover:text-indigo-900 flex items-center">
                 &lt; 테스트 목록으로 돌아가기
             </Link>
 
-            {/* 테스트 대상 정보 */}
-            <div className="bg-white rounded-lg shadow-md p-6 mt-4">
-                <h1 className="text-2xl font-bold mb-2">{testTarget.name}</h1>
-                <p className="text-gray-600 mb-4">{testTarget.description}</p>
-            </div>
+            {/* 테스트 대상 정보 컴포넌트 */}
+            <TestTargetInfoComponent testTarget={testTarget} />
 
             {/* 테스트 체크리스트 */}
             <div className="bg-white rounded-lg shadow-md p-6 mt-4">
-                <h2 className="text-xl font-bold mb-6">테스트 체크리스트</h2>
-                {testCategories.map((category) => (
-                    <div
-                        key={category.id}
-                        className="border-b pb-6 last:border-b-0 last:pb-0"
-                    >
-                        <h3 className="text-lg font-semibold mb-4">
-                            {category.name}
-                        </h3>
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-bold">테스트 체크리스트</h2>
+                    {isCurrentUserAssignee && (
+                        <button
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded text-sm"
+                            onClick={() => setAddModalOpen(true)}
+                        >
+                            + 테스트 항목 추가
+                        </button>
+                    )}
+                </div>
 
-                        <ul className="space-y-4">
-                            {category.items.map((item) => {
-                                const isEditing = editItemId === item.id;
-
-                                return (
-                                    <li
-                                        key={item.id}
-                                        className="border p-4 rounded-lg bg-gray-50"
-                                    >
-                                        {/* 내용 영역 */}
-                                        {isEditing ? (
-                                            <div className="flex flex-col space-y-2">
-                                                <label className="text-sm font-medium text-gray-700">
-                                                    설명:
-                                                    <input
-                                                        className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
-                                                        value={editDescription}
-                                                        onChange={(e) => setEditDescription(e.target.value)}
-                                                    />
-                                                </label>
-
-                                                <label className="text-sm font-medium text-gray-700">
-                                                    메모:
-                                                    <textarea
-                                                        className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
-                                                        rows={3}
-                                                        value={editNotes}
-                                                        onChange={(e) => setEditNotes(e.target.value)}
-                                                    />
-                                                </label>
-
-                                                <div className="mt-2 flex space-x-2">
-                                                    <button
-                                                        className="px-3 py-1 text-xs text-white bg-indigo-600 rounded-md hover:bg-indigo-700"
-                                                        onClick={() => handleSaveEdit(item.id)}
-                                                    >
-                                                        저장
-                                                    </button>
-                                                    <button
-                                                        className="px-3 py-1 text-xs text-gray-600 border border-gray-300 rounded-md hover:bg-gray-100"
-                                                        onClick={handleCancelEdit}
-                                                    >
-                                                        취소
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <div className="flex flex-col space-y-2">
-                                                <span
-                                                    className={
-                                                        item.is_completed
-                                                            ? "line-through text-gray-500"
-                                                            : "text-gray-900"
-                                                    }
-                                                >
-                                                    {item.description}
-                                                </span>
-                                                {item.notes && (
-                                                    <span className="text-sm text-gray-500">
-                                                        메모: {item.notes}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        )}
-
-                                        {/* 액션 영역 */}
-                                        <div className="mt-3 flex items-center space-x-3">
-                                            {/* 완료 체크박스 */}
-                                            <input
-                                                type="checkbox"
-                                                checked={item.is_completed}
-                                                onChange={() =>
-                                                    toggleCompletionMutation.mutate({
-                                                        id: item.id,
-                                                        isCompleted: !item.is_completed,
-                                                    })
-                                                }
-                                                className="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                                            />
-
-                                            {/* 수정 버튼 */}
-                                            {!isEditing && (
-                                                <button
-                                                    className="text-indigo-600 hover:text-indigo-900 text-sm"
-                                                    onClick={() => handleEditItem(item)}
-                                                >
-                                                    수정
-                                                </button>
-                                            )}
-
-                                            {/* 삭제 버튼 */}
-                                            <button
-                                                className="text-red-600 hover:text-red-800 text-sm"
-                                                onClick={() => handleDeleteItem(item.id)}
-                                            >
-                                                삭제
-                                            </button>
-                                        </div>
-                                    </li>
-                                );
-                            })}
-                        </ul>
+                {testCategories.length > 0 ? (
+                    testCategories.map((category) => (
+                        <TestCategoryComponent
+                            key={category.id}
+                            id={category.id}
+                            name={category.name}
+                            items={category.items}
+                            onToggleCompletion={handleToggleCompletion}
+                            onUpdateItem={handleUpdateItem}
+                            onDeleteItem={handleDeleteItem}
+                        />
+                    ))
+                ) : (
+                    <div className="text-center py-16 text-gray-500">
+                        <p className="text-xl mb-2">아직 테스트 항목이 없습니다.</p>
+                        {isCurrentUserAssignee ? (
+                            <button
+                                className="mt-4 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded"
+                                onClick={() => setAddModalOpen(true)}
+                            >
+                                테스트 항목 추가하기
+                            </button>
+                        ) : (
+                            <p className="text-sm">담당자만 테스트 항목을 추가할 수 있습니다.</p>
+                        )}
                     </div>
-                ))}
+                )}
             </div>
+
+            {/* 테스트 항목 추가 모달 */}
+            <AddTestItemModal
+                show={isAddModalOpen}
+                targetId={testId}
+                existingCategories={existingCategories}
+                onClose={() => setAddModalOpen(false)}
+                onAdd={handleAddItem}
+                isPending={addTestItemMutation.isPending}
+            />
+
         </div>
     );
 };

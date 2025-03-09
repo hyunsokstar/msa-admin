@@ -179,6 +179,7 @@ const TestTrackingPage: React.FC = () => {
                 getAssigneeName={getAssigneeName}
                 getProgressColor={getProgressColor}
                 onDelete={handleDeleteTestTarget}
+                assignees={assignees}
             />
 
             {/* 테스트 대상 추가 모달 컴포넌트 */}
