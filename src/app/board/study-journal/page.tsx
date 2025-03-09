@@ -116,6 +116,7 @@ const StudyJournal = () => {
     };
 
     const handleDragStart = (event: DragStartEvent) => {
+        console.log("드래그가 시작되면 호출됩니다.");
         setActiveId(event.active.id as string);
     };
 
@@ -296,6 +297,7 @@ const StudyJournal = () => {
                         </div>
                     ) : null}
                 </DragOverlay>
+                
             </DndContext>
         </div>
     );

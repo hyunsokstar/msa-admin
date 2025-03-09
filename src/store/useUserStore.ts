@@ -1,3 +1,4 @@
+// src\store\useUserStore.ts
 import { IUser } from "@/types/typeForUser";
 import { Session } from "@supabase/supabase-js";
 import { create } from "zustand";
