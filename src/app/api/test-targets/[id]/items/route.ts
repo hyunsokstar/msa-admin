@@ -1,5 +1,3 @@
-// C:\Users\terec\msa-admin\src\app\api\test-targets\[id]\items\route.ts
-
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseService } from '@/lib/supabase/serverClient';
 import { TestItem } from '@/types/typeForTestTarget';
@@ -9,13 +7,21 @@ type ApiResponse<T> = {
     error?: string;
 }
 
-export async function GET(
-    request: NextRequest,
-    { params }: { params: { id: string } }
-): Promise<NextResponse<ApiResponse<TestItem[]>>> {
+export async function GET(request: NextRequest): Promise<NextResponse<ApiResponse<TestItem[]>>> {
     try {
+        // URL에서 ID 추출
+        const urlParts = request.nextUrl.pathname.split("/");
+        // test-targets/[id]/items 구조에서 ID는 urlParts[urlParts.length - 2]에 위치
+        const targetId = urlParts[urlParts.length - 2];
+
+        if (!targetId) {
+            return NextResponse.json(
+                { error: "Target ID가 필요합니다." },
+                { status: 400 }
+            );
+        }
+
         const supabase = getSupabaseService();
-        const targetId = params.id;
 
         const { data, error } = await supabase
             .from('test_items')
@@ -39,13 +45,21 @@ export async function GET(
     }
 }
 
-export async function POST(
-    request: NextRequest,
-    { params }: { params: { id: string } }
-): Promise<NextResponse<ApiResponse<TestItem>>> {
+export async function POST(request: NextRequest): Promise<NextResponse<ApiResponse<TestItem>>> {
     try {
+        // URL에서 ID 추출
+        const urlParts = request.nextUrl.pathname.split("/");
+        // test-targets/[id]/items 구조에서 ID는 urlParts[urlParts.length - 2]에 위치
+        const targetId = urlParts[urlParts.length - 2];
+
+        if (!targetId) {
+            return NextResponse.json(
+                { error: "Target ID가 필요합니다." },
+                { status: 400 }
+            );
+        }
+
         const supabase = getSupabaseService();
-        const targetId = params.id;
         const testItem = await request.json();
 
         // Ensure the target_id in the path matches the one in the request body

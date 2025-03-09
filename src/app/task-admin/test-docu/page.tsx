@@ -81,7 +81,7 @@ const TestTrackingPage: React.FC<TestTrackingPageProps> = () => {
             name: newTestTarget.name,
             description: newTestTarget.description || '',
             // 담당자를 선택하지 않은 경우 현재 로그인 사용자를 담당자로 설정
-            assignee_id: newTestTarget.assignee_id || user?.id || null,
+            assignee_id: newTestTarget.assignee_id || user?.id || undefined,
         }, {
             onSuccess: () => {
                 setShowAddForm(false);

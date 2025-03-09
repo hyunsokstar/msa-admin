@@ -1,5 +1,3 @@
-// C:\Users\terec\msa-admin\src\app\api\test-targets\[id]\route.ts
-
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseService } from '@/lib/supabase/serverClient';
 import { TestTarget } from '@/types/typeForTestTarget';
@@ -9,13 +7,20 @@ type ApiResponse<T> = {
     error?: string;
 }
 
-export async function GET(
-    request: NextRequest,
-    { params }: { params: { id: string } }
-): Promise<NextResponse<ApiResponse<TestTarget>>> {
+export async function GET(request: NextRequest): Promise<NextResponse<ApiResponse<TestTarget>>> {
     try {
+        // URL에서 ID 추출
+        const urlParts = request.nextUrl.pathname.split("/");
+        const id = urlParts[urlParts.length - 1];
+
+        if (!id) {
+            return NextResponse.json(
+                { error: "ID가 필요합니다." },
+                { status: 400 }
+            );
+        }
+
         const supabase = getSupabaseService();
-        const id = params.id;
 
         const { data, error } = await supabase
             .from('test_targets')
@@ -38,13 +43,20 @@ export async function GET(
     }
 }
 
-export async function PUT(
-    request: NextRequest,
-    { params }: { params: { id: string } }
-): Promise<NextResponse<ApiResponse<TestTarget>>> {
+export async function PUT(request: NextRequest): Promise<NextResponse<ApiResponse<TestTarget>>> {
     try {
+        // URL에서 ID 추출
+        const urlParts = request.nextUrl.pathname.split("/");
+        const id = urlParts[urlParts.length - 1];
+
+        if (!id) {
+            return NextResponse.json(
+                { error: "ID가 필요합니다." },
+                { status: 400 }
+            );
+        }
+
         const supabase = getSupabaseService();
-        const id = params.id;
         const updates = await request.json();
 
         const { data, error } = await supabase
@@ -69,13 +81,20 @@ export async function PUT(
     }
 }
 
-export async function DELETE(
-    request: NextRequest,
-    { params }: { params: { id: string } }
-): Promise<NextResponse<ApiResponse<null>>> {
+export async function DELETE(request: NextRequest): Promise<NextResponse<ApiResponse<null>>> {
     try {
+        // URL에서 ID 추출
+        const urlParts = request.nextUrl.pathname.split("/");
+        const id = urlParts[urlParts.length - 1];
+
+        if (!id) {
+            return NextResponse.json(
+                { error: "ID가 필요합니다." },
+                { status: 400 }
+            );
+        }
+
         const supabase = getSupabaseService();
-        const id = params.id;
 
         const { error } = await supabase
             .from('test_targets')

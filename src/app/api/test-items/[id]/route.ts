@@ -1,5 +1,3 @@
-// C:\Users\terec\msa-admin\src\app\api\test-items\[id]\route.ts
-
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseService } from '@/lib/supabase/serverClient';
 import { TestItem } from '@/types/typeForTestTarget';
@@ -9,13 +7,20 @@ type ApiResponse<T> = {
     error?: string;
 }
 
-export async function PUT(
-    request: NextRequest,
-    { params }: { params: { id: string } }
-): Promise<NextResponse<ApiResponse<TestItem>>> {
+export async function PUT(request: NextRequest) {
     try {
+        // URL에서 ID 추출
+        const urlParts = request.nextUrl.pathname.split("/");
+        const id = urlParts[urlParts.length - 1];
+
+        if (!id) {
+            return NextResponse.json(
+                { error: "ID가 필요합니다." },
+                { status: 400 }
+            );
+        }
+
         const supabase = getSupabaseService();
-        const id = params.id;
         const updates = await request.json();
 
         const { data, error } = await supabase
@@ -40,13 +45,20 @@ export async function PUT(
     }
 }
 
-export async function DELETE(
-    request: NextRequest,
-    { params }: { params: { id: string } }
-): Promise<NextResponse<ApiResponse<null>>> {
+export async function DELETE(request: NextRequest) {
     try {
+        // URL에서 ID 추출
+        const urlParts = request.nextUrl.pathname.split("/");
+        const id = urlParts[urlParts.length - 1];
+
+        if (!id) {
+            return NextResponse.json(
+                { error: "ID가 필요합니다." },
+                { status: 400 }
+            );
+        }
+
         const supabase = getSupabaseService();
-        const id = params.id;
 
         const { error } = await supabase
             .from('test_items')
