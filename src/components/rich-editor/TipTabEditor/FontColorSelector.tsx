@@ -1,42 +1,40 @@
-// components/FontColorSelector.tsx
-import React from 'react';
-import { Editor } from '@tiptap/react';
-import { Check } from 'lucide-react';
+"use client";
+
+import React, { useState } from "react";
+import { Editor } from "@tiptap/react";
+import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
+import { Palette } from "lucide-react";
 
 interface FontColorSelectorProps {
   editor: Editor;
 }
 
-const colors = [
-  { name: '검정', value: '#000000' },
-  { name: '회색', value: '#4B5563' },
-  { name: '빨강', value: '#EF4444' },
-  { name: '주황', value: '#F97316' },
-  { name: '황갈색', value: '#F59E0B' },
-  { name: '노랑', value: '#EAB308' },
-  { name: '라임', value: '#84CC16' },
-  { name: '초록', value: '#22C55E' },
-  { name: '에메랄드', value: '#10B981' },
-  { name: '청록', value: '#14B8A6' },
-  { name: '시안', value: '#06B6D4' },
-  { name: '하늘', value: '#0EA5E9' },
-  { name: '파랑', value: '#3B82F6' },
-  { name: '남색', value: '#6366F1' },
-  { name: '보라', value: '#8B5CF6' },
-  { name: '자주', value: '#A855F7' },
-  { name: '푸시아', value: '#D946EF' },
-  { name: '분홍', value: '#EC4899' },
-  { name: '장미', value: '#F43F5E' },
-  { name: '흰색', value: '#FFFFFF' },
+const colorOptions = [
+  { label: "Default", value: "black" },
+  { label: "Red", value: "#FF0000" },
+  { label: "Blue", value: "#0000FF" },
+  { label: "Green", value: "#008000" },
+  { label: "Purple", value: "#800080" },
+  { label: "Orange", value: "#FFA500" },
+  { label: "Pink", value: "#FFC0CB" },
+  { label: "Brown", value: "#A52A2A" },
+  { label: "Gray", value: "#808080" },
+  { label: "Cyan", value: "#00FFFF" },
 ];
 
-const FontColorSelector = ({ editor }: FontColorSelectorProps) => {
+const FontColorSelector: React.FC<FontColorSelectorProps> = ({ editor }) => {
+  const [selectedColor, setSelectedColor] = useState("#000000");
+
+  const handleColorSelect = (color: string) => {
+    setSelectedColor(color);
+    editor.chain().focus().setColor(color).run();
+  };
+
   const currentColor = editor.getAttributes('textStyle').color || '#000000';
 
   return (
@@ -44,33 +42,40 @@ const FontColorSelector = ({ editor }: FontColorSelectorProps) => {
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          className="h-8 w-8 p-0 relative border-2"
-          style={{ backgroundColor: currentColor }}
+          size="sm"
+          className="h-8 gap-1 border-dashed"
+          style={{ color: currentColor }}
         >
-          <span className="sr-only">글자 색상 선택</span>
+          <Palette className="h-4 w-4" />
+          <div 
+            className="rounded-sm w-4 h-4 border" 
+            style={{ backgroundColor: currentColor || selectedColor }}
+          />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-64">
-        <div className="grid grid-cols-5 gap-1 p-2">
-          {colors.map((color) => (
-            <button
-              key={color.value}
-              className="relative h-8 w-8 rounded cursor-pointer border border-gray-200 hover:border-gray-400"
-              style={{ backgroundColor: color.value }}
-              onClick={() => {
-                editor.chain().focus().setColor(color.value).run();
-              }}
-              title={color.name}
-            >
-              {currentColor === color.value && (
-                <Check 
-                  className="absolute inset-0 m-auto" 
-                  color={color.value === '#FFFFFF' ? '#000000' : '#FFFFFF'} 
-                  size={16} 
-                />
-              )}
-            </button>
-          ))}
+        <div className="space-y-2">
+          <div className="font-medium text-sm">색상 선택</div>
+          <div className="grid grid-cols-5 gap-2">
+            {colorOptions.map((option) => (
+              <button
+                key={option.value}
+                className="w-8 h-8 rounded-md border overflow-hidden focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-500"
+                style={{ backgroundColor: option.value }}
+                onClick={() => handleColorSelect(option.value)}
+                title={option.label}
+              />
+            ))}
+          </div>
+          <div>
+            <label className="text-xs font-medium mb-1 block">커스텀 색상</label>
+            <input
+              type="color"
+              value={selectedColor}
+              onChange={(e) => handleColorSelect(e.target.value)}
+              className="w-full cursor-pointer"
+            />
+          </div>
         </div>
       </PopoverContent>
     </Popover>

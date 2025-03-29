@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import "../../../styles/fonts.css";
-import CodeBlockHighlighter from "./CodeBlockHighlighter";
 
 const fontFamilyOptions = [
   { label: "Default", value: "sans-serif" },
@@ -52,7 +51,8 @@ const TiptapBubbleMenu: React.FC<TiptapBubbleMenuProps> = ({ editor }) => {
   };
 
   const applyHighlight = (color: string) => {
-    editor.chain().focus().setHighlight({ color }).run();
+    // 형광펜 하이라이트 적용 수정
+    editor.chain().focus().toggleHighlight({ color }).run();
   };
 
   const resetFormatting = () => {
@@ -65,7 +65,7 @@ const TiptapBubbleMenu: React.FC<TiptapBubbleMenuProps> = ({ editor }) => {
     <BubbleMenu
       editor={editor}
       tippyOptions={{ duration: 100 }}
-      className="bg-background border shadow-md rounded-lg overflow-visible p-2 bg-white"
+      className="bg-background border shadow-md rounded-lg overflow-visible p-2 bg-white z-50" // z-index 추가
     >
       <div className="flex flex-wrap items-center gap-2">
         {/* Font Size and Color Group */}
@@ -139,7 +139,7 @@ const TiptapBubbleMenu: React.FC<TiptapBubbleMenuProps> = ({ editor }) => {
         <div className="flex items-center gap-2">
           <Button
             type="button"
-            variant="ghost"
+            variant={editor.isActive('highlight', { color: 'yellow' }) ? "default" : "ghost"}
             size="sm"
             onClick={() => applyHighlight("yellow")}
             className="h-8 w-8 p-0"
@@ -148,7 +148,7 @@ const TiptapBubbleMenu: React.FC<TiptapBubbleMenuProps> = ({ editor }) => {
           </Button>
           <Button
             type="button"
-            variant="ghost"
+            variant={editor.isActive('highlight', { color: '#ffcc99' }) ? "default" : "ghost"}
             size="sm"
             onClick={() => applyHighlight("#ffcc99")}
             className="h-8 w-8 p-0"

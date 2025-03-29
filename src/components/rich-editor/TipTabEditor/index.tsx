@@ -28,7 +28,7 @@ import { FigmaEmbed } from './extensions/FigmaEmbed';
 import React, { useState } from "react";
 import TiptapToolbar from "./TiptapToolbar";
 import { Plugin } from '@tiptap/pm/state';
-import CustomPasteHandler from "./CustomPasteHandler";
+// import CustomPasteHandler from "./CustomPasteHandler";
 import CodeBlock from "@tiptap/extension-code-block";
 
 const uploadImageToS3 = async (file: File): Promise<string | null> => {
@@ -105,55 +105,6 @@ interface TiptapEditorProps {
 const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps) => {
   const [isUploading, setIsUploading] = useState(false);
 
-  // const editor = useEditor({
-  //   extensions: [
-  //     Document,
-  //     Paragraph,
-  //     Text,
-  //     HardBreak,
-  //     TextStyle,
-  //     FontColor,
-  //     Highlight.configure({ multicolor: true }),
-  //     FontSize.configure({ types: ["textStyle"] }),
-  //     FontFamily.configure({ types: ["textStyle"], defaultFamily: "sans-serif" }),
-  //     TextAlign.configure({ types: ["heading", "paragraph"] }),
-  //     Underline,
-  //     ImagePasteHandler.configure({ inline: true }),
-  //     ResizeImage.configure({ allowBase64: false }),
-  //     HorizontalRule,
-  //     Link.configure({
-  //       openOnClick: true,
-  //       HTMLAttributes: {
-  //         class: "text-blue-500 hover:underline",
-  //         rel: "noopener noreferrer nofollow",
-  //         target: "_blank",
-  //       },
-  //     }),
-  //     Video,
-  //     Table.configure({ resizable: true }),
-  //     TableRow,
-  //     TableCell,
-  //     TableHeader,
-  //     Youtube.configure({
-  //       controls: true,
-  //       nocookie: true,
-  //       width: 640,
-  //       height: 360,
-  //     }),
-  //     FigmaEmbed,
-  //   ],
-  //   content,
-  //   editable: !disabled,
-  //   onUpdate: ({ editor }) => {
-  //     onChange(editor.getHTML());
-  //   },
-  //   editorProps: {
-  //     attributes: {
-  //       class: "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl focus:outline-none max-w-none w-full h-full",
-  //     },
-  //   },
-  // });
-
   const editor = useEditor({
     extensions: [
       Document,
@@ -190,8 +141,8 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
         height: 360,
       }),
       FigmaEmbed,
-      CodeBlock, // ✅ 코드 블록 확장 추가!
-      CustomPasteHandler, // ✅ 붙여넣기 핸들러
+      // CodeBlock, // ✅ 코드 블록 확장 추가!
+      // CustomPasteHandler, // ✅ 붙여넣기 핸들러
     ],
     content,
     editable: !disabled,
@@ -202,7 +153,7 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
     },
     editorProps: {
       attributes: {
-        class: "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl focus:outline-none max-w-none w-full h-full",
+        class: "w-full min-h-[300px] p-4 focus:outline-none border border-gray-200 rounded-md", // prose 제거!
       },
     },
   });

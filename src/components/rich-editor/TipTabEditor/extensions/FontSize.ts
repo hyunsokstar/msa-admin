@@ -1,4 +1,3 @@
-// extensions/FontSize.ts
 import { Extension } from '@tiptap/core';
 
 export interface FontSizeOptions {
@@ -8,7 +7,13 @@ export interface FontSizeOptions {
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     fontSize: {
-      setFontSize: (size: string) => ReturnType;
+      /**
+       * Set the font size
+       */
+      setFontSize: (fontSize: string) => ReturnType;
+      /**
+       * Unset the font size
+       */
       unsetFontSize: () => ReturnType;
     };
   }
@@ -30,13 +35,18 @@ export const FontSize = Extension.create<FontSizeOptions>({
         attributes: {
           fontSize: {
             default: null,
-            parseHTML: element => element.style.fontSize,
+            parseHTML: element => {
+              // 요소에서 직접 스타일 속성을 가져옴
+              const fontSize = element.style.fontSize || null;
+              return fontSize;
+            },
             renderHTML: attributes => {
               if (!attributes.fontSize) {
                 return {};
               }
+
               return {
-                style: `font-size: ${attributes.fontSize}`,
+                style: `font-size: ${attributes.fontSize}; --font-size: ${attributes.fontSize};`,
               };
             },
           },
@@ -48,13 +58,11 @@ export const FontSize = Extension.create<FontSizeOptions>({
   addCommands() {
     return {
       setFontSize:
-        (fontSize: string) =>
-        ({ chain }) => {
+        fontSize => ({ chain }) => {
           return chain().setMark('textStyle', { fontSize }).run();
         },
       unsetFontSize:
-        () =>
-        ({ chain }) => {
+        () => ({ chain }) => {
           return chain()
             .setMark('textStyle', { fontSize: null })
             .removeEmptyTextStyle()
