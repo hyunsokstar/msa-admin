@@ -1,49 +1,39 @@
-// src/hooks/notes/useApiForDeleteNoteContent.ts
-import { useQueryClient } from '@tanstack/react-query';
-import { deleteNoteContent } from '@/api/notes/apiForNoteContents';
-import { useState } from 'react';
-import { toast } from 'react-toastify'; // react-toastify import
+// ✅ 수정된 useApiForDeleteNoteContent.ts (pageNum을 필수로 명시)
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { deleteNoteContent as deleteNoteContentApi } from '@/api/notes/apiForNoteContents'
+import { toast } from 'react-toastify'
 
 interface UseApiForDeleteNoteContentProps {
-  noteId: string;
-  pageNum?: number;
+  noteId: string
+  pageNum: number // ✅ 필수로 변경
 }
 
-const useApiForDeleteNoteContent = ({ noteId, pageNum }: UseApiForDeleteNoteContentProps) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-  const queryClient = useQueryClient();
+const useApiForDeleteNoteContent = ({
+  noteId,
+  pageNum
+}: UseApiForDeleteNoteContentProps) => {
+  const queryClient = useQueryClient()
 
-  const handleDelete = async (contentId: number) => {
-    setIsLoading(true);
-    setError(null);
-    
-    console.log("noteId : ", noteId);
-    console.log("pageNum : ", pageNum);
-
-    try {
-      await deleteNoteContent(noteId, contentId);
-      // Invalidate and refetch queries
-      await queryClient.invalidateQueries({
+  const mutation = useMutation({
+    mutationFn: (contentId: number) => deleteNoteContentApi(noteId, contentId),
+    onSuccess: () => {
+      console.log('노트 삭제 성공 - noteId, pageNum:', noteId, pageNum)
+      queryClient.invalidateQueries({
         queryKey: ['noteContents', noteId, pageNum]
-      });
-
-      // 성공 메시지 출력
-      toast.success('노트 내용이 삭제되었습니다.'); 
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to delete note content'));
-      // 에러 메시지 출력
-      toast.error('노트 내용을 삭제하는 데 실패했습니다.'); 
-    } finally {
-      setIsLoading(false);
+      })
+      toast.success('노트 내용이 삭제되었습니다.')
+    },
+    onError: () => {
+      toast.error('노트 내용을 삭제하는 데 실패했습니다.')
     }
-  };
+  })
 
   return {
-    deleteNoteContent: handleDelete,
-    isLoading,
-    error
-  };
-};
+    deleteNoteContent: (contentId: number, options?: any) =>
+      mutation.mutate(contentId, options),
+    isPending: mutation.isPending,
+    error: mutation.error
+  }
+}
 
-export default useApiForDeleteNoteContent;
+export default useApiForDeleteNoteContent

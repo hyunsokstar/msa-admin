@@ -139,7 +139,7 @@ export const ITableForNoteCollectionList: React.FC<ITableForNoteCollectionListPr
                           size="sm"
                           className="h-7 px-2 py-1 text-xs font-normal bg-white hover:bg-gray-50"
                         >
-                          {collection.note_count || 0} notes
+                          {collection.note_count || 0} 
                         </CommonButton>
                       </div>
                       {selectedCollectionId === String(collection.id) && (

@@ -12,7 +12,9 @@ import { Note } from "@/types/notes/typeForNotes";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-// 순서 번호 대신 아이콘 대신 순서 번호를 출력
+// 아이콘 예시(GripVertical)
+import { GripVertical } from "lucide-react";
+
 interface SortableRowForNoteProps {
   note: Note;
   collectionId: string;
@@ -47,14 +49,15 @@ export const SortableRowForNote: React.FC<SortableRowForNoteProps> = ({
       style={style}
       className="hover:bg-blue-50/30 transition-colors duration-200"
     >
-      {/* 순서 번호 출력용 셀 (버튼으로 감싸서 드래그 가능) */}
+      {/* 손잡이 아이콘과 순서 번호를 함께 출력하는 셀 */}
       <TableCell className="text-center w-[40px]">
         <button
-          className="p-1 text-slate-400 hover:text-slate-600"
+          className="flex items-center justify-center gap-1 p-1 text-slate-400 hover:text-slate-600"
           {...attributes}
           {...listeners}
         >
-          {orderNumber}
+          <GripVertical className="h-4 w-4" />
+          <span>{orderNumber}</span>
         </button>
       </TableCell>
 
