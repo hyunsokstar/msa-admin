@@ -103,6 +103,7 @@ const ICardForNoteContents = ({
               contentId={content.id}
               writerEmail={content.writer?.email || ''}
               noteId={noteId}
+              pageNum={pageNum}
             />
           </div>
         </div>

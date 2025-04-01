@@ -1,8 +1,8 @@
-// ✅ NoteContentListPageForNote.tsx (2번 방식으로 수정하여 pageNum을 상태로 관리)
+// ✅ NoteContentListPageForNote.tsx
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
-import { Edit2, ClipboardCopy } from 'lucide-react'
+import { Edit2, ClipboardCopy, FileText, List } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import { NoteContent } from '@/types/notes/typeForNoteContents'
 import ICardForNoteContents from './_comp/ICardForNoteContents'
@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button'
 import SortableNoteContentList from './_comp/SortableNoteContentList'
 import PageNavigationForNoteContentList from './_comp/PageNavigationForNoteContentList'
 import { toast } from 'react-toastify'
+import IDialogButtonForShowNoteList from './_comp/IDialogButtonForShowNoteList'
 
 interface Props {
   params: Promise<{
@@ -30,6 +31,41 @@ const NoteContentListPageForNote = ({ params }: Props) => {
   const [isUpdateMode, setIsUpdateMode] = useState(false)
   const [selectedNote, setSelectedNote] = useState<NoteContent | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [collectionId, setCollectionId] = useState<string>('')
+  const [noteTitle, setNoteTitle] = useState<string>('')
+
+  // URL 쿼리 파라미터와 로컬 스토리지 처리
+  useEffect(() => {
+    // URL에서 collectionId와 noteTitle 가져오기
+    const collectionIdFromUrl = searchParams.get('collectionId')
+    const noteTitleFromUrl = searchParams.get('noteTitle')
+
+    // 먼저 URL 파라미터를 확인
+    if (collectionIdFromUrl) {
+      setCollectionId(collectionIdFromUrl)
+      // 로컬 스토리지에 저장
+      localStorage.setItem(`note_${noteId}_collectionId`, collectionIdFromUrl)
+    } else {
+      // URL에 없으면 로컬 스토리지에서 가져오기
+      const savedCollectionId = localStorage.getItem(
+        `note_${noteId}_collectionId`
+      )
+      if (savedCollectionId) {
+        setCollectionId(savedCollectionId)
+      }
+    }
+
+    // noteTitle 처리
+    if (noteTitleFromUrl) {
+      setNoteTitle(noteTitleFromUrl)
+      localStorage.setItem(`note_${noteId}_title`, noteTitleFromUrl)
+    } else {
+      const savedNoteTitle = localStorage.getItem(`note_${noteId}_title`)
+      if (savedNoteTitle) {
+        setNoteTitle(savedNoteTitle)
+      }
+    }
+  }, [searchParams, noteId])
 
   useEffect(() => {
     const paramValue = Number(searchParams.get('pageNum'))
@@ -41,11 +77,9 @@ const NoteContentListPageForNote = ({ params }: Props) => {
     pageNum
   })
 
-  const { deleteNoteContent, isPending: isDeleting } =
-    useApiForDeleteNoteContent({
-      noteId,
-      pageNum
-    })
+  const { deleteNoteContent, isPending: isDeleting } = pageNum
+    ? useApiForDeleteNoteContent({ noteId, pageNum })
+    : { deleteNoteContent: () => {}, isPending: false }
 
   const handleScrollToContent = (contentId: string) => {
     const element = contentRefs.current[contentId]
@@ -72,8 +106,16 @@ const NoteContentListPageForNote = ({ params }: Props) => {
 
   const handleCopyLink = async () => {
     try {
-      const currentUrl = window.location.href
-      await navigator.clipboard.writeText(currentUrl)
+      // 현재 URL에 collectionId와 noteTitle이 포함되어 있지 않다면 추가
+      const url = new URL(window.location.href)
+      if (collectionId && !url.searchParams.has('collectionId')) {
+        url.searchParams.set('collectionId', collectionId)
+      }
+      if (noteTitle && !url.searchParams.has('noteTitle')) {
+        url.searchParams.set('noteTitle', noteTitle)
+      }
+
+      await navigator.clipboard.writeText(url.toString())
       toast.success('링크가 클립보드에 복사되었습니다!')
     } catch (error) {
       toast.error('링크 복사에 실패했습니다.')
@@ -105,7 +147,18 @@ const NoteContentListPageForNote = ({ params }: Props) => {
             <div className='p-4 border-b'>
               <div className='flex justify-between items-center'>
                 <div className='flex items-center gap-4'>
-                  <h1 className='text-xl font-bold'>Note Contents</h1>
+                  <h1 className='text-xl font-bold'>
+                    {noteTitle ? (
+                      <span className='flex items-center'>
+                        <span className='mr-2'>Note:</span>
+                        <span className='text-blue-600'>
+                          {decodeURIComponent(noteTitle)}
+                        </span>
+                      </span>
+                    ) : (
+                      'Note Contents'
+                    )}
+                  </h1>
 
                   <Button
                     variant='outline'
@@ -127,8 +180,10 @@ const NoteContentListPageForNote = ({ params }: Props) => {
                     {isUpdateMode ? '수정 모드 끄기' : '수정 모드'}
                   </Button>
                 </div>
+
+                <div className='text-sm text-gray-500'>Page {pageNum}</div>
+
                 <div className='flex items-center gap-2'>
-                  <p className='text-sm text-gray-500'>Page {pageNum}</p>
                   <IDialogButtonForCreateNoteContents
                     noteId={noteId}
                     pageNum={pageNum}
@@ -162,7 +217,27 @@ const NoteContentListPageForNote = ({ params }: Props) => {
 
           <section className='w-2/5 bg-white rounded-lg shadow-md flex flex-col'>
             <div className='p-4 border-b'>
-              <h2 className='text-lg font-bold'>Note List</h2>
+              <div className='flex items-center justify-between'>
+                <h2 className='text-lg font-bold flex items-center gap-2'>
+                  <FileText className='h-5 w-5 text-blue-600' />
+                  Note List
+                </h2>
+                {collectionId && (
+                  <IDialogButtonForShowNoteList
+                    collectionId={collectionId}
+                    currentNoteId={noteId}
+                  />
+                )}
+              </div>
+
+              <div className='mt-2 flex flex-col text-sm text-gray-600'>
+                {noteTitle && (
+                  <div className='flex items-center mt-1'>
+                    <span className='font-medium mr-2'>Note Title:</span>
+                    <span>{decodeURIComponent(noteTitle)}</span>
+                  </div>
+                )}
+              </div>
             </div>
 
             <PageNavigationForNoteContentList

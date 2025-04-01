@@ -33,7 +33,7 @@ const IDialogButtonForDeleteNoteContents = ({
   const queryClient = useQueryClient()
   const { deleteNoteContent, isPending } = useApiForDeleteNoteContent({
     noteId,
-    pageNum: pageNum ?? 1 // Provide a default value of 1 if pageNum is undefined
+    pageNum: pageNum ?? 1
   })
 
   // 권한 체크 로직
