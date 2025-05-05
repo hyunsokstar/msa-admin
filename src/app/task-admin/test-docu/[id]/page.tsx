@@ -12,19 +12,12 @@ import {
 } from "@/hook/useApiForTestTarget";
 import { TestItem, CreateTestItemParams } from "@/types/typeForTestTarget";
 import TestTargetInfoComponent from "./component/TestTargetInfoComponent";
-import TestCategoryComponent from "./component/TestCategoryComponent";
+import TestItemComponent from "./component/TestItemComponent";
 import AddTestItemModal from "./component/AddTestItemModal";
 
 // Props 타입 정의
 interface TestDetailProps {
     params: Promise<{ id: string }>;
-}
-
-// 그룹화된 테스트 항목 타입 정의
-interface TestCategory {
-    id: string;
-    name: string;
-    items: TestItem[];
 }
 
 const TestDetail = ({ params }: TestDetailProps) => {
@@ -60,51 +53,19 @@ const TestDetail = ({ params }: TestDetailProps) => {
     // 테스트 항목 삭제 훅
     const deleteTestItemMutation = useDeleteTestItem(testId);
 
-    // 카테고리별로 그룹화된 테스트 항목
-    const [testCategories, setTestCategories] = useState<TestCategory[]>([]);
-    const [existingCategories, setExistingCategories] = useState<string[]>([]);
-
     // 항목 추가 모달 상태
     const [isAddModalOpen, setAddModalOpen] = useState(false);
 
-    // 테스트 항목 데이터가 로드되면 카테고리별로 그룹화
-    useEffect(() => {
-        if (testItems) {
-            const categoriesMap = new Map<string, TestItem[]>();
-            const categories = new Set<string>();
-
-            // 데이터가 없는 경우에 빈 Map 생성
-            if (testItems.length === 0) {
-                setTestCategories([]);
-                setExistingCategories([]);
-                return;
-            }
-
-            testItems.forEach((item) => {
-                categories.add(item.category);
-
-                if (!categoriesMap.has(item.category)) {
-                    categoriesMap.set(item.category, []);
-                }
-                categoriesMap.get(item.category)?.push(item);
-            });
-
-            const categoriesArray: TestCategory[] = Array.from(categoriesMap).map(
-                ([name, items]) => ({
-                    id: `cat-${name.replace(/\s+/g, "-").toLowerCase()}`,
-                    name,
-                    items,
-                })
-            );
-
-            setTestCategories(categoriesArray);
-            setExistingCategories(Array.from(categories));
-        }
-    }, [testItems]);
-
     // 테스트 항목 추가 핸들러
     const handleAddItem = (newItem: CreateTestItemParams) => {
-        addTestItemMutation.mutate(newItem, {
+
+        const itemWithAssignee = {
+            ...newItem,
+            assignee_id: user?.id || undefined, // 현재 사용자 ID를 assignee_id로 설정
+            is_completed: false, // 기본값으로 false 설정
+        };
+
+        addTestItemMutation.mutate(itemWithAssignee, {
             onSuccess: () => {
                 setAddModalOpen(false);
             }
@@ -203,18 +164,26 @@ const TestDetail = ({ params }: TestDetailProps) => {
                     )}
                 </div>
 
-                {testCategories.length > 0 ? (
-                    testCategories.map((category) => (
-                        <TestCategoryComponent
-                            key={category.id}
-                            id={category.id}
-                            name={category.name}
-                            items={category.items}
-                            onToggleCompletion={handleToggleCompletion}
-                            onUpdateItem={handleUpdateItem}
-                            onDeleteItem={handleDeleteItem}
-                        />
-                    ))
+                {testItems && testItems.length > 0 ? (
+                    <div className="space-y-2">
+                        <div className="flex justify-between items-center mb-2">
+                            <h3 className="text-lg font-medium">테스트 항목</h3>
+                            <div className="text-sm text-gray-500">
+                                {testItems.filter(item => item.is_completed).length}/{testItems.length} 완료
+                            </div>
+                        </div>
+                        <ul className="space-y-2">
+                            {testItems.map((item) => (
+                                <TestItemComponent
+                                    key={item.id}
+                                    item={item}
+                                    onToggleCompletion={handleToggleCompletion}
+                                    onUpdate={handleUpdateItem}
+                                    onDelete={handleDeleteItem}
+                                />
+                            ))}
+                        </ul>
+                    </div>
                 ) : (
                     <div className="text-center py-16 text-gray-500">
                         <p className="text-xl mb-2">아직 테스트 항목이 없습니다.</p>
@@ -236,7 +205,6 @@ const TestDetail = ({ params }: TestDetailProps) => {
             <AddTestItemModal
                 show={isAddModalOpen}
                 targetId={testId}
-                existingCategories={existingCategories}
                 onClose={() => setAddModalOpen(false)}
                 onAdd={handleAddItem}
                 isPending={addTestItemMutation.isPending}

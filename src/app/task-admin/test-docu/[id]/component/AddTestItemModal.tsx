@@ -7,7 +7,6 @@ import { CreateTestItemParams } from '@/types/typeForTestTarget';
 interface AddTestItemModalProps {
     show: boolean;
     targetId: string;
-    existingCategories: string[];
     onClose: () => void;
     onAdd: (newItem: CreateTestItemParams) => void;
     isPending: boolean;
@@ -16,17 +15,13 @@ interface AddTestItemModalProps {
 const AddTestItemModal: React.FC<AddTestItemModalProps> = ({
     show,
     targetId,
-    existingCategories,
     onClose,
     onAdd,
     isPending
 }) => {
     // 입력 상태 관리
-    const [category, setCategory] = useState('');
-    const [newCategory, setNewCategory] = useState('');
     const [description, setDescription] = useState('');
     const [notes, setNotes] = useState('');
-    const [isCustomCategory, setIsCustomCategory] = useState(false);
 
     if (!show) return null;
 
@@ -35,16 +30,14 @@ const AddTestItemModal: React.FC<AddTestItemModalProps> = ({
         e.preventDefault();
 
         // 유효성 검사
-        const selectedCategory = isCustomCategory ? newCategory : category;
-        if (!selectedCategory || !description) {
-            alert('카테고리와 설명은 필수 입력 항목입니다.');
+        if (!description) {
+            alert('설명은 필수 입력 항목입니다.');
             return;
         }
 
         // 새 항목 생성 요청
         onAdd({
             target_id: targetId,
-            category: selectedCategory,
             description,
             notes: notes || undefined,
             is_completed: false,
@@ -56,11 +49,8 @@ const AddTestItemModal: React.FC<AddTestItemModalProps> = ({
 
     // 폼 초기화
     const resetForm = () => {
-        setCategory('');
-        setNewCategory('');
         setDescription('');
         setNotes('');
-        setIsCustomCategory(false);
     };
 
     // 모달 닫기
@@ -84,50 +74,6 @@ const AddTestItemModal: React.FC<AddTestItemModalProps> = ({
 
                 <form onSubmit={handleSubmit} className="p-6">
                     <div className="space-y-4">
-                        {/* 카테고리 선택 */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">카테고리 *</label>
-                            {!isCustomCategory ? (
-                                <div className="space-y-2">
-                                    <select
-                                        className="w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                                        value={category}
-                                        onChange={(e) => setCategory(e.target.value)}
-                                        disabled={isCustomCategory}
-                                    >
-                                        <option value="">선택하세요</option>
-                                        {existingCategories.map((cat) => (
-                                            <option key={cat} value={cat}>{cat}</option>
-                                        ))}
-                                    </select>
-                                    <button
-                                        type="button"
-                                        className="text-sm text-indigo-600 hover:text-indigo-800"
-                                        onClick={() => setIsCustomCategory(true)}
-                                    >
-                                        새 카테고리 추가하기
-                                    </button>
-                                </div>
-                            ) : (
-                                <div className="space-y-2">
-                                    <input
-                                        type="text"
-                                        className="w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                                        placeholder="새 카테고리 이름 입력"
-                                        value={newCategory}
-                                        onChange={(e) => setNewCategory(e.target.value)}
-                                    />
-                                    <button
-                                        type="button"
-                                        className="text-sm text-indigo-600 hover:text-indigo-800"
-                                        onClick={() => setIsCustomCategory(false)}
-                                    >
-                                        기존 카테고리 선택하기
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-
                         {/* 설명 */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">설명 *</label>

@@ -1,4 +1,4 @@
-// CommonSwitch.tsx
+// C:\hyun\msa-admin\src\components\common\CommonSwitch.tsx
 import { Switch } from '@headlessui/react'
 
 interface CommonSwitchProps {
