@@ -103,10 +103,14 @@ const IDialogButtonForRefVideoForTestItem: React.FC<IDialogButtonForRefVideoForT
 
     // 비디오 대화상자 열기
     const openVideoDialog = () => {
-        if (onClick && !isEditMode) {
+        if (onClick) {
             onClick();
         } else {
-            if (isEditMode) {
+            if (!videoUrl) {
+                // 동영상이 없을 경우 자동으로 편집 모드로 설정하고 다이얼로그 열기
+                setIsEditMode(true);
+                setIsDialogOpen(true);
+            } else if (isEditMode) {
                 // 편집 모드에서는 업로드 다이얼로그 열기
                 setIsDialogOpen(true);
             } else {

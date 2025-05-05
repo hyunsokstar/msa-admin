@@ -3,9 +3,13 @@
 import React, { useState } from 'react';
 import { TestItem } from '@/types/typeForTestTarget';
 import Image from 'next/image';
-import { FileImage, Film, Plus, X, Maximize2, Download } from 'lucide-react';
+import { FileImage, Film, Plus, X, Maximize2, Download, Calendar, Clock, Edit, Trash, CheckCircle2, Lock } from 'lucide-react';
 import IDialogButtonForRefImageForTestItem from './IDialogButtonForRefImageForTestItem';
 import IDialogButtonForRefVideoForTestItem from './IDialogButtonForRefVideoForTestItem';
+import CommonSwitch from '@/components/common/CommonSwitch';
+import { format } from 'date-fns';
+import { ko } from 'date-fns/locale';
+import { useUserStore } from '@/store/useUserStore';
 
 interface TestItemComponentProps {
     item: TestItem;
@@ -25,6 +29,9 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
     onUpdate,
     onDelete
 }) => {
+    // 사용자 인증 상태 가져오기
+    const { isAuthenticated } = useUserStore();
+    
     const [isEditing, setIsEditing] = useState(false);
     const [editDescription, setEditDescription] = useState(item.description);
     const [editNotes, setEditNotes] = useState(item.notes || "");
@@ -32,6 +39,16 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
     // 미디어 모달 상태
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+
+    // 날짜 포맷 함수
+    const formatDate = (dateString: string | null) => {
+        if (!dateString) return '-';
+        try {
+            return format(new Date(dateString), 'yyyy-MM-dd HH:mm', { locale: ko });
+        } catch (error) {
+            return dateString;
+        }
+    };
 
     // 수정 시작
     const handleEdit = () => {
@@ -111,11 +128,27 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
         setIsVideoModalOpen(false);
     };
 
+    // 완료 상태 토글 핸들러 (인증된 사용자만 가능)
+    const handleToggleCompletion = (checked: boolean) => {
+        if (isAuthenticated) {
+            onToggleCompletion(item.id, checked);
+        } else {
+            // 인증되지 않은 경우 알림 표시 (선택 사항)
+            alert('로그인 후 이용 가능합니다.');
+        }
+    };
+
+    // 항목의 배경색 결정
+    const bgColor = item.is_completed ? 'bg-green-50 border-green-200' : 'bg-gray-50';
+    const contentBgColor = item.is_completed ? 'bg-green-100/50' : 'bg-white';
+    const textColor = item.is_completed ? 'text-green-700' : 'text-gray-900';
+    const hoverBgColor = item.is_completed ? 'hover:bg-green-200' : 'hover:bg-gray-100';
+
     return (
-        <li className="border p-4 rounded-lg bg-gray-50 mb-2">
+        <li className={`border p-4 rounded-lg ${bgColor} mb-2 transition-colors duration-200`}>
             {isEditing ? (
                 // 편집 모드 - 양식 형태로 표시
-                <div className="space-y-2">
+                <div className="space-y-3">
                     <label className="block text-sm font-medium text-gray-700">
                         설명:
                         <input
@@ -151,117 +184,174 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
                     </div>
                 </div>
             ) : (
-                // 표시 모드 - 가로 레이아웃으로 배치
-                <div className="flex items-center">
-                    {/* 왼쪽: 담당자 프로필 이미지 */}
-                    <div className="flex-shrink-0 mr-4">
-                        <div className="relative h-10 w-10 rounded-full overflow-hidden bg-gray-200 border border-gray-300">
-                            {item.assignee && item.assignee.profile_image_url ? (
-                                <Image
-                                    src={item.assignee.profile_image_url}
-                                    alt={item.assignee.full_name || "담당자"}
-                                    fill
-                                    className="object-contain"
-                                />
-                            ) : (
-                                <div className="flex items-center justify-center h-full w-full bg-gray-100 text-gray-400 text-xs">
-                                    사용자
-                                </div>
-                            )}
-                        </div>
-                        {item.assignee && (
-                            <div className="text-xs text-center mt-1 text-gray-500 truncate w-10">
-                                {item.assignee.full_name ? item.assignee.full_name.split(' ')[0] : '담당자'}
-                            </div>
-                        )}
-                    </div>
-                    
-                    {/* 중앙: 항목 내용 */}
-                    <div className="flex-grow">
-                        <div 
-                            className={`font-medium ${item.is_completed ? "line-through text-gray-500" : "text-gray-900"}`}
-                        >
-                            {item.description}
-                        </div>
-                        {item.notes && (
-                            <div className="text-sm text-gray-500 mt-1">
-                                {item.notes}
-                            </div>
-                        )}
-                    </div>
-                    
-                    {/* 미디어 버튼: 빨간 박스 영역 */}
-                    <div className="flex-shrink-0 mx-4 flex items-center space-x-2">
-                        {/* 이미지 버튼 */}
-                        <div className="relative group">
-                            <IDialogButtonForRefImageForTestItem
-                                testItemId={item.id}
-                                targetId={item.target_id}
-                                imageUrl={item.ref_image} 
-                            />
-                            
-                            {/* 호버 시 나타나는 이미지 미리보기 */}
-                            <div className="absolute hidden group-hover:block bottom-full left-0 mb-2 bg-white rounded-lg shadow-lg border p-1 z-10">
-                                {item.ref_image ? (
-                                    <img 
-                                        src={item.ref_image} 
-                                        alt="이미지 미리보기" 
-                                        className="w-32 h-32 object-contain"
+                // 표시 모드 - 레이아웃 재구성 (2행으로 압축)
+                <div className="flex flex-col space-y-3">
+                    {/* 첫 번째 행: 담당자, 미디어 버튼, 날짜 정보, 완료 상태 */}
+                    <div className="flex justify-between items-center">
+                        {/* 왼쪽: 담당자 정보 */}
+                        <div className="flex items-center">
+                            <div className="relative h-10 w-10 rounded-full overflow-hidden bg-gray-200 border border-gray-300">
+                                {item.assignee && item.assignee.profile_image_url ? (
+                                    <Image
+                                        src={item.assignee.profile_image_url}
+                                        alt={item.assignee.full_name || "담당자"}
+                                        fill
+                                        className="object-contain"
                                     />
                                 ) : (
-                                    <div className="w-32 h-32 flex flex-col items-center justify-center bg-gray-100">
-                                        <FileImage className="w-10 h-10 text-blue-300 mb-2" />
-                                        <span className="text-xs text-gray-500">이미지 없음</span>
+                                    <div className="flex items-center justify-center h-full w-full bg-gray-100 text-gray-400 text-xs">
+                                        사용자
                                     </div>
                                 )}
                             </div>
+                            <div className="ml-2">
+                                <div className="text-sm font-medium text-gray-700">
+                                    {item.assignee?.full_name || '담당자 없음'}
+                                </div>
+                            </div>
                         </div>
                         
-                        {/* 동영상 버튼 */}
-                        <div className="relative group">
-                            <IDialogButtonForRefVideoForTestItem
-                                videoUrl={item.ref_video} 
-                                testItemId={item.id}
-                                targetId={item.target_id}
-                            />
-                            
-                            {/* 호버 시 나타나는 동영상 미리보기 (썸네일 대신 아이콘 표시) */}
-                            <div className="absolute hidden group-hover:block bottom-full left-0 mb-2 bg-white rounded-lg shadow-lg border p-1 z-10">
-                                <div className="w-32 h-32 flex flex-col items-center justify-center bg-gray-100">
-                                    <Film className={`w-10 h-10 ${item.ref_video ? 'text-red-500' : 'text-red-300'} mb-2`} />
-                                    <span className="text-xs text-gray-500">
-                                        {item.ref_video ? "동영상 미리보기" : "동영상 없음"}
-                                    </span>
+                        {/* 미디어 버튼 */}
+                        <div className="flex items-center space-x-2 mx-2">
+                            {/* 이미지 버튼 */}
+                            <div className="relative group">
+                                <IDialogButtonForRefImageForTestItem
+                                    testItemId={item.id}
+                                    targetId={item.target_id}
+                                    imageUrl={item.ref_image} 
+                                    onImageUpdated={(url) => onUpdate(item.id, { ref_image: url })}
+                                />
+                                
+                                {/* 호버 시 나타나는 이미지 미리보기 */}
+                                <div className="absolute hidden group-hover:block bottom-full left-0 mb-2 bg-white rounded-lg shadow-lg border p-1 z-10">
+                                    {item.ref_image ? (
+                                        <img 
+                                            src={item.ref_image} 
+                                            alt="이미지 미리보기" 
+                                            className="w-32 h-32 object-contain"
+                                        />
+                                    ) : (
+                                        <div className="w-32 h-32 flex flex-col items-center justify-center bg-gray-100">
+                                            <FileImage className="w-10 h-10 text-blue-300 mb-2" />
+                                            <span className="text-xs text-gray-500">이미지 없음</span>
+                                        </div>
+                                    )}
                                 </div>
+                            </div>
+                            
+                            {/* 동영상 버튼 */}
+                            <div className="relative group">
+                                <IDialogButtonForRefVideoForTestItem
+                                    videoUrl={item.ref_video} 
+                                    testItemId={item.id}
+                                    targetId={item.target_id}
+                                    onVideoUpdated={(url) => onUpdate(item.id, { ref_video: url })}
+                                />
+                                
+                                {/* 호버 시 나타나는 동영상 미리보기 (썸네일 대신 아이콘 표시) */}
+                                <div className="absolute hidden group-hover:block bottom-full left-0 mb-2 bg-white rounded-lg shadow-lg border p-1 z-10">
+                                    <div className="w-32 h-32 flex flex-col items-center justify-center bg-gray-100">
+                                        <Film className={`w-10 h-10 ${item.ref_video ? 'text-red-500' : 'text-red-300'} mb-2`} />
+                                        <span className="text-xs text-gray-500">
+                                            {item.ref_video ? "동영상 미리보기" : "동영상 없음"}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {/* 날짜 정보 (2줄로 압축) */}
+                        <div className="text-xs text-gray-500 mx-2">
+                            <div className="flex items-center">
+                                <Calendar className="h-3 w-3 mr-1" />
+                                <span>생성: {formatDate(item.created_at)}</span>
+                            </div>
+                            <div className="flex items-center">
+                                <Clock className="h-3 w-3 mr-1" />
+                                <span>수정: {formatDate(item.updated_at)}</span>
+                            </div>
+                        </div>
+                        
+                        {/* 완료 스위치와 해결자 영역 */}
+                        <div className="flex items-center space-x-2">
+                            {/* 해결자 정보 (완료 상태일 때만 표시) */}
+                            {item.is_completed && item.issue_solver && (
+                                <div className="flex items-center">
+                                    <div className="relative h-8 w-8 rounded-full overflow-hidden bg-gray-200 border border-green-300">
+                                        {item.issue_solver.profile_image_url ? (
+                                            <Image
+                                                src={item.issue_solver.profile_image_url}
+                                                alt={item.issue_solver.full_name || "해결자"}
+                                                fill
+                                                className="object-contain"
+                                            />
+                                        ) : (
+                                            <div className="flex items-center justify-center h-full w-full bg-green-100 text-green-600 text-xs">
+                                                <CheckCircle2 className="h-4 w-4" />
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                            
+                            {/* 완료 상태 전환 스위치 */}
+                            <div className="relative">
+                                {!isAuthenticated && (
+                                    <div className="absolute inset-0 flex items-center justify-center z-10 cursor-not-allowed" title="로그인 후 이용 가능합니다">
+                                        <div className="absolute inset-0 bg-gray-200 opacity-40 rounded-full"></div>
+                                        <Lock className="h-3 w-3 text-gray-600" />
+                                    </div>
+                                )}
+                                <CommonSwitch
+                                    id={`complete-switch-${item.id}`}
+                                    checked={item.is_completed}
+                                    onCheckedChange={handleToggleCompletion}
+                                    disabled={!isAuthenticated}
+                                />
                             </div>
                         </div>
                     </div>
                     
-                    {/* 오른쪽: 액션 버튼들 */}
-                    <div className="flex-shrink-0 flex items-center space-x-3">
-                        <label className="flex items-center cursor-pointer">
-                            <input
-                                type="checkbox"
-                                checked={item.is_completed}
-                                onChange={() => onToggleCompletion(item.id, !item.is_completed)}
-                                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                            />
-                            <span className="ml-1 text-xs text-gray-500">완료</span>
-                        </label>
+                    {/* 두 번째 행: 설명 및 메모, 액션 버튼 */}
+                    <div className={`flex items-start ${contentBgColor} rounded-lg`}>
+                        {/* 왼쪽: 설명 및 메모 */}
+                        <div className="flex-grow px-3 py-2">
+                            <div className={`text-base font-medium ${textColor}`}>
+                                {item.description}
+                            </div>
+                            {item.notes && (
+                                <div className="text-sm text-gray-600 mt-1 pl-1">
+                                    {item.notes}
+                                </div>
+                            )}
+                        </div>
                         
-                        <button
-                            className="text-indigo-600 hover:text-indigo-900 text-sm px-2 py-1 rounded hover:bg-indigo-50"
-                            onClick={handleEdit}
-                        >
-                            수정
-                        </button>
-                        
-                        <button
-                            className="text-red-600 hover:text-red-800 text-sm px-2 py-1 rounded hover:bg-red-50"
-                            onClick={handleDelete}
-                        >
-                            삭제
-                        </button>
+                        {/* 오른쪽: 아이콘 액션 버튼들 */}
+                        <div className={`flex items-center ml-2 px-1 py-2 ${contentBgColor} rounded-r-lg`}>
+                            {isAuthenticated ? (
+                                <>
+                                    <button
+                                        className={`p-2 text-indigo-600 hover:text-indigo-900 rounded-full ${hoverBgColor}`}
+                                        onClick={handleEdit}
+                                        title="수정"
+                                    >
+                                        <Edit size={16} />
+                                    </button>
+                                    
+                                    <button
+                                        className={`p-2 text-red-600 hover:text-red-800 rounded-full ${hoverBgColor} ml-1`}
+                                        onClick={handleDelete}
+                                        title="삭제"
+                                    >
+                                        <Trash size={16} />
+                                    </button>
+                                </>
+                            ) : (
+                                <div className="p-2 text-gray-400" title="로그인 후 이용 가능합니다">
+                                    <Lock size={16} />
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             )}

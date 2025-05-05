@@ -19,13 +19,20 @@ export interface TestItem {
     description: string;
     is_completed: boolean;
     assignee_id: string | null;
+    issue_solver_id: string | null; // 추가: 문제 해결한 사람 ID
     notes: string | null;
-    ref_image: string | null; // 추가된 이미지 URL 필드
-    ref_video: string | null; // 추가된 동영상 URL 필드
+    ref_image: string | null;
+    ref_video: string | null;
     created_at: string;
     updated_at: string;
     // 조인된 사용자 정보를 담을 필드
     assignee?: {
+        id: string;
+        full_name: string;
+        profile_image_url: string | null;
+    } | null;
+    // 추가: 문제 해결한 사람 정보
+    issue_solver?: {
         id: string;
         full_name: string;
         profile_image_url: string | null;

@@ -20,6 +20,7 @@ import {
     CreateTestItemParams,
     UpdateTestItemParams
 } from '@/types/typeForTestTarget';
+import { useUserStore } from '@/store/useUserStore';
 
 // 테스트 대상 목록 조회 훅
 export const useGetTestTargets = () => {
@@ -180,12 +181,15 @@ export const useDeleteTestItem = (targetId: string) => {
 };
 
 // 테스트 항목 완료 상태 토글 훅
+// 테스트 항목 완료 상태 토글 훅
 export const useToggleTestItemCompletion = (targetId: string) => {
     const queryClient = useQueryClient();
+    const { user } = useUserStore(); // 현재 로그인한 사용자 정보 가져오기
 
     return useMutation({
         mutationFn: ({ id, isCompleted }: { id: string, isCompleted: boolean }) =>
-            toggleTestItemCompletion(id, isCompleted),
+            // 완료 상태 변경 시 현재 사용자 ID를 전달
+            toggleTestItemCompletion(id, isCompleted, user?.id),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['testItems', targetId] });
             queryClient.invalidateQueries({ queryKey: ['testTarget', targetId] });

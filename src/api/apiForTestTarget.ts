@@ -175,12 +175,27 @@ export async function deleteTestItem(id: string): Promise<boolean> {
 }
 
 // 테스트 항목 완료 상태 토글
-export async function toggleTestItemCompletion(id: string, isCompleted: boolean): Promise<TestItem | null> {
+export async function toggleTestItemCompletion(
+    id: string, 
+    isCompleted: boolean, 
+    userId: string | undefined
+): Promise<TestItem | null> {
     const supabase = getSupabase() as SupabaseClient;
+
+    // 업데이트할 데이터 준비
+    const updateData: any = { is_completed: isCompleted };
+    
+    // 완료 상태로 변경될 때만 issue_solver_id 설정
+    if (isCompleted && userId) {
+        updateData.issue_solver_id = userId;
+    } else if (!isCompleted) {
+        // 미완료 상태로 변경될 때는 issue_solver_id를 null로 설정
+        updateData.issue_solver_id = null;
+    }
 
     const { data, error } = await supabase
         .from('test_items')
-        .update({ is_completed: isCompleted })
+        .update(updateData)
         .eq('id', id)
         .select()
         .single();
