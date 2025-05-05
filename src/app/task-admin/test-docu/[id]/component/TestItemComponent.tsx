@@ -305,8 +305,7 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
                                 <CommonSwitch
                                     id={`complete-switch-${item.id}`}
                                     checked={item.is_completed}
-                                    onCheckedChange={handleToggleCompletion}
-                                    disabled={!isAuthenticated}
+                                    onCheckedChange={isAuthenticated ? handleToggleCompletion : () => {}}
                                 />
                             </div>
                         </div>
