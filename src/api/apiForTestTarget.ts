@@ -183,7 +183,10 @@ export async function toggleTestItemCompletion(
     const supabase = getSupabase() as SupabaseClient;
 
     // 업데이트할 데이터 준비
-    const updateData: any = { is_completed: isCompleted };
+    const updateData: any = { 
+        is_completed: isCompleted,
+        updated_at: new Date().toISOString() // 현재 시간으로 updated_at 필드 설정
+    };
     
     // 완료 상태로 변경될 때만 issue_solver_id 설정
     if (isCompleted && userId) {
