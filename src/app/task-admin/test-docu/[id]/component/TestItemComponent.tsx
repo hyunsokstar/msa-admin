@@ -10,6 +10,7 @@ import CommonSwitch from '@/components/common/CommonSwitch';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { useUserStore } from '@/store/useUserStore';
+import IDialogButtonForCommentForTestItem from './IDialogButtonForCommentForTestItem';
 
 interface TestItemComponentProps {
     item: TestItem;
@@ -402,21 +403,43 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
                         <div className={`flex items-center ml-2 px-1 py-2 ${contentBgColor} rounded-r-lg`}>
                             {isAuthenticated ? (
                                 <>
-                                    <button
-                                        className={`p-2 text-indigo-600 hover:text-indigo-900 rounded-full ${hoverBgColor}`}
-                                        onClick={handleEdit}
-                                        title="수정"
-                                    >
-                                        <Edit size={16} />
-                                    </button>
 
-                                    <button
-                                        className={`p-2 text-red-600 hover:text-red-800 rounded-full ${hoverBgColor} ml-1`}
-                                        onClick={handleDelete}
-                                        title="삭제"
-                                    >
-                                        <Trash size={16} />
-                                    </button>
+                                    <div className={`flex items-center ml-2 px-1 py-2 ${contentBgColor} rounded-r-lg`}>
+                                        {isAuthenticated ? (
+                                            <>
+                                                <div className="flex items-center space-x-2">
+                                                    {/* 댓글 버튼 */}
+                                                    <IDialogButtonForCommentForTestItem
+                                                        testItemId={item.id}
+                                                        testItemDescription={item.description}
+                                                    />
+
+                                                    {/* 수정 버튼 */}
+                                                    <button
+                                                        className={`p-2 text-indigo-600 hover:text-indigo-900 rounded-full ${hoverBgColor}`}
+                                                        onClick={handleEdit}
+                                                        title="수정"
+                                                    >
+                                                        <Edit size={16} />
+                                                    </button>
+
+                                                    {/* 삭제 버튼 */}
+                                                    <button
+                                                        className={`p-2 text-red-600 hover:text-red-800 rounded-full ${hoverBgColor}`}
+                                                        onClick={handleDelete}
+                                                        title="삭제"
+                                                    >
+                                                        <Trash size={16} />
+                                                    </button>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <div className="p-2 text-gray-400" title="로그인 후 이용 가능합니다">
+                                                <Lock size={16} />
+                                            </div>
+                                        )}
+                                    </div>
+
                                 </>
                             ) : (
                                 <div className="p-2 text-gray-400" title="로그인 후 이용 가능합니다">
