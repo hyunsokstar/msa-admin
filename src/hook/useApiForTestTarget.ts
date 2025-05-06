@@ -185,15 +185,17 @@ export const useToggleTestItemCompletion = (targetId: string) => {
     });
 };
 
+// 테스트 항목 처리 중 상태 토글 훅 (userId 추가)
 export const useToggleTestItemProcessing = (targetId: string) => {
     const queryClient = useQueryClient();
+    const { user } = useUserStore(); // 현재 로그인한 사용자 정보 가져오기
 
     return useMutation({
         mutationFn: ({ id, isProcessing }: { id: string, isProcessing: boolean }) =>
-            toggleTestItemProcessing(id, isProcessing),
+            // 처리 중 상태 변경 시 현재 사용자 ID를 전달
+            toggleTestItemProcessing(id, isProcessing, user?.id),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['testItems', targetId] });
-            // 처리 중 상태 변경 시 테스트 대상 정보는 업데이트할 필요가 없을 수 있음 (필요시 아래 주석 해제)
             // queryClient.invalidateQueries({ queryKey: ['testTarget', targetId] });
             toast.success(`처리 상태가 변경되었습니다.`);
         },

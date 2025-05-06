@@ -212,9 +212,11 @@ export async function toggleTestItemCompletion(
 }
 
 // 테스트 항목 처리 중 상태 토글 (새로 추가)
+// 테스트 항목 처리 중 상태 토글 (issue_solver_id 필드 처리 추가)
 export async function toggleTestItemProcessing(
     id: string, 
-    isProcessing: boolean
+    isProcessing: boolean,
+    userId: string | undefined
 ): Promise<TestItem | null> {
     const supabase = getSupabase() as SupabaseClient;
 
@@ -223,6 +225,14 @@ export async function toggleTestItemProcessing(
         is_processing: isProcessing,
         updated_at: new Date().toISOString() // 현재 시간으로 updated_at 필드 설정
     };
+    
+    // 처리 중 상태로 변경될 때만 issue_solver_id 설정
+    if (isProcessing && userId) {
+        updateData.issue_solver_id = userId;
+    } else if (!isProcessing) {
+        // 처리 중 상태가 해제될 때는 issue_solver_id를 null로 설정
+        updateData.issue_solver_id = null;
+    }
 
     const { data, error } = await supabase
         .from('test_items')
