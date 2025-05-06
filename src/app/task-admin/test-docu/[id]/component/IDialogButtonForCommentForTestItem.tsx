@@ -44,7 +44,7 @@ const IDialogButtonForCommentForTestItem: React.FC<Props> = ({
     const { user, isAuthenticated } = useUserStore();
     const authorId = user?.id;
 
-    const { mutate: createComment, isLoading: isCreating } =
+    const { mutate: createComment, isPending: isCreating } =
         useApiForCreateCommentForTestItem(testItemId);
 
     const fetchComments = async () => {
