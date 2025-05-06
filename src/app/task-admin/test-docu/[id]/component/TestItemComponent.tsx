@@ -187,6 +187,22 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
         return null;
     };
 
+    // 경과시간 출력 함수
+    const getElapsedTimeText = (start: string, end: string) => {
+        const startTime = new Date(start);
+        const endTime = new Date(end);
+        const diffMs = endTime.getTime() - startTime.getTime();
+
+        if (isNaN(diffMs) || diffMs < 0) return "";
+
+        const diffMins = Math.floor(diffMs / (1000 * 60));
+        const hours = Math.floor(diffMins / 60);
+        const minutes = diffMins % 60;
+
+        if (hours > 0) return `(경과: ${hours}시간 ${minutes}분)`;
+        return `(경과: ${minutes}분)`;
+    };
+
     const bgColor = getBgColor();
     const contentBgColor = getContentBgColor();
     const textColor = getTextColor();
@@ -317,7 +333,9 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
                             </div>
                             <div className="flex items-center">
                                 <CheckCircle2 className="h-3 w-3 mr-1" />
-                                <span>완료: {formatDate(item.updated_at)}</span>
+                                <span>완료: {formatDate(item.updated_at)} {" "}
+                                    {item.created_at && item.updated_at && getElapsedTimeText(item.created_at, item.updated_at)}
+                                </span>
                             </div>
                         </div>
 
