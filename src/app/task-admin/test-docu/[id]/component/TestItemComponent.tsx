@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { TestItem } from '@/types/typeForTestTarget';
 import Image from 'next/image';
-import { FileImage, Film, Plus, X, Maximize2, Download, Calendar, Clock, Edit, Trash, CheckCircle2, Lock } from 'lucide-react';
+import { FileImage, Film, Plus, X, Maximize2, Download, Calendar, Clock, Edit, Trash, CheckCircle2, Lock, AlertCircle } from 'lucide-react';
 import IDialogButtonForRefImageForTestItem from './IDialogButtonForRefImageForTestItem';
 import IDialogButtonForRefVideoForTestItem from './IDialogButtonForRefVideoForTestItem';
 import CommonSwitch from '@/components/common/CommonSwitch';
@@ -140,7 +140,6 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
         }
     };
 
-
     const handleToggleProcessing = (checked: boolean) => {
         if (isAuthenticated) {
             // 부모 컴포넌트로부터 전달받은 onToggleProcessing 함수 호출
@@ -157,11 +156,10 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
     };
 
     // 항목의 배경색 결정
-    // 항목의 배경색 결정 - 처리 중 상태 추가
     const getBgColor = () => {
         if (item.is_completed) return 'bg-green-50 border-green-200';
         if (item.is_processing) return 'bg-blue-50 border-blue-200';
-        return 'bg-gray-50';
+        return 'bg-gray-50 border-gray-200';
     };
 
     const getContentBgColor = () => {
@@ -182,13 +180,20 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
         return 'hover:bg-gray-100';
     };
 
+    const getStatusIcon = () => {
+        if (item.is_completed) return <CheckCircle2 className="h-4 w-4 text-green-600" />;
+        if (item.is_processing) return <AlertCircle className="h-4 w-4 text-blue-600" />;
+        return null;
+    };
+
     const bgColor = getBgColor();
     const contentBgColor = getContentBgColor();
     const textColor = getTextColor();
     const hoverBgColor = getHoverBgColor();
+    const statusIcon = getStatusIcon();
 
     return (
-        <li className={`border p-4 rounded-lg ${bgColor} mb-2 transition-colors duration-200`}>
+        <li className={`border p-4 rounded-lg ${bgColor} mb-2 transition-colors duration-200 shadow-sm`}>
             {isEditing ? (
                 // 편집 모드 - 양식 형태로 표시
                 <div className="space-y-3">
@@ -310,14 +315,13 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
                                 <span>생성: {formatDate(item.created_at)}</span>
                             </div>
                             <div className="flex items-center">
-                                <Clock className="h-3 w-3 mr-1" />
-                                <span>수정: {formatDate(item.updated_at)}</span>
+                                <CheckCircle2 className="h-3 w-3 mr-1" />
+                                <span>완료: {formatDate(item.updated_at)}</span>
                             </div>
                         </div>
 
                         {/* 완료 스위치와 해결자 영역 */}
                         <div className="flex items-center space-x-2">
-                            {/* 해결자 정보 (완료 상태일 때만 표시) */}
                             {/* 해결자 정보 (완료 상태 또는 처리 중 상태일 때 표시) */}
                             {(item.is_completed || item.is_processing) && item.issue_solver && (
                                 <div className="flex items-center">
@@ -331,27 +335,12 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
                                             />
                                         ) : (
                                             <div className={`flex items-center justify-center h-full w-full ${item.is_completed ? 'bg-green-100 text-green-600' : 'bg-blue-100 text-blue-600'} text-xs`}>
-                                                <CheckCircle2 className="h-4 w-4" />
+                                                {statusIcon}
                                             </div>
                                         )}
                                     </div>
                                 </div>
                             )}
-
-                            {/* 완료 상태 전환 스위치 */}
-                            {/* <div className="relative">
-                                {!isAuthenticated && (
-                                    <div className="absolute inset-0 flex items-center justify-center z-10 cursor-not-allowed" title="로그인 후 이용 가능합니다">
-                                        <div className="absolute inset-0 bg-gray-200 opacity-40 rounded-full"></div>
-                                        <Lock className="h-3 w-3 text-gray-600" />
-                                    </div>
-                                )}
-                                <CommonSwitch
-                                    id={`complete-switch-${item.id}`}
-                                    checked={item.is_completed}
-                                    onCheckedChange={isAuthenticated ? handleToggleCompletion : () => {}}
-                                />
-                            </div> */}
 
                             {/* 스위치 버튼 영역 - 수직으로 배치 */}
                             <div className="flex flex-col space-y-2">

@@ -52,16 +52,33 @@ const TestDetail = ({ params }: TestDetailProps) => {
     const toggleCompletionMutation = useToggleTestItemCompletion(testId);
     const toggleProcessingMutation = useToggleTestItemProcessing(testId);
 
-
     // 테스트 항목 삭제 훅
     const deleteTestItemMutation = useDeleteTestItem(testId);
 
     // 항목 추가 모달 상태
     const [isAddModalOpen, setAddModalOpen] = useState(false);
 
+    // 항목을 상태별로 정렬하는 함수
+    const sortTestItemsByStatus = (items: TestItem[]) => {
+        if (!items) return [];
+
+        // 정렬된 항목 배열을 반환
+        return [...items].sort((a, b) => {
+            // 완료된 항목은 가장 아래로
+            if (a.is_completed && !b.is_completed) return 1;
+            if (!a.is_completed && b.is_completed) return -1;
+
+            // 진행 중인 항목은 중간으로
+            if (a.is_processing && !b.is_processing && !b.is_completed) return 1;
+            if (!a.is_processing && !a.is_completed && b.is_processing) return -1;
+
+            // 그 외에는 생성 날짜 기준 정렬 (최신순)
+            return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        });
+    };
+
     // 테스트 항목 추가 핸들러
     const handleAddItem = (newItem: CreateTestItemParams) => {
-
         const itemWithAssignee = {
             ...newItem,
             assignee_id: user?.id || undefined, // 현재 사용자 ID를 assignee_id로 설정
@@ -107,6 +124,30 @@ const TestDetail = ({ params }: TestDetailProps) => {
         deleteTestItemMutation.mutate(id);
     };
 
+    // 상태별로 정렬된 테스트 항목 목록
+    const sortedTestItems = testItems ? sortTestItemsByStatus(testItems) : [];
+
+    // 각 상태별 항목 개수
+    const getStatusCounts = () => {
+        if (!testItems) return { total: 0, notStarted: 0, processing: 0, completed: 0 };
+
+        const completed = testItems.filter(item => item.is_completed).length;
+        const processing = testItems.filter(item => !item.is_completed && item.is_processing).length;
+        const notStarted = testItems.length - completed - processing;
+
+        return {
+            total: testItems.length,
+            notStarted,
+            processing,
+            completed
+        };
+    };
+
+    const statusCounts = getStatusCounts();
+
+    // 현재 사용자가 담당자인지 확인
+    const isCurrentUserAssignee = user && testTarget?.assignee_id === user.id;
+
     // 로딩 및 에러 처리
     if (isLoadingTarget || isLoadingItems) {
         return (
@@ -148,43 +189,58 @@ const TestDetail = ({ params }: TestDetailProps) => {
         );
     }
 
-    // 현재 사용자가 담당자인지 확인
-    const isCurrentUserAssignee = user && testTarget.assignee_id === user.id;
-
     return (
-        <div className="container mx-auto px-4 py-8">
-            {/* 뒤로 가기 링크 */}
-            <Link href="/task-admin/test-docu" className="text-indigo-600 hover:text-indigo-900 flex items-center">
-                &lt; 테스트 목록으로 돌아가기
-            </Link>
+        <div className="container mx-auto px-4 py-8 bg-gray-50">
+            {/* 상단 네비게이션 영역 - 옅은 배경색 추가 */}
+            <div className="bg-gray-100 p-4 rounded-lg mb-6">
+                {/* 뒤로 가기 링크 */}
+                <div className="flex justify-between items-center">
+                    <Link href="/task-admin/test-docu" className="text-indigo-600 hover:text-indigo-900 flex items-center">
+                        &lt; 테스트 목록으로 돌아가기
+                    </Link>
 
-            {/* 테스트 대상 정보 컴포넌트 */}
-            <TestTargetInfoComponent testTarget={testTarget} />
+                </div>
+            </div>
+
+            {/* 테스트 대상 정보 컴포넌트 - 옅은 배경색 추가 */}
+            <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+                <TestTargetInfoComponent testTarget={testTarget} />
+            </div>
 
             {/* 테스트 체크리스트 */}
-            <div className="bg-white rounded-lg shadow-md p-6 mt-4">
+            <div className="bg-white rounded-lg shadow-md p-6 mt-6 border border-gray-200">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-xl font-bold">테스트 체크리스트</h2>
+
+                    {/* 상태별 요약 정보 - 중앙으로 이동 */}
+                    <div className="flex space-x-3 text-sm flex-1 justify-center">
+                        <div className="px-3 py-1 bg-gray-100 rounded-full border border-gray-200">
+                            미시작: <span className="font-medium">{statusCounts.notStarted}</span>
+                        </div>
+                        <div className="px-3 py-1 bg-blue-100 rounded-full border border-blue-200">
+                            진행중: <span className="font-medium">{statusCounts.processing}</span>
+                        </div>
+                        <div className="px-3 py-1 bg-green-100 rounded-full border border-green-200">
+                            완료: <span className="font-medium">{statusCounts.completed}</span>
+                        </div>
+                    </div>
+
+                    {/* 새 테스트 추가 버튼 */}
                     {isCurrentUserAssignee && (
                         <button
                             className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded text-sm"
                             onClick={() => setAddModalOpen(true)}
                         >
-                            + 테스트 항목 추가
+                            + 새 테스트 추가
                         </button>
                     )}
                 </div>
 
-                {testItems && testItems.length > 0 ? (
-                    <div className="space-y-2">
-                        <div className="flex justify-between items-center mb-2">
-                            <h3 className="text-lg font-medium">테스트 항목</h3>
-                            <div className="text-sm text-gray-500">
-                                {testItems.filter(item => item.is_completed).length}/{testItems.length} 완료
-                            </div>
-                        </div>
-                        <ul className="space-y-2">
-                            {testItems.map((item) => (
+                {sortedTestItems && sortedTestItems.length > 0 ? (
+                    <div className="space-y-3">
+                        {/* 테스트 항목 목록 */}
+                        <ul className="space-y-3">
+                            {sortedTestItems.map((item) => (
                                 <TestItemComponent
                                     key={item.id}
                                     item={item}
@@ -197,7 +253,7 @@ const TestDetail = ({ params }: TestDetailProps) => {
                         </ul>
                     </div>
                 ) : (
-                    <div className="text-center py-16 text-gray-500">
+                    <div className="text-center py-16 text-gray-500 bg-gray-50 rounded-lg">
                         <p className="text-xl mb-2">아직 테스트 항목이 없습니다.</p>
                         {isCurrentUserAssignee ? (
                             <button
@@ -221,7 +277,6 @@ const TestDetail = ({ params }: TestDetailProps) => {
                 onAdd={handleAddItem}
                 isPending={addTestItemMutation.isPending}
             />
-
         </div>
     );
 };
