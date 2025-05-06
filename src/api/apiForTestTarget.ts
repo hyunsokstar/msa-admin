@@ -210,3 +210,31 @@ export async function toggleTestItemCompletion(
 
     return data;
 }
+
+// 테스트 항목 처리 중 상태 토글 (새로 추가)
+export async function toggleTestItemProcessing(
+    id: string, 
+    isProcessing: boolean
+): Promise<TestItem | null> {
+    const supabase = getSupabase() as SupabaseClient;
+
+    // 업데이트할 데이터 준비
+    const updateData: any = { 
+        is_processing: isProcessing,
+        updated_at: new Date().toISOString() // 현재 시간으로 updated_at 필드 설정
+    };
+
+    const { data, error } = await supabase
+        .from('test_items')
+        .update(updateData)
+        .eq('id', id)
+        .select()
+        .single();
+
+    if (error) {
+        console.error('Error toggling test item processing:', error);
+        return null;
+    }
+
+    return data;
+}

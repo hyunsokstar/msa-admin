@@ -8,7 +8,8 @@ import {
     useToggleTestItemCompletion,
     useUpdateTestItem,
     useDeleteTestItem,
-    useAddTestItem
+    useAddTestItem,
+    useToggleTestItemProcessing
 } from "@/hook/useApiForTestTarget";
 import { TestItem, CreateTestItemParams } from "@/types/typeForTestTarget";
 import TestTargetInfoComponent from "./component/TestTargetInfoComponent";
@@ -49,6 +50,8 @@ const TestDetail = ({ params }: TestDetailProps) => {
 
     // 테스트 항목 완료 상태 토글 훅
     const toggleCompletionMutation = useToggleTestItemCompletion(testId);
+    const toggleProcessingMutation = useToggleTestItemProcessing(testId);
+
 
     // 테스트 항목 삭제 훅
     const deleteTestItemMutation = useDeleteTestItem(testId);
@@ -88,6 +91,14 @@ const TestDetail = ({ params }: TestDetailProps) => {
         toggleCompletionMutation.mutate({
             id,
             isCompleted
+        });
+    };
+
+    const handleToggleProcessing = (id: string, isProcessing: boolean) => {
+        console.log(`테스트 항목 ID: ${id}, 처리 중 상태: ${isProcessing}`);
+        toggleProcessingMutation.mutate({
+            id,
+            isProcessing
         });
     };
 
@@ -178,6 +189,7 @@ const TestDetail = ({ params }: TestDetailProps) => {
                                     key={item.id}
                                     item={item}
                                     onToggleCompletion={handleToggleCompletion}
+                                    onToggleProcessing={handleToggleProcessing}
                                     onUpdate={handleUpdateItem}
                                     onDelete={handleDeleteItem}
                                 />

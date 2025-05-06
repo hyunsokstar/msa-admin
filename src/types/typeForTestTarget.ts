@@ -18,6 +18,7 @@ export interface TestItem {
     target_id: string;
     description: string;
     is_completed: boolean;
+    is_processing: boolean;
     assignee_id: string | null;
     issue_solver_id: string | null; // 추가: 문제 해결한 사람 ID
     notes: string | null;

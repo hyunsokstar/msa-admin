@@ -12,7 +12,8 @@ import {
     addTestItem,
     updateTestItem,
     deleteTestItem,
-    toggleTestItemCompletion
+    toggleTestItemCompletion,
+    toggleTestItemProcessing
 } from '@/api/apiForTestTarget';
 import {
     CreateTestTargetParams,
@@ -80,25 +81,6 @@ export const useGetTestItems = (targetId: string) => {
         enabled: !!targetId // targetId가 있는 경우에만 쿼리 실행
     });
 };
-
-// // 테스트 대상 추가 훅
-// export const useAddTestTarget = () => {
-//     const queryClient = useQueryClient();
-
-//     return useMutation({
-//         mutationFn: (newTestTarget: CreateTestTargetParams) => addTestTarget(newTestTarget),
-//         onSuccess: () => {
-//             toast.success('테스트 대상이 추가되었습니다.');
-//             queryClient.invalidateQueries({ queryKey: ['testTargets'] });
-//         },
-//         onError: (error) => {
-//             const errorMessage = error instanceof Error
-//                 ? error.message
-//                 : '테스트 대상 추가에 실패했습니다.';
-//             toast.error(`오류 발생: ${errorMessage}`);
-//         }
-//     });
-// };
 
 // 테스트 대상 삭제 훅
 export const useDeleteTestTarget = () => {
@@ -198,6 +180,27 @@ export const useToggleTestItemCompletion = (targetId: string) => {
             const errorMessage = error instanceof Error
                 ? error.message
                 : '테스트 항목 상태 변경에 실패했습니다.';
+            toast.error(`오류 발생: ${errorMessage}`);
+        }
+    });
+};
+
+export const useToggleTestItemProcessing = (targetId: string) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ id, isProcessing }: { id: string, isProcessing: boolean }) =>
+            toggleTestItemProcessing(id, isProcessing),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['testItems', targetId] });
+            // 처리 중 상태 변경 시 테스트 대상 정보는 업데이트할 필요가 없을 수 있음 (필요시 아래 주석 해제)
+            // queryClient.invalidateQueries({ queryKey: ['testTarget', targetId] });
+            toast.success(`처리 상태가 변경되었습니다.`);
+        },
+        onError: (error) => {
+            const errorMessage = error instanceof Error
+                ? error.message
+                : '테스트 항목 처리 상태 변경에 실패했습니다.';
             toast.error(`오류 발생: ${errorMessage}`);
         }
     });

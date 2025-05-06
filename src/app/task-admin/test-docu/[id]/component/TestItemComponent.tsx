@@ -14,8 +14,9 @@ import { useUserStore } from '@/store/useUserStore';
 interface TestItemComponentProps {
     item: TestItem;
     onToggleCompletion: (id: string, isCompleted: boolean) => void;
-    onUpdate: (id: string, updates: { 
-        description?: string; 
+    onToggleProcessing?: (id: string, isProcessing: boolean) => void;
+    onUpdate: (id: string, updates: {
+        description?: string;
         notes?: string | null;
         ref_image?: string | null;
         ref_video?: string | null;
@@ -26,16 +27,17 @@ interface TestItemComponentProps {
 const TestItemComponent: React.FC<TestItemComponentProps> = ({
     item,
     onToggleCompletion,
+    onToggleProcessing,
     onUpdate,
     onDelete
 }) => {
     // 사용자 인증 상태 가져오기
     const { isAuthenticated } = useUserStore();
-    
+
     const [isEditing, setIsEditing] = useState(false);
     const [editDescription, setEditDescription] = useState(item.description);
     const [editNotes, setEditNotes] = useState(item.notes || "");
-    
+
     // 미디어 모달 상태
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
@@ -77,17 +79,17 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
             onDelete(item.id);
         }
     };
-    
+
     // 이미지 모달 열기
     const openImageModal = () => {
         setIsImageModalOpen(true);
     };
-    
+
     // 동영상 모달 열기
     const openVideoModal = () => {
         setIsVideoModalOpen(true);
     };
-    
+
     // 새 창에서 미디어 열기
     const openMediaInNewTab = (url: string) => {
         window.open(url, '_blank');
@@ -138,11 +140,52 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
         }
     };
 
+
+    const handleToggleProcessing = (checked: boolean) => {
+        if (isAuthenticated) {
+            // 부모 컴포넌트로부터 전달받은 onToggleProcessing 함수 호출
+            if (onToggleProcessing) {
+                onToggleProcessing(item.id, checked);
+            } else {
+                // onToggleProcessing이 없는 경우 콘솔 로그만 출력
+                console.log(`테스트 항목 ID: ${item.id}, 처리 중 상태: ${checked}`);
+            }
+        } else {
+            // 인증되지 않은 경우 알림 표시
+            alert('로그인 후 이용 가능합니다.');
+        }
+    };
+
     // 항목의 배경색 결정
-    const bgColor = item.is_completed ? 'bg-green-50 border-green-200' : 'bg-gray-50';
-    const contentBgColor = item.is_completed ? 'bg-green-100/50' : 'bg-white';
-    const textColor = item.is_completed ? 'text-green-700' : 'text-gray-900';
-    const hoverBgColor = item.is_completed ? 'hover:bg-green-200' : 'hover:bg-gray-100';
+    // 항목의 배경색 결정 - 처리 중 상태 추가
+    const getBgColor = () => {
+        if (item.is_completed) return 'bg-green-50 border-green-200';
+        if (item.is_processing) return 'bg-blue-50 border-blue-200';
+        return 'bg-gray-50';
+    };
+
+    const getContentBgColor = () => {
+        if (item.is_completed) return 'bg-green-100/50';
+        if (item.is_processing) return 'bg-blue-100/50';
+        return 'bg-white';
+    };
+
+    const getTextColor = () => {
+        if (item.is_completed) return 'text-green-700';
+        if (item.is_processing) return 'text-blue-700';
+        return 'text-gray-900';
+    };
+
+    const getHoverBgColor = () => {
+        if (item.is_completed) return 'hover:bg-green-200';
+        if (item.is_processing) return 'hover:bg-blue-200';
+        return 'hover:bg-gray-100';
+    };
+
+    const bgColor = getBgColor();
+    const contentBgColor = getContentBgColor();
+    const textColor = getTextColor();
+    const hoverBgColor = getHoverBgColor();
 
     return (
         <li className={`border p-4 rounded-lg ${bgColor} mb-2 transition-colors duration-200`}>
@@ -210,7 +253,7 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
                                 </div>
                             </div>
                         </div>
-                        
+
                         {/* 미디어 버튼 */}
                         <div className="flex items-center space-x-2 mx-2">
                             {/* 이미지 버튼 */}
@@ -218,16 +261,16 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
                                 <IDialogButtonForRefImageForTestItem
                                     testItemId={item.id}
                                     targetId={item.target_id}
-                                    imageUrl={item.ref_image} 
+                                    imageUrl={item.ref_image}
                                     onImageUpdated={(url) => onUpdate(item.id, { ref_image: url })}
                                 />
-                                
+
                                 {/* 호버 시 나타나는 이미지 미리보기 */}
                                 <div className="absolute hidden group-hover:block bottom-full left-0 mb-2 bg-white rounded-lg shadow-lg border p-1 z-10">
                                     {item.ref_image ? (
-                                        <img 
-                                            src={item.ref_image} 
-                                            alt="이미지 미리보기" 
+                                        <img
+                                            src={item.ref_image}
+                                            alt="이미지 미리보기"
                                             className="w-32 h-32 object-contain"
                                         />
                                     ) : (
@@ -238,16 +281,16 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
                                     )}
                                 </div>
                             </div>
-                            
+
                             {/* 동영상 버튼 */}
                             <div className="relative group">
                                 <IDialogButtonForRefVideoForTestItem
-                                    videoUrl={item.ref_video} 
+                                    videoUrl={item.ref_video}
                                     testItemId={item.id}
                                     targetId={item.target_id}
                                     onVideoUpdated={(url) => onUpdate(item.id, { ref_video: url })}
                                 />
-                                
+
                                 {/* 호버 시 나타나는 동영상 미리보기 (썸네일 대신 아이콘 표시) */}
                                 <div className="absolute hidden group-hover:block bottom-full left-0 mb-2 bg-white rounded-lg shadow-lg border p-1 z-10">
                                     <div className="w-32 h-32 flex flex-col items-center justify-center bg-gray-100">
@@ -259,7 +302,7 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
                                 </div>
                             </div>
                         </div>
-                        
+
                         {/* 날짜 정보 (2줄로 압축) */}
                         <div className="text-xs text-gray-500 mx-2">
                             <div className="flex items-center">
@@ -271,7 +314,7 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
                                 <span>수정: {formatDate(item.updated_at)}</span>
                             </div>
                         </div>
-                        
+
                         {/* 완료 스위치와 해결자 영역 */}
                         <div className="flex items-center space-x-2">
                             {/* 해결자 정보 (완료 상태일 때만 표시) */}
@@ -293,9 +336,9 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
                                     </div>
                                 </div>
                             )}
-                            
+
                             {/* 완료 상태 전환 스위치 */}
-                            <div className="relative">
+                            {/* <div className="relative">
                                 {!isAuthenticated && (
                                     <div className="absolute inset-0 flex items-center justify-center z-10 cursor-not-allowed" title="로그인 후 이용 가능합니다">
                                         <div className="absolute inset-0 bg-gray-200 opacity-40 rounded-full"></div>
@@ -307,10 +350,50 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
                                     checked={item.is_completed}
                                     onCheckedChange={isAuthenticated ? handleToggleCompletion : () => {}}
                                 />
+                            </div> */}
+
+                            {/* 스위치 버튼 영역 - 수직으로 배치 */}
+                            <div className="flex flex-col space-y-2">
+                                {/* 처리 중 상태 전환 스위치 */}
+                                <div className="relative flex items-center">
+                                    <span className="text-xs text-gray-500 mr-2">진행</span>
+                                    <div className="relative">
+                                        {!isAuthenticated && (
+                                            <div className="absolute inset-0 flex items-center justify-center z-10 cursor-not-allowed" title="로그인 후 이용 가능합니다">
+                                                <div className="absolute inset-0 bg-gray-200 opacity-40 rounded-full"></div>
+                                                <Lock className="h-3 w-3 text-gray-600" />
+                                            </div>
+                                        )}
+                                        <CommonSwitch
+                                            id={`processing-switch-${item.id}`}
+                                            checked={item.is_processing || false}
+                                            onCheckedChange={isAuthenticated ? handleToggleProcessing : () => { }}
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* 완료 상태 전환 스위치 */}
+                                <div className="relative flex items-center">
+                                    <span className="text-xs text-gray-500 mr-2">완료</span>
+                                    <div className="relative">
+                                        {!isAuthenticated && (
+                                            <div className="absolute inset-0 flex items-center justify-center z-10 cursor-not-allowed" title="로그인 후 이용 가능합니다">
+                                                <div className="absolute inset-0 bg-gray-200 opacity-40 rounded-full"></div>
+                                                <Lock className="h-3 w-3 text-gray-600" />
+                                            </div>
+                                        )}
+                                        <CommonSwitch
+                                            id={`complete-switch-${item.id}`}
+                                            checked={item.is_completed}
+                                            onCheckedChange={isAuthenticated ? handleToggleCompletion : () => { }}
+                                        />
+                                    </div>
+                                </div>
                             </div>
+
                         </div>
                     </div>
-                    
+
                     {/* 두 번째 행: 설명 및 메모, 액션 버튼 */}
                     <div className={`flex items-start ${contentBgColor} rounded-lg`}>
                         {/* 왼쪽: 설명 및 메모 */}
@@ -324,7 +407,7 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
                                 </div>
                             )}
                         </div>
-                        
+
                         {/* 오른쪽: 아이콘 액션 버튼들 */}
                         <div className={`flex items-center ml-2 px-1 py-2 ${contentBgColor} rounded-r-lg`}>
                             {isAuthenticated ? (
@@ -336,7 +419,7 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
                                     >
                                         <Edit size={16} />
                                     </button>
-                                    
+
                                     <button
                                         className={`p-2 text-red-600 hover:text-red-800 rounded-full ${hoverBgColor} ml-1`}
                                         onClick={handleDelete}
@@ -354,7 +437,7 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
                     </div>
                 </div>
             )}
-            
+
             {/* 이미지 모달 */}
             {isImageModalOpen && (
                 <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
@@ -394,9 +477,9 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
                         <div className="p-4 flex items-center justify-center bg-gray-50">
                             {item.ref_image ? (
                                 // 이미지가 있으면 보여줌
-                                <img 
-                                    src={item.ref_image} 
-                                    alt="테스트 참조 이미지" 
+                                <img
+                                    src={item.ref_image}
+                                    alt="테스트 참조 이미지"
                                     className="max-w-full max-h-[70vh] object-contain"
                                 />
                             ) : (
@@ -414,7 +497,7 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
                     </div>
                 </div>
             )}
-            
+
             {/* 동영상 모달 */}
             {isVideoModalOpen && (
                 <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
@@ -445,9 +528,9 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
                         <div className="p-4 flex items-center justify-center bg-gray-50">
                             {item.ref_video ? (
                                 // 동영상이 있으면 보여줌
-                                <video 
-                                    src={item.ref_video} 
-                                    controls 
+                                <video
+                                    src={item.ref_video}
+                                    controls
                                     controlsList="nodownload"
                                     className="max-w-full max-h-[70vh]"
                                 />
