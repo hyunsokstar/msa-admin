@@ -318,18 +318,19 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
                         {/* 완료 스위치와 해결자 영역 */}
                         <div className="flex items-center space-x-2">
                             {/* 해결자 정보 (완료 상태일 때만 표시) */}
-                            {item.is_completed && item.issue_solver && (
+                            {/* 해결자 정보 (완료 상태 또는 처리 중 상태일 때 표시) */}
+                            {(item.is_completed || item.is_processing) && item.issue_solver && (
                                 <div className="flex items-center">
-                                    <div className="relative h-8 w-8 rounded-full overflow-hidden bg-gray-200 border border-green-300">
+                                    <div className={`relative h-8 w-8 rounded-full overflow-hidden bg-gray-200 border ${item.is_completed ? 'border-green-300' : 'border-blue-300'}`}>
                                         {item.issue_solver.profile_image_url ? (
                                             <Image
                                                 src={item.issue_solver.profile_image_url}
-                                                alt={item.issue_solver.full_name || "해결자"}
+                                                alt={item.issue_solver.full_name || (item.is_completed ? "해결자" : "처리자")}
                                                 fill
                                                 className="object-contain"
                                             />
                                         ) : (
-                                            <div className="flex items-center justify-center h-full w-full bg-green-100 text-green-600 text-xs">
+                                            <div className={`flex items-center justify-center h-full w-full ${item.is_completed ? 'bg-green-100 text-green-600' : 'bg-blue-100 text-blue-600'} text-xs`}>
                                                 <CheckCircle2 className="h-4 w-4" />
                                             </div>
                                         )}
