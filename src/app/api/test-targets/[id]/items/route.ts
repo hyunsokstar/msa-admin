@@ -116,7 +116,7 @@ export async function PATCH(request: NextRequest): Promise<NextResponse<ApiRespo
 
         // Parse the request body to get the update data
         const updateData = await request.json();
-        
+
         // Update the test item in the database
         const { data, error } = await supabase
             .from('test_items')

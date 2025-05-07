@@ -28,14 +28,14 @@ const listVariants = {
     visible: {
         opacity: 1,
         transition: {
-            staggerChildren: 0.05
-        }
-    }
+            staggerChildren: 0.04,
+        },
+    },
 };
 
 const itemVariants = {
-    hidden: { opacity: 0, y: -5 },
-    visible: { opacity: 1, y: 0 }
+    hidden: { opacity: 0, y: -4 },
+    visible: { opacity: 1, y: 0 },
 };
 
 export default function ICollapsibleCommentsForTestItem({ testItemId }: Props) {
@@ -60,12 +60,10 @@ export default function ICollapsibleCommentsForTestItem({ testItemId }: Props) {
         }
     };
 
-    // 마운트 및 testItemId 변경 시 카운트용 불러오기
     useEffect(() => {
         fetchComments();
     }, [testItemId]);
 
-    // open 상태 변동 시 재불러오기
     useEffect(() => {
         if (open) fetchComments();
     }, [open]);
@@ -78,27 +76,23 @@ export default function ICollapsibleCommentsForTestItem({ testItemId }: Props) {
                 onSuccess: () => {
                     setNewComment("");
                     fetchComments();
-                }
+                },
             }
         );
     };
 
     return (
-        <div className="mt-2">
+        <div className="mt-2 w-full">
             <button
                 onClick={() => setOpen((o) => !o)}
-                className="text-sm text-blue-600 hover:underline flex items-center"
+                className="text-sm text-blue-600 hover:underline flex items-center justify-end w-full"
             >
                 <motion.span
                     animate={{ rotate: open ? 180 : 0 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    transition={{ type: "tween", duration: 0.3, ease: "easeInOut" }}
                     className="flex items-center"
                 >
-                    {open ? (
-                        <ChevronUp className="w-4 h-4 mr-1" />
-                    ) : (
-                        <ChevronDown className="w-4 h-4 mr-1" />
-                    )}
+                    {open ? <ChevronUp className="w-4 h-4 mr-1" /> : <ChevronDown className="w-4 h-4 mr-1" />}
                 </motion.span>
                 댓글 {comments.length}개
             </button>
@@ -108,39 +102,27 @@ export default function ICollapsibleCommentsForTestItem({ testItemId }: Props) {
                     <motion.div
                         key="content"
                         layout
-                        initial={{ scaleY: 0, opacity: 0 }}
-                        animate={{ scaleY: 1, opacity: 1 }}
-                        exit={{ scaleY: 0, opacity: 0 }}
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
                         transition={{
-                            type: "spring",
-                            stiffness: 300,
-                            damping: 30,
-                            duration: 0.3
+                            height: { duration: 0.3, ease: "easeInOut" },
+                            opacity: { duration: 0.3, ease: "easeInOut" },
                         }}
-                        style={{ originY: 0 }}
-                        className="overflow-hidden bg-yellow-200 border border-dashed border-red-500 p-3 mt-2 rounded-md space-y-2"
+                        style={{ overflow: "hidden" }}
+                        className="bg-gray-50 border border-gray-200 p-3 mt-2 rounded space-y-2 w-full"
                     >
                         {loading ? (
                             <div className="text-gray-500 text-sm">불러오는 중...</div>
                         ) : comments.length === 0 ? (
                             <div className="text-gray-500 text-sm">아직 댓글이 없습니다.</div>
                         ) : (
-                            <motion.ul
-                                variants={listVariants}
-                                initial="hidden"
-                                animate="visible"
-                                className="space-y-2 text-sm"
-                            >
+                            <motion.ul variants={listVariants} initial="hidden" animate="visible" className="space-y-2 text-sm">
                                 {comments.map((c) => (
-                                    <motion.li
-                                        key={c.id}
-                                        variants={itemVariants}
-                                        className="bg-white p-2 rounded shadow-sm border"
-                                    >
+                                    <motion.li key={c.id} variants={itemVariants} className="bg-white p-2 rounded shadow border">
                                         <div>{c.comment}</div>
                                         <div className="text-xs text-gray-500 mt-1">
-                                            {c.author?.full_name} •{" "}
-                                            {new Date(c.created_at).toLocaleString()}
+                                            {c.author?.full_name} • {new Date(c.created_at).toLocaleString()}
                                         </div>
                                     </motion.li>
                                 ))}

@@ -506,7 +506,7 @@ const TestItemComponent: React.FC<TestItemComponentProps> = ({
             )}
 
             {/* 댓글 영역 (항목 외부 하단) */}
-            <div className="mt-4">
+            <div className="mt-4 w-full flex justify-end">
                 <ICollapsibleCommentsForTestItem testItemId={item.id} />
             </div>
         </li>

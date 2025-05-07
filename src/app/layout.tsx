@@ -1,9 +1,9 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import ClientRootLayout from "@/components/layout/ClientRootLayout";
 import "rc-pagination/assets/index.css"; // 기본 스타일 가져오기
-
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -28,15 +28,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-
-        {/* <h1>hi 여기 !</h1> */}
-
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ClientRootLayout>
           {children}
         </ClientRootLayout>
+        {/* 댓글을 Portal 로 렌더링할 컨테이너 */}
+        <div id="comments-root" />
       </body>
     </html>
   );
