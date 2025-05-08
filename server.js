@@ -1,11 +1,9 @@
-// server.ts
-import { createServer } from 'https';
-import { parse } from 'url';
-import next from 'next';
-import fs from 'fs';
+const { createServer } = require('https');
+const { parse } = require('url');
+const next = require('next');
+const fs = require('fs');
 
-const dev = process.env.NODE_ENV !== 'production';
-const app = next({ dev });
+const app = next({ dev: false });
 const handle = app.getRequestHandler();
 
 const httpsOptions = {
@@ -15,15 +13,14 @@ const httpsOptions = {
 
 app.prepare().then(() => {
   createServer(httpsOptions, (req, res) => {
-    const parsedUrl = parse(req.url!, true);
+    const parsedUrl = parse(req.url, true);
     handle(req, res, parsedUrl);
   }).listen(443, () => {
     console.log('> Ready on https://nexus-task-master.shop');
   });
 
-  // HTTP to HTTPS 리다이렉션 추가 (선택 사항)
-  require('http').createServer((req: import('http').IncomingMessage, res: import('http').ServerResponse) => {
-    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+  require('http').createServer((req, res) => {
+    res.writeHead(301, { Location: "https://" + req.headers.host + req.url });
     res.end();
   }).listen(80);
 });
