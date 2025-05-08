@@ -22,7 +22,7 @@ app.prepare().then(() => {
   });
 
   // HTTP to HTTPS 리다이렉션 추가 (선택 사항)
-  require('http').createServer((req, res) => {
+  require('http').createServer((req: import('http').IncomingMessage, res: import('http').ServerResponse) => {
     res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
     res.end();
   }).listen(80);
