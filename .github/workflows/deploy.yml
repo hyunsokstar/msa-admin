@@ -29,4 +29,7 @@ jobs:
         username: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          ~/deploy.sh
+          cd ~/msa-admin
+          git reset --hard
+          git pull
+          bash ~/deploy.sh
