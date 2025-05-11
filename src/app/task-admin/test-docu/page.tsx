@@ -265,7 +265,7 @@ const TestTrackingPage: React.FC = () => {
             <ToastContainer position="top-right" autoClose={3000} />
 
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">콜센터 관리 프로젝트 테스트 기록9</h1>
+                <h1 className="text-2xl font-bold">콜센터 관리 프로젝트 테스트 기록 10</h1>
 
                 <div className="flex items-center gap-4">
                     <button
