@@ -19,13 +19,14 @@ import {
     Lock,
     AlertCircle
 } from 'lucide-react';
-import IDialogButtonForRefImageForTestItem from './IDialogButtonForRefImageForTestItem';
+import IDialogButtonForRefImageForArchivedTestItem from './IDialogButtonForRefImageForArchivedTestItem';
 import IDialogButtonForRefVideoForTestItem from './IDialogButtonForRefVideoForTestItem';
 import CommonSwitch from '@/components/common/CommonSwitch';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { useUserStore } from '@/store/useUserStore';
 import ICollapsibleCommentsForArchivedTestItem from './ICollapsibleCommentsForArchivedTestItem';
+import IDialogButtonForRefVideoForArchivedTestItem from './IDialogButtonForRefVideoForArchivedTestItem';
 
 interface TestItemComponentProps {
     item: TestItem;
@@ -248,7 +249,7 @@ const ArchivedTestItemComponent: React.FC<TestItemComponentProps> = ({
                         {/* 미디어 버튼 */}
                         <div className="flex items-center space-x-2 mx-2">
                             <div className="relative group">
-                                <IDialogButtonForRefImageForTestItem
+                                <IDialogButtonForRefImageForArchivedTestItem
                                     testItemId={item.id}
                                     targetId={item.target_id}
                                     imageUrl={item.ref_image}
@@ -270,7 +271,7 @@ const ArchivedTestItemComponent: React.FC<TestItemComponentProps> = ({
                                 </div>
                             </div>
                             <div className="relative group">
-                                <IDialogButtonForRefVideoForTestItem
+                                <IDialogButtonForRefVideoForArchivedTestItem
                                     testItemId={item.id}
                                     targetId={item.target_id}
                                     videoUrl={item.ref_video}

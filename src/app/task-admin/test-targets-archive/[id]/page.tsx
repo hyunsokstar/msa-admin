@@ -15,7 +15,7 @@ import {
 } from "@/hook/useApiForArchivedTestTarget";
 import { TestItem, CreateTestItemParams } from "@/types/typeForTestTarget";
 import TestTargetInfoComponent from "./component/TestTargetInfoComponent";
-import TestItemComponent from "./component/ArchivedTestItemComponent";
+import ArchivedTestItemComponent from "./component/ArchivedTestItemComponent";
 import AddTestItemModal from "./component/AddTestItemModal";
 import { ArrowUpCircle } from "lucide-react";
 import { toast, ToastContainer } from 'react-toastify';
@@ -317,7 +317,7 @@ const ArchivedTestDetail = ({ params }: ArchivedTestDetailProps) => {
                         {/* 테스트 항목 목록 */}
                         <ul className="space-y-3">
                             {sortedArchivedTestItems.map((item) => (
-                                <TestItemComponent
+                                <ArchivedTestItemComponent
                                     key={item.id}
                                     item={item}
                                     onToggleCompletion={handleToggleCompletion}

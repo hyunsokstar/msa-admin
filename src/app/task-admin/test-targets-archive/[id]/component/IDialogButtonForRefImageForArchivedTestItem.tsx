@@ -4,22 +4,23 @@ import { FileImage, Plus, Loader2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import ImageUploader2 from '@/components/file-uploader/ImageUploader2';
 import { useApiForUpdateTestItemRefImage } from '@/hook/useApiForUpdateTestItemRefImage';
+import { useApiForUpdateRefImageForArchivedTestItem } from '@/hook/useApiForUpdateRefImageForArchivedTestItem';
 
-interface IDialogButtonForRefImageForTestItemProps {
+interface IDialogButtonForRefImageForArchivedTestItemProps {
     testItemId: string;
     targetId: string; // Add targetId to invalidate the correct queries
     imageUrl: string | null;
     onImageUpdated?: (newImageUrl: string) => void;
 }
 
-const IDialogButtonForRefImageForTestItem: React.FC<IDialogButtonForRefImageForTestItemProps> = ({
+const IDialogButtonForRefImageForArchivedTestItem: React.FC<IDialogButtonForRefImageForArchivedTestItemProps> = ({
     testItemId,
     targetId,
     imageUrl,
     onImageUpdated
 }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const updateImageMutation = useApiForUpdateTestItemRefImage();
+    const updateImageMutation = useApiForUpdateRefImageForArchivedTestItem();
 
     const handleUploadComplete = async (fileUrl: string) => {
         try {
@@ -27,14 +28,13 @@ const IDialogButtonForRefImageForTestItem: React.FC<IDialogButtonForRefImageForT
             await updateImageMutation.mutateAsync({
                 itemId: testItemId,
                 imageUrl: fileUrl,
-                targetId: targetId
             });
-            
+
             // Optional callback for parent component
             if (onImageUpdated) {
                 onImageUpdated(fileUrl);
             }
-            
+
             // Close the dialog after successful update
             setIsDialogOpen(false);
         } catch (err) {
@@ -53,7 +53,7 @@ const IDialogButtonForRefImageForTestItem: React.FC<IDialogButtonForRefImageForT
                 </div>
             ) : imageUrl ? (
                 // If we have an image, show the preview that's clickable
-                <div 
+                <div
                     className="w-16 h-16 rounded-md overflow-hidden border border-gray-200 shadow-sm cursor-pointer hover:border-blue-400 transition-colors relative group"
                     onClick={() => setIsDialogOpen(true)}
                 >
@@ -102,4 +102,4 @@ const IDialogButtonForRefImageForTestItem: React.FC<IDialogButtonForRefImageForT
     );
 };
 
-export default IDialogButtonForRefImageForTestItem;
+export default IDialogButtonForRefImageForArchivedTestItem;
