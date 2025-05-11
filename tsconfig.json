@@ -33,8 +33,10 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
-, "src/app/api-spec-admin/api-spec-list"  ],
+    ".next/types/**/*.ts",
+    "src/app/api-spec-admin/api-spec-list",
+    "server.js"
+  ],
   "exclude": [
     "node_modules"
   ]

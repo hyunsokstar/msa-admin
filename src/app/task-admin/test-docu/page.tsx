@@ -1,6 +1,7 @@
-// src/app/task-admin/test-docu/page.tsx
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { Archive, RefreshCw } from 'lucide-react';
 import { TestTarget } from '@/types/typeForTestTarget';
 import { useUserStore } from '@/store/useUserStore';
 import { useDeleteTestTarget, useGetTestTargets } from '@/hook/useApiForTestTarget';
@@ -8,13 +9,48 @@ import TestFilters from './components/TestFilters';
 import TestTargetList from './components/TestTargetList';
 import AddTestTargetModal from './components/AddTestTargetModal';
 import { useAddTestTarget } from '@/hook/useAddTestTarget';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import useMoveTestTargetsToArchive from '@/hook/useArchiveMoveTestTargetsItemToTestTargetsArchive';
 
 const TestTrackingPage: React.FC = () => {
     // 사용자 정보 가져오기
     const { user, isAuthenticated } = useUserStore();
 
     // 테스트 대상 목록 가져오기 (React Query 훅 사용)
-    const { data: testTargets, isLoading: isLoadingTargets, error: targetsError } = useGetTestTargets();
+    const { data: testTargets, isLoading: isLoadingTargets, error: targetsError, refetch } = useGetTestTargets();
+
+    // 아카이브 이동 훅
+    const archiveMutation = useMoveTestTargetsToArchive();
+
+    // 체크박스 상태 관리
+    const [selectedItems, setSelectedItems] = useState<string[]>([]);
+
+    // 데이터를 컴포넌트 마운트시 및 주기적으로 다시 가져오기
+    useEffect(() => {
+        // 컴포넌트 마운트 시 데이터 강제 갱신
+        refetch();
+
+        // 60초마다 데이터 갱신 (선택적)
+        const intervalId = setInterval(() => {
+            refetch();
+        }, 60000);
+
+        // 컴포넌트 언마운트 시 클리어
+        return () => clearInterval(intervalId);
+    }, [refetch]);
+
+    // 로딩 상태 확인 로그
+    useEffect(() => {
+        if (isLoadingTargets) {
+            console.log('데이터 로딩 중...');
+        } else if (targetsError) {
+            console.error('데이터 로딩 오류:', targetsError);
+        } else {
+            console.log('로드된 테스트 대상 수:', testTargets?.length || 0);
+            console.log('테스트 대상 데이터:', testTargets);
+        }
+    }, [isLoadingTargets, targetsError, testTargets]);
 
     // 테스트 대상 추가 훅
     const addTestTargetMutation = useAddTestTarget();
@@ -68,12 +104,12 @@ const TestTrackingPage: React.FC = () => {
     // 테스트 대상 추가 핸들러
     const handleAddTestTarget = () => {
         if (!isAuthenticated) {
-            alert('로그인 후 이용해주세요.');
+            toast.warning('로그인 후 이용해주세요.');
             return;
         }
 
         if (!newTestTarget.name) {
-            alert('테스트 대상 이름은 필수 입력 항목입니다.');
+            toast.warning('테스트 대상 이름은 필수 입력 항목입니다.');
             return;
         }
 
@@ -82,25 +118,60 @@ const TestTrackingPage: React.FC = () => {
             description: newTestTarget.description || '',
             // 담당자를 선택하지 않은 경우 현재 로그인 사용자를 담당자로 설정
             assignee_id: newTestTarget.assignee_id || user?.id || undefined,
-            target_image_url: newTestTarget.target_image_url || undefined, // 이 필드 추가
+            target_image_url: newTestTarget.target_image_url || undefined,
         }, {
             onSuccess: () => {
+                toast.success('테스트 대상이 성공적으로 추가되었습니다.');
                 setShowAddForm(false);
                 setNewTestTarget({
                     name: '',
                     description: '',
                     assignee_id: user?.id || '',
-                    target_image_url: '', // 초기화할 때도 이 필드 추가
+                    target_image_url: '',
                 });
+            },
+            onError: (error) => {
+                toast.error('테스트 대상 추가 중 오류가 발생했습니다.');
+                console.error('추가 중 오류:', error);
             }
         });
     };
 
     // 테스트 대상 삭제 핸들러
     const handleDeleteTestTarget = (id: string) => {
-        if (confirm('이 테스트 대상을 삭제하시겠습니까? 관련된 모든 테스트 항목도 함께 삭제됩니다.')) {
-            deleteTestTargetMutation.mutate(id);
+        if (window.confirm('이 테스트 대상을 삭제하시겠습니까? 관련된 모든 테스트 항목도 함께 삭제됩니다.')) {
+            deleteTestTargetMutation.mutate(id, {
+                onSuccess: () => {
+                    toast.success('테스트 대상이 성공적으로 삭제되었습니다.');
+                },
+                onError: (error) => {
+                    toast.error('테스트 대상 삭제 중 오류가 발생했습니다.');
+                    console.error('삭제 중 오류:', error);
+                }
+            });
         }
+    };
+
+    // 아카이브로 이동 핸들러
+    const handleArchiveItems = () => {
+        if (selectedItems.length === 0) {
+            toast.warning('선택한 항목이 없습니다.');
+            return;
+        }
+
+        if (window.confirm(`선택한 ${selectedItems.length}개 항목을 아카이브로 이동하시겠습니까?`)) {
+            archiveMutation.mutate(selectedItems, {
+                onSuccess: () => {
+                    // 성공 시 선택 항목 초기화
+                    setSelectedItems([]);
+                }
+            });
+        }
+    };
+
+    // 선택 항목 변경 핸들러
+    const handleSelectedItemsChange = (items: string[]) => {
+        setSelectedItems(items);
     };
 
     // 진행률에 따른 색상 결정
@@ -148,17 +219,90 @@ const TestTrackingPage: React.FC = () => {
         return assignee ? assignee.name : assigneeId;
     };
 
+    // 데이터 로딩 확인을 위한 간단한 디버깅 버튼
+    const handleDebugRefresh = () => {
+        toast.info('데이터 새로고침 중...');
+        refetch().then(result => {
+            if (result.error) {
+                toast.error('데이터 로드 실패');
+                console.error('데이터 로드 오류:', result.error);
+            } else {
+                toast.success(`${result.data?.length || 0}개 항목 로드됨`);
+            }
+        });
+    };
+
     if (isLoadingTargets) {
-        return <div className="flex justify-center items-center h-64">로딩 중...</div>;
+        return (
+            <div className="flex justify-center items-center h-64">
+                <div className="flex flex-col items-center space-y-4">
+                    <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                    <p className="text-gray-500">데이터 로딩 중...</p>
+                </div>
+            </div>
+        );
     }
 
     if (targetsError) {
-        return <div className="text-red-500 p-4">데이터를 불러오는 중 오류가 발생했습니다.</div>;
+        return (
+            <div className="flex flex-col items-center p-4">
+                <div className="text-red-500 bg-red-50 p-4 rounded-lg mb-4 w-full max-w-lg">
+                    <h3 className="font-bold mb-2">데이터를 불러오는 중 오류가 발생했습니다</h3>
+                    <p>{(targetsError as Error)?.message || '알 수 없는 오류'}</p>
+                </div>
+                <button
+                    className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition-colors"
+                    onClick={() => refetch()}
+                >
+                    다시 시도
+                </button>
+            </div>
+        );
     }
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <h1 className="text-2xl font-bold mb-6">콜센터 상담 관리 프로젝트 테스트 기록</h1>
+            <ToastContainer position="top-right" autoClose={3000} />
+
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-2xl font-bold">콜센터 상담 관리 프로젝트 테스트 기록</h1>
+
+                <div className="flex items-center gap-4">
+                    <button
+                        onClick={handleDebugRefresh}
+                        className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded hover:bg-gray-50"
+                    >
+                        <RefreshCw className="w-4 h-4" />
+                        <span>데이터 새로고침</span>
+                    </button>
+
+                    <Link
+                        href="/task-admin/test-archive"
+                        className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+                    >
+                        <Archive className="w-4 h-4" />
+                        <span>아카이브 보기</span>
+                    </Link>
+                </div>
+            </div>
+
+            {/* 선택된 항목이 있을 때만 보여주는 액션 버튼 */}
+            {selectedItems.length > 0 && (
+                <div className="flex justify-end mb-4">
+                    <button
+                        className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition-colors"
+                        onClick={handleArchiveItems}
+                        disabled={archiveMutation.isPending}
+                    >
+                        <Archive className="w-4 h-4" />
+                        <span>
+                            {archiveMutation.isPending
+                                ? '처리 중...'
+                                : `아카이브 이동 (${selectedItems.length})`}
+                        </span>
+                    </button>
+                </div>
+            )}
 
             {/* 필터 컴포넌트 */}
             <TestFilters
@@ -180,6 +324,8 @@ const TestTrackingPage: React.FC = () => {
                 getProgressColor={getProgressColor}
                 onDelete={handleDeleteTestTarget}
                 assignees={assignees}
+                onSelectedItemsChange={handleSelectedItemsChange}
+                selectedItems={selectedItems}
             />
 
             {/* 테스트 대상 추가 모달 컴포넌트 */}

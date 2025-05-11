@@ -176,18 +176,18 @@ export async function deleteTestItem(id: string): Promise<boolean> {
 
 // 테스트 항목 완료 상태 토글
 export async function toggleTestItemCompletion(
-    id: string, 
-    isCompleted: boolean, 
+    id: string,
+    isCompleted: boolean,
     userId: string | undefined
 ): Promise<TestItem | null> {
     const supabase = getSupabase() as SupabaseClient;
 
     // 업데이트할 데이터 준비
-    const updateData: any = { 
+    const updateData: any = {
         is_completed: isCompleted,
         updated_at: new Date().toISOString() // 현재 시간으로 updated_at 필드 설정
     };
-    
+
     // 완료 상태로 변경될 때만 issue_solver_id 설정
     if (isCompleted && userId) {
         updateData.issue_solver_id = userId;
@@ -214,18 +214,18 @@ export async function toggleTestItemCompletion(
 // 테스트 항목 처리 중 상태 토글 (새로 추가)
 // 테스트 항목 처리 중 상태 토글 (issue_solver_id 필드 처리 추가)
 export async function toggleTestItemProcessing(
-    id: string, 
+    id: string,
     isProcessing: boolean,
     userId: string | undefined
 ): Promise<TestItem | null> {
     const supabase = getSupabase() as SupabaseClient;
 
     // 업데이트할 데이터 준비
-    const updateData: any = { 
+    const updateData: any = {
         is_processing: isProcessing,
         updated_at: new Date().toISOString() // 현재 시간으로 updated_at 필드 설정
     };
-    
+
     // 처리 중 상태로 변경될 때만 issue_solver_id 설정
     if (isProcessing && userId) {
         updateData.issue_solver_id = userId;
@@ -247,4 +247,26 @@ export async function toggleTestItemProcessing(
     }
 
     return data;
+}
+
+export async function archiveTestTargets(targetIds: string[]): Promise<boolean> {
+    try {
+        const response = await fetch('/api/test-targets-archive', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ targetIds }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const { success } = await response.json();
+        return success || false;
+    } catch (error) {
+        console.error('Error archiving test targets:', error);
+        return false;
+    }
 }

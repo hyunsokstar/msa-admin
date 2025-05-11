@@ -47,7 +47,7 @@ export async function GET(
     }
 
     return NextResponse.json(
-      { 
+      {
         data: data || [],
         pages: pages
       },
