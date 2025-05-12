@@ -7,7 +7,7 @@ const StrategyReport = () => {
     <div className="max-w-6xl mx-auto px-4 py-8 bg-white">
       <h1 className="text-4xl font-bold text-center mb-8 text-blue-800">차기 웹 CTI 프로젝트를 위한 개발 아키텍처 전략 보고서</h1>
       <p className="text-right text-gray-600 mb-8">작성일: 2025년 5월 12일</p>
-      
+
       <div className="mb-12 bg-blue-50 p-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold mb-4 text-blue-700">보고서 요약</h2>
         <p className="text-lg mb-2">
@@ -44,8 +44,8 @@ const StrategyReport = () => {
       <div className="mb-16">
         <h2 className="text-3xl font-bold mb-6 text-blue-800 border-b pb-2" id="section1">1. 서론</h2>
         <p className="mb-4 text-lg">
-          본 보고서는 차기 웹 CTI(Computer Telephony Integration) 프로젝트를 위한 최신 웹 개발 기술 동향을 분석하고, 
-          이를 바탕으로 한 구현 전략을 제시합니다. 최근 웹 개발 환경은 GraphQL, 인공지능, 고급 프론트엔드 기술 등이 
+          본 보고서는 차기 웹 CTI(Computer Telephony Integration) 프로젝트를 위한 최신 웹 개발 기술 동향을 분석하고,
+          이를 바탕으로 한 구현 전략을 제시합니다. 최근 웹 개발 환경은 GraphQL, 인공지능, 고급 프론트엔드 기술 등이
           빠르게 발전하고 있으며, 이를 효과적으로 도입하여 개발 생산성과 사용자 경험을 크게 향상시킬 수 있습니다.
         </p>
 
@@ -53,14 +53,14 @@ const StrategyReport = () => {
 
       <div className="mb-16">
         <h2 className="text-3xl font-bold mb-6 text-blue-800 border-b pb-2" id="section2">2. 최신 기술 동향 분석</h2>
-        
+
         <div className="mb-10">
           <h3 className="text-2xl font-semibold mb-4 text-blue-700" id="section2-1">2.1 GraphQL + Spring Boot 기술 동향</h3>
-          
+
           <div className="mb-6">
             <h4 className="text-xl font-medium mb-3 text-blue-600">GraphQL 동향</h4>
             <p className="mb-4">
-              GraphQL은 페이스북이 개발한 쿼리 언어로, REST API의 한계(과다 페칭, 언더 페칭 등)를 해결하고 
+              GraphQL은 페이스북이 개발한 쿼리 언어로, REST API의 한계(과다 페칭, 언더 페칭 등)를 해결하고
               클라이언트가 필요한 데이터만 정확히 요청할 수 있게 해줍니다. 특히 다음과 같은 이점이 있습니다:
             </p>
             <ul className="list-disc pl-8 mb-4 space-y-2">
@@ -70,7 +70,7 @@ const StrategyReport = () => {
               <li>마이크로서비스를 위한 Federation 아키텍처</li>
             </ul>
           </div>
-          
+
           <div className="mb-6">
             <h4 className="text-xl font-medium mb-3 text-blue-600">Spring Boot + GraphQL 통합 방법</h4>
             <p className="mb-4">
@@ -82,11 +82,11 @@ const StrategyReport = () => {
               <li><span className="font-medium">GraphQL Java</span>: 기본 Java GraphQL 구현체</li>
             </ol>
             <p className="mb-2">
-              특히 Netflix DGS는 대규모 트래픽 환경에서 검증된 프레임워크로, Federation을 지원하여 마이크로서비스 
+              특히 Netflix DGS는 대규모 트래픽 환경에서 검증된 프레임워크로, Federation을 지원하여 마이크로서비스
               아키텍처에 적합합니다.
             </p>
           </div>
-          
+
           <div className="mb-6">
             <h4 className="text-xl font-medium mb-3 text-blue-600">주요 교육 자료</h4>
             <div className="overflow-x-auto">
@@ -118,7 +118,7 @@ const StrategyReport = () => {
               </table>
             </div>
           </div>
-          
+
           <div className="mb-6">
             <h4 className="text-xl font-medium mb-3 text-blue-600">공식 문서 및 참고 사이트</h4>
             <ul className="list-disc pl-8 mb-4 space-y-2">
@@ -129,7 +129,7 @@ const StrategyReport = () => {
               <li><a href="https://www.apollographql.com/docs/federation/" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">Apollo Federation</a> - GraphQL Federation 설명</li>
             </ul>
           </div>
-          
+
           <div className="mb-6">
             <h4 className="text-xl font-medium mb-3 text-blue-600">글로벌/국내 도입 사례</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -154,33 +154,63 @@ const StrategyReport = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="mb-10">
           <h3 className="text-2xl font-semibold mb-4 text-blue-700" id="section2-2">2.2 Next.js 최신 프론트엔드 기술</h3>
-          
+
           <div className="mb-6">
             <h4 className="text-xl font-medium mb-3 text-blue-600">Next.js 개요 및 최신 기능</h4>
             <p className="mb-4">
-              Next.js는 Vercel에서 개발한 React 기반 풀스택 프레임워크로, 서버 사이드 렌더링(SSR), 정적 사이트 생성(SSG), 
-              증분 정적 재생성(ISR) 등 다양한 렌더링 방식을 지원합니다. 최신 버전에서는 서버 컴포넌트, 서버 액션, 
+              Next.js는 Vercel에서 개발한 React 기반 풀스택 프레임워크로, 서버 사이드 렌더링(SSR), 정적 사이트 생성(SSG),
+              증분 정적 재생성(ISR) 등 다양한 렌더링 방식을 지원합니다. 최신 버전에서는 서버 컴포넌트, 서버 액션,
               새로운 라우팅 시스템 등이 도입되었습니다.
             </p>
+
             <div className="bg-blue-50 p-4 rounded-lg mb-4">
-              <h5 className="font-medium mb-2">Next.js 14 주요 기능</h5>
+              <h5 className="font-medium mb-2">Next.js 15 주요 기능</h5>
               <ul className="list-disc pl-6 space-y-1">
-                <li>React Server Components: 서버에서 렌더링되는 컴포넌트</li>
-                <li>Server Actions: 서버 사이드 함수 직접 호출</li>
-                <li>App Router: 파일 시스템 기반 새로운 라우팅</li>
-                <li>TurboRepo: 모노레포 개발 지원</li>
-                <li>이미지/폰트 최적화: 자동 성능 최적화</li>
+                <li>React 19 지원: 최신 React 기능 및 개선사항 활용</li>
+                <li>Turbopack 안정화: 개발 환경 및 빌드 속도 대폭 향상</li>
+                <li>after() API: 응답 전송 후 작업 수행 기능</li>
+                <li>React Compiler (실험적): 자동 최적화 컴파일러</li>
+                <li>향상된 메타데이터 처리: 초기 UI 렌더링 개선</li>
+                <li>클라이언트 훅: 네비게이션 및 인스트루먼테이션 제어</li>
+                <li>인증 관련 API: unauthorized() 및 forbidden() 지원</li>
               </ul>
             </div>
+
+            <div className="bg-purple-50 p-4 rounded-lg mb-4">
+              <h5 className="font-medium mb-2">Next.js 핵심 업데이트 내용</h5>
+              <ul className="list-disc pl-6 space-y-2">
+                <li>
+                  <span className="font-medium">개발 환경 성능 개선</span>
+                  <p className="text-sm">Turbopack을 통해 최대 57.6% 더 빠른 컴파일 시간, 30% 감소된 메모리 사용량</p>
+                </li>
+                <li>
+                  <span className="font-medium">캐싱 모델 변경</span>
+                  <p className="text-sm">fetch 요청, GET Route Handler, 클라이언트 네비게이션 등의 기본 캐싱 동작 개선</p>
+                </li>
+                <li>
+                  <span className="font-medium">디버깅 경험 개선</span>
+                  <p className="text-sm">새로운 디버깅 UI 및 개발자 오버레이 제공</p>
+                </li>
+                <li>
+                  <span className="font-medium">TypeScript 플러그인 성능 향상</span>
+                  <p className="text-sm">대규모 코드베이스에서 약 60% 응답 시간 개선</p>
+                </li>
+                <li>
+                  <span className="font-medium">보안 및 인증 기능 강화</span>
+                  <p className="text-sm">unauthorized.tsx 및 forbidden.tsx 파일을 통한 커스텀 인증 오류 페이지</p>
+                </li>
+              </ul>
+            </div>
+
             <p className="mb-2">
-              <a href="https://nextjs.org/docs" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">Next.js 공식 문서</a>에서 
+              <a href="https://nextjs.org/docs" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">Next.js 공식 문서</a>에서
               최신 기능에 대한 자세한 내용을 확인할 수 있습니다.
             </p>
           </div>
-          
+
           <div className="mb-6">
             <h4 className="text-xl font-medium mb-3 text-blue-600">프론트엔드 필수 최신 기술</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -240,7 +270,7 @@ const StrategyReport = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="mb-6">
             <h4 className="text-xl font-medium mb-3 text-blue-600">상태 관리 비교: Zustand vs Redux</h4>
             <div className="overflow-x-auto">
@@ -285,7 +315,7 @@ const StrategyReport = () => {
               CTI 프로젝트에서는 복잡한 상태 관리가 필요하므로, 초기에는 Zustand로 시작하여 필요 시 미들웨어를 추가하는 전략이 효과적입니다.
             </p>
           </div>
-          
+
           <div className="mb-6">
             <h4 className="text-xl font-medium mb-3 text-blue-600">하이엔드 UI 구현을 위한 기술</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -320,10 +350,10 @@ const StrategyReport = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="mb-10">
           <h3 className="text-2xl font-semibold mb-4 text-blue-700" id="section2-3">2.3 인공지능 관련 기술</h3>
-          
+
           <div className="mb-6">
             <h4 className="text-xl font-medium mb-3 text-blue-600">CTI 시스템의 AI 적용 방안</h4>
             <p className="mb-4">
@@ -368,7 +398,7 @@ const StrategyReport = () => {
               </table>
             </div>
           </div>
-          
+
           <div className="mb-6">
             <h4 className="text-xl font-medium mb-3 text-blue-600">주요 교육 자료</h4>
             <div className="overflow-x-auto">
@@ -401,10 +431,10 @@ const StrategyReport = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="mb-10">
           <h3 className="text-2xl font-semibold mb-4 text-blue-700" id="section2-4">2.4 하이엔드급 프론트엔드 그래픽 기술</h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <h4 className="text-xl font-medium mb-3 text-blue-600">기술 개요</h4>
@@ -457,7 +487,7 @@ const StrategyReport = () => {
               </ul>
             </div>
           </div>
-          
+
           <div className="mt-4">
             <p className="mb-2">
               예시: <a href="https://threejs-journey.com/" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">Three.js Journey</a> - 고급 3D 웹 그래픽 강좌
@@ -468,7 +498,7 @@ const StrategyReport = () => {
 
       <div className="mb-16">
         <h2 className="text-3xl font-bold mb-6 text-blue-800 border-b pb-2" id="section3">3. 사례 연구: 기존 업무 관리 프로그램 분석</h2>
-        
+
         <div className="mb-6">
           <h3 className="text-2xl font-semibold mb-4 text-blue-700">프로젝트 정보</h3>
           <ul className="list-disc pl-8 mb-4 space-y-2">
@@ -476,7 +506,7 @@ const StrategyReport = () => {
             <li><span className="font-medium">운영 사이트</span>: <a href="https://nexus-task-master.shop/" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">https://nexus-task-master.shop/</a></li>
           </ul>
         </div>
-        
+
         <div className="mb-6">
           <h3 className="text-2xl font-semibold mb-4 text-blue-700">현재 기술 스택 및 특징</h3>
           <ul className="list-disc pl-8 mb-4 space-y-2">
@@ -486,7 +516,7 @@ const StrategyReport = () => {
             <li>중소규모 솔루션 개발에 적합한 풀스택 기술 구조</li>
           </ul>
         </div>
-        
+
         <div className="mb-6">
           <h3 className="text-2xl font-semibold mb-4 text-blue-700">CTI 시스템 적용 시 고려사항</h3>
           <div className="bg-blue-50 p-4 rounded-lg">
@@ -502,10 +532,10 @@ const StrategyReport = () => {
 
       <div className="mb-16">
         <h2 className="text-3xl font-bold mb-6 text-blue-800 border-b pb-2" id="section4">4. 차기 프로젝트 제안</h2>
-        
+
         <div className="mb-10">
           <h3 className="text-2xl font-semibold mb-4 text-blue-700" id="section4-1">4.1 기술 도입 아이디어</h3>
-          
+
           <div className="space-y-6">
             <div className="bg-blue-50 p-4 rounded-lg">
               <h4 className="text-xl font-medium mb-2 text-blue-600">1. GraphQL API 통합 (Netflix DGS + Subscription + Federation)</h4>
@@ -519,7 +549,7 @@ const StrategyReport = () => {
                 <a href="https://netflix.github.io/dgs/advanced/subscriptions/" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">DGS Subscription 예제</a>
               </p>
             </div>
-            
+
             <div className="bg-blue-50 p-4 rounded-lg">
               <h4 className="text-xl font-medium mb-2 text-blue-600">2. TanStack Query + Zustand 기반 상태 관리</h4>
               <ul className="list-disc pl-6 space-y-1">
@@ -532,7 +562,7 @@ const StrategyReport = () => {
                 <a href="https://tanstack.com/query/latest/docs/react/graphql" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">TanStack Query + GraphQL 예제</a>
               </p>
             </div>
-            
+
             <div className="bg-blue-50 p-4 rounded-lg">
               <h4 className="text-xl font-medium mb-2 text-blue-600">3. AI 기반 CTI 대시보드</h4>
               <ul className="list-disc pl-6 space-y-1">
@@ -542,7 +572,7 @@ const StrategyReport = () => {
                 <li>RAG(Retrieval-Augmented Generation) 기반 상담 지원</li>
               </ul>
             </div>
-            
+
             <div className="bg-blue-50 p-4 rounded-lg">
               <h4 className="text-xl font-medium mb-2 text-blue-600">4. Shadcn UI + Tailwind 기반 디자인 시스템</h4>
               <ul className="list-disc pl-6 space-y-1">
@@ -555,7 +585,7 @@ const StrategyReport = () => {
                 <a href="https://ui.shadcn.com/examples" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">Shadcn UI 예제</a>
               </p>
             </div>
-            
+
             <div className="bg-blue-50 p-4 rounded-lg">
               <h4 className="text-xl font-medium mb-2 text-blue-600">5. 통화 흐름 시각화 (WebGL/Canvas)</h4>
               <ul className="list-disc pl-6 space-y-1">
@@ -567,80 +597,66 @@ const StrategyReport = () => {
             </div>
           </div>
         </div>
-        
-        <div className="mb-10">
-          <h3 className="text-2xl font-semibold mb-4 text-blue-700" id="section4-2">4.2 아키텍처 개선 방안</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h4 className="text-xl font-medium mb-3 text-blue-600">모니터링/로깅 체계 구축</h4>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>
-                  <span className="font-medium">Sentry</span>
-                  <p className="text-sm">프론트엔드/백엔드 오류 추적 및 성능 모니터링</p>
-                  <p className="text-xs"><a href="https://sentry.io/" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">공식 사이트</a></p>
-                </li>
-                <li>
-                  <span className="font-medium">LogRocket</span>
-                  <p className="text-sm">사용자 세션 녹화 및 재생, 오류 분석</p>
-                  <p className="text-xs"><a href="https://logrocket.com/" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">공식 사이트</a></p>
-                </li>
-                <li>
-                  <span className="font-medium">Supabase Logs</span>
-                  <p className="text-sm">실시간 DB 액세스 로그 및 성능 모니터링</p>
-                </li>
-                <li>
-                  <span className="font-medium">Vercel Analytics</span>
-                  <p className="text-sm">페이지 성능 및 사용자 경험 지표 수집</p>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-xl font-medium mb-3 text-blue-600">실시간 기능 아키텍처</h4>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>
-                  <span className="font-medium">Supabase Realtime</span>
-                  <p className="text-sm">PostgreSQL 기반 실시간 데이터 구독</p>
-                  <p className="text-xs"><a href="https://supabase.com/docs/guides/realtime" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">문서</a></p>
-                </li>
-                <li>
-                  <span className="font-medium">GraphQL Subscriptions</span>
-                  <p className="text-sm">WebSocket 기반 실시간 데이터 구독</p>
-                </li>
-                <li>
-                  <span className="font-medium">Server-Sent Events (SSE)</span>
-                  <p className="text-sm">서버에서 클라이언트로의 단방향 실시간 메시지</p>
-                </li>
-                <li>
-                  <span className="font-medium">Socket.IO</span>
-                  <p className="text-sm">양방향 실시간 통신, 폴백 지원</p>
-                  <p className="text-xs"><a href="https://socket.io/" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">공식 사이트</a></p>
-                </li>
-              </ul>
-            </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h4 className="text-xl font-medium mb-3 text-blue-600">모니터링/로깅 체계 구축</h4>
+            <ul className="list-disc pl-6 space-y-2">
+              <li>
+                <span className="font-medium">Sentry</span>
+                <p className="text-sm">프론트엔드/백엔드 오류 추적 및 성능 모니터링</p>
+                <p className="text-xs"><a href="https://sentry.io/" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">공식 사이트</a></p>
+              </li>
+              <li>
+                <span className="font-medium">LogRocket</span>
+                <p className="text-sm">사용자 세션 녹화 및 재생, 오류 분석</p>
+                <p className="text-xs"><a href="https://logrocket.com/" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">공식 사이트</a></p>
+              </li>
+              <li>
+                <span className="font-medium">AWS CloudWatch</span>
+                <p className="text-sm">서버 및 애플리케이션 로그 모니터링, 지표 시각화</p>
+                <p className="text-xs"><a href="https://aws.amazon.com/cloudwatch/" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">공식 사이트</a></p>
+              </li>
+              <li>
+                <span className="font-medium">GitHub Actions + Jenkins</span>
+                <p className="text-sm">CI/CD 파이프라인을 통한 배포 자동화 및 상태 추적</p>
+                <p className="text-xs"><a href="https://www.jenkins.io/" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">Jenkins 공식 사이트</a></p>
+              </li>
+            </ul>
           </div>
-          
-          <div className="mt-6">
-            <h4 className="text-xl font-medium mb-3 text-blue-600">확장성 및 성능 최적화</h4>
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <ul className="list-disc pl-6 space-y-2">
-                <li>엣지 캐싱을 통한 API 응답 속도 개선</li>
-                <li>마이크로 프론트엔드 아키텍처 고려 (독립적 배포 가능한 모듈)</li>
-                <li>데이터 페칭 최적화 (GraphQL Dataloader, 배치 처리)</li>
-                <li>서버리스 함수 활용으로 인프라 비용 최적화</li>
-                <li>CDN 최적화를 통한 글로벌 액세스 성능 향상</li>
-              </ul>
-            </div>
+          <div>
+            <h4 className="text-xl font-medium mb-3 text-blue-600">실시간 기능 아키텍처</h4>
+            <ul className="list-disc pl-6 space-y-2">
+              <li>
+                <span className="font-medium">Supabase Realtime</span>
+                <p className="text-sm">PostgreSQL 기반 실시간 데이터 구독</p>
+                <p className="text-xs"><a href="https://supabase.com/docs/guides/realtime" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">문서</a></p>
+              </li>
+              <li>
+                <span className="font-medium">GraphQL Subscriptions</span>
+                <p className="text-sm">WebSocket 기반 실시간 데이터 구독</p>
+              </li>
+              <li>
+                <span className="font-medium">Server-Sent Events (SSE)</span>
+                <p className="text-sm">서버에서 클라이언트로의 단방향 실시간 메시지</p>
+              </li>
+              <li>
+                <span className="font-medium">Socket.IO</span>
+                <p className="text-sm">양방향 실시간 통신, 폴백 지원</p>
+                <p className="text-xs"><a href="https://socket.io/" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">공식 사이트</a></p>
+              </li>
+            </ul>
           </div>
         </div>
+
       </div>
 
       <div className="mb-16">
         <h2 className="text-3xl font-bold mb-6 text-blue-800 border-b pb-2" id="section5">5. 구현 전략 및 역량 강화 계획</h2>
-        
+
         <div className="mb-10">
           <h3 className="text-2xl font-semibold mb-4 text-blue-700" id="section5-1">5.1 팀 차원의 미션</h3>
-          
+
           <div className="space-y-6">
             <div className="bg-blue-50 p-4 rounded-lg">
               <h4 className="text-xl font-medium mb-2 text-blue-600">미션 1: GraphQL 기반 API 전환 프로젝트</h4>
@@ -654,7 +670,7 @@ const StrategyReport = () => {
                 <li>Federation 구조 적용으로 마이크로서비스 연동</li>
               </ol>
             </div>
-            
+
             <div className="bg-blue-50 p-4 rounded-lg">
               <h4 className="text-xl font-medium mb-2 text-blue-600">미션 2: AI 대시보드 PoC 구축</h4>
               <p className="mb-2"><span className="font-medium">내용</span>: CTI 관리자 페이지에 AI 기반 분석 기능 도입</p>
@@ -667,7 +683,7 @@ const StrategyReport = () => {
                 <li>RAG 기반 상담 지원 시스템 구축</li>
               </ol>
             </div>
-            
+
             <div className="bg-blue-50 p-4 rounded-lg">
               <h4 className="text-xl font-medium mb-2 text-blue-600">미션 3: 통화 흐름 시각화 데모 제작</h4>
               <p className="mb-2"><span className="font-medium">내용</span>: Three.js + GSAP 기반 통화 흐름 시각화 구현</p>
@@ -680,7 +696,7 @@ const StrategyReport = () => {
                 <li>인터랙티브 요소 추가 (확대/축소, 필터링 등)</li>
               </ol>
             </div>
-            
+
             <div className="bg-blue-50 p-4 rounded-lg">
               <h4 className="text-xl font-medium mb-2 text-blue-600">미션 4: FSD + Shadcn UI 기반 디자인 시스템 통일</h4>
               <p className="mb-2"><span className="font-medium">내용</span>: 프로젝트 구조 및 UI 컴포넌트 표준화</p>
@@ -695,10 +711,10 @@ const StrategyReport = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="mb-10">
           <h3 className="text-2xl font-semibold mb-4 text-blue-700" id="section5-2">5.2 개발자 개인 미션</h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <h4 className="text-xl font-medium mb-3 text-blue-600">백엔드 개발자 미션</h4>
@@ -743,7 +759,7 @@ const StrategyReport = () => {
               </ul>
             </div>
           </div>
-          
+
           <div className="mt-6">
             <h4 className="text-xl font-medium mb-3 text-blue-600">공통 역량 강화 항목</h4>
             <div className="bg-blue-50 p-4 rounded-lg">
@@ -761,7 +777,7 @@ const StrategyReport = () => {
 
       <div className="mb-16">
         <h2 className="text-3xl font-bold mb-6 text-blue-800 border-b pb-2" id="section6">6. 보일러플레이트 템플릿 제안</h2>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
           <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
             <h3 className="text-xl font-semibold mb-3 text-blue-700">1. GraphQL + Spring Boot DGS 템플릿</h3>
@@ -777,7 +793,7 @@ const StrategyReport = () => {
               <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs">백엔드</span>
             </div>
           </div>
-          
+
           <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
             <h3 className="text-xl font-semibold mb-3 text-blue-700">2. Next.js + GraphQL + TanStack Query</h3>
             <p className="mb-4">GraphQL 클라이언트와 TanStack Query를 통합한 데이터 페칭 템플릿</p>
@@ -792,7 +808,7 @@ const StrategyReport = () => {
               <span className="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">프론트엔드</span>
             </div>
           </div>
-          
+
           <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
             <h3 className="text-xl font-semibold mb-3 text-blue-700">3. Next.js + Zustand + TanStack Form</h3>
             <p className="mb-4">복잡한 폼 상태 관리와 유효성 검증을 위한 프론트엔드 템플릿</p>
@@ -807,7 +823,7 @@ const StrategyReport = () => {
               <span className="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">프론트엔드</span>
             </div>
           </div>
-          
+
           <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
             <h3 className="text-xl font-semibold mb-3 text-blue-700">4. FSD + Shadcn UI 디자인 시스템</h3>
             <p className="mb-4">Feature-Sliced Design 구조와 Shadcn UI 기반 프로젝트 템플릿</p>
@@ -822,7 +838,7 @@ const StrategyReport = () => {
               <span className="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">프론트엔드</span>
             </div>
           </div>
-          
+
           <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
             <h3 className="text-xl font-semibold mb-3 text-blue-700">5. Three.js 기반 CTI 시각화 템플릿</h3>
             <p className="mb-4">3D 통화 흐름 시각화를 위한 React Three Fiber 기반 템플릿</p>
@@ -837,7 +853,7 @@ const StrategyReport = () => {
               <span className="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">프론트엔드</span>
             </div>
           </div>
-          
+
           <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
             <h3 className="text-xl font-semibold mb-3 text-blue-700">6. RAG 기반 AI 상담 지원 템플릿</h3>
             <p className="mb-4">Retrieval-Augmented Generation 기반 AI 챗봇 템플릿</p>
@@ -852,7 +868,7 @@ const StrategyReport = () => {
               <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded text-xs">풀스택</span>
             </div>
           </div>
-          
+
           <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
             <h3 className="text-xl font-semibold mb-3 text-blue-700">7. Next.js + Supabase 실시간 기능 템플릿</h3>
             <p className="mb-4">실시간 알림, 채팅, 데이터 동기화를 위한 템플릿</p>
@@ -867,7 +883,7 @@ const StrategyReport = () => {
               <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded text-xs">풀스택</span>
             </div>
           </div>
-          
+
           <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
             <h3 className="text-xl font-semibold mb-3 text-blue-700">8. Framer Motion + dnd-kit 인터랙션 템플릿</h3>
             <p className="mb-4">고급 애니메이션 및 드래그 앤 드롭 인터페이스 템플릿</p>
@@ -883,7 +899,7 @@ const StrategyReport = () => {
             </div>
           </div>
         </div>
-        
+
         <p className="text-gray-600 italic">
           * 모든 보일러플레이트는 GitHub 또는 GitLab에 공개 저장소로 관리하며, 상세 문서와 예제 코드를 포함합니다.
         </p>
@@ -891,16 +907,16 @@ const StrategyReport = () => {
 
       <div className="mb-16">
         <h2 className="text-3xl font-bold mb-6 text-blue-800 border-b pb-2" id="section7">7. 결론 및 제언</h2>
-        
+
         <div className="mb-6">
           <p className="text-lg mb-4">
             본 보고서에서 분석한 최신 웹 개발 기술 동향과 구현 전략을 통해 차기 CTI 프로젝트의 효율성과 품질을 크게 향상시킬 수 있습니다.
             특히 다음 세 가지 핵심 전략에 집중하는 것이 중요합니다:
           </p>
-          
+
           <div className="bg-blue-50 p-6 rounded-lg mb-6">
             <h3 className="text-2xl font-semibold mb-4 text-blue-700">핵심 전략</h3>
-            
+
             <div className="mb-4">
               <h4 className="text-xl font-medium mb-2 text-blue-600">1. GraphQL with DGS (BFF 트렌드 반영)</h4>
               <ul className="list-disc pl-8 space-y-1">
@@ -909,7 +925,7 @@ const StrategyReport = () => {
                 <li>실시간 데이터 처리를 위한 Subscription 활용</li>
               </ul>
             </div>
-            
+
             <div className="mb-4">
               <h4 className="text-xl font-medium mb-2 text-blue-600">2. Next.js + 최신 프론트엔드 기술 도입</h4>
               <ul className="list-disc pl-8 space-y-1">
@@ -919,7 +935,7 @@ const StrategyReport = () => {
                 <li>FSD 아키텍처로 유지보수성 향상</li>
               </ul>
             </div>
-            
+
             <div className="mb-4">
               <h4 className="text-xl font-medium mb-2 text-blue-600">3. AI 기반 CTI 시스템 고도화</h4>
               <ul className="list-disc pl-8 space-y-1">
@@ -930,12 +946,12 @@ const StrategyReport = () => {
               </ul>
             </div>
           </div>
-          
+
           <p className="text-lg mb-4">
             이러한 전략적 접근을 통해 개발 생산성을 5배 이상 향상시키고, 차별화된 사용자 경험을 제공하는 고품질 CTI 시스템을 구축할 수 있을 것입니다.
             또한 제안된 보일러플레이트 템플릿을 활용하여 개발 시작 단계의 효율성을 높이고, 팀 및 개인 미션을 통해 지속적인 기술 역량 향상을 이룰 수 있습니다.
           </p>
-          
+
           <div className="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-400">
             <h4 className="font-medium mb-2 text-yellow-800">구현 시 고려사항</h4>
             <ul className="list-disc pl-6 space-y-1 text-yellow-800">
@@ -946,7 +962,7 @@ const StrategyReport = () => {
           </div>
         </div>
       </div>
-      
+
       <div className="border-t pt-8 text-center text-gray-600">
         <p>© 2025 웹 CTI 프로젝트 개발팀. All Rights Reserved.</p>
       </div>
