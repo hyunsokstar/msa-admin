@@ -3,6 +3,7 @@
 'use client';
 
 import React from 'react';
+import KeyStrategies from './SolutionSection';
 
 const StrategyReport = () => {
   return (
@@ -850,6 +851,10 @@ const CTIConsole = () => {
           </div>
         </div>
       </section>
+
+      {/* 키 전략 섹션 */}
+      <KeyStrategies />
+
     </div>
   );
 };
