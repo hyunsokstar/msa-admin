@@ -4,6 +4,7 @@
 
 import React from 'react';
 import KeyStrategies from './SolutionSection';
+import ImplementationRoadmap from './ImplementationRoadmap';
 
 const StrategyReport = () => {
   return (
@@ -854,6 +855,8 @@ const CTIConsole = () => {
 
       {/* 키 전략 섹션 */}
       <KeyStrategies />
+
+      <ImplementationRoadmap />
 
     </div>
   );
