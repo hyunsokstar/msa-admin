@@ -149,7 +149,7 @@ const EnhancedLearningResources = () => {
     }
   ];
 
-  [
+  const aiResources = [
     {
       "title": "한 입 크기로 잘라먹는 Next.js(v15)",
       "link": "https://www.inflearn.com/course/%ED%95%9C%EC%9E%85-%ED%81%AC%EA%B8%B0-nextjs",
@@ -199,7 +199,59 @@ const EnhancedLearningResources = () => {
       "type": "blog",
       "difficulty": "중급"
     }
-  ]
+  ];
+
+  const nextjsResources = [
+    {
+      "title": "한 입 크기로 잘라먹는 Next.js(v15)",
+      "link": "https://www.inflearn.com/course/%ED%95%9C%EC%9E%85-%ED%81%AC%EA%B8%B0-nextjs",
+      "description": "세상에서 가장 친절하고 디테일 한 Next.js(15+)강의. App Router 뿐만 아니라 Page Router까지 프로젝트를 통해 살펴봅니다.",
+      "type": "course",
+      "difficulty": "입문"
+    },
+    {
+      "title": "Next.js 공식 학습 과정",
+      "link": "https://nextjs.org/learn",
+      "description": "Next.js 팀이 제공하는 단계별 학습 과정, 한글 번역 지원",
+      "type": "docs",
+      "difficulty": "입문"
+    },
+    {
+      "title": "Next.js로 웹서비스 만들기",
+      "link": "https://codingapple.com/course/next-js/",
+      "description": "자바스크립트 기초 지식만으로 시작하는 Next.js 웹 서비스 개발 강의",
+      "type": "course",
+      "difficulty": "입문"
+    },
+    {
+      "title": "Next.js 공식 대시보드 튜토리얼을 차근차근 따라해보자",
+      "link": "https://velog.io/@bbbjihan/Next.js-%EA%B3%B5%EC%8B%9D-%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC%EC%9D%84-%EC%B0%A8%EA%B7%BC%EC%B0%A8%EA%B7%BC-%EB%94%B0%EB%9D%BC%ED%95%B4%EB%B3%B4%EC%9E%90.-%EC%A0%84%ED%8E%B8",
+      "description": "Next.js 공식 튜토리얼(대시보드 만들기) 한글 설명",
+      "type": "tutorial",
+      "difficulty": "입문"
+    },
+    {
+      "title": "7개 프로젝트로 완벽 대비하는 Next.js 실무 (ft. 성능 개선)",
+      "link": "https://fastcampus.co.kr/dev_online_nextjs7",
+      "description": "7개 프로젝트로 Next.js의 상황별 활용법, 현업 프로세스, 성능 개선 전략 학습",
+      "type": "course",
+      "difficulty": "중급"
+    },
+    {
+      "title": "Next + React Query로 SNS 서비스 만들기 (ZeroCho)",
+      "link": "https://www.inflearn.com/tag-curation/skill/next-js",
+      "description": "Next.js와 React Query를 활용한 실전 SNS 서비스 구축 강의 (ZeroCho)",
+      "type": "course",
+      "difficulty": "중급"
+    },
+    {
+      "title": "[내돈내산] Next.js 강의 추천 -12버전부터 실무까지-",
+      "link": "https://heeeming.tistory.com/entry/%EB%82%B4%EB%8F%88%EB%82%B4%EC%82%B0-Nextjs-%EA%B0%95%EC%9D%98-%EC%B6%94%EC%B2%9C12%EB%B2%84%EC%A0%84%EB%B6%80%ED%84%B0-%EC%8B%A4%EB%AC%B4%EA%B9%8C%EC%A7%80",
+      "description": "이정환, 하조은, 조현영 등 여러 Next.js 유료 강의 비교 및 추천 블로그",
+      "type": "blog",
+      "difficulty": "중급"
+    }
+  ];
 
   const frontendResources = [
     {
@@ -246,14 +298,17 @@ const EnhancedLearningResources = () => {
     }
   ];
 
-  [
+  const openaiResources = [
     {
       "title": "OpenAI API 개발자 퀵스타트",
       "link": "https://platform.openai.com/docs/quickstart",
       "description": "OpenAI API를 사용하여 텍스트 생성, 이미지 분석 등을 시작하는 공식 가이드",
       "type": "docs",
       "difficulty": "입문"
-    },
+    }
+  ];
+
+  const aiTutorialResources = [
     {
       "title": "처음부터 RAG 애플리케이션 구축하기 (초보자 가이드)",
       "link": "https://learnbybuilding.ai/tutorials/rag-from-scratch",
@@ -333,10 +388,10 @@ const EnhancedLearningResources = () => {
       description: "고급 웹 애니메이션 및 인터랙션 구현 테크닉",
       type: "docs",
       difficulty: "고급"
-    },
+    }
   ];
 
-  [
+  const architectureResources = [
     {
       "title": "가장 많이 사용되는 아키텍처 패턴 Top 5 (ByteByteGo)",
       "link": "http://www.youtube.com/watch?v=f6zXyq4VPP8",
@@ -386,7 +441,7 @@ const EnhancedLearningResources = () => {
       "type": "guide",
       "difficulty": "고급"
     }
-  ]
+  ];
 
   const communityResources = [
     {
@@ -448,6 +503,12 @@ const EnhancedLearningResources = () => {
         title="AI 통합 기술 학습 자료"
         description="CTI 시스템에 AI 기능을 통합하기 위한 학습 리소스"
         resources={aiResources}
+      />
+      
+      <ResourceSection
+        title="AI 튜토리얼 및 강의"
+        description="AI 및 LLM 활용을 위한 다양한 튜토리얼과 강의"
+        resources={aiTutorialResources}
       />
 
       <ResourceSection
