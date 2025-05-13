@@ -11,7 +11,7 @@ interface LearningResourceProps {
 const LearningResource = ({ title, link, description, type, difficulty = "중급" }: LearningResourceProps) => {
   // 자원 유형에 따른 아이콘과 색상 설정
   const getTypeStyles = (type: string) => {
-    switch (type.toLowerCase()) {
+    switch(type.toLowerCase()) {
       case 'course':
         return { icon: '🎓', bgColor: 'bg-blue-100', textColor: 'text-blue-700' };
       case 'blog':
@@ -31,7 +31,7 @@ const LearningResource = ({ title, link, description, type, difficulty = "중급
 
   // 난이도에 따른 색상
   const getDifficultyColor = (level: string) => {
-    switch (level.toLowerCase()) {
+    switch(level.toLowerCase()) {
       case '입문':
         return 'bg-green-50 text-green-700';
       case '중급':
@@ -59,14 +59,14 @@ const LearningResource = ({ title, link, description, type, difficulty = "중급
             </span>
           </div>
           <p className="text-gray-600 text-sm mt-1">{description}</p>
-          <a
-            href={link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`inline-block mt-2 px-3 py-1 rounded text-sm ${textColor} ${bgColor} hover:opacity-80 transition-opacity`}
-          >
-            View Resource
-          </a>
+<a 
+  href={link} 
+  target="_blank" 
+  rel="noopener noreferrer" 
+  className={`inline-block mt-2 px-3 py-1 rounded text-sm ${textColor} ${bgColor} hover:opacity-80 transition-opacity`}
+>
+  View Resource
+</a>
         </div>
       </div>
     </div>
@@ -94,6 +94,37 @@ const ResourceSection = ({ title, description, resources }: ResourceSectionProps
 };
 
 const EnhancedLearningResources = () => {
+  // const graphqlResources = [
+  //   {
+  //     title: "GraphQL로 영화 API 만들기",
+  //     link: "https://nomadcoders.co/graphql-for-beginners",
+  //     description: "GraphQL 기초부터 Apollo Server 구현까지 실습 위주로 배우는 강의",
+  //     type: "course",
+  //     difficulty: "입문"
+  //   },
+  //   {
+  //     title: "Netflix DGS Framework 공식 문서",
+  //     link: "https://netflix.github.io/dgs/",
+  //     description: "Netflix에서 제공하는 DGS 프레임워크 공식 가이드 및 베스트 프랙티스",
+  //     type: "docs",
+  //     difficulty: "중급"
+  //   },
+  //   {
+  //     title: "GraphQL Korea 블로그",
+  //     link: "https://medium.com/graphql-korea",
+  //     description: "한국 GraphQL 커뮤니티의 튜토리얼과 최신 소식",
+  //     type: "blog",
+  //     difficulty: "중급"
+  //   },
+  //   {
+  //     title: "Production Ready GraphQL",
+  //     link: "https://book.productionreadygraphql.com/",
+  //     description: "실제 프로덕션 환경에서 GraphQL을 사용하기 위한 패턴과 베스트 프랙티스",
+  //     type: "docs",
+  //     difficulty: "고급"
+  //   },
+  // ];
+
   const graphqlResources = [
     {
       title: "GraphQL로 영화 API 만들기",
@@ -124,13 +155,7 @@ const EnhancedLearningResources = () => {
       difficulty: "고급"
     },
     // 새로 추가된 강의들
-    {
-      title: "인프런 - GraphQL로 영화 API 만들기",
-      link: "https://www.inflearn.com/course/graphql-영화-api-만들기",
-      description: "GraphQL API 개발과 클라이언트 연동을 실무적으로 배우는 한국어 강의",
-      type: "course",
-      difficulty: "입문"
-    },
+
     {
       title: "인프런 - 스프링부트 GraphQL과 리액트",
       link: "https://www.inflearn.com/course/스프링부트-graphql-리액트",
@@ -347,46 +372,46 @@ const EnhancedLearningResources = () => {
         최신 웹 기술을 활용한 CTI 시스템 개발을 위한 추천 학습 자료 모음입니다.
       </p>
 
-      <ResourceSection
-        title="GraphQL + Spring Boot 학습 자료"
-        description="GraphQL 기초 및 Spring Boot와의 통합을 위한 리소스"
-        resources={graphqlResources}
+      <ResourceSection 
+        title="GraphQL + Spring Boot 학습 자료" 
+        description="GraphQL 기초 및 Spring Boot와의 통합을 위한 리소스" 
+        resources={graphqlResources} 
       />
 
-      <ResourceSection
-        title="Next.js 최신 기술 학습 자료"
-        description="Next.js 15와 함께 제공되는 최신 기능 학습 리소스"
-        resources={nextjsResources}
+      <ResourceSection 
+        title="Next.js 최신 기술 학습 자료" 
+        description="Next.js 15와 함께 제공되는 최신 기능 학습 리소스" 
+        resources={nextjsResources} 
       />
 
-      <ResourceSection
-        title="최신 프론트엔드 기술 학습 자료"
-        description="Zustand, TanStack Query, Shadcn UI 등 현대적 프론트엔드 기술 학습 리소스"
-        resources={frontendResources}
+      <ResourceSection 
+        title="최신 프론트엔드 기술 학습 자료" 
+        description="Zustand, TanStack Query, Shadcn UI 등 현대적 프론트엔드 기술 학습 리소스" 
+        resources={frontendResources} 
       />
 
-      <ResourceSection
-        title="AI 통합 기술 학습 자료"
-        description="CTI 시스템에 AI 기능을 통합하기 위한 학습 리소스"
-        resources={aiResources}
+      <ResourceSection 
+        title="AI 통합 기술 학습 자료" 
+        description="CTI 시스템에 AI 기능을 통합하기 위한 학습 리소스" 
+        resources={aiResources} 
       />
 
-      <ResourceSection
-        title="데이터 시각화 및 하이엔드 그래픽"
-        description="Three.js, D3.js 등을 활용한 고급 시각화 기법 학습 리소스"
-        resources={visualizationResources}
+      <ResourceSection 
+        title="데이터 시각화 및 하이엔드 그래픽" 
+        description="Three.js, D3.js 등을 활용한 고급 시각화 기법 학습 리소스" 
+        resources={visualizationResources} 
       />
 
-      <ResourceSection
-        title="아키텍처 패턴 학습 자료"
-        description="확장 가능하고 유지보수하기 쉬운 아키텍처 설계 관련 리소스"
-        resources={architectureResources}
+      <ResourceSection 
+        title="아키텍처 패턴 학습 자료" 
+        description="확장 가능하고 유지보수하기 쉬운 아키텍처 설계 관련 리소스" 
+        resources={architectureResources} 
       />
 
-      <ResourceSection
-        title="커뮤니티 및 컨퍼런스"
-        description="최신 웹 개발 트렌드를 접할 수 있는 커뮤니티 및 컨퍼런스"
-        resources={communityResources}
+      <ResourceSection 
+        title="커뮤니티 및 컨퍼런스" 
+        description="최신 웹 개발 트렌드를 접할 수 있는 커뮤니티 및 컨퍼런스" 
+        resources={communityResources} 
       />
 
       <div className="mt-12 p-6 bg-blue-50 rounded-lg text-center">
