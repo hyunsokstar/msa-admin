@@ -11,7 +11,7 @@ interface LearningResourceProps {
 const LearningResource = ({ title, link, description, type, difficulty = "중급" }: LearningResourceProps) => {
   // 자원 유형에 따른 아이콘과 색상 설정
   const getTypeStyles = (type: string) => {
-    switch(type.toLowerCase()) {
+    switch (type.toLowerCase()) {
       case 'course':
         return { icon: '🎓', bgColor: 'bg-blue-100', textColor: 'text-blue-700' };
       case 'blog':
@@ -31,7 +31,7 @@ const LearningResource = ({ title, link, description, type, difficulty = "중급
 
   // 난이도에 따른 색상
   const getDifficultyColor = (level: string) => {
-    switch(level.toLowerCase()) {
+    switch (level.toLowerCase()) {
       case '입문':
         return 'bg-green-50 text-green-700';
       case '중급':
@@ -59,14 +59,14 @@ const LearningResource = ({ title, link, description, type, difficulty = "중급
             </span>
           </div>
           <p className="text-gray-600 text-sm mt-1">{description}</p>
-<a 
-  href={link} 
-  target="_blank" 
-  rel="noopener noreferrer" 
-  className={`inline-block mt-2 px-3 py-1 rounded text-sm ${textColor} ${bgColor} hover:opacity-80 transition-opacity`}
->
-  View Resource
-</a>
+          <a
+            href={link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`inline-block mt-2 px-3 py-1 rounded text-sm ${textColor} ${bgColor} hover:opacity-80 transition-opacity`}
+          >
+            View Resource
+          </a>
         </div>
       </div>
     </div>
@@ -94,36 +94,7 @@ const ResourceSection = ({ title, description, resources }: ResourceSectionProps
 };
 
 const EnhancedLearningResources = () => {
-  // const graphqlResources = [
-  //   {
-  //     title: "GraphQL로 영화 API 만들기",
-  //     link: "https://nomadcoders.co/graphql-for-beginners",
-  //     description: "GraphQL 기초부터 Apollo Server 구현까지 실습 위주로 배우는 강의",
-  //     type: "course",
-  //     difficulty: "입문"
-  //   },
-  //   {
-  //     title: "Netflix DGS Framework 공식 문서",
-  //     link: "https://netflix.github.io/dgs/",
-  //     description: "Netflix에서 제공하는 DGS 프레임워크 공식 가이드 및 베스트 프랙티스",
-  //     type: "docs",
-  //     difficulty: "중급"
-  //   },
-  //   {
-  //     title: "GraphQL Korea 블로그",
-  //     link: "https://medium.com/graphql-korea",
-  //     description: "한국 GraphQL 커뮤니티의 튜토리얼과 최신 소식",
-  //     type: "blog",
-  //     difficulty: "중급"
-  //   },
-  //   {
-  //     title: "Production Ready GraphQL",
-  //     link: "https://book.productionreadygraphql.com/",
-  //     description: "실제 프로덕션 환경에서 GraphQL을 사용하기 위한 패턴과 베스트 프랙티스",
-  //     type: "docs",
-  //     difficulty: "고급"
-  //   },
-  // ];
+
 
   const graphqlResources = [
     {
@@ -155,60 +126,80 @@ const EnhancedLearningResources = () => {
       difficulty: "고급"
     },
     // 새로 추가된 강의들
-
     {
-      title: "인프런 - 스프링부트 GraphQL과 리액트",
-      link: "https://www.inflearn.com/course/스프링부트-graphql-리액트",
-      description: "스프링부트와 GraphQL을 결합하여 백엔드 API를 구축하고 리액트로 연동하는 방법",
+      title: "DGS: NETFLIX가 스프링 부트로 대용량 트래픽을 처리하는 방법",
+      link: "https://www.inflearn.com/course/dgs-netflix-스프링부트-대용량트래픽-처리",
+      description: "Netflix의 DGS 프레임워크를 활용한 스프링 부트 기반 대용량 트래픽 처리 방법",
       type: "course",
       difficulty: "중급"
     },
     {
-      title: "패스트캠퍼스 - GraphQL로 개발하는 Flutter+Firebase SNS 앱",
-      link: "https://fastcampus.co.kr/dev_online_fltfire",
-      description: "GraphQL과 Flutter, Firebase를 활용한 SNS 애플리케이션 개발 완성 과정",
+      title: "GraphQL: REST API를 대체할 기술",
+      link: "https://www.inflearn.com/course/graphql-rest-api를-대체할-기술",
+      description: "GraphQL의 개념과 REST API와의 차이점 및 실제 구현 방법",
       type: "course",
-      difficulty: "중급"
+      difficulty: "입문"
     },
     {
-      title: "패스트캠퍼스 - 백엔드 개발자를 위한 아키텍처 with GraphQL",
-      link: "https://fastcampus.co.kr/dev_red_sdkst",
-      description: "The RED 시리즈로, 엔터프라이즈급 GraphQL 아키텍처 설계와 구현 방법론",
+      title: "MSA + GraphQL",
+      link: "https://fastcampus.co.kr/dev_online_api3",
+      description: "마이크로서비스 아키텍처와 GraphQL을 결합한 API 개발 방법론",
       type: "course",
       difficulty: "고급"
     }
   ];
 
-  const nextjsResources = [
+  [
     {
-      title: "실전 Next.js 완전 정복",
-      link: "https://fastcampus.co.kr/dev_online_nextjs",
-      description: "App Router, 서버 컴포넌트, 최적화까지 Next.js의 모든 것",
-      type: "course",
-      difficulty: "중급"
+      "title": "한 입 크기로 잘라먹는 Next.js(v15)",
+      "link": "https://www.inflearn.com/course/%ED%95%9C%EC%9E%85-%ED%81%AC%EA%B8%B0-nextjs",
+      "description": "세상에서 가장 친절하고 디테일 한 Next.js(15+)강의. App Router 뿐만 아니라 Page Router까지 프로젝트를 통해 살펴봅니다.",
+      "type": "course",
+      "difficulty": "입문"
     },
     {
-      title: "Next.js 공식 학습 과정",
-      link: "https://nextjs.org/learn",
-      description: "Next.js 팀이 제공하는 단계별 학습 과정, 한글 번역 지원",
-      type: "docs",
-      difficulty: "입문"
+      "title": "Next.js 공식 학습 과정",
+      "link": "https://nextjs.org/learn",
+      "description": "Next.js 팀이 제공하는 단계별 학습 과정, 한글 번역 지원",
+      "type": "docs",
+      "difficulty": "입문"
     },
     {
-      title: "Lee Robinson의 블로그",
-      link: "https://leerob.io/",
-      description: "Vercel DX 책임자가 작성한 Next.js 관련 심층 기술 블로그",
-      type: "blog",
-      difficulty: "중급"
+      "title": "Next.js로 웹서비스 만들기",
+      "link": "https://codingapple.com/course/next-js/",
+      "description": "자바스크립트 기초 지식만으로 시작하는 Next.js 웹 서비스 개발 강의",
+      "type": "course",
+      "difficulty": "입문"
     },
     {
-      title: "Theo의 Next.js Edge API 구현 가이드",
-      link: "https://www.youtube.com/watch?v=J1gzN1SAhyM",
-      description: "Next.js의 Edge 런타임을 활용한 고성능 API 구현 방법",
-      type: "video",
-      difficulty: "고급"
+      "title": "Next.js 공식 대시보드 튜토리얼을 차근차근 따라해보자",
+      "link": "https://velog.io/@bbbjihan/Next.js-%EA%B3%B5%EC%8B%9D-%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C-%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC%EC%9D%84-%EC%B0%A8%EA%B7%BC%EC%B0%A8%EA%B7%BC-%EB%94%B0%EB%9D%BC%ED%95%B4%EB%B3%B4%EC%9E%90.-%EC%A0%84%ED%8E%B8",
+      "description": "Next.js 공식 튜토리얼(대시보드 만들기) 한글 설명",
+      "type": "tutorial",
+      "difficulty": "입문"
     },
-  ];
+    {
+      "title": "7개 프로젝트로 완벽 대비하는 Next.js 실무 (ft. 성능 개선)",
+      "link": "https://fastcampus.co.kr/dev_online_nextjs7",
+      "description": "7개 프로젝트로 Next.js의 상황별 활용법, 현업 프로세스, 성능 개선 전략 학습",
+      "type": "course",
+      "difficulty": "중급"
+    },
+    {
+      "title": "Next + React Query로 SNS 서비스 만들기 (ZeroCho)",
+      "link": "https://www.inflearn.com/tag-curation/skill/next-js",
+      "description": "Next.js와 React Query를 활용한 실전 SNS 서비스 구축 강의 (ZeroCho)",
+      "type": "course",
+      "difficulty": "중급"
+    },
+    {
+      "title": "[내돈내산] Next.js 강의 추천 -12버전부터 실무까지-",
+      "link": "https://heeeming.tistory.com/entry/%EB%82%B4%EB%8F%88%EB%82%B4%EC%82%B0-Nextjs-%EA%B0%95%EC%9D%98-%EC%B6%94%EC%B2%9C12%EB%B2%84%EC%A0%84%EB%B6%80%ED%84%B0-%EC%8B%A4%EB%AC%B4%EA%B9%8C%EC%A7%80",
+      "description": "이정환, 하조은, 조현영 등 여러 Next.js 유료 강의 비교 및 추천 블로그",
+      "type": "blog",
+      "difficulty": "중급"
+    }
+  ]
 
   const frontendResources = [
     {
@@ -255,36 +246,64 @@ const EnhancedLearningResources = () => {
     }
   ];
 
-  const aiResources = [
+  [
     {
-      title: "OpenAI API 마스터 클래스",
-      link: "https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/",
-      description: "Andrew Ng과 OpenAI가 함께 제작한 무료 AI 개발 강의",
-      type: "course",
-      difficulty: "입문"
+      "title": "OpenAI API 개발자 퀵스타트",
+      "link": "https://platform.openai.com/docs/quickstart",
+      "description": "OpenAI API를 사용하여 텍스트 생성, 이미지 분석 등을 시작하는 공식 가이드",
+      "type": "docs",
+      "difficulty": "입문"
     },
     {
-      title: "RAG 튜토리얼 with LangChain",
-      link: "https://python.langchain.com/docs/use_cases/question_answering/",
-      description: "Retrieval-Augmented Generation(RAG) 시스템 구축 가이드",
-      type: "docs",
-      difficulty: "중급"
+      "title": "처음부터 RAG 애플리케이션 구축하기 (초보자 가이드)",
+      "link": "https://learnbybuilding.ai/tutorials/rag-from-scratch",
+      "description": "라이브러리 없이 RAG 시스템의 기본 구성 요소를 단계별로 구축하는 튜토리얼",
+      "type": "tutorial",
+      "difficulty": "입문"
     },
     {
-      title: "Vercel AI SDK 튜토리얼",
-      link: "https://sdk.vercel.ai/docs",
-      description: "Next.js 환경에서 AI 기능 구현을 위한 공식 가이드",
-      type: "docs",
-      difficulty: "중급"
+      "title": "LangChain Crash Course For Beginners (codebasics)",
+      "link": "http://www.youtube.com/watch?v=nAmC7SoVLd8",
+      "description": "LangChain 프레임워크를 사용한 LLM 애플리케이션 개발 입문 영상 튜토리얼",
+      "type": "video",
+      "difficulty": "입문"
+    },
+      {
+      "title": "How I'd Learn AI in 2025 (if I could start over)",
+      "link": "http://www.youtube.com/watch?v=h2FDq3agImI",
+      "description": "2025년 기준 AI 학습 로드맵 및 방법에 대한 조언 영상",
+      "type": "video",
+      "difficulty": "입문"
     },
     {
-      title: "대화형 AI 시스템 구축하기",
-      link: "https://www.youtube.com/watch?v=0vLtc_3KlUc",
-      description: "웹 애플리케이션에 AI 챗봇 기능 통합하는 방법",
-      type: "video",
-      difficulty: "중급"
+      "title": "OpenAI API 웹 Q&A 임베딩 튜토리얼",
+      "link": "https://platform.openai.com/docs/tutorials/web-qa-embeddings",
+      "description": "웹사이트를 크롤링하고 임베딩을 사용하여 질문 답변 시스템을 구축하는 튜토리얼",
+      "type": "tutorial",
+      "difficulty": "중급"
     },
-  ];
+    {
+      "title": "LangChain 한국어 튜토리얼 (GitHub)",
+      "link": "https://github.com/teddylee777/langchain-kr",
+      "description": "LangChain 공식 문서 및 실용 예제를 바탕으로 한 한국어 튜토리얼 모음",
+      "type": "tutorial",
+      "difficulty": "중급"
+    },
+    {
+      "title": "LangChain 공식 튜토리얼 (Build RAG App)",
+      "link": "https://python.langchain.com/docs/tutorials/rag/",
+      "description": "LangChain을 사용하여 RAG(Retrieval Augmented Generation) 애플리케이션을 구축하는 공식 튜토리얼",
+      "type": "tutorial",
+      "difficulty": "중급"
+    },
+    {
+      "title": "인공지능 개발 강의 (Inflearn)",
+      "link": "https://www.inflearn.com/ko/courses/artificial-intelligence",
+      "description": "딥러닝, 컴퓨터 비전, AI Agent 등 다양한 한국어 AI 개발 강의 모음",
+      "type": "course",
+      "difficulty": "중급"
+    }
+  ]
 
   const visualizationResources = [
     {
@@ -317,36 +336,57 @@ const EnhancedLearningResources = () => {
     },
   ];
 
-  const architectureResources = [
+  [
     {
-      title: "데이터 중심 아키텍처 설계",
-      link: "https://martinfowler.com/architecture/",
-      description: "마틴 파울러의 소프트웨어 아키텍처 패턴 가이드",
-      type: "blog",
-      difficulty: "고급"
+      "title": "가장 많이 사용되는 아키텍처 패턴 Top 5 (ByteByteGo)",
+      "link": "http://www.youtube.com/watch?v=f6zXyq4VPP8",
+      "description": "가장 널리 사용되는 소프트웨어 아키텍처 패턴 5가지(Layered, Client-Server 등) 소개 영상",
+      "type": "video",
+      "difficulty": "입문"
     },
     {
-      title: "FSD(Feature-Sliced Design) 공식 문서",
-      link: "https://feature-sliced.design/",
-      description: "확장 가능한 프론트엔드 아키텍처 방법론 가이드",
-      type: "docs",
-      difficulty: "중급"
+      "title": "Feature-Sliced Design 공식 문서",
+      "link": "https://feature-sliced.design/",
+      "description": "프론트엔드 프로젝트를 위한 아키텍처 방법론 공식 문서 (계층, 슬라이스, 세그먼트 설명)",
+      "type": "docs",
+      "difficulty": "중급"
     },
     {
-      title: "Clean Architecture in JavaScript",
-      link: "https://github.com/falsy/react-with-clean-architecture",
-      description: "React와 TypeScript로 구현하는 클린 아키텍처 예제",
-      type: "github",
-      difficulty: "고급"
+      "title": "Feature-Sliced Design: 최고의 프론트엔드 아키텍처 (DEV Community)",
+      "link": "https://dev.to/m_midas/feature-sliced-design-the-best-frontend-architecture-4noj",
+      "description": "FSD의 계층 구조, 슬라이스, 세그먼트 및 Public API 개념 설명, 장점 분석",
+      "type": "blog",
+      "difficulty": "중급"
     },
     {
-      title: "마이크로 프론트엔드 아키텍처 가이드",
-      link: "https://micro-frontends.org/",
-      description: "확장 가능한 프론트엔드 시스템 구축 방법론",
-      type: "docs",
-      difficulty: "고급"
+      "title": "클린 아키텍처 개념 및 원칙 (Tistory)",
+      "link": "https://daryeou.tistory.com/280",
+      "description": "클린 아키텍처의 정의, 계층 구조(엔티티, 유스케이스 등), SOLID 원칙과의 관계 설명",
+      "type": "blog",
+      "difficulty": "중급"
     },
-  ];
+    {
+      "title": "마이크로서비스 아키텍처 스타일 (Microsoft Learn)",
+      "link": "https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/microservices",
+      "description": "Azure 아키텍처 센터의 마이크로서비스 정의, 특징, 모범 사례 및 관련 패턴 가이드",
+      "type": "docs",
+      "difficulty": "중급"
+    },
+    {
+      "title": "Microservice 설계 및 구현 (K-MOOC)",
+      "link": "https://www.kmooc.kr/view/course/detail/3268",
+      "description": "마이크로서비스 아키텍처 정의, 패턴, 도메인 주도 설계와의 연관성 학습 강의",
+      "type": "course",
+      "difficulty": "중급"
+    },
+    {
+      "title": "소프트웨어 아키텍처 가이드 (Martin Fowler)",
+      "link": "https://martinfowler.com/architecture/",
+      "description": "Martin Fowler의 웹사이트 내 소프트웨어 아키텍처 관련 글 모음 (마이크로서비스, 애플리케이션 경계 등)",
+      "type": "guide",
+      "difficulty": "고급"
+    }
+  ]
 
   const communityResources = [
     {
@@ -386,46 +426,46 @@ const EnhancedLearningResources = () => {
         최신 웹 기술을 활용한 CTI 시스템 개발을 위한 추천 학습 자료 모음입니다.
       </p>
 
-      <ResourceSection 
-        title="GraphQL + Spring Boot 학습 자료" 
-        description="GraphQL 기초 및 Spring Boot와의 통합을 위한 리소스" 
-        resources={graphqlResources} 
+      <ResourceSection
+        title="GraphQL + Spring Boot 학습 자료"
+        description="GraphQL 기초 및 Spring Boot와의 통합을 위한 리소스"
+        resources={graphqlResources}
       />
 
-      <ResourceSection 
-        title="Next.js 최신 기술 학습 자료" 
-        description="Next.js 15와 함께 제공되는 최신 기능 학습 리소스" 
-        resources={nextjsResources} 
+      <ResourceSection
+        title="Next.js 최신 기술 학습 자료"
+        description="Next.js 15와 함께 제공되는 최신 기능 학습 리소스"
+        resources={nextjsResources}
       />
 
-      <ResourceSection 
-        title="최신 프론트엔드 기술 학습 자료" 
-        description="Zustand, TanStack Query, Shadcn UI 등 현대적 프론트엔드 기술 학습 리소스" 
-        resources={frontendResources} 
+      <ResourceSection
+        title="최신 프론트엔드 기술 학습 자료"
+        description="Zustand, TanStack Query, Shadcn UI 등 현대적 프론트엔드 기술 학습 리소스"
+        resources={frontendResources}
       />
 
-      <ResourceSection 
-        title="AI 통합 기술 학습 자료" 
-        description="CTI 시스템에 AI 기능을 통합하기 위한 학습 리소스" 
-        resources={aiResources} 
+      <ResourceSection
+        title="AI 통합 기술 학습 자료"
+        description="CTI 시스템에 AI 기능을 통합하기 위한 학습 리소스"
+        resources={aiResources}
       />
 
-      <ResourceSection 
-        title="데이터 시각화 및 하이엔드 그래픽" 
-        description="Three.js, D3.js 등을 활용한 고급 시각화 기법 학습 리소스" 
-        resources={visualizationResources} 
+      <ResourceSection
+        title="데이터 시각화 및 하이엔드 그래픽"
+        description="Three.js, D3.js 등을 활용한 고급 시각화 기법 학습 리소스"
+        resources={visualizationResources}
       />
 
-      <ResourceSection 
-        title="아키텍처 패턴 학습 자료" 
-        description="확장 가능하고 유지보수하기 쉬운 아키텍처 설계 관련 리소스" 
-        resources={architectureResources} 
+      <ResourceSection
+        title="아키텍처 패턴 학습 자료"
+        description="확장 가능하고 유지보수하기 쉬운 아키텍처 설계 관련 리소스"
+        resources={architectureResources}
       />
 
-      <ResourceSection 
-        title="커뮤니티 및 컨퍼런스" 
-        description="최신 웹 개발 트렌드를 접할 수 있는 커뮤니티 및 컨퍼런스" 
-        resources={communityResources} 
+      <ResourceSection
+        title="커뮤니티 및 컨퍼런스"
+        description="최신 웹 개발 트렌드를 접할 수 있는 커뮤니티 및 컨퍼런스"
+        resources={communityResources}
       />
 
       <div className="mt-12 p-6 bg-blue-50 rounded-lg text-center">
