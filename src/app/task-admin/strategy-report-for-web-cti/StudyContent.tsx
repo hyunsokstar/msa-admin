@@ -1,8 +1,16 @@
 import React from 'react';
 
-const LearningResource = ({ title, link, description, type, difficulty = "중급" }) => {
+interface LearningResourceProps {
+  title: string;
+  link: string;
+  description: string;
+  type: string;
+  difficulty?: string;
+}
+
+const LearningResource = ({ title, link, description, type, difficulty = "중급" }: LearningResourceProps) => {
   // 자원 유형에 따른 아이콘과 색상 설정
-  const getTypeStyles = (type) => {
+  const getTypeStyles = (type: string) => {
     switch(type.toLowerCase()) {
       case 'course':
         return { icon: '🎓', bgColor: 'bg-blue-100', textColor: 'text-blue-700' };
@@ -22,7 +30,7 @@ const LearningResource = ({ title, link, description, type, difficulty = "중급
   const { icon, bgColor, textColor } = getTypeStyles(type);
 
   // 난이도에 따른 색상
-  const getDifficultyColor = (level) => {
+  const getDifficultyColor = (level: string) => {
     switch(level.toLowerCase()) {
       case '입문':
         return 'bg-green-50 text-green-700';
@@ -51,26 +59,32 @@ const LearningResource = ({ title, link, description, type, difficulty = "중급
             </span>
           </div>
           <p className="text-gray-600 text-sm mt-1">{description}</p>
-          <a 
-            href={link} 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className={`inline-block mt-2 px-3 py-1 rounded text-sm ${textColor} ${bgColor} hover:opacity-80 transition-opacity`}
-          >
-            자세히 보기 →
-          </a>
+<a 
+  href={link} 
+  target="_blank" 
+  rel="noopener noreferrer" 
+  className={`inline-block mt-2 px-3 py-1 rounded text-sm ${textColor} ${bgColor} hover:opacity-80 transition-opacity`}
+>
+  View Resource
+</a>
         </div>
       </div>
     </div>
   );
 };
 
-const ResourceSection = ({ title, description, resources }) => {
+interface ResourceSectionProps {
+  title: string;
+  description?: string;
+  resources: LearningResourceProps[];
+}
+
+const ResourceSection = ({ title, description, resources }: ResourceSectionProps) => {
   return (
     <div className="mb-8">
-      <h2 className="text-2xl font-bold mb-2 text-blue-800 border-b pb-2">{title}</h2>
-      {description && <p className="mb-4 text-gray-700">{description}</p>}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <h2 className="text-2xl font-bold mb-2">{title}</h2>
+      {description && <p className="text-gray-600 mb-4">{description}</p>}
+      <div className="grid gap-4">
         {resources.map((resource, index) => (
           <LearningResource key={index} {...resource} />
         ))}
