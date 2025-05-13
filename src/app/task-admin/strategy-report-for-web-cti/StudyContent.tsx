@@ -1,16 +1,8 @@
 import React from 'react';
 
-interface LearningResourceProps {
-  title: string;
-  link: string; // Added missing link property
-  description: string;
-  type: string;
-  difficulty?: string;
-}
-
-const LearningResource = ({ title, link, description, type, difficulty = "중급" }: LearningResourceProps) => {
+const LearningResource = ({ title, link, description, type, difficulty = "중급" }) => {
   // 자원 유형에 따른 아이콘과 색상 설정
-  const getTypeStyles = (type: string) => {
+  const getTypeStyles = (type) => {
     switch(type.toLowerCase()) {
       case 'course':
         return { icon: '🎓', bgColor: 'bg-blue-100', textColor: 'text-blue-700' };
@@ -30,7 +22,7 @@ const LearningResource = ({ title, link, description, type, difficulty = "중급
   const { icon, bgColor, textColor } = getTypeStyles(type);
 
   // 난이도에 따른 색상
-  const getDifficultyColor = (level: string) => {
+  const getDifficultyColor = (level) => {
     switch(level.toLowerCase()) {
       case '입문':
         return 'bg-green-50 text-green-700';
@@ -63,23 +55,17 @@ const LearningResource = ({ title, link, description, type, difficulty = "중급
             href={link} 
             target="_blank" 
             rel="noopener noreferrer" 
-  className={`inline-block mt-2 px-3 py-1 rounded text-sm ${textColor} ${bgColor} hover:opacity-80 transition-opacity`}
->
-  자세히 보기
-</a>
+            className={`inline-block mt-2 px-3 py-1 rounded text-sm ${textColor} ${bgColor} hover:opacity-80 transition-opacity`}
+          >
+            자세히 보기 →
+          </a>
         </div>
       </div>
     </div>
   );
 };
 
-interface ResourceSectionProps {
-  title: string;
-  description?: string;
-  resources: LearningResourceProps[];
-}
-
-const ResourceSection = ({ title, description, resources }: ResourceSectionProps) => {
+const ResourceSection = ({ title, description, resources }) => {
   return (
     <div className="mb-8">
       <h2 className="text-2xl font-bold mb-2 text-blue-800 border-b pb-2">{title}</h2>
@@ -92,6 +78,7 @@ const ResourceSection = ({ title, description, resources }: ResourceSectionProps
     </div>
   );
 };
+
 const EnhancedLearningResources = () => {
   const graphqlResources = [
     {

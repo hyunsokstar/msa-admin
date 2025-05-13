@@ -1,411 +1,347 @@
+// components/ImplementationRoadmap.tsx
+
 import React from 'react';
 
-// Resource type definition
-type ResourceType = {
-  title: string;
-  link: string;
-  description: string;
-  type: string;
-  difficulty: string;
-};
-
-// Key type for learningResourcesData
-type ResourceKey = 'graphql' | 'nextjs' | 'frontend' | 'ai' | 'visualization' | 'architecture' | 'community';
-
-// 학습 자료 표시를 위한 컴포넌트
-const LearningResource = ({ title, link, description, type, difficulty = "중급" }: ResourceType) => {
-  // 자원 유형에 따른 아이콘과 색상 설정
-  const getTypeStyles = (type: string) => {
-    switch(type.toLowerCase()) {
-      case 'course':
-        return { icon: '🎓', bgColor: 'bg-blue-100', textColor: 'text-blue-700' };
-      case 'blog':
-        return { icon: '📝', bgColor: 'bg-green-100', textColor: 'text-green-700' };
-      case 'video':
-        return { icon: '🎥', bgColor: 'bg-red-100', textColor: 'text-red-700' };
-      case 'docs':
-        return { icon: '📚', bgColor: 'bg-purple-100', textColor: 'text-purple-700' };
-      case 'github':
-        return { icon: '💻', bgColor: 'bg-gray-100', textColor: 'text-gray-700' };
-      default:
-        return { icon: '📄', bgColor: 'bg-yellow-100', textColor: 'text-yellow-700' };
-    }
-  };
-
-  const { icon, bgColor, textColor } = getTypeStyles(type);
-
-  // 난이도에 따른 색상
-  const getDifficultyColor = (level: string) => {
-    switch(level.toLowerCase()) {
-      case '입문':
-        return 'bg-green-50 text-green-700';
-      case '중급':
-        return 'bg-blue-50 text-blue-700';
-      case '고급':
-        return 'bg-purple-50 text-purple-700';
-      default:
-        return 'bg-gray-50 text-gray-700';
-    }
-  };
-
-  const difficultyClass = getDifficultyColor(difficulty);
-
+const ImplementationRoadmap = () => {
   return (
-    <div className="border rounded-lg p-4 hover:shadow-md transition-shadow mb-3">
-      <div className="flex items-start">
-        <div className={`flex-shrink-0 ${bgColor} ${textColor} p-3 rounded-full text-xl mr-4`}>
-          {icon}
-        </div>
-        <div className="flex-grow">
-          <div className="flex justify-between items-start">
-            <h3 className="text-lg font-medium">{title}</h3>
-            <span className={`text-xs px-2 py-1 rounded-full ${difficultyClass}`}>
-              {difficulty}
-            </span>
-          </div>
-          <p className="text-gray-600 text-sm mt-1">{description}</p>
-          <a 
-            href={link} 
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`inline-block mt-2 px-3 py-1 rounded text-sm ${textColor} ${bgColor} hover:opacity-80 transition-opacity`}
-          >
-            자세히 보기 →
-          </a>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// 리소스 섹션 컴포넌트
-const ResourceSection = ({ title, description, resources }: { title: string; description: string; resources: ResourceType[] }) => {
-  return (
-    <div className="mb-12">
-      <h2 className="text-2xl font-bold mb-4 text-blue-800 border-b pb-2">{title}</h2>
-      {description && <p className="mb-4 text-gray-700">{description}</p>}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {resources.map((resource, index) => (
-          <LearningResource key={index} {...resource} />
-        ))}
-      </div>
-    </div>
-  );
-};
-
-// 학습 자료 데이터
-const learningResourcesData: Record<ResourceKey, ResourceType[]> = {
-  graphql: [
-    {
-      title: "GraphQL로 영화 API 만들기",
-      link: "https://nomadcoders.co/graphql-for-beginners",
-      description: "GraphQL 기초부터 Apollo Server 구현까지 실습 위주로 배우는 강의",
-      type: "course",
-      difficulty: "입문"
-    },
-    {
-      title: "DGS-Netflix 스프링부트 대용량 트래픽 처리",
-      link: "https://www.inflearn.com/course/dgs-netflix-스프링부트-대용량트래픽-처리",
-      description: "Netflix DGS 프레임워크를 활용한 Spring Boot 기반 GraphQL 서버 구현 및 대용량 트래픽 처리 방법",
-      type: "course",
-      difficulty: "중급"
-    },
-    {
-      title: "GraphQL: REST API를 대체할 기술",
-      link: "https://www.inflearn.com/course/graphql-rest-api를-대체할-기술",
-      description: "RESTful API의 한계를 극복하는 GraphQL의 개념과 실무 적용 방법 학습",
-      type: "course",
-      difficulty: "입문"
-    },
-    {
-      title: "FastCampus GraphQL Online API 3기",
-      link: "https://fastcampus.co.kr/dev_online_api3",
-      description: "GraphQL 핵심 개념부터 Spring Boot 통합, 실전 프로젝트까지 완성하는 종합 과정",
-      type: "course",
-      difficulty: "중급"
-    },
-    {
-      title: "Netflix DGS Framework 공식 문서",
-      link: "https://netflix.github.io/dgs/",
-      description: "Netflix에서 제공하는 DGS 프레임워크 공식 가이드 및 베스트 프랙티스",
-      type: "docs",
-      difficulty: "중급"
-    },
-    {
-      title: "GraphQL Korea 블로그",
-      link: "https://medium.com/graphql-korea",
-      description: "한국 GraphQL 커뮤니티의 튜토리얼과 최신 소식",
-      type: "blog",
-      difficulty: "중급"
-    },
-    {
-      title: "Production Ready GraphQL",
-      link: "https://book.productionreadygraphql.com/",
-      description: "실제 프로덕션 환경에서 GraphQL을 사용하기 위한 패턴과 베스트 프랙티스",
-      type: "docs",
-      difficulty: "고급"
-    },
-  ],
-  
-  nextjs: [
-    {
-      title: "실전 Next.js 완전 정복",
-      link: "https://fastcampus.co.kr/dev_online_nextjs",
-      description: "App Router, 서버 컴포넌트, 최적화까지 Next.js의 모든 것",
-      type: "course",
-      difficulty: "중급"
-    },
-    {
-      title: "Next.js 공식 학습 과정",
-      link: "https://nextjs.org/learn",
-      description: "Next.js 팀이 제공하는 단계별 학습 과정, 한글 번역 지원",
-      type: "docs",
-      difficulty: "입문"
-    },
-    {
-      title: "Lee Robinson의 블로그",
-      link: "https://leerob.io/",
-      description: "Vercel DX 책임자가 작성한 Next.js 관련 심층 기술 블로그",
-      type: "blog",
-      difficulty: "중급"
-    },
-    {
-      title: "Theo의 Next.js Edge API 구현 가이드",
-      link: "https://www.youtube.com/watch?v=J1gzN1SAhyM",
-      description: "Next.js의 Edge 런타임을 활용한 고성능 API 구현 방법",
-      type: "video",
-      difficulty: "고급"
-    },
-  ],
-  
-  frontend: [
-    {
-      title: "Zustand 마스터 클래스",
-      link: "https://ui.dev/zustand",
-      description: "Zustand의 내부 작동 원리부터 복잡한 상태 관리까지",
-      type: "course",
-      difficulty: "중급"
-    },
-    {
-      title: "TanStack 완벽 가이드",
-      link: "https://tkdodo.eu/blog/practical-react-query",
-      description: "TanStack Query의 깊이 있는 이해와 실전 패턴",
-      type: "blog",
-      difficulty: "중급"
-    },
-    {
-      title: "Shadcn UI 마스터하기",
-      link: "https://ui.shadcn.com/docs",
-      description: "재사용 가능한 컴포넌트 설계와 테마 커스터마이징",
-      type: "docs",
-      difficulty: "중급"
-    },
-    {
-      title: "코딩애플 Framer Motion 강의",
-      link: "https://codingapple.com/course/framer-motion-basic/",
-      description: "웹 애니메이션의 기초부터 고급 인터랙션까지",
-      type: "course",
-      difficulty: "입문"
-    },
-  ],
-  
-  ai: [
-    {
-      title: "OpenAI API 마스터 클래스",
-      link: "https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/",
-      description: "Andrew Ng과 OpenAI가 함께 제작한 무료 AI 개발 강의",
-      type: "course",
-      difficulty: "입문"
-    },
-    {
-      title: "RAG 튜토리얼 with LangChain",
-      link: "https://python.langchain.com/docs/use_cases/question_answering/",
-      description: "Retrieval-Augmented Generation(RAG) 시스템 구축 가이드",
-      type: "docs",
-      difficulty: "중급"
-    },
-    {
-      title: "Vercel AI SDK 튜토리얼",
-      link: "https://sdk.vercel.ai/docs",
-      description: "Next.js 환경에서 AI 기능 구현을 위한 공식 가이드",
-      type: "docs",
-      difficulty: "중급"
-    },
-    {
-      title: "대화형 AI 시스템 구축하기",
-      link: "https://www.youtube.com/watch?v=0vLtc_3KlUc",
-      description: "웹 애플리케이션에 AI 챗봇 기능 통합하는 방법",
-      type: "video",
-      difficulty: "중급"
-    },
-  ],
-  
-  visualization: [
-    {
-      title: "Three.js Journey",
-      link: "https://threejs-journey.com/",
-      description: "WebGL과 Three.js를 활용한 3D 그래픽 구현 마스터 코스",
-      type: "course",
-      difficulty: "중급"
-    },
-    {
-      title: "D3.js 실전 데이터 시각화",
-      link: "https://www.inflearn.com/course/d3-js-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%8B%9C%EA%B0%81%ED%99%94",
-      description: "웹 기반 인터랙티브 데이터 시각화 구현 기법",
-      type: "course",
-      difficulty: "중급"
-    },
-    {
-      title: "React Three Fiber 튜토리얼",
-      link: "https://docs.pmnd.rs/react-three-fiber/getting-started/introduction",
-      description: "React 환경에서 3D 그래픽 구현을 위한 공식 가이드",
-      type: "docs",
-      difficulty: "중급"
-    },
-    {
-      title: "GSAP 애니메이션 마스터하기",
-      link: "https://greensock.com/learning/",
-      description: "고급 웹 애니메이션 및 인터랙션 구현 테크닉",
-      type: "docs",
-      difficulty: "고급"
-    },
-  ],
-  
-  architecture: [
-    {
-      title: "데이터 중심 아키텍처 설계",
-      link: "https://martinfowler.com/architecture/",
-      description: "마틴 파울러의 소프트웨어 아키텍처 패턴 가이드",
-      type: "blog",
-      difficulty: "고급"
-    },
-    {
-      title: "FSD(Feature-Sliced Design) 공식 문서",
-      link: "https://feature-sliced.design/",
-      description: "확장 가능한 프론트엔드 아키텍처 방법론 가이드",
-      type: "docs",
-      difficulty: "중급"
-    },
-    {
-      title: "Clean Architecture in JavaScript",
-      link: "https://github.com/falsy/react-with-clean-architecture",
-      description: "React와 TypeScript로 구현하는 클린 아키텍처 예제",
-      type: "github",
-      difficulty: "고급"
-    },
-    {
-      title: "마이크로 프론트엔드 아키텍처 가이드",
-      link: "https://micro-frontends.org/",
-      description: "확장 가능한 프론트엔드 시스템 구축 방법론",
-      type: "docs",
-      difficulty: "고급"
-    },
-  ],
-  
-  community: [
-    {
-      title: "AWSKRUG GraphQL 모임",
-      link: "https://www.meetup.com/ko-KR/awskrug/",
-      description: "한국 AWS 사용자 그룹의 GraphQL 관련 커뮤니티 및 밋업",
-      type: "blog",
-      difficulty: "중급"
-    },
-    {
-      title: "프론트엔드 개발자 컨퍼런스 (FEConf)",
-      link: "https://feconf.kr/",
-      description: "한국 최대 프론트엔드 개발 컨퍼런스 자료 및 영상",
-      type: "video",
-      difficulty: "중급"
-    },
-    {
-      title: "Infcon 기술 컨퍼런스",
-      link: "https://inflearn.com/infcon",
-      description: "인프런에서 주최하는 다양한 웹 기술 세션",
-      type: "video",
-      difficulty: "중급"
-    },
-    {
-      title: "DevTalk 팟캐스트",
-      link: "https://www.podbbang.com/channels/1778409",
-      description: "최신 개발 트렌드와 기술에 대한 한국 개발자 팟캐스트",
-      type: "video",
-      difficulty: "입문"
-    },
-  ],
-};
-
-// 섹션 정보
-const sections: { id: ResourceKey; title: string; description: string }[] = [
-  {
-    id: 'graphql',
-    title: "GraphQL + Spring Boot 학습 자료",
-    description: "GraphQL 기초 및 Spring Boot와의 통합을 위한 리소스"
-  },
-  {
-    id: 'nextjs',
-    title: "Next.js 최신 기술 학습 자료",
-    description: "Next.js 15와 함께 제공되는 최신 기능 학습 리소스"
-  },
-  {
-    id: 'frontend',
-    title: "최신 프론트엔드 기술 학습 자료",
-    description: "Zustand, TanStack Query, Shadcn UI 등 현대적 프론트엔드 기술 학습 리소스"
-  },
-  {
-    id: 'ai',
-    title: "AI 통합 기술 학습 자료",
-    description: "CTI 시스템에 AI 기능을 통합하기 위한 학습 리소스"
-  },
-  {
-    id: 'visualization',
-    title: "데이터 시각화 및 하이엔드 그래픽",
-    description: "Three.js, D3.js 등을 활용한 고급 시각화 기법 학습 리소스"
-  },
-  {
-    id: 'architecture',
-    title: "아키텍처 패턴 학습 자료",
-    description: "확장 가능하고 유지보수하기 쉬운 아키텍처 설계 관련 리소스"
-  },
-  {
-    id: 'community',
-    title: "커뮤니티 및 컨퍼런스",
-    description: "최신 웹 개발 트렌드를 접할 수 있는 커뮤니티 및 컨퍼런스"
-  }
-];
-
-// 메인 컴포넌트
-const EnhancedLearningResources: React.FC = () => {
-  return (
-    <div className="max-w-6xl mx-auto px-4 py-12 bg-white">
-      <h1 className="text-4xl font-bold text-center mb-8 text-blue-800">웹 CTI 프로젝트를 위한 학습 자료</h1>
-      <p className="text-lg text-center mb-12 text-gray-700">
-        최신 웹 기술을 활용한 CTI 시스템 개발을 위한 추천 학습 자료 모음입니다.
+    <section className="mb-16">
+      <h2 className="text-3xl font-bold mb-6 text-blue-700 border-b pb-2">4. 구현 로드맵 및 타임라인</h2>
+      <p className="text-lg mb-6">
+        제안된 기술 스택과 아키텍처 변경을 체계적으로 구현하기 위한 단계별 로드맵으로, 약 5개월(20주) 기간으로 계획되었습니다.
+        프로젝트 규모와 팀 역량에 따라 일정 조정이 가능합니다.
       </p>
 
-      {sections.map(section => (
-        <ResourceSection
-          key={section.id}
-          title={section.title}
-          description={section.description}
-          resources={learningResourcesData[section.id]}
-        />
-      ))}
-
-      <div className="mt-12 p-6 bg-blue-50 rounded-lg text-center">
-        <h3 className="text-xl font-bold text-blue-800 mb-3">팀 학습 로드맵 운영 제안</h3>
-        <p className="text-gray-700 mb-4">
-          각 팀원이 관심 분야별로 학습 자료를 선택하고, 2주에 한 번 학습 내용을 공유하는 기술 세미나를 운영하면
-          효과적인 기술 역량 강화가 가능합니다. 또한 모든 학습 자료와 세미나 내용은 내부 위키에 축적하여
-          지식 자산화할 것을 권장드립니다.
-        </p>
-        <div className="flex justify-center space-x-4">
-          <div className="bg-white p-4 rounded-lg shadow-sm text-blue-800 font-medium">
-            학습 → 구현 → 공유 → 개선
+      {/* 1단계: 준비 및 계획 */}
+      <div className="mb-8">
+        <h3 className="text-2xl font-semibold text-blue-600 mb-4">1단계: 준비 및 계획 (2주)</h3>
+        
+        <div className="flex mb-4 border-l-4 border-blue-500">
+          <div className="w-32 font-semibold pl-4">1주차</div>
+          <div className="flex-1">
+            <h4 className="font-semibold text-blue-700 mb-2">기술 스택 준비 및 학습</h4>
+            <ul className="list-disc pl-6 space-y-1">
+              <li>팀 구성 및 역할 분담</li>
+              <li>Next.js, Zustand, TanStack Query, GraphQL 기술 스택 학습 세션</li>
+              <li>개발 환경 구성 및 도구 설정 (GitHub 설정, CI/CD 파이프라인)</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div className="flex mb-4 border-l-4 border-blue-500">
+          <div className="w-32 font-semibold pl-4">2주차</div>
+          <div className="flex-1">
+            <h4 className="font-semibold text-blue-700 mb-2">상세 설계 및 프로토타입</h4>
+            <ul className="list-disc pl-6 space-y-1">
+              <li>상세 아키텍처 설계 문서 작성</li>
+              <li>GraphQL 스키마 초안 설계</li>
+              <li>UI/UX 와이어프레임 및 프로토타입 제작</li>
+              <li>기술적 위험 요소 평가 및 대응 계획 수립</li>
+            </ul>
           </div>
         </div>
       </div>
-    </div>
+      
+      {/* 2단계: 기초 인프라 구축 */}
+      <div className="mb-8">
+        <h3 className="text-2xl font-semibold text-blue-600 mb-4">2단계: 기초 인프라 구축 (3주)</h3>
+        
+        <div className="flex mb-4 border-l-4 border-blue-500">
+          <div className="w-32 font-semibold pl-4">3주차</div>
+          <div className="flex-1">
+            <h4 className="font-semibold text-blue-700 mb-2">백엔드 기초 작업</h4>
+            <ul className="list-disc pl-6 space-y-1">
+              <li>Spring Boot + DGS Framework 초기 설정</li>
+              <li>기본 GraphQL 스키마 및 리졸버 구현</li>
+              <li>데이터베이스 설계 및 연결</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div className="flex mb-4 border-l-4 border-blue-500">
+          <div className="w-32 font-semibold pl-4">4주차</div>
+          <div className="flex-1">
+            <h4 className="font-semibold text-blue-700 mb-2">프론트엔드 기초 작업</h4>
+            <ul className="list-disc pl-6 space-y-1">
+              <li>Next.js 프로젝트 초기화 및 FSD 아키텍처 폴더 구조 구성</li>
+              <li>공통 UI 컴포넌트 라이브러리 구축</li>
+              <li>Zustand 상태 관리 스토어 설계 및 기본 구현</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div className="flex mb-4 border-l-4 border-blue-500">
+          <div className="w-32 font-semibold pl-4">5주차</div>
+          <div className="flex-1">
+            <h4 className="font-semibold text-blue-700 mb-2">기본 통합 작업</h4>
+            <ul className="list-disc pl-6 space-y-1">
+              <li>GraphQL 클라이언트 설정 및 TanStack Query 통합</li>
+              <li>기본 API 연동 테스트</li>
+              <li>GitHub Actions를 통한 CI/CD 파이프라인 구축</li>
+              <li>AI 코드 리뷰 시스템 구성</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      {/* 3단계: 핵심 기능 개발 */}
+      <div className="mb-8">
+        <h3 className="text-2xl font-semibold text-blue-600 mb-4">3단계: 핵심 기능 개발 (6주)</h3>
+        
+        <div className="flex mb-4 border-l-4 border-blue-500">
+          <div className="w-32 font-semibold pl-4">6-7주차</div>
+          <div className="flex-1">
+            <h4 className="font-semibold text-blue-700 mb-2">탭 관리 시스템 구현</h4>
+            <ul className="list-disc pl-6 space-y-1">
+              <li>Zustand 기반 탭 관리 스토어 완성</li>
+              <li>다중 탭 UI 컴포넌트 구현</li>
+              <li>패널 분할 및 크기 조정 기능 구현</li>
+              <li>탭 콘텐츠 동적 로딩 시스템 구현</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div className="flex mb-4 border-l-4 border-blue-500">
+          <div className="w-32 font-semibold pl-4">8-9주차</div>
+          <div className="flex-1">
+            <h4 className="font-semibold text-blue-700 mb-2">실시간 모니터링 기능 개발</h4>
+            <ul className="list-disc pl-6 space-y-1">
+              <li>실시간 데이터 구독을 위한 GraphQL Subscription 구현</li>
+              <li>캠페인-상담원-상태 계층형 데이터 조회 API 완성</li>
+              <li>모니터링 대시보드 UI 구현</li>
+              <li>실시간 데이터 시각화 컴포넌트 개발</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div className="flex mb-4 border-l-4 border-blue-500">
+          <div className="w-32 font-semibold pl-4">10-11주차</div>
+          <div className="flex-1">
+            <h4 className="font-semibold text-blue-700 mb-2">상담 관리 기능 개발</h4>
+            <ul className="list-disc pl-6 space-y-1">
+              <li>상담원 정보 관리 기능 구현</li>
+              <li>고객 정보 관리 기능 구현</li>
+              <li>통화 내역 관리 기능 구현</li>
+              <li>폼 관리 최적화 (React Hook Form 활용)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      {/* 4단계: 고급 기능 개발 */}
+      <div className="mb-8">
+        <h3 className="text-2xl font-semibold text-blue-600 mb-4">4단계: 고급 기능 개발 (4주)</h3>
+        
+        <div className="flex mb-4 border-l-4 border-blue-500">
+          <div className="w-32 font-semibold pl-4">12-13주차</div>
+          <div className="flex-1">
+            <h4 className="font-semibold text-blue-700 mb-2">AI 통화 분석 시스템 통합</h4>
+            <ul className="list-disc pl-6 space-y-1">
+              <li>음성-텍스트 변환 API 통합</li>
+              <li>감정 분석 기능 구현</li>
+              <li>통화 요약 및 키워드 추출 기능 구현</li>
+              <li>분석 결과 시각화 대시보드 개발</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div className="flex mb-4 border-l-4 border-blue-500">
+          <div className="w-32 font-semibold pl-4">14-15주차</div>
+          <div className="flex-1">
+            <h4 className="font-semibold text-blue-700 mb-2">고급 UI/UX 기능 개발</h4>
+            <ul className="list-disc pl-6 space-y-1">
+              <li>드래그 앤 드롭 인터페이스 개선</li>
+              <li>사용자 맞춤형 레이아웃 저장 기능</li>
+              <li>다크 모드 / 라이트 모드 지원</li>
+              <li>접근성 및 반응형 디자인 최적화</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      {/* 5단계: 테스트 및 최적화 */}
+      <div className="mb-8">
+        <h3 className="text-2xl font-semibold text-blue-600 mb-4">5단계: 테스트 및 최적화 (3주)</h3>
+        
+        <div className="flex mb-4 border-l-4 border-blue-500">
+          <div className="w-32 font-semibold pl-4">16주차</div>
+          <div className="flex-1">
+            <h4 className="font-semibold text-blue-700 mb-2">테스트 자동화</h4>
+            <ul className="list-disc pl-6 space-y-1">
+              <li>단위 테스트 작성 및 실행 자동화</li>
+              <li>통합 테스트 시나리오 구현</li>
+              <li>엔드투엔드 테스트 구성</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div className="flex mb-4 border-l-4 border-blue-500">
+          <div className="w-32 font-semibold pl-4">17주차</div>
+          <div className="flex-1">
+            <h4 className="font-semibold text-blue-700 mb-2">성능 최적화</h4>
+            <ul className="list-disc pl-6 space-y-1">
+              <li>번들 크기 최적화</li>
+              <li>렌더링 성능 분석 및 개선</li>
+              <li>API 응답 시간 최적화</li>
+              <li>캐싱 전략 최적화</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div className="flex mb-4 border-l-4 border-blue-500">
+          <div className="w-32 font-semibold pl-4">18주차</div>
+          <div className="flex-1">
+            <h4 className="font-semibold text-blue-700 mb-2">보안 및 안정성 강화</h4>
+            <ul className="list-disc pl-6 space-y-1">
+              <li>보안 취약점 검사 및 수정</li>
+              <li>에러 처리 및 로깅 시스템 강화</li>
+              <li>부하 테스트 및 확장성 검증</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      {/* 6단계: 배포 및 이관 */}
+      <div className="mb-8">
+        <h3 className="text-2xl font-semibold text-blue-600 mb-4">6단계: 배포 및 이관 (2주)</h3>
+        
+        <div className="flex mb-4 border-l-4 border-blue-500">
+          <div className="w-32 font-semibold pl-4">19주차</div>
+          <div className="flex-1">
+            <h4 className="font-semibold text-blue-700 mb-2">스테이징 환경 배포</h4>
+            <ul className="list-disc pl-6 space-y-1">
+              <li>스테이징 환경 구성</li>
+              <li>사용자 수용 테스트 진행</li>
+              <li>피드백 수집 및 최종 조정</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div className="flex mb-4 border-l-4 border-blue-500">
+          <div className="w-32 font-semibold pl-4">20주차</div>
+          <div className="flex-1">
+            <h4 className="font-semibold text-blue-700 mb-2">프로덕션 배포 및 안정화</h4>
+            <ul className="list-disc pl-6 space-y-1">
+              <li>프로덕션 환경 배포</li>
+              <li>모니터링 시스템 가동</li>
+              <li>사용자 교육 및 문서화</li>
+              <li>유지보수 계획 수립</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      {/* 주요 마일스톤 */}
+      <div className="mb-8 bg-blue-50 p-6 rounded-lg">
+        <h3 className="text-2xl font-semibold text-blue-600 mb-4">주요 마일스톤</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="border border-blue-200 rounded-lg p-4 bg-white">
+            <div className="flex items-center mb-2">
+              <span className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold mr-3">M1</span>
+              <h4 className="font-semibold text-blue-800">설계 문서 및 프로토타입 승인</h4>
+            </div>
+            <p className="text-gray-700 pl-11">2주차 완료</p>
+          </div>
+          
+          <div className="border border-blue-200 rounded-lg p-4 bg-white">
+            <div className="flex items-center mb-2">
+              <span className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold mr-3">M2</span>
+              <h4 className="font-semibold text-blue-800">기초 인프라 구축 완료</h4>
+            </div>
+            <p className="text-gray-700 pl-11">5주차 완료</p>
+          </div>
+          
+          <div className="border border-blue-200 rounded-lg p-4 bg-white">
+            <div className="flex items-center mb-2">
+              <span className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold mr-3">M3</span>
+              <h4 className="font-semibold text-blue-800">핵심 기능 개발 완료</h4>
+            </div>
+            <p className="text-gray-700 pl-11">11주차 완료</p>
+          </div>
+          
+          <div className="border border-blue-200 rounded-lg p-4 bg-white">
+            <div className="flex items-center mb-2">
+              <span className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold mr-3">M4</span>
+              <h4 className="font-semibold text-blue-800">모든 기능 개발 완료</h4>
+            </div>
+            <p className="text-gray-700 pl-11">15주차 완료</p>
+          </div>
+          
+          <div className="border border-blue-200 rounded-lg p-4 bg-white">
+            <div className="flex items-center mb-2">
+              <span className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold mr-3">M5</span>
+              <h4 className="font-semibold text-blue-800">테스트 및 최적화 완료</h4>
+            </div>
+            <p className="text-gray-700 pl-11">18주차 완료</p>
+          </div>
+          
+          <div className="border border-blue-200 rounded-lg p-4 bg-white">
+            <div className="flex items-center mb-2">
+              <span className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold mr-3">M6</span>
+              <h4 className="font-semibold text-blue-800">프로덕션 배포 및 프로젝트 완료</h4>
+            </div>
+            <p className="text-gray-700 pl-11">20주차 완료</p>
+          </div>
+        </div>
+      </div>
+      
+      {/* 리소스 할당 */}
+      <div className="mb-8">
+        <h3 className="text-2xl font-semibold text-blue-600 mb-4">리소스 할당</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="border border-blue-200 rounded-lg p-4 bg-blue-50">
+            <h4 className="font-semibold text-blue-700 mb-2">프론트엔드 팀 (3-4명)</h4>
+            <p className="text-gray-700">Next.js, TanStack Query, Zustand, 컴포넌트 개발</p>
+          </div>
+          
+          <div className="border border-blue-200 rounded-lg p-4 bg-blue-50">
+            <h4 className="font-semibold text-blue-700 mb-2">백엔드 팀 (2-3명)</h4>
+            <p className="text-gray-700">GraphQL API, DGS Framework, WebSocket 구현</p>
+          </div>
+          
+          <div className="border border-blue-200 rounded-lg p-4 bg-blue-50">
+            <h4 className="font-semibold text-blue-700 mb-2">AI/ML 팀 (1-2명)</h4>
+            <p className="text-gray-700">통화 분석, 감정 분석, 텍스트 추출 기능</p>
+          </div>
+          
+          <div className="border border-blue-200 rounded-lg p-4 bg-blue-50">
+            <h4 className="font-semibold text-blue-700 mb-2">QA 팀 (2명)</h4>
+            <p className="text-gray-700">테스트 자동화, 품질 보증</p>
+          </div>
+          
+          <div className="border border-blue-200 rounded-lg p-4 bg-blue-50">
+            <h4 className="font-semibold text-blue-700 mb-2">DevOps 팀 (1명)</h4>
+            <p className="text-gray-700">CI/CD, 배포 자동화, 모니터링</p>
+          </div>
+        </div>
+      </div>
+      
+      {/* 위험 요소 및 완화 전략 */}
+      <div className="mb-4">
+        <h3 className="text-2xl font-semibold text-blue-600 mb-4">위험 요소 및 완화 전략</h3>
+        <div className="space-y-4">
+          <div className="border-l-4 border-yellow-500 pl-4 py-2">
+            <h4 className="font-semibold text-yellow-700 mb-2">기술 스택 학습 곡선</h4>
+            <p className="text-gray-700"><span className="font-medium">완화:</span> 초기 학습 기간 확보, 페어 프로그래밍, 외부 전문가 컨설팅</p>
+          </div>
+          
+          <div className="border-l-4 border-yellow-500 pl-4 py-2">
+            <h4 className="font-semibold text-yellow-700 mb-2">복잡한 UI 상태 관리</h4>
+            <p className="text-gray-700"><span className="font-medium">완화:</span> 초기 프로토타입 검증, 점진적 구현, 코드 리뷰 강화</p>
+          </div>
+          
+          <div className="border-l-4 border-yellow-500 pl-4 py-2">
+            <h4 className="font-semibold text-yellow-700 mb-2">실시간 데이터 처리 성능</h4>
+            <p className="text-gray-700"><span className="font-medium">완화:</span> 초기 부하 테스트, 확장 가능한 아키텍처 설계</p>
+          </div>
+          
+          <div className="border-l-4 border-yellow-500 pl-4 py-2">
+            <h4 className="font-semibold text-yellow-700 mb-2">AI 통합 복잡성</h4>
+            <p className="text-gray-700"><span className="font-medium">완화:</span> MVP 단계적 접근, 외부 API 활용, 대체 솔루션 준비</p>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 };
 
-export default EnhancedLearningResources;
+export default ImplementationRoadmap;

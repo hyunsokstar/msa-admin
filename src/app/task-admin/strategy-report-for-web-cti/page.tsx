@@ -5,7 +5,7 @@
 import React from 'react';
 import KeyStrategies from './SolutionSection';
 import ImplementationRoadmap from './ImplementationRoadmap';
-import EnhancedLearningResources from './EnhancedLearningResources';
+import EnhancedLearningResources from './StudyContent';
 
 const StrategyReport = () => {
   return (
@@ -857,9 +857,10 @@ const CTIConsole = () => {
       {/* 키 전략 섹션 */}
       <KeyStrategies />
 
+      <ImplementationRoadmap />
+      
       <EnhancedLearningResources />
       
-      {/* <ImplementationRoadmap /> */}
     </div>
   );
 };
