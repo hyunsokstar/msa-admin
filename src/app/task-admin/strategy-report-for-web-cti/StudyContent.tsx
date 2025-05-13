@@ -232,29 +232,27 @@ const EnhancedLearningResources = () => {
       type: "docs",
       difficulty: "중급"
     },
-    [
-      {
-        "title": "Framer Motion 튜토리얼 (GitHub Pages)",
-        "link": "https://e-fais.github.io/framer-motion-articles/",
-        "description": "Framer Motion의 기본 개념부터 다양한 애니메이션 기법까지 단계별로 학습할 수 있는 튜토리얼입니다.",
-        "type": "튜토리얼",
-        "difficulty": "입문 - 초급"
-      },
-      {
-        "title": "React용 Motion 시작하기 (공식 문서)",
-        "link": "https://motion.dev/docs/react-quick-start",
-        "description": "Framer Motion (현 Motion)의 공식 문서로, React 환경에서 Motion을 시작하는 방법과 기본적인 사용법을 안내합니다.",
-        "type": "공식 문서",
-        "difficulty": "입문"
-      },
-      {
-        "title": "Motion 공식 예제 모음",
-        "link": "https://examples.motion.dev/",
-        "description": "기본적인 애니메이션부터 복잡한 인터랙션까지 다양한 Framer Motion 공식 예제들을 직접 확인하고 코드를 살펴볼 수 있습니다.",
-        "type": "예제 모음",
-        "difficulty": "초급부터 고급까지"
-      }
-    ]
+    {
+      title: "Framer Motion 튜토리얼 (GitHub Pages)",
+      link: "https://e-fais.github.io/framer-motion-articles/",
+      description: "Framer Motion의 기본 개념부터 다양한 애니메이션 기법까지 단계별로 학습할 수 있는 튜토리얼입니다.",
+      type: "tutorial",
+      difficulty: "입문"
+    },
+    {
+      title: "React용 Motion 시작하기 (공식 문서)",
+      link: "https://motion.dev/docs/react-quick-start",
+      description: "Framer Motion (현 Motion)의 공식 문서로, React 환경에서 Motion을 시작하는 방법과 기본적인 사용법을 안내합니다.",
+      type: "docs",
+      difficulty: "입문"
+    },
+    {
+      title: "Motion 공식 예제 모음",
+      link: "https://examples.motion.dev/",
+      description: "기본적인 애니메이션부터 복잡한 인터랙션까지 다양한 Framer Motion 공식 예제들을 직접 확인하고 코드를 살펴볼 수 있습니다.",
+      type: "docs",
+      difficulty: "중급"
+    }
   ];
 
   const aiResources = [
