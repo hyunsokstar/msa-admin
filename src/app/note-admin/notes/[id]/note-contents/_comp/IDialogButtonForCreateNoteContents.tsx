@@ -17,7 +17,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
-import TiptapEditor from "@/components/rich-editor/TipTabEditor";
+import TiptapEditor from "@/components/rich-editor/LexicalEditor";
 import CommonButton from "@/components/common/CommonButton";
 import { useCreateNoteContent } from "@/hook/notes/useApiForCreateNoteContents";
 import { useUserStore } from '@/store/useUserStore';

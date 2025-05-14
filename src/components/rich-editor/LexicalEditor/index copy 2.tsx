@@ -27,9 +27,53 @@ import Document from '@tiptap/extension-document';
 import { FigmaEmbed } from './extensions/FigmaEmbed';
 import React, { useState } from "react";
 import TiptapToolbar from "./TiptapToolbar";
-import { Plugin } from '@tiptap/pm/state';
+import { Plugin, PluginKey } from '@tiptap/pm/state';
+import { Decoration, DecorationSet } from '@tiptap/pm/view';
 // import CustomPasteHandler from "./CustomPasteHandler";
 import CodeBlock from "@tiptap/extension-code-block";
+
+// 화이트스페이스 보존을 위한 사용자 지정 확장
+const PreserveWhitespace = Extension.create({
+  name: 'preserveWhitespace',
+
+  addGlobalAttributes() {
+    return [
+      {
+        types: ['codeBlock'],
+        attributes: {
+          preserveWhitespace: {
+            default: 'pre',
+            parseHTML: () => 'pre',
+            renderHTML: () => ({ style: 'white-space: pre !important;' }),
+          },
+        },
+      },
+    ];
+  },
+});
+
+// 코드 블록 노드 장식을 위한 플러그인
+const WhitespacePreservePlugin = new Plugin({
+  key: new PluginKey('whitespacePreserve'),
+  props: {
+    decorations(state) {
+      const { doc } = state;
+      const decorations = [];
+
+      doc.descendants((node, pos) => {
+        if (node.type.name === 'codeBlock') {
+          decorations.push(
+            Decoration.node(pos, pos + node.nodeSize, {
+              style: 'white-space: pre !important; tab-size: 2;'
+            })
+          );
+        }
+      });
+
+      return DecorationSet.create(doc, decorations);
+    },
+  },
+});
 
 const uploadImageToS3 = async (file: File): Promise<string | null> => {
   try {
@@ -96,6 +140,44 @@ const ImagePasteHandler = TiptapImage.extend({
   },
 });
 
+// 사용자 정의 코드 블록 확장
+const CustomCodeBlock = CodeBlock.extend({
+  addKeyboardShortcuts() {
+    return {
+      ...this.parent?.(),
+      Tab: ({ editor }) => {
+        if (editor.isActive('codeBlock')) {
+          editor.commands.insertContent('\t');
+          return true;
+        }
+        return false;
+      },
+    };
+  },
+
+  addProseMirrorPlugins() {
+    return [
+      new Plugin({
+        props: {
+          handlePaste(view, event) {
+            if (!view.state.selection.$from.parent.type.spec.code) {
+              return false;
+            }
+
+            const text = event.clipboardData?.getData('text/plain');
+            if (text) {
+              view.dispatch(view.state.tr.insertText(text));
+              return true;
+            }
+
+            return false;
+          },
+        },
+      }),
+    ];
+  },
+});
+
 interface TiptapEditorProps {
   content: string;
   onChange: (content: string) => void;
@@ -141,8 +223,25 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
         height: 360,
       }),
       FigmaEmbed,
-      // CodeBlock, // ✅ 코드 블록 확장 추가!
-      // CustomPasteHandler, // ✅ 붙여넣기 핸들러
+      // 화이트스페이스 보존 확장
+      PreserveWhitespace,
+      // 플러그인 추가 확장
+      Extension.create({
+        name: 'whitespacePlugin',
+        addProseMirrorPlugins() {
+          return [WhitespacePreservePlugin];
+        },
+      }),
+      // 커스텀 코드 블록 확장
+      CustomCodeBlock.configure({
+        HTMLAttributes: {
+          class: 'code-block',
+          preserveWhitespace: 'pre',
+        },
+        languageClassPrefix: 'language-',
+        exitOnTripleEnter: true,
+        exitOnArrowDown: true,
+      }),
     ],
     content,
     editable: !disabled,
@@ -153,11 +252,38 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
     },
     editorProps: {
       attributes: {
-        class: "w-full min-h-[300px] p-4 focus:outline-none border border-gray-200 rounded-md", // prose 제거!
+        class: "w-full min-h-[300px] p-4 focus:outline-none border border-gray-200 rounded-md prose-pre:whitespace-pre",
+      },
+      transformPastedText: (text) => text, // 붙여넣은 텍스트 그대로 유지
+      transformPastedHTML: (html) => html, // 붙여넣은 HTML 그대로 유지
+      handlePaste: (view, event, slice) => {
+        const { state } = view;
+        const { selection } = state;
+        const { $from } = selection;
+
+        // 코드 블록 내에서 붙여넣기
+        if ($from.parent.type.spec.code) {
+          const text = event.clipboardData?.getData('text/plain');
+          if (text) {
+            view.dispatch(state.tr.insertText(text));
+            return true;
+          }
+        }
+
+        return false;
+      },
+      handleKeyDown: (view, event) => {
+        // 코드 블록 내에서 탭 처리
+        if (event.key === 'Tab' && view.state.selection.$from.parent.type.spec.code) {
+          event.preventDefault();
+          view.dispatch(view.state.tr.insertText('\t'));
+          return true;
+        }
+
+        return false;
       },
     },
   });
-
 
   const addImage = (size?: { width: number; height: number }) => {
     const fileInput = document.createElement("input");
@@ -205,6 +331,37 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
     };
   }, [editor]);
 
+  // CSS 스타일 추가
+  React.useEffect(() => {
+    // 코드 블록 스타일링을 위한 스타일 요소 생성
+    const styleElement = document.createElement('style');
+    styleElement.innerHTML = `
+      .ProseMirror pre {
+        white-space: pre !important;
+        tab-size: 2;
+      }
+      .ProseMirror code {
+        white-space: pre !important;
+        font-family: monospace;
+      }
+      .code-block {
+        white-space: pre !important;
+        font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+        background-color: #f5f5f5;
+        padding: 1em;
+        border-radius: 4px;
+        tab-size: 2;
+        -moz-tab-size: 2;
+      }
+    `;
+
+    document.head.appendChild(styleElement);
+
+    return () => {
+      document.head.removeChild(styleElement);
+    };
+  }, []);
+
   return (
     <div className="flex flex-col w-full h-[calc(100vh-220px)] bg-white shadow-md rounded-md relative">
       {isUploading && (
@@ -225,7 +382,7 @@ const TiptapEditor = ({ content, onChange, disabled = false }: TiptapEditorProps
       >
         <EditorContent
           editor={editor}
-          className="w-full h-full p-4 [&_.ProseMirror]:caret-blue-500 [&_.ProseMirror]:caret-2 [&_.editor-image]:outline-2 [&_.editor-image]:outline-transparent hover:[&_.editor-image]:outline-blue-500"
+          className="w-full h-full p-4 [&_.ProseMirror]:caret-blue-500 [&_.ProseMirror]:caret-2 [&_.editor-image]:outline-2 [&_.editor-image]:outline-transparent hover:[&_.editor-image]:outline-blue-500 [&_.ProseMirror_pre]:whitespace-pre [&_.ProseMirror_code]:whitespace-pre"
         />
       </div>
     </div>
