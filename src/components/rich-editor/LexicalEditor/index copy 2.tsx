@@ -58,7 +58,7 @@ const WhitespacePreservePlugin = new Plugin({
   props: {
     decorations(state) {
       const { doc } = state;
-      const decorations = [];
+      const decorations: Decoration[] = [];
 
       doc.descendants((node, pos) => {
         if (node.type.name === 'codeBlock') {
