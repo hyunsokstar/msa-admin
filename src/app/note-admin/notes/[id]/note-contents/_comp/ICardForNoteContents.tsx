@@ -18,7 +18,7 @@ import { CodeHighlightNode, CodeNode } from "@lexical/code"
 import { AutoLinkNode, LinkNode } from "@lexical/link"
 
 // Simple read-only component for Lexical content
-function LexicalContentViewer({ content }) {
+function LexicalContentViewer({ content }: { content: string }) {
   const initialConfig = {
     namespace: "ReadOnlyViewer",
     theme: {
