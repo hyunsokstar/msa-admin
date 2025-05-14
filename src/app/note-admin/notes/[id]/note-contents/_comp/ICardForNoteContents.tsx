@@ -40,7 +40,7 @@ function LexicalContentViewer({ content }: { content: string }) {
     ],
     editorState: content,
     editable: false,
-    onError: (error) => console.error("Lexical viewer error:", error),
+    onError: (error: Error) => console.error("Lexical viewer error:", error),
   }
 
   return (
