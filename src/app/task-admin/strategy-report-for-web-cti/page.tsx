@@ -43,6 +43,8 @@ const StrategyReport = () => {
 
       <ImplementationStrategies />
 
+      <StrategicInsights />
+
       {/* <ModernParadigmsSection /> */}
 
     </div>
