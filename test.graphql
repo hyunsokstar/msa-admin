@@ -1,0 +1,27 @@
+query Planet($id: ID! = "C6XybheVRczoB", $isAnonymous: Boolean!) {
+  privatePlanet: planet(id: $id) @skip(if: $isAnonymous) {
+    id
+    name
+    diameter
+    rotationPeriod
+    gravity
+    filmConnection {
+      films {
+        title
+      }
+    }
+  }
+
+  publicPlanet: planet(id: $id) {
+    id
+    name
+    diameter
+    rotationPeriod
+    gravity
+    filmConnection {
+      films {
+        title
+      }
+    }
+  }
+}

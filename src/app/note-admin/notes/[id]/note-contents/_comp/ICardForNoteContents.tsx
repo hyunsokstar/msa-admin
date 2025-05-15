@@ -6,6 +6,55 @@ import { NoteContent } from '@/types/notes/typeForNoteContents'
 import useApiForDeleteNoteContent from '@/hook/notes/useApiForDeleteNoteContent'
 import IDialogButtonForDeleteNoteContents from './IDialogButtonForDeleteNoteContents'
 import ICardForUpdateNoteContents from './ICardForUpdateNoteContents'
+import React from 'react'
+import { LexicalComposer } from "@lexical/react/LexicalComposer"
+import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin"
+import { ContentEditable } from "@lexical/react/LexicalContentEditable"
+import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary"
+import { HeadingNode, QuoteNode } from "@lexical/rich-text"
+import { TableCellNode, TableNode, TableRowNode } from "@lexical/table"
+import { ListItemNode, ListNode } from "@lexical/list"
+import { CodeHighlightNode, CodeNode } from "@lexical/code"
+import { AutoLinkNode, LinkNode } from "@lexical/link"
+
+// Simple read-only component for Lexical content
+function LexicalContentViewer({ content }: { content: string }) {
+  const initialConfig = {
+    namespace: "ReadOnlyViewer",
+    theme: {
+      paragraph: "editor-paragraph",
+      code: "editor-code",
+    },
+    nodes: [
+      HeadingNode,
+      ListNode,
+      ListItemNode,
+      QuoteNode,
+      CodeNode,
+      CodeHighlightNode,
+      TableNode,
+      TableCellNode,
+      TableRowNode,
+      AutoLinkNode,
+      LinkNode,
+    ],
+    editorState: content,
+    editable: false,
+    onError: (error: Error) => console.error("Lexical viewer error:", error),
+  }
+
+  return (
+    <LexicalComposer initialConfig={initialConfig}>
+      <div className="editor-container">
+        <RichTextPlugin
+          contentEditable={<ContentEditable className="min-h-[150px] prose prose-sm max-w-none" />}
+          placeholder={null}
+          ErrorBoundary={LexicalErrorBoundary}
+        />
+      </div>
+    </LexicalComposer>
+  )
+}
 
 interface ICardForNoteContentsProps {
   content: NoteContent
@@ -30,7 +79,7 @@ const ICardForNoteContents = ({
 }: ICardForNoteContentsProps) => {
   const { deleteNoteContent, isPending, error } = useApiForDeleteNoteContent({
     noteId,
-    pageNum: pageNum ?? 1 // Provide default value of 1 when pageNum is undefined
+    pageNum: pageNum ?? 1
   })
 
   const handleDelete = () => {
@@ -49,14 +98,24 @@ const ICardForNoteContents = ({
     )
   }
 
+  // Determine if content is Lexical JSON format
+  const isLexicalFormat = React.useMemo(() => {
+    try {
+      if (!content.content) return false;
+      if (typeof content.content !== 'string') return false;
+      if (!content.content.startsWith('{')) return false;
+
+      const parsed = JSON.parse(content.content);
+      return parsed && typeof parsed === 'object' && 'root' in parsed;
+    } catch (e) {
+      return false;
+    }
+  }, [content.content]);
+
   return (
     <Card
       className={`mb-4 transition-all hover:shadow-md relative bg-white rounded-xl border border-gray-200
-        ${
-          isSelected
-            ? 'ring-1 ring-blue-400 shadow-md'
-            : 'hover:border-gray-300'
-        }`}
+        ${isSelected ? 'ring-1 ring-blue-400 shadow-md' : 'hover:border-gray-300'}`}
       onClick={onClick}
     >
       <CardContent className='p-6'>
@@ -108,11 +167,16 @@ const ICardForNoteContents = ({
           </div>
         </div>
 
-        <div
-          className='min-h-[180px] p-5 border border-gray-200 rounded-lg bg-gray-50 prose prose-sm max-w-none
-            hover:bg-white transition-colors duration-200'
-          dangerouslySetInnerHTML={{ __html: content.content }}
-        />
+        <div className='min-h-[180px] p-5 border border-gray-200 rounded-lg bg-gray-50 hover:bg-white transition-colors duration-200'>
+          {isLexicalFormat ? (
+            <LexicalContentViewer content={content.content} />
+          ) : (
+            <div
+              className="prose prose-sm max-w-none"
+              dangerouslySetInnerHTML={{ __html: content.content }}
+            />
+          )}
+        </div>
       </CardContent>
     </Card>
   )

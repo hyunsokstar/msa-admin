@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Check, X } from "lucide-react";
 import { NoteContent } from "@/types/notes/typeForNoteContents";
-import TiptapEditor from "@/components/rich-editor/TipTabEditor";
+import LexicalEditor from "@/components/rich-editor/LexicalEditor";
 import { toast } from 'react-toastify';
 import useApiForUpdateNoteContents from '@/hook/notes/useApiForUpdateNoteContents';
 
@@ -19,13 +19,13 @@ interface Props {
   pageNum?: number;
 }
 
-const ICardForUpdateNoteContents = ({ 
-  content, 
-  isSelected, 
-  onClick, 
+const ICardForUpdateNoteContents = ({
+  content,
+  isSelected,
+  onClick,
   onCancel,
   noteId,
-  pageNum 
+  pageNum
 }: Props) => {
   const { updateNoteContent, isLoading } = useApiForUpdateNoteContents({
     noteId,
@@ -76,7 +76,7 @@ const ICardForUpdateNoteContents = ({
   };
 
   return (
-    <Card 
+    <Card
       className={`mb-4 transition-all hover:shadow-md relative bg-white rounded-xl border border-gray-200
         ${isSelected ? 'ring-1 ring-blue-400 shadow-md' : 'hover:border-gray-300'}`}
       onClick={onClick}
@@ -89,9 +89,9 @@ const ICardForUpdateNoteContents = ({
 
           <div className="relative group">
             <Avatar className="h-10 w-10">
-              <AvatarImage 
-                src={content.writer?.profile_image_url} 
-                alt={content.writer?.full_name || '사용자'} 
+              <AvatarImage
+                src={content.writer?.profile_image_url}
+                alt={content.writer?.full_name || '사용자'}
               />
               <AvatarFallback>
                 {content.writer?.full_name?.charAt(0)?.toUpperCase() || 'U'}
@@ -120,7 +120,7 @@ const ICardForUpdateNoteContents = ({
         </div>
 
         <div className="min-h-[180px] border border-gray-200 rounded-lg bg-white mb-4">
-          <TiptapEditor
+          <LexicalEditor
             content={formData.content}
             onChange={(newContent) => {
               setFormData(prev => ({ ...prev, content: newContent }));

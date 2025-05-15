@@ -23,7 +23,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { PlusCircle, Save } from "lucide-react";
 import useApiForCreateFreeBoard from "@/hook/useApiForCreateFreeBoard";
-import TiptapEditor from "@/components/rich-editor/TipTabEditor";
+import TiptapEditor from "@/components/rich-editor/LexicalEditor";
 
 const formSchema = z.object({
   title: z.string().min(1, "제목을 입력해주세요"),
@@ -56,7 +56,7 @@ const IDialogButtonForCreateBoardPosting: React.FC = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button 
+        <Button
           type="button"
           variant="default"
           className="bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-200 shadow-md hover:shadow-lg"
