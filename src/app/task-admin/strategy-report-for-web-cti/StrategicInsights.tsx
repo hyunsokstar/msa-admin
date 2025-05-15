@@ -73,10 +73,7 @@ const StrategicInsights = () => {
                   challenge="최신 패러다임 도입에 대한 냉소적 태도 ('니가 가라 하와이')"
                   result="기술적 정체와 경쟁력 약화"
                 />
-                <ChallengeItem 
-                  challenge="고객 가치를 외면한 채 주말 일정 같은 사소한 일에 에너지가 분산"
-                  result="본질에서 벗어난 조직 문화 형성"
-                />
+
               </ul>
             </div>
             
