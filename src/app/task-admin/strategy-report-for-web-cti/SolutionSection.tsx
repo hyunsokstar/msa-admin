@@ -1272,53 +1272,7 @@ export async function analyzeCallAudio(audioUrl: string): Promise<CallAnalysis> 
           </div>
         </SolutionSection>
 
-        {/* 종합적 접근 전략 */}
-        <div className="bg-blue-50 p-6 rounded-lg shadow-md mb-8">
-          <h3 className="text-xl font-bold text-blue-800 mb-3">통합적 접근 전략 및 기대 효과</h3>
-          <p className="text-base text-gray-700 mb-4">
-            제안된 세 가지 핵심 해결책을 통합적으로 적용함으로써, 기존 CTI 프로젝트의 문제점을 해결하고
-            개발 생산성을 5배 이상 향상시킬 수 있습니다. 특히 데이터 흐름과 UI 상태 관리 측면에서의
-            근본적인 개선, 그리고 지속적인 팀 역량 강화를 통해 장기적인 프로젝트 성공을 보장할 수 있습니다.
-          </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-            <div className="bg-white p-4 rounded-lg shadow-sm border-l-4 border-blue-500">
-              <h4 className="font-medium text-blue-700 mb-2">개발 속도 향상</h4>
-              <ul className="text-sm text-gray-600 space-y-1">
-                <li>• 보일러플레이트 코드 90% 감소</li>
-                <li>• 데이터 페칭 시간 75% 단축</li>
-                <li>• 단일 API 호출로 계층형 데이터 처리</li>
-                <li>• 재사용 가능한 패턴 활용</li>
-              </ul>
-            </div>
-
-            <div className="bg-white p-4 rounded-lg shadow-sm border-l-4 border-green-500">
-              <h4 className="font-medium text-green-700 mb-2">코드 품질 개선</h4>
-              <ul className="text-sm text-gray-600 space-y-1">
-                <li>• AI 기반 코드 리뷰로 버그 50% 감소</li>
-                <li>• 일관된 코딩 컨벤션 적용</li>
-                <li>• 타입 안전성 강화</li>
-                <li>• 아키텍처 패턴 표준화</li>
-              </ul>
-            </div>
-
-            <div className="bg-white p-4 rounded-lg shadow-sm border-l-4 border-purple-500">
-              <h4 className="font-medium text-purple-700 mb-2">사용자 경험 향상</h4>
-              <ul className="text-sm text-gray-600 space-y-1">
-                <li>• 페이지 로드 시간 65% 단축</li>
-                <li>• 실시간 데이터 업데이트 지원</li>
-                <li>• AI 기반 고급 기능 제공</li>
-                <li>• 직관적인 데이터 시각화</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="mt-6 text-center">
-            <p className="text-lg font-semibold text-blue-800">
-              "데이터 흐름 중심 설계와 AI 활용을 통해 개발 생산성 5배, 코드 품질 2배 향상"
-            </p>
-          </div>
-        </div>
       </div>
     </div>
   );
