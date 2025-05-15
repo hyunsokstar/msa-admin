@@ -11,6 +11,7 @@ import EnhancedLearningResources from './StudyContent';
 import ModernParadigmsSection from './ModernParadigmsSection';
 import GraphQLvsRestComparison from './GraphQLvsRestComparison';
 import GraphQLPracticalAdvantages from './GraphQLPracticalAdvantages';
+import TechAdoptionStrategies from './TechAdoptionStrategies';
 
 const StrategyReport = () => {
   return (
@@ -34,6 +35,7 @@ const StrategyReport = () => {
 
       <GraphQLPracticalAdvantages />
 
+      <TechAdoptionStrategies />
       {/* <ModernParadigmsSection /> */}
 
     </div>
