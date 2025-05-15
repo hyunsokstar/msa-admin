@@ -39,7 +39,6 @@ const DevCultureReport = () => {
             <ul className="list-disc ml-5 text-gray-700 space-y-1">
               <li>시스템 개선 제안이 기존 체제 비판으로 오인</li>
               <li>건설적 피드백이 개인적 평가로 왜곡</li>
-              <li>제안자에 대한 조직적 배제 현상 발생</li>
             </ul>
           </div>
         </div>
