@@ -10,6 +10,7 @@ import ImplementationRoadmap from './ImplementationRoadmap';
 import EnhancedLearningResources from './StudyContent';
 import ModernParadigmsSection from './ModernParadigmsSection';
 import GraphQLvsRestComparison from './GraphQLvsRestComparison';
+import GraphQLPracticalAdvantages from './GraphQLPracticalAdvantages';
 
 const StrategyReport = () => {
   return (
@@ -30,6 +31,8 @@ const StrategyReport = () => {
       <EnhancedLearningResources />
 
       <GraphQLvsRestComparison />
+
+      <GraphQLPracticalAdvantages />
 
       {/* <ModernParadigmsSection /> */}
 
