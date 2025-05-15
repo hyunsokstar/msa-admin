@@ -14,6 +14,7 @@ import GraphQLPracticalAdvantages from './GraphQLPracticalAdvantages';
 import TechAdoptionStrategies from './TechAdoptionStrategies';
 import GraphQLSuccessCases from './GraphQLSuccessCases';
 import ImplementationStrategies from './ImplementationStrategies';
+import StrategicInsights from './StrategicInsights';
 
 const StrategyReport = () => {
   return (
