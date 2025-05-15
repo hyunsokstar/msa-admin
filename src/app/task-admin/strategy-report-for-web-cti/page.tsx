@@ -8,6 +8,7 @@ import TechnicalIssues from './TechnicalIssues';
 import KeyStrategies from './SolutionSection';
 import ImplementationRoadmap from './ImplementationRoadmap';
 import EnhancedLearningResources from './StudyContent';
+import ModernParadigmsSection from './ModernParadigmsSection';
 
 const StrategyReport = () => {
   return (
@@ -24,8 +25,11 @@ const StrategyReport = () => {
 
       {/* 나머지 이미 컴포넌트화된 섹션들 */}
       <KeyStrategies />
-      
+
       <EnhancedLearningResources />
+
+      <ModernParadigmsSection />
+
     </div>
   );
 };
