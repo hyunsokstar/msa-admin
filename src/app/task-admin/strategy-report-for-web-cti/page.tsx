@@ -16,6 +16,7 @@ import GraphQLSuccessCases from './GraphQLSuccessCases';
 import ImplementationStrategies from './ImplementationStrategies';
 import StrategicInsights from './StrategicInsights';
 import OrganizationalStrategies from './OrganizationalStrategies';
+import GraphQLBenefits from './GraphQlBenefits';
 
 const StrategyReport = () => {
   return (
@@ -48,6 +49,8 @@ const StrategyReport = () => {
       <StrategicInsights />
 
       <OrganizationalStrategies />
+      
+      <GraphQLBenefits />
 
       {/* <ModernParadigmsSection /> */}
 
