@@ -16,7 +16,7 @@ import GraphQLSuccessCases from './GraphQLSuccessCases';
 import ImplementationStrategies from './ImplementationStrategies';
 import StrategicInsights from './StrategicInsights';
 import OrganizationalStrategies from './OrganizationalStrategies';
-import GraphQLBenefits from './GraphQlBenefits';
+import GraphQLBenefits from './SummarySection';
 
 const StrategyReport = () => {
   return (
