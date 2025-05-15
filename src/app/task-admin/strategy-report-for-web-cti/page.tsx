@@ -17,6 +17,7 @@ import ImplementationStrategies from './ImplementationStrategies';
 import StrategicInsights from './StrategicInsights';
 import OrganizationalStrategies from './OrganizationalStrategies';
 import GraphQLBenefits from './SummarySection';
+import DevCultureReport from './DevCultureReport';
 
 const StrategyReport = () => {
   return (
@@ -51,6 +52,8 @@ const StrategyReport = () => {
       <OrganizationalStrategies />
       
       <GraphQLBenefits />
+
+      <DevCultureReport />
 
       {/* <ModernParadigmsSection /> */}
 
