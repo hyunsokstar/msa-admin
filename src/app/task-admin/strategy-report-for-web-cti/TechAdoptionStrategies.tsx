@@ -105,36 +105,6 @@ const TechAdoptionStrategies = () => {
                   </div>
                 </div>
                 
-                <h3 className="text-lg font-semibold mb-3">GraphQL 현실적 도입 사례 연구</h3>
-                <p className="text-sm text-gray-600 mb-4">
-                  GraphQL을 성공적으로 도입한 기업들이 어떻게 팀 역량을 고려하며 단계적으로 접근했는지 살펴봅니다.
-                </p>
-                
-                <div className="space-y-4">
-                  <CaseStudyCard 
-                    company="국내 중견 금융 서비스 기업"
-                    challenge="레거시 REST API 시스템에서 GraphQL로의 전환"
-                    approach={[
-                      "GraphQL 게이트웨이로 시작: 기존 REST API 위에 GraphQL 레이어 추가",
-                      "개발자 교육: 2주간의 집중 워크숍 및 핸즈온 세션 진행",
-                      "도메인별 점진적 마이그레이션: 고객 정보 도메인부터 시작",
-                      "성공 지표 측정: API 호출 감소율, 개발 생산성 향상도 등 추적"
-                    ]}
-                    results="6개월 내 주요 도메인 마이그레이션 완료, API 호출 40% 감소, 프론트엔드 개발 속도 25% 향상"
-                  />
-                  
-                  <CaseStudyCard 
-                    company="CTI 시스템 개발 스타트업"
-                    challenge="기술 도입과 동시에 개발자 역량 강화"
-                    approach={[
-                      "챔피언 팀 구성: 3명의 핵심 개발자로 시작해 지식 전파",
-                      "실무 기반 학습: 실제 프로젝트에 적용하며 학습 진행",
-                      "페어 프로그래밍: 경험 많은 개발자와 주니어 개발자 페어링",
-                      "문서화 및 지식베이스 구축: 학습 내용 체계적 정리"
-                    ]}
-                    results="3개월 내 전체 팀 GraphQL 역량 확보, 고객 대응 시간 35% 단축, 기술 부채 감소"
-                  />
-                </div>
               </div>
             </TabsContent>
 
