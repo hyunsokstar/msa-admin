@@ -9,6 +9,7 @@ import KeyStrategies from './SolutionSection';
 import ImplementationRoadmap from './ImplementationRoadmap';
 import EnhancedLearningResources from './StudyContent';
 import ModernParadigmsSection from './ModernParadigmsSection';
+import GraphQLvsRestComparison from './GraphQLvsRestComparison';
 
 const StrategyReport = () => {
   return (
@@ -28,7 +29,9 @@ const StrategyReport = () => {
 
       <EnhancedLearningResources />
 
-      <ModernParadigmsSection />
+      <GraphQLvsRestComparison />
+
+      {/* <ModernParadigmsSection /> */}
 
     </div>
   );
