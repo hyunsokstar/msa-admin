@@ -1,8 +1,10 @@
 /* editor.module.css */
+
 .editor-container {
     border-radius: 0.5rem;
     position: relative;
-    line-height: 1.7;
+    line-height: 1.4;
+    /* ✅ 줄간격 조정 */
     font-weight: 400;
 }
 
@@ -23,6 +25,8 @@
     outline: 0;
     width: 100%;
     white-space: pre-wrap;
+    line-height: 1.4;
+    /* ✅ 여기에도 줄간격 명시 */
 }
 
 .editor-placeholder {
@@ -38,7 +42,8 @@
 }
 
 .editor-paragraph {
-    margin: 0 0 15px 0;
+    margin: 0 0 6px 0;
+    /* ✅ 단락 하단 여백 축소 */
 }
 
 .editor-code {

@@ -1,3 +1,4 @@
+// src/components/rich-editor/LexicalEditor.tsx
 "use client";
 
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
@@ -16,11 +17,28 @@ import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 import { TRANSFORMERS } from "@lexical/markdown";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
-import React from "react";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import React, { useEffect } from "react";
+import LexicalEditorToolBar from "@/components/rich-editor/LexicalEditor/LexicalEditorToolBar";
 import styles from './editor.module.css';
 
 function Placeholder() {
   return <div className={styles['editor-placeholder']}>내용을 입력하세요...</div>;
+}
+
+function EditorInitializerPlugin({ content }: { content: string }) {
+  const [editor] = useLexicalComposerContext();
+
+  useEffect(() => {
+    try {
+      const parsedState = editor.parseEditorState(content);
+      editor.setEditorState(parsedState);
+    } catch (err) {
+      console.error("EditorInitializerPlugin parse error:", err);
+    }
+  }, [editor, content]);
+
+  return null;
 }
 
 interface LexicalEditorProps {
@@ -34,7 +52,6 @@ export default function LexicalEditor({
   onChange,
   disabled = false
 }: LexicalEditorProps) {
-  // Create initial configuration without parsing content as JSON
   const initialConfig = {
     namespace: "MyEditor",
     theme: {
@@ -82,7 +99,9 @@ export default function LexicalEditor({
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <div className={styles['editor-container']}>
+        <LexicalEditorToolBar />
         <div className={styles['editor-inner']}>
+          <EditorInitializerPlugin content={content} />
           <RichTextPlugin
             contentEditable={<ContentEditable className={styles['editor-input']} />}
             placeholder={<Placeholder />}
