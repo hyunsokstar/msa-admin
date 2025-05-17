@@ -1,43 +1,63 @@
-// src/components/rich-editor/LexicalEditor/FontColorPlugin.tsx
+// C:\Users\terec\msa-admin\src\components\rich-editor\LexicalEditor\BackgroundColorPlugin.tsx
 "use client";
 
+import { useEffect } from "react";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
     $getSelection,
     $isRangeSelection,
+    $isTextNode,
     createCommand,
     COMMAND_PRIORITY_EDITOR,
+    LexicalEditor,
     TextNode,
 } from "lexical";
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { CustomTextNode } from "./CustomTextNode";
-import { useEffect } from "react";
 
-export const FONT_COLOR_COMMAND = createCommand<string>("FONT_COLOR_COMMAND");
+export const BACKGROUND_COLOR_COMMAND = createCommand<string>("BACKGROUND_COLOR_COMMAND");
 
-export function FontColorPlugin() {
+function applyBackgroundColor(editor: LexicalEditor, color: string) {
+    editor.update(() => {
+        const selection = $getSelection();
+        if (!$isRangeSelection(selection)) return;
+
+        const nodes = selection.getNodes();
+        for (const node of nodes) {
+            if ($isTextNode(node)) {
+                let target: CustomTextNode;
+                if (node instanceof CustomTextNode) {
+                    target = node.getWritable();
+                } else {
+                    const newNode = new CustomTextNode(
+                        node.getTextContent(),
+                        undefined,
+                        "16px",
+                        "#000000",
+                        color
+                    );
+                    newNode.setFormat(node.getFormat());
+                    newNode.setStyle(node.getStyle());
+                    node.replace(newNode);
+                    target = newNode;
+                }
+                target.setBackgroundColor(color);
+            }
+        }
+    });
+}
+
+export function BackgroundColorPlugin() {
     const [editor] = useLexicalComposerContext();
 
     useEffect(() => {
-        return editor.registerCommand(
-            FONT_COLOR_COMMAND,
-            (color) => {
-                editor.update(() => {
-                    const selection = $getSelection();
-                    if (!$isRangeSelection(selection)) return false;
+        if (!editor.hasNodes([CustomTextNode])) {
+            throw new Error("BackgroundColorPlugin: CustomTextNode not registered");
+        }
 
-                    const nodes = selection.getNodes();
-                    for (const node of nodes) {
-                        if (node instanceof TextNode && !(node instanceof CustomTextNode)) {
-                            const newNode = new CustomTextNode(node.getTextContent());
-                            newNode.setFormat(node.getFormat());
-                            newNode.setStyle(node.getStyle());
-                            newNode.setColor(color); // ✅ 이 메서드가 CustomTextNode에 있어야 함
-                            node.replace(newNode);
-                        } else if (node instanceof CustomTextNode) {
-                            node.setColor(color); // ✅ 여기서도 마찬가지
-                        }
-                    }
-                });
+        return editor.registerCommand(
+            BACKGROUND_COLOR_COMMAND,
+            (color: string) => {
+                applyBackgroundColor(editor, color);
                 return true;
             },
             COMMAND_PRIORITY_EDITOR

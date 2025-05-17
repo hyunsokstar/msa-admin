@@ -1,3 +1,4 @@
+// C:\Users\terec\msa-admin\src\components\rich-editor\LexicalEditor\index.tsx
 "use client";
 
 import React, { useCallback, useRef } from "react";
@@ -8,9 +9,13 @@ import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
-import { FontSizePlugin, FONT_SIZE_COMMAND } from "./FontSizePlugin";
-import { CustomTextNode } from "./CustomTextNode";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+
+// Custom Text Node & Plugins
+import { CustomTextNode } from "./CustomTextNode";
+import { FontSizePlugin, FONT_SIZE_COMMAND } from "./FontSizePlugin";
+import { TextColorPlugin, TEXT_COLOR_COMMAND } from "./TextColorPlugin";
+import { BackgroundColorPlugin, BACKGROUND_COLOR_COMMAND } from "./BackgroundColorPlugin";
 
 interface Props {
   content: string;
@@ -44,11 +49,15 @@ export default function LexicalEditor({
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div className="p-2 border-b bg-gray-100">
+      <div className="p-2 border-b bg-gray-100 space-x-2 flex items-center">
         <FontSizeSelect />
+        <ColorPicker />
+        <BackgroundColorPicker />
       </div>
 
       <FontSizePlugin />
+      <TextColorPlugin />
+      <BackgroundColorPlugin />
 
       <div className="border border-gray-300 rounded relative min-h-[200px] p-3">
         <RichTextPlugin
@@ -68,6 +77,7 @@ export default function LexicalEditor({
   );
 }
 
+// 폰트 크기 선택
 function FontSizeSelect() {
   const [editor] = useLexicalComposerContext();
 
@@ -90,5 +100,49 @@ function FontSizeSelect() {
       <option value="32px">32</option>
       <option value="64px">64</option>
     </select>
+  );
+}
+
+// 글자 색상 선택
+function ColorPicker() {
+  const [editor] = useLexicalComposerContext();
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const color = e.target.value;
+    editor.dispatchCommand(TEXT_COLOR_COMMAND, color);
+  };
+
+  return (
+    <label className="inline-flex items-center text-sm">
+      글자색:
+      <input
+        type="color"
+        onChange={onChange}
+        className="ml-1 h-6 w-6 border-none"
+        defaultValue="#000000"
+      />
+    </label>
+  );
+}
+
+// 배경 색상 선택
+function BackgroundColorPicker() {
+  const [editor] = useLexicalComposerContext();
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const color = e.target.value;
+    editor.dispatchCommand(BACKGROUND_COLOR_COMMAND, color);
+  };
+
+  return (
+    <label className="inline-flex items-center text-sm">
+      배경색:
+      <input
+        type="color"
+        onChange={onChange}
+        className="ml-1 h-6 w-6 border-none"
+        defaultValue="#ffffff"
+      />
+    </label>
   );
 }
