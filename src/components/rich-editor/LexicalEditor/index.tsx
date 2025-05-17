@@ -1,123 +1,94 @@
-// src/components/rich-editor/LexicalEditor.tsx
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useRef } from "react";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
+import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
-import { HeadingNode, QuoteNode } from "@lexical/rich-text";
-import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
-import { ListItemNode, ListNode } from "@lexical/list";
-import { CodeHighlightNode, CodeNode } from "@lexical/code";
-import { AutoLinkNode, LinkNode } from "@lexical/link";
-import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
-import { ListPlugin } from "@lexical/react/LexicalListPlugin";
-import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
-import { TRANSFORMERS } from "@lexical/markdown";
-import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
+import { FontSizePlugin, FONT_SIZE_COMMAND } from "./FontSizePlugin";
+import { CustomTextNode } from "./CustomTextNode";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import LexicalEditorToolBar from "@/components/rich-editor/LexicalEditor/LexicalEditorToolBar";
-import styles from './editor.module.css';
 
-function Placeholder() {
-  return <div className={styles['editor-placeholder']}>내용을 입력하세요...</div>;
-}
-
-function EditorInitializerPlugin({ content }: { content: string }) {
-  const [editor] = useLexicalComposerContext();
-  const initializedRef = useRef(false);
-
-  useEffect(() => {
-    if (initializedRef.current) return;
-    try {
-      const parsedState = editor.parseEditorState(content);
-      editor.setEditorState(parsedState);
-      initializedRef.current = true;
-    } catch (err) {
-      console.error("EditorInitializerPlugin parse error:", err);
-    }
-  }, [editor, content]);
-
-  return null;
-}
-
-interface LexicalEditorProps {
+interface Props {
   content: string;
-  onChange: (content: string) => void;
+  onChange: (json: string) => void;
   disabled?: boolean;
 }
 
 export default function LexicalEditor({
-  content = "",
+  content,
   onChange,
-  disabled = false
-}: LexicalEditorProps) {
+  disabled = false,
+}: Props) {
+  const historyRef = useRef<any>(null);
+
+  const handleChange = useCallback(
+    (editorState: any) => {
+      editorState.read(() => {
+        onChange(JSON.stringify(editorState.toJSON()));
+      });
+    },
+    [onChange]
+  );
+
   const initialConfig = {
     namespace: "MyEditor",
-    theme: {
-      paragraph: styles['editor-paragraph'],
-      code: styles['editor-code'],
-      heading: {
-        h1: styles['editor-heading-h1'],
-        h2: styles['editor-heading-h2'],
-        h3: styles['editor-heading-h3'],
-      },
-      text: {
-        bold: styles['editor-text-bold'],
-        italic: styles['editor-text-italic'],
-        underline: styles['editor-text-underline'],
-      },
-    },
-    onError: (error: Error) => console.error("Lexical editor error:", error),
-    nodes: [
-      HeadingNode,
-      ListNode,
-      ListItemNode,
-      QuoteNode,
-      CodeNode,
-      CodeHighlightNode,
-      TableNode,
-      TableCellNode,
-      TableRowNode,
-      AutoLinkNode,
-      LinkNode,
-    ],
     editable: !disabled,
-  };
-
-  const handleEditorChange = (state: any) => {
-    try {
-      state.read(() => {
-        const json = JSON.stringify(state);
-        onChange(json);
-      });
-    } catch (error) {
-      console.error("Failed to process editor change:", error);
-    }
+    onError: (err: Error) => console.error(err),
+    theme: {},
+    nodes: [CustomTextNode],
   };
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div className={styles['editor-container']}>
-        <LexicalEditorToolBar />
-        <div className={styles['editor-inner']}>
-          <EditorInitializerPlugin content={content} />
-          <RichTextPlugin
-            contentEditable={<ContentEditable className={styles['editor-input']} />}
-            placeholder={<Placeholder />}
-            ErrorBoundary={LexicalErrorBoundary}
-          />
-          <HistoryPlugin />
-          <AutoFocusPlugin />
-          <ListPlugin />
-          <LinkPlugin />
-          <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
-          <OnChangePlugin onChange={handleEditorChange} />
-        </div>
+      <div className="p-2 border-b bg-gray-100">
+        <FontSizeSelect />
+      </div>
+
+      <FontSizePlugin />
+
+      <div className="border border-gray-300 rounded relative min-h-[200px] p-3">
+        <RichTextPlugin
+          contentEditable={<ContentEditable className="outline-none" />}
+          placeholder={
+            <div className="absolute top-3 left-3 text-gray-400 pointer-events-none">
+              내용을 입력하세요...
+            </div>
+          }
+          ErrorBoundary={LexicalErrorBoundary}
+        />
+        <HistoryPlugin externalHistoryState={historyRef.current} />
+        <OnChangePlugin onChange={handleChange} />
+        <AutoFocusPlugin />
       </div>
     </LexicalComposer>
+  );
+}
+
+function FontSizeSelect() {
+  const [editor] = useLexicalComposerContext();
+
+  const onChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const fontSize = e.target.value;
+    editor.dispatchCommand(FONT_SIZE_COMMAND, fontSize);
+  };
+
+  return (
+    <select
+      onChange={onChange}
+      defaultValue="16px"
+      className="border rounded p-1 text-sm"
+    >
+      <option value="12px">12</option>
+      <option value="14px">14</option>
+      <option value="16px">16</option>
+      <option value="18px">18</option>
+      <option value="24px">24</option>
+      <option value="32px">32</option>
+      <option value="64px">64</option>
+    </select>
   );
 }
