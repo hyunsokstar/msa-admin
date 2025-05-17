@@ -19,6 +19,7 @@ import OrganizationalStrategies from './OrganizationalStrategies';
 import GraphQLBenefits from './SummarySection';
 import DevCultureReport from './DevCultureReport';
 import TechMasteryCertificationSystem from './TechMasteryCertificationSystem';
+import AttitudeList from './AttitudeList';
 
 const StrategyReport = () => {
   return (
@@ -29,7 +30,7 @@ const StrategyReport = () => {
 
       {/* 서론 섹션을 컴포넌트로 분리 */}
       <Introduction />
-      
+
       {/* 기술적 문제 섹션을 컴포넌트로 분리 */}
       <TechnicalIssues />
 
@@ -51,12 +52,14 @@ const StrategyReport = () => {
       <StrategicInsights />
 
       <OrganizationalStrategies />
-      
+
       <GraphQLBenefits />
 
       <DevCultureReport />
 
       <TechMasteryCertificationSystem />
+
+      <AttitudeList />
 
       {/* <ModernParadigmsSection /> */}
 
