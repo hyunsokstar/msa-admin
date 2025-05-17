@@ -139,6 +139,7 @@ const ICardForUpdateNoteContents = ({
         </div>
 
         <div className="min-h-[180px] border border-gray-200 rounded-lg bg-white mb-4">
+          ???
           {isValidLexicalJson(formData.content) ? (
             <LexicalEditor
               content={formData.content}
