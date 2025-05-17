@@ -48,7 +48,9 @@ export class CustomTextNode extends TextNode {
         if (this.__fontSize !== prevNode.__fontSize) {
             dom.style.fontSize = this.__fontSize;
         }
-        return super.updateDOM(prevNode, dom, config);
+
+        // TextNode의 updateDOM 메서드 호출
+        return super.updateDOM(prevNode as unknown as this, dom, config);
     }
 
     static importJSON(serializedNode: SerializedCustomTextNode): CustomTextNode {
