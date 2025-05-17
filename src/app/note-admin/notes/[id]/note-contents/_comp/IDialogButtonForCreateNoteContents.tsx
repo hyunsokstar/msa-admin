@@ -17,7 +17,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
-import TiptapEditor from "@/components/rich-editor/LexicalEditor";
+import LexicalEditor from "@/components/rich-editor/LexicalEditor";
 import CommonButton from "@/components/common/CommonButton";
 import { useCreateNoteContent } from "@/hook/notes/useApiForCreateNoteContents";
 import { useUserStore } from '@/store/useUserStore';
@@ -162,7 +162,7 @@ export default function IDialogButtonForCreateNoteContents({ noteId, pageNum }: 
                     <FormControl>
                       <div className="border rounded-lg overflow-hidden bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                         <div className="h-[500px]">
-                          <TiptapEditor
+                          <LexicalEditor
                             content={field.value}
                             onChange={field.onChange}
                           />
