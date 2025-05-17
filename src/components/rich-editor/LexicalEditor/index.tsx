@@ -1,6 +1,7 @@
 // src/components/rich-editor/LexicalEditor.tsx
 "use client";
 
+import React, { useEffect, useRef } from "react";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
@@ -18,7 +19,6 @@ import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPl
 import { TRANSFORMERS } from "@lexical/markdown";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import React, { useEffect } from "react";
 import LexicalEditorToolBar from "@/components/rich-editor/LexicalEditor/LexicalEditorToolBar";
 import styles from './editor.module.css';
 
@@ -28,11 +28,14 @@ function Placeholder() {
 
 function EditorInitializerPlugin({ content }: { content: string }) {
   const [editor] = useLexicalComposerContext();
+  const initializedRef = useRef(false);
 
   useEffect(() => {
+    if (initializedRef.current) return;
     try {
       const parsedState = editor.parseEditorState(content);
       editor.setEditorState(parsedState);
+      initializedRef.current = true;
     } catch (err) {
       console.error("EditorInitializerPlugin parse error:", err);
     }
