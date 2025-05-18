@@ -37,7 +37,8 @@ import {
     Heading2,
     Terminal,
     ChevronDown,
-    HighlighterIcon  // 형광펜 아이콘 추가
+    HighlighterIcon,
+    Type
 } from "lucide-react";
 import { $createHeadingNode } from "@lexical/rich-text";
 
@@ -153,7 +154,7 @@ export default function Toolbar() {
                     className={`p-1 rounded hover:bg-gray-200 ${!canUndo ? 'opacity-30 cursor-not-allowed' : ''}`}
                     onClick={() => editor.dispatchCommand(UNDO_COMMAND, undefined)}
                     disabled={!canUndo}
-                    title="Undo"
+                    title="실행취소"
                 >
                     <Undo className="w-5 h-5" />
                 </button>
@@ -162,100 +163,35 @@ export default function Toolbar() {
                     className={`p-1 rounded hover:bg-gray-200 ${!canRedo ? 'opacity-30 cursor-not-allowed' : ''}`}
                     onClick={() => editor.dispatchCommand(REDO_COMMAND, undefined)}
                     disabled={!canRedo}
-                    title="Redo"
+                    title="다시실행"
                 >
                     <Redo className="w-5 h-5" />
                 </button>
             </div>
 
-            {/* Text formatting */}
+            {/* 코드 관련 (개발자 노트에서 가장 중요) */}
             <div className="flex space-x-1 mr-2 border-r pr-2">
-                <button
-                    type="button"
-                    className={`p-1 rounded hover:bg-gray-200 ${isBold ? 'bg-gray-300' : ''}`}
-                    onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold')}
-                    title="Bold"
-                >
-                    <Bold className="w-5 h-5" />
-                </button>
-                <button
-                    type="button"
-                    className={`p-1 rounded hover:bg-gray-200 ${isItalic ? 'bg-gray-300' : ''}`}
-                    onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic')}
-                    title="Italic"
-                >
-                    <Italic className="w-5 h-5" />
-                </button>
-                <button
-                    type="button"
-                    className={`p-1 rounded hover:bg-gray-200 ${isUnderline ? 'bg-gray-300' : ''}`}
-                    onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline')}
-                    title="Underline"
-                >
-                    <Underline className="w-5 h-5" />
-                </button>
+                {/* 인라인 코드 버튼 */}
                 <button
                     type="button"
                     className={`p-1 rounded hover:bg-gray-200 ${isCode ? 'bg-gray-300' : ''}`}
                     onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code')}
-                    title="Inline Code"
+                    title="인라인 코드"
                 >
                     <Code className="w-5 h-5" />
-                </button>
-            </div>
-
-            {/* 형광펜 버튼 */}
-            <div className="relative group mr-2 border-r pr-2">
-                <button
-                    type="button"
-                    className="p-1 rounded hover:bg-gray-200 flex items-center"
-                    title="Highlighter"
-                >
-                    <HighlighterIcon className="w-5 h-5" />
-                </button>
-                <div className="absolute top-full left-0 mt-1 hidden group-hover:flex flex-wrap bg-white shadow-lg rounded border border-gray-200 p-1 z-10 w-32">
-                    {['#FFFF00', '#00FFFF', '#FF00FF', '#ADFF2F', '#FFA500'].map((color) => (
-                        <button
-                            key={color}
-                            type="button"
-                            className="w-6 h-6 m-1 rounded-full border border-gray-300"
-                            style={{ backgroundColor: color }}
-                            onClick={() => applyHighlight(color)}
-                            title={`Highlight with ${color}`}
-                        />
-                    ))}
-                </div>
-            </div>
-
-            {/* Blocks */}
-            <div className="flex space-x-1 mr-2 border-r pr-2">
-                <button
-                    type="button"
-                    className="p-1 rounded hover:bg-gray-200"
-                    onClick={() => insertHeading('h1')}
-                    title="Heading 1"
-                >
-                    <Heading1 className="w-5 h-5" />
-                </button>
-                <button
-                    type="button"
-                    className="p-1 rounded hover:bg-gray-200"
-                    onClick={() => insertHeading('h2')}
-                    title="Heading 2"
-                >
-                    <Heading2 className="w-5 h-5" />
                 </button>
 
                 {/* 코드 블록 버튼 (드롭다운 포함) */}
                 <div className="relative">
                     <button
                         type="button"
-                        className="p-1 rounded hover:bg-gray-200 flex items-center"
+                        className="p-1 rounded hover:bg-gray-200 flex items-center bg-blue-50 border border-blue-200"
                         onClick={() => setShowCodeDropdown(!showCodeDropdown)}
-                        title="Code Block"
+                        title="코드 블록"
                     >
-                        <Terminal className="w-5 h-5" />
-                        <ChevronDown className="w-3 h-3 ml-1" />
+                        <Terminal className="w-5 h-5 text-blue-600" />
+                        <span className="ml-1 text-xs text-blue-700 font-medium">{codeLanguage}</span>
+                        <ChevronDown className="w-3 h-3 ml-1 text-blue-500" />
                     </button>
 
                     {showCodeDropdown && (
@@ -267,7 +203,7 @@ export default function Toolbar() {
                                 <button
                                     key={lang}
                                     type="button"
-                                    className="block w-full text-left px-3 py-1.5 hover:bg-gray-100 text-sm"
+                                    className={`block w-full text-left px-3 py-1.5 hover:bg-gray-100 text-sm ${lang === codeLanguage ? 'bg-blue-50 font-medium' : ''}`}
                                     onClick={() => {
                                         setCodeLanguage(lang);
                                         insertCodeBlock(lang);
@@ -281,13 +217,84 @@ export default function Toolbar() {
                 </div>
             </div>
 
-            {/* Alignment */}
+            {/* 헤딩 (제목) */}
+            <div className="flex space-x-1 mr-2 border-r pr-2">
+                <button
+                    type="button"
+                    className="p-1 rounded hover:bg-gray-200"
+                    onClick={() => insertHeading('h1')}
+                    title="큰 제목"
+                >
+                    <Heading1 className="w-5 h-5" />
+                </button>
+                <button
+                    type="button"
+                    className="p-1 rounded hover:bg-gray-200"
+                    onClick={() => insertHeading('h2')}
+                    title="중간 제목"
+                >
+                    <Heading2 className="w-5 h-5" />
+                </button>
+            </div>
+
+            {/* 텍스트 포맷팅 */}
+            <div className="flex space-x-1 mr-2 border-r pr-2">
+                <button
+                    type="button"
+                    className={`p-1 rounded hover:bg-gray-200 ${isBold ? 'bg-gray-300' : ''}`}
+                    onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold')}
+                    title="굵게"
+                >
+                    <Bold className="w-5 h-5" />
+                </button>
+                <button
+                    type="button"
+                    className={`p-1 rounded hover:bg-gray-200 ${isItalic ? 'bg-gray-300' : ''}`}
+                    onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic')}
+                    title="기울임"
+                >
+                    <Italic className="w-5 h-5" />
+                </button>
+                <button
+                    type="button"
+                    className={`p-1 rounded hover:bg-gray-200 ${isUnderline ? 'bg-gray-300' : ''}`}
+                    onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline')}
+                    title="밑줄"
+                >
+                    <Underline className="w-5 h-5" />
+                </button>
+            </div>
+
+            {/* 형광펜 버튼 */}
+            <div className="relative group mr-2 border-r pr-2">
+                <button
+                    type="button"
+                    className="p-1 rounded hover:bg-gray-200 flex items-center"
+                    title="형광펜"
+                >
+                    <HighlighterIcon className="w-5 h-5" />
+                </button>
+                <div className="absolute top-full left-0 mt-1 hidden group-hover:flex flex-wrap bg-white shadow-lg rounded border border-gray-200 p-1 z-10 w-32">
+                    {['#FFFF00', '#00FFFF', '#FF00FF', '#ADFF2F', '#FFA500'].map((color) => (
+                        <button
+                            key={color}
+                            type="button"
+                            className="w-6 h-6 m-1 rounded-full border border-gray-300"
+                            style={{ backgroundColor: color }}
+                            onClick={() => applyHighlight(color)}
+                            title={`${color} 형광펜`}
+                        />
+                    ))}
+                </div>
+            </div>
+
+            {/* 정렬 */}
             <div className="flex space-x-1 mr-2 border-r pr-2">
                 <button
                     type="button"
                     className="p-1 rounded hover:bg-gray-200"
                     onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left')}
-                    title="Align Left"
+                    title="왼쪽 정렬"
                 >
                     <AlignLeft className="w-5 h-5" />
                 </button>
@@ -295,7 +302,7 @@ export default function Toolbar() {
                     type="button"
                     className="p-1 rounded hover:bg-gray-200"
                     onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'center')}
-                    title="Align Center"
+                    title="가운데 정렬"
                 >
                     <AlignCenter className="w-5 h-5" />
                 </button>
@@ -303,56 +310,53 @@ export default function Toolbar() {
                     type="button"
                     className="p-1 rounded hover:bg-gray-200"
                     onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right')}
-                    title="Align Right"
+                    title="오른쪽 정렬"
                 >
                     <AlignRight className="w-5 h-5" />
                 </button>
-                <button
-                    type="button"
-                    className="p-1 rounded hover:bg-gray-200"
-                    onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'justify')}
-                    title="Justify"
-                >
-                    <AlignJustify className="w-5 h-5" />
-                </button>
             </div>
 
-            {/* Font size selector */}
-            <select
-                className="border rounded p-1 text-sm"
-                defaultValue="16px"
-                onChange={(e) => editor.dispatchCommand(FONT_SIZE_COMMAND, e.target.value)}
-            >
-                <option value="12px">12</option>
-                <option value="14px">14</option>
-                <option value="16px">16</option>
-                <option value="18px">18</option>
-                <option value="24px">24</option>
-                <option value="32px">32</option>
-                <option value="64px">64</option>
-            </select>
+            {/* 스타일링 옵션 */}
+            <div className="flex items-center space-x-2">
+                {/* 폰트 사이즈 */}
+                <div className="flex items-center">
+                    <Type className="w-4 h-4 mr-1 text-gray-500" />
+                    <select
+                        className="border rounded p-1 text-sm"
+                        defaultValue="16px"
+                        onChange={(e) => editor.dispatchCommand(FONT_SIZE_COMMAND, e.target.value)}
+                    >
+                        <option value="12px">12</option>
+                        <option value="14px">14</option>
+                        <option value="16px">16</option>
+                        <option value="18px">18</option>
+                        <option value="24px">24</option>
+                        <option value="32px">32</option>
+                    </select>
+                </div>
 
-            {/* Text color picker */}
-            <label className="inline-flex items-center text-sm">
-                글자색:
-                <input
-                    type="color"
-                    defaultValue="#000000"
-                    className="ml-1 h-6 w-6 border-none"
-                    onChange={(e) => editor.dispatchCommand(TEXT_COLOR_COMMAND, e.target.value)}
-                />
-            </label>
+                {/* 텍스트 색상 */}
+                <label className="inline-flex items-center text-sm">
+                    글자색:
+                    <input
+                        type="color"
+                        defaultValue="#000000"
+                        className="ml-1 h-6 w-6 border-none"
+                        onChange={(e) => editor.dispatchCommand(TEXT_COLOR_COMMAND, e.target.value)}
+                    />
+                </label>
 
-            {/* Background color picker */}
-            <label className="inline-flex items-center text-sm">
-                배경색:
-                <input
-                    type="color"
-                    defaultValue="#ffffff"
-                    className="ml-1 h-6 w-6 border-none"
-                    onChange={(e) => editor.dispatchCommand(BACKGROUND_COLOR_COMMAND, e.target.value)}
-                />
-            </label>
+                {/* 배경 색상 */}
+                <label className="inline-flex items-center text-sm">
+                    배경색:
+                    <input
+                        type="color"
+                        defaultValue="#ffffff"
+                        className="ml-1 h-6 w-6 border-none"
+                        onChange={(e) => editor.dispatchCommand(BACKGROUND_COLOR_COMMAND, e.target.value)}
+                    />
+                </label>
+            </div>
         </div>
     );
 }

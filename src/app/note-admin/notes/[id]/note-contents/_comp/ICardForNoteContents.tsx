@@ -14,18 +14,14 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 
-// ——— 여기를 이렇게 수정 ———
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { ParagraphNode } from 'lexical';
-// ————————————————————
-
 import { TableCellNode, TableNode, TableRowNode } from '@lexical/table';
 import { ListItemNode, ListNode } from '@lexical/list';
 import { CodeHighlightNode, CodeNode } from '@lexical/code';
 import { AutoLinkNode, LinkNode } from '@lexical/link';
-
-// nodes 폴더가 아니라 LexicalEditor 폴더 바로 아래에 있는 ImageNode
 import { ImageNode } from '@/components/rich-editor/LexicalEditor/ImageNode';
+import { CustomTextNode } from '@/components/rich-editor/LexicalEditor/CustomTextNode';
 
 import TiptapEditor from '@/components/rich-editor/TibTabEditor';
 
@@ -46,6 +42,7 @@ function LexicalContentViewer({ content }: { content: string }) {
       code: 'editor-code',
     },
     nodes: [
+      CustomTextNode,
       ParagraphNode,
       HeadingNode,
       ListNode,
@@ -60,9 +57,7 @@ function LexicalContentViewer({ content }: { content: string }) {
       LinkNode,
       ImageNode,
     ],
-    // ——— 여기 이름도 editorState 로 고칩니다 ———
     editorState: content,
-    // —————————————————————————
     editable: false,
     onError: (error: Error) => console.error('Lexical viewer error:', error),
   };
@@ -124,12 +119,10 @@ const ICardForNoteContents = ({
 
   return (
     <Card
-      className={`mb-4 transition-all hover:shadow-md relative bg-white rounded-xl border border-gray-200 ${isSelected ? 'ring-1 ring-blue-400 shadow-md' : 'hover:border-gray-300'
-        }`}
+      className={`mb-4 transition-all hover:shadow-md relative bg-white rounded-xl border border-gray-200 ${isSelected ? 'ring-1 ring-blue-400 shadow-md' : 'hover:border-gray-300'}`}
       onClick={onClick}
     >
       <CardContent className="p-6 bg-white">
-        {/* 상단 UI: 순서, 아바타, 제목/경로 입력, 삭제 버튼 */}
         <div className="flex items-start gap-5 mb-5">
           <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center">
             <span className="text-sm font-medium text-gray-600">
@@ -172,7 +165,6 @@ const ICardForNoteContents = ({
           </div>
         </div>
 
-        {/* 콘텐츠: Lexical or Tiptap */}
         {isLexical ? (
           <div className="min-h-[180px] p-5 border border-gray-200 rounded-lg bg-white">
             <LexicalContentViewer content={content.content} />
