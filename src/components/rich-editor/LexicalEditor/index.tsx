@@ -11,7 +11,13 @@ import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { $getRoot, $createParagraphNode } from "lexical";
 
-// Import custom nodes and plugins
+// 수정된 임포트
+import { CodeNode, CodeHighlightNode } from "@lexical/code";
+import { ListNode, ListItemNode } from "@lexical/list";
+import { HeadingNode, QuoteNode } from "@lexical/rich-text";
+import { ListPlugin } from "@lexical/react/LexicalListPlugin"; // 리스트 플러그인 유지
+
+// 커스텀 노드 및 플러그인 임포트
 import { CustomTextNode } from "./CustomTextNode";
 import { FontSizePlugin } from "./FontSizePlugin";
 import { TextColorPlugin } from "./TextColorPlugin";
@@ -20,11 +26,11 @@ import { ImagePlugin } from "./ImagePlugin";
 import ImageUploadPlugin from "./ImageUploadPlugin";
 import { ImageNode } from "./ImageNode";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+
 import Toolbar from "./ToolBar";
+import { CodeHighlightPlugin } from "./CodeHighlightPlugin";
 
-// Import the Toolbar component
-
-// InitialContentPlugin to load content
+// 초기 콘텐츠 로드 플러그인
 function InitialContentPlugin({ initialContent }: { initialContent: string }) {
   const [editor] = useLexicalComposerContext();
   const initializedRef = useRef(false);
@@ -88,29 +94,74 @@ export default function LexicalEditor({
     namespace: "MyEditor",
     editable: !disabled,
     onError: (error: Error) => console.error(error),
-    theme: {},
-    nodes: [CustomTextNode, ImageNode],
+    theme: {
+      code: "bg-gray-100 font-mono p-2 rounded my-2",
+      codeHighlight: {
+        atrule: 'text-blue-500',
+        attr: 'text-blue-500',
+        boolean: 'text-red-500',
+        builtin: 'text-green-500',
+        cdata: 'text-gray-500',
+        char: 'text-green-500',
+        class: 'text-blue-500',
+        'class-name': 'text-blue-500',
+        comment: 'text-gray-500 italic',
+        constant: 'text-purple-500',
+        deleted: 'text-red-500',
+        doctype: 'text-gray-500',
+        entity: 'text-yellow-500',
+        function: 'text-green-500',
+        important: 'text-red-500',
+        inserted: 'text-green-500',
+        keyword: 'text-purple-500',
+        namespace: 'text-yellow-500',
+        number: 'text-red-500',
+        operator: 'text-purple-500',
+        prolog: 'text-gray-500',
+        property: 'text-blue-500',
+        punctuation: 'text-gray-500',
+        regex: 'text-yellow-500',
+        selector: 'text-blue-500',
+        string: 'text-green-500',
+        symbol: 'text-purple-500',
+        tag: 'text-blue-500',
+        url: 'text-blue-500',
+        variable: 'text-yellow-500',
+      },
+    },
+    nodes: [
+      CustomTextNode,
+      ImageNode,
+      CodeNode,
+      CodeHighlightNode,
+      HeadingNode,
+      QuoteNode,
+      ListNode,
+      ListItemNode
+    ],
   };
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      {/* Use the separate Toolbar component */}
+      {/* 툴바 컴포넌트 */}
       <Toolbar />
 
-      {/* Init content */}
+      {/* 초기 컨텐츠 */}
       <InitialContentPlugin initialContent={content} />
 
-      {/* Plugins */}
+      {/* 플러그인 */}
       <FontSizePlugin />
       <TextColorPlugin />
       <BackgroundColorPlugin />
       <ImagePlugin />
       <ImageUploadPlugin />
+      <CodeHighlightPlugin />
+      <ListPlugin /> {/* 리스트 플러그인 유지 (필요하므로) */}
 
-      {/* Editor body */}
+      {/* 에디터 본문 */}
       <div className="border border-gray-300 rounded relative min-h-[200px] p-3">
         <RichTextPlugin
-          contentEditable={<ContentEditable className="outline-none" />}
+          contentEditable={<ContentEditable className="outline-none prose prose-sm max-w-none" />}
           placeholder={
             <div className="absolute top-3 left-3 text-gray-400 pointer-events-none">
               내용을 입력하세요...
