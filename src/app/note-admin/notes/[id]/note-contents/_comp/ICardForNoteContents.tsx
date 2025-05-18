@@ -22,8 +22,10 @@ import { CodeHighlightNode, CodeNode } from '@lexical/code';
 import { AutoLinkNode, LinkNode } from '@lexical/link';
 import { ImageNode } from '@/components/rich-editor/LexicalEditor/ImageNode';
 import { CustomTextNode } from '@/components/rich-editor/LexicalEditor/CustomTextNode';
+import { PlaygroundCodeBlockNode } from '@/components/rich-editor/LexicalEditor/PlaygroundCodeBlockNode';
 
 import TiptapEditor from '@/components/rich-editor/TibTabEditor';
+import { CodeHighlightPlugin } from '@/components/rich-editor/LexicalEditor/CodeHighlightPlugin';
 
 function isValidLexicalJson(value: string) {
   try {
@@ -50,6 +52,7 @@ function LexicalContentViewer({ content }: { content: string }) {
       QuoteNode,
       CodeNode,
       CodeHighlightNode,
+      PlaygroundCodeBlockNode, // ✅ 추가됨
       TableNode,
       TableCellNode,
       TableRowNode,
@@ -72,6 +75,7 @@ function LexicalContentViewer({ content }: { content: string }) {
           placeholder={null}
           ErrorBoundary={LexicalErrorBoundary}
         />
+        <CodeHighlightPlugin />
       </div>
     </LexicalComposer>
   );

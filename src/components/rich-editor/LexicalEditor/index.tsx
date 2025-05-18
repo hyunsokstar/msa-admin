@@ -182,7 +182,7 @@
 // src/components/rich-editor/LexicalEditor/index.tsx
 "use client";
 
-import React, { useCallback, useRef, useEffect, useState } from "react";
+import React, { useCallback, useRef, useEffect } from "react";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
@@ -206,8 +206,10 @@ import ImageUploadPlugin from "./ImageUploadPlugin";
 import { ImageNode } from "./ImageNode";
 import Toolbar from "./ToolBar";
 import { CodeHighlightPlugin } from "./CodeHighlightPlugin";
+import { codeHighlightTheme } from "./codeHighlightTheme";
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { PlaygroundCodeBlockNode } from "./PlaygroundCodeBlockNode";
 
 function InitialContentPlugin({ initialContent }: { initialContent: string }) {
   const [editor] = useLexicalComposerContext();
@@ -235,7 +237,6 @@ function InitialContentPlugin({ initialContent }: { initialContent: string }) {
 
   return null;
 }
-
 
 interface Props {
   content: string;
@@ -290,7 +291,7 @@ export default function LexicalEditor({ content, onChange, disabled = false }: P
     namespace: "MyEditor",
     editable: !disabled,
     onError: (error: Error) => console.error(error),
-    theme: {},
+    theme: codeHighlightTheme,
     nodes: [
       CustomTextNode,
       ImageNode,
@@ -299,7 +300,8 @@ export default function LexicalEditor({ content, onChange, disabled = false }: P
       HeadingNode,
       QuoteNode,
       ListNode,
-      ListItemNode
+      ListItemNode,
+      PlaygroundCodeBlockNode
     ],
   };
 

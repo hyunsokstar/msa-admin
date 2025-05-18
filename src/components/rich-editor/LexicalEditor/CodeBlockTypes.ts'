@@ -1,0 +1,4 @@
+// src/components/rich-editor/LexicalEditor/plugins/CodeBlockTypes.ts
+
+export const CODE_BLOCK_TYPE_1 = "code-highlight"; // 기본 하이라이팅
+export const CODE_BLOCK_TYPE_2 = "code-playground"; // 줄바꿈, 실행 지원용 playground
