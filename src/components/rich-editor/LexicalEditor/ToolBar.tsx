@@ -564,7 +564,7 @@
 // src/components/rich-editor/LexicalEditor/ToolBar.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
     UNDO_COMMAND,
@@ -586,12 +586,12 @@ import { BACKGROUND_COLOR_COMMAND } from "./BackgroundColorPlugin";
 import {
     Undo, Redo, Bold, Italic, Underline, Code, AlignLeft,
     AlignCenter, AlignRight, Heading1, Heading2, Terminal,
-    ChevronDown, HighlighterIcon, Type
+    ChevronDown, HighlighterIcon, Type, ImageIcon
 } from "lucide-react";
 import { $createHeadingNode } from "@lexical/rich-text";
 import { $createPlaygroundCodeBlockNode } from "./PlaygroundCodeBlockNode";
-
-// Playground 코드 블록 노드
+import { uploadFileToS3 } from "./uploadHelpers";
+import { INSERT_IMAGE_COMMAND } from "./ImagePlugin";
 
 export default function Toolbar() {
     const [editor] = useLexicalComposerContext();
@@ -603,6 +603,7 @@ export default function Toolbar() {
     const [isCode, setIsCode] = useState(false);
     const [codeLanguage, setCodeLanguage] = useState("javascript");
     const [showCodeDropdown, setShowCodeDropdown] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         const undo = editor.registerCommand(CAN_UNDO_COMMAND, (payload) => { setCanUndo(payload); return false; }, COMMAND_PRIORITY_CRITICAL);
@@ -624,9 +625,7 @@ export default function Toolbar() {
             COMMAND_PRIORITY_CRITICAL
         );
         return () => {
-            undo();
-            redo();
-            selection();
+            undo(); redo(); selection();
         };
     }, [editor]);
 
@@ -660,6 +659,14 @@ export default function Toolbar() {
                 $setBlocksType(selection, () => $createHeadingNode(level));
             }
         });
+    };
+
+    const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const url = await uploadFileToS3(file);
+            editor.dispatchCommand(INSERT_IMAGE_COMMAND, url);
+        }
     };
 
     const codeLanguages = ["javascript", "typescript", "html", "css", "python"];
@@ -736,6 +743,24 @@ export default function Toolbar() {
                 <label className="inline-flex items-center text-sm">배경색:
                     <input type="color" defaultValue="#ffffff" className="ml-1 h-6 w-6 border-none" onChange={(e) => editor.dispatchCommand(BACKGROUND_COLOR_COMMAND, e.target.value)} />
                 </label>
+            </div>
+
+            {/* 이미지 업로드 버튼 */}
+            <div className="ml-2">
+                <button
+                    type="button"
+                    className="p-1 rounded border border-gray-300 bg-white hover:bg-gray-100 text-sm flex items-center"
+                    onClick={() => fileInputRef.current?.click()}
+                >
+                    <ImageIcon className="w-5 h-5 mr-1 text-gray-700" /> 이미지 업로드
+                </button>
+                <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageUpload}
+                />
             </div>
         </div>
     );
