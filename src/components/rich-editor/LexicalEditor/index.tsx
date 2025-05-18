@@ -210,6 +210,11 @@ import { codeHighlightTheme } from "./codeHighlightTheme";
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { PlaygroundCodeBlockNode } from "./PlaygroundCodeBlockNode";
+import { AutoLinkNode, LinkNode } from "@lexical/link";
+// import LinkPlugin from "./LinkPlugin";
+import { LinkDecoratorNode } from "./LinkDecoratorNode";
+
+
 
 function InitialContentPlugin({ initialContent }: { initialContent: string }) {
   const [editor] = useLexicalComposerContext();
@@ -301,7 +306,10 @@ export default function LexicalEditor({ content, onChange, disabled = false }: P
       QuoteNode,
       ListNode,
       ListItemNode,
-      PlaygroundCodeBlockNode
+      PlaygroundCodeBlockNode,
+      LinkNode,
+      AutoLinkNode,
+      LinkDecoratorNode
     ],
   };
 
@@ -320,6 +328,7 @@ export default function LexicalEditor({ content, onChange, disabled = false }: P
       <ImageUploadPlugin />
       <CodeHighlightPlugin />
       <ListPlugin />
+      {/* <LinkPlugin /> */}
 
       <div className="border border-gray-300 rounded relative min-h-[200px] editor-content-area">
         <RichTextPlugin

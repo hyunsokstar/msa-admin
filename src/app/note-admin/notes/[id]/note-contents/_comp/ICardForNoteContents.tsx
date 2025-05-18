@@ -1,4 +1,3 @@
-// src/components/notes/ICardForNoteContents.tsx
 "use client";
 
 import React from 'react';
@@ -9,23 +8,10 @@ import { NoteContent } from '@/types/notes/typeForNoteContents';
 import useApiForDeleteNoteContent from '@/hook/notes/useApiForDeleteNoteContent';
 import IDialogButtonForDeleteNoteContents from './IDialogButtonForDeleteNoteContents';
 import ICardForUpdateNoteContents from './ICardForUpdateNoteContents';
-import { LexicalComposer } from '@lexical/react/LexicalComposer';
-import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
-import { ContentEditable } from '@lexical/react/LexicalContentEditable';
-import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
-
-import { HeadingNode, QuoteNode } from '@lexical/rich-text';
-import { ParagraphNode } from 'lexical';
-import { TableCellNode, TableNode, TableRowNode } from '@lexical/table';
-import { ListItemNode, ListNode } from '@lexical/list';
-import { CodeHighlightNode, CodeNode } from '@lexical/code';
-import { AutoLinkNode, LinkNode } from '@lexical/link';
-import { ImageNode } from '@/components/rich-editor/LexicalEditor/ImageNode';
-import { CustomTextNode } from '@/components/rich-editor/LexicalEditor/CustomTextNode';
-import { PlaygroundCodeBlockNode } from '@/components/rich-editor/LexicalEditor/PlaygroundCodeBlockNode';
-
 import TiptapEditor from '@/components/rich-editor/TibTabEditor';
-import { CodeHighlightPlugin } from '@/components/rich-editor/LexicalEditor/CodeHighlightPlugin';
+import LexicalContentViewer from '@/components/rich-editor/LexicalEditor/LexicalContentViewer';
+
+// Import our separated LexicalContentViewer component
 
 function isValidLexicalJson(value: string) {
   try {
@@ -34,51 +20,6 @@ function isValidLexicalJson(value: string) {
   } catch {
     return false;
   }
-}
-
-function LexicalContentViewer({ content }: { content: string }) {
-  const initialConfig = {
-    namespace: 'ReadOnlyViewer',
-    theme: {
-      paragraph: 'editor-paragraph',
-      code: 'editor-code',
-    },
-    nodes: [
-      CustomTextNode,
-      ParagraphNode,
-      HeadingNode,
-      ListNode,
-      ListItemNode,
-      QuoteNode,
-      CodeNode,
-      CodeHighlightNode,
-      PlaygroundCodeBlockNode, // ✅ 추가됨
-      TableNode,
-      TableCellNode,
-      TableRowNode,
-      AutoLinkNode,
-      LinkNode,
-      ImageNode,
-    ],
-    editorState: content,
-    editable: false,
-    onError: (error: Error) => console.error('Lexical viewer error:', error),
-  };
-
-  return (
-    <LexicalComposer initialConfig={initialConfig}>
-      <div className="editor-container">
-        <RichTextPlugin
-          contentEditable={
-            <ContentEditable className="min-h-[150px] prose prose-sm max-w-none text-black bg-white" />
-          }
-          placeholder={null}
-          ErrorBoundary={LexicalErrorBoundary}
-        />
-        <CodeHighlightPlugin />
-      </div>
-    </LexicalComposer>
-  );
 }
 
 interface ICardForNoteContentsProps {
