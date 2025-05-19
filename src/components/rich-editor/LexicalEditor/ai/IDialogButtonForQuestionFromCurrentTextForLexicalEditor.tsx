@@ -11,6 +11,7 @@ import {
     ElementNode
 } from 'lexical';
 import { Zap } from 'lucide-react';
+import ICommonDialog from '@/components/common/ICommonDialog';
 
 interface Props {
     className?: string;
@@ -24,7 +25,6 @@ const IDialogButtonForQuestionFromCurrentTextForLexicalEditor: React.FC<Props> =
     const [answer, setAnswer] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const modalRef = useRef<HTMLDivElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     // 에디터 텍스트 가져오기
@@ -37,7 +37,6 @@ const IDialogButtonForQuestionFromCurrentTextForLexicalEditor: React.FC<Props> =
                 const root = $getRoot();
                 root.getChildren().forEach(node => {
                     if (node.getType() === 'paragraph') {
-                        // Use getChildren() only on ElementNode types
                         if ($isElementNode(node)) {
                             node.getChildren().forEach(child => {
                                 if (child.getType() === 'text') {
@@ -57,7 +56,6 @@ const IDialogButtonForQuestionFromCurrentTextForLexicalEditor: React.FC<Props> =
 
     // AI에 질문하는 함수
     const handleSubmit = async (e?: React.FormEvent) => {
-        // 폼 submit 이벤트가 있으면 기본 동작 방지
         if (e) {
             e.preventDefault();
         }
@@ -75,7 +73,7 @@ const IDialogButtonForQuestionFromCurrentTextForLexicalEditor: React.FC<Props> =
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    model: 'claude-3-sonnet-20240229', // Claude 모델 사용
+                    model: 'claude-3-sonnet-20240229',
                     messages: [
                         {
                             role: 'system',
@@ -105,7 +103,7 @@ const IDialogButtonForQuestionFromCurrentTextForLexicalEditor: React.FC<Props> =
         }
     };
 
-    // 에디터에 답변 삽입 - 한 줄 띄우고 삽입하는 버전
+    // 에디터에 답변 삽입
     const insertAnswerToEditor = () => {
         if (!answer) return;
 
@@ -118,8 +116,6 @@ const IDialogButtonForQuestionFromCurrentTextForLexicalEditor: React.FC<Props> =
             } else {
                 // 선택된 영역이 없거나 커서만 있는 경우
                 const root = $getRoot();
-
-                // 마지막 텍스트 노드를 찾거나 생성
                 const lastChild = root.getLastChild();
                 if (lastChild) {
                     // 항상 새 단락을 생성하여 한 줄 띄우기 효과 주기
@@ -151,6 +147,27 @@ const IDialogButtonForQuestionFromCurrentTextForLexicalEditor: React.FC<Props> =
     // 버튼 스타일
     const buttonBaseStyle = "p-1.5 rounded hover:bg-gray-200 transition-colors border";
 
+    // 다이얼로그 푸터 영역
+    const dialogFooter = (
+        <div className="flex justify-between items-center">
+            <button
+                onClick={() => setIsOpen(false)}
+                className="bg-gray-200 hover:bg-gray-300 px-3 py-1.5 rounded text-gray-700"
+            >
+                취소
+            </button>
+            {answer && (
+                <button
+                    type="button"
+                    className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
+                    onClick={insertAnswerToEditor}
+                >
+                    에디터에 삽입
+                </button>
+            )}
+        </div>
+    );
+
     return (
         <>
             {/* AI 버튼 */}
@@ -163,102 +180,86 @@ const IDialogButtonForQuestionFromCurrentTextForLexicalEditor: React.FC<Props> =
                 <Zap className="w-4 h-4 mr-1 text-purple-600" /> AI
             </button>
 
-            {/* 모달 (중앙 배치 모달) */}
-            {isOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center">
-                    <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-                    <div
-                        ref={modalRef}
-                        className="relative flex flex-col bg-white overflow-hidden rounded-lg shadow-xl"
-                        style={{
-                            width: '85%',
-                            height: '85%',
-                            maxWidth: '1200px',
-                            maxHeight: '800px',
-                        }}
-                    >
-                        {/* 헤더 */}
-                        <div className="p-4 border-b flex justify-between items-center">
-                            <h2 className="text-lg font-semibold">AI 질문하기 (Claude)</h2>
-                            <button
-                                onClick={() => setIsOpen(false)}
-                                className="text-gray-500 hover:text-gray-700"
-                            >
-                                ✕
-                            </button>
+            {/* ICommonDialog 사용 */}
+            <ICommonDialog
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                title="AI 질문하기 (Claude)"
+                footer={dialogFooter}
+                width="full"
+            >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
+                    {/* 왼쪽: 현재 텍스트 + 질문 입력 영역 */}
+                    <div className="flex flex-col space-y-4">
+                        {/* 현재 텍스트 영역 */}
+                        <div className="flex flex-col h-2/5">
+                            <h3 className="font-medium mb-2 text-gray-700">현재 텍스트</h3>
+                            <div className="bg-gray-50 p-3 rounded flex-1 overflow-auto whitespace-pre-wrap border">
+                                {currentText || '에디터에 내용이 없습니다.'}
+                            </div>
                         </div>
 
-                        {/* 컨텐츠 영역 - 좌우 분할 */}
-                        <div className="flex-1 flex overflow-hidden">
-                            {/* 왼쪽: 현재 텍스트 + 질문 입력 영역 */}
-                            <div className="w-1/2 border-r p-4 overflow-auto flex flex-col">
-                                <h3 className="font-medium mb-3 text-gray-700">현재 텍스트</h3>
-                                <div className="bg-gray-50 p-3 rounded flex-1 overflow-auto whitespace-pre-wrap mb-4">
-                                    {currentText || '에디터에 내용이 없습니다.'}
-                                </div>
-
-                                {/* 질문 입력 영역 */}
-                                <div className="mt-2">
-                                    <h3 className="font-medium mb-2 text-gray-700">질문</h3>
-                                    <textarea
-                                        ref={textareaRef}
-                                        className="w-full border rounded p-3 focus:outline-none focus:ring-2 focus:ring-blue-300 resize-none"
-                                        rows={5}
-                                        placeholder="AI에게 질문하기... (Ctrl+Enter로 제출)"
-                                        value={question}
-                                        onChange={(e) => setQuestion(e.target.value)}
-                                        onKeyDown={handleKeyDown}
-                                        disabled={isLoading}
-                                    ></textarea>
-                                    <div className="mt-2 flex justify-end">
-                                        <button
-                                            type="button"
-                                            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
-                                            onClick={() => handleSubmit()}
-                                            disabled={isLoading || !question.trim()}
-                                        >
-                                            {isLoading ? '처리 중...' : '질문하기'}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* 오른쪽: AI 응답 영역 */}
-                            <div className="w-1/2 p-4 overflow-auto flex flex-col">
-                                <div className="flex justify-between items-center mb-3">
-                                    <h3 className="font-medium text-gray-700">AI 응답</h3>
-                                    {answer && (
-                                        <button
-                                            type="button"
-                                            className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm"
-                                            onClick={insertAnswerToEditor}
-                                        >
-                                            에디터에 삽입
-                                        </button>
-                                    )}
-                                </div>
-                                <div className="bg-blue-50 p-4 rounded flex-1 overflow-auto">
-                                    {isLoading ? (
-                                        <div className="flex justify-center items-center h-full">
-                                            <span className="animate-pulse">AI가 응답을 생성 중입니다...</span>
-                                        </div>
-                                    ) : error ? (
-                                        <div className="text-red-600 whitespace-pre-wrap p-3">
-                                            {error}
-                                        </div>
-                                    ) : answer ? (
-                                        <div className="whitespace-pre-wrap">{answer}</div>
-                                    ) : (
-                                        <div className="text-gray-500 flex items-center justify-center h-full">
-                                            질문을 입력하시면 AI가 응답을 생성합니다.
-                                        </div>
-                                    )}
+                        {/* 질문 입력 영역 */}
+                        <div className="flex flex-col h-3/5">
+                            <h3 className="font-medium mb-2 text-gray-700">질문</h3>
+                            <div className="flex-1 flex flex-col space-y-2">
+                                <textarea
+                                    ref={textareaRef}
+                                    className="w-full h-full border rounded p-3 focus:outline-none focus:ring-2 focus:ring-blue-300 resize-none overflow-auto"
+                                    placeholder="AI에게 질문하기... (Ctrl+Enter로 제출)"
+                                    value={question}
+                                    onChange={(e) => setQuestion(e.target.value)}
+                                    onKeyDown={handleKeyDown}
+                                    disabled={isLoading}
+                                ></textarea>
+                                <div className="flex justify-end">
+                                    <button
+                                        type="button"
+                                        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
+                                        onClick={() => handleSubmit()}
+                                        disabled={isLoading || !question.trim()}
+                                    >
+                                        {isLoading ? '처리 중...' : '질문하기'}
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    {/* 오른쪽: AI 응답 영역 */}
+                    <div className="flex flex-col h-full">
+                        <h3 className="font-medium mb-2 text-gray-700">AI 응답</h3>
+                        <div className="bg-blue-50 p-3 rounded flex-1 overflow-auto border border-blue-100">
+                            {isLoading ? (
+                                <div className="flex justify-center items-center h-full">
+                                    <span className="animate-pulse">AI가 응답을 생성 중입니다...</span>
+                                </div>
+                            ) : error ? (
+                                <div className="text-red-600 whitespace-pre-wrap p-3">
+                                    {error}
+                                </div>
+                            ) : answer ? (
+                                <div className="whitespace-pre-wrap">{answer}</div>
+                            ) : (
+                                <div className="text-gray-500 flex items-center justify-center h-full">
+                                    질문을 입력하시면 AI가 응답을 생성합니다.
+                                </div>
+                            )}
+                        </div>
+                        {answer && (
+                            <div className="mt-2 flex justify-end">
+                                <button
+                                    type="button"
+                                    className="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded text-sm"
+                                    onClick={insertAnswerToEditor}
+                                >
+                                    에디터에 삽입
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </div>
-            )}
+            </ICommonDialog>
         </>
     );
 };
