@@ -369,7 +369,6 @@ import {
     useSensors,
 } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 
 export function SimpleDraggableBlockPlugin(): null {
     const [editor] = useLexicalComposerContext();
@@ -600,7 +599,7 @@ export function SimpleDraggableBlockPlugin(): null {
             SELECTION_CHANGE_COMMAND,
             (selection) => {
                 // Type guard: check if selection has getNodes method
-                if (selection && typeof (selection as any)?.getNodes === "function") {
+                if (typeof (selection as any)?.getNodes === "function") {
                     const nodes = (selection as any).getNodes();
                     const selectedNode = nodes[0];
                     if (selectedNode) {
