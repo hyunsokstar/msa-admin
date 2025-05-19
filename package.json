@@ -106,6 +106,7 @@
     "@types/node": "^20",
     "@types/prismjs": "^1.26.5",
     "@types/react": "18.3.12",
+    "@types/react-dom": "^18.2.18",
     "@types/react-resizable": "^3.0.8",
     "cross-env": "^7.0.3",
     "eslint-config-prettier": "^10.0.1",
