@@ -25,7 +25,7 @@ import {
   RefreshCw,
   Monitor,
   MessageSquare,
-  Tool,
+  Wrench,
   Compass,
   Clock
 } from 'lucide-react';
@@ -111,7 +111,7 @@ const SIProductivityStrategies = () => {
             {/* 개발 자동화 & 도구 섹션 */}
             <StrategyCategorySection 
               title="개발 자동화 & 생산성 도구" 
-              icon={<Tool className="text-green-600" size={24} />}
+              icon={<Wrench className="text-green-600" size={24} />}
               description="반복 작업 자동화와 효율적인 도구 활용으로 개발 속도 가속화"
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
