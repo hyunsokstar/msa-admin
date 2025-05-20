@@ -20,6 +20,7 @@ import GraphQLBenefits from './SummarySection';
 import DevCultureReport from './DevCultureReport';
 import TechMasteryCertificationSystem from './TechMasteryCertificationSystem';
 import AttitudeList from './AttitudeList';
+import SIProductivityStrategies from './SIProductivityStrategies';
 
 const StrategyReport = () => {
   return (
@@ -47,19 +48,7 @@ const StrategyReport = () => {
 
       <GraphQLSuccessCases />
 
-      <ImplementationStrategies />
-
-      <StrategicInsights />
-
-      <OrganizationalStrategies />
-
-      <GraphQLBenefits />
-
-      <DevCultureReport />
-
-      <TechMasteryCertificationSystem />
-
-      <AttitudeList />
+      <SIProductivityStrategies  />
 
       {/* <ModernParadigmsSection /> */}
 
