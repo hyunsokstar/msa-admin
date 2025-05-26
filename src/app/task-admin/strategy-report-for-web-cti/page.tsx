@@ -21,6 +21,7 @@ import DevCultureReport from './DevCultureReport';
 import TechMasteryCertificationSystem from './TechMasteryCertificationSystem';
 import AttitudeList from './AttitudeList';
 import SIProductivityStrategies from './SIProductivityStrategies';
+import CallCenterMSAArchitecture from './CallCenterMSAArchitecture';
 
 const StrategyReport = () => {
   return (
@@ -49,6 +50,8 @@ const StrategyReport = () => {
       <GraphQLSuccessCases />
 
       <SIProductivityStrategies  />
+
+      <CallCenterMSAArchitecture />
 
       {/* <ModernParadigmsSection /> */}
 
