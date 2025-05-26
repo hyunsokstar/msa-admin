@@ -23,6 +23,7 @@ import AttitudeList from './AttitudeList';
 import SIProductivityStrategies from './SIProductivityStrategies';
 import CallCenterMSAArchitecture from './CallCenterMSAArchitecture';
 import ReferenceMaterials from './ReferenceMaterials';
+import CTIMSAImplementationPlan from './CTIMSAImplementationPlan';
 
 const StrategyReport = () => {
   return (
@@ -55,6 +56,8 @@ const StrategyReport = () => {
       <CallCenterMSAArchitecture />
 
       <ReferenceMaterials />
+
+      <CTIMSAImplementationPlan />
 
       {/* <ModernParadigmsSection /> */}
 
