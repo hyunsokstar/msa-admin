@@ -298,7 +298,6 @@ import { CustomTextNode } from "./CustomTextNode";
 import { FontSizePlugin } from "./FontSizePlugin";
 import { TextColorPlugin } from "./TextColorPlugin";
 import { BackgroundColorPlugin } from "./BackgroundColorPlugin";
-import { ImagePlugin } from "./ImagePlugin";
 import ImageUploadPlugin from "./ImageUploadPlugin";
 import { ImageNode } from "./ImageNode";
 import Toolbar from "./ToolBar";
@@ -312,6 +311,7 @@ import { LinkDecoratorNode } from "./LinkDecoratorNode";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import NodeKeyAttributesPlugin from "./decorator/NodeKeyAttributesPlugin";
 import SimpleDraggableBlockPlugin from "./plugin/SimpleDraggableBlockPlugin";
+import ImagePlugin from "./ImagePlugin";
 
 function InitialContentPlugin({ initialContent }: { initialContent: string }) {
   const [editor] = useLexicalComposerContext();
