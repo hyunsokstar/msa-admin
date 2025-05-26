@@ -41,12 +41,12 @@ export class PlaygroundCodeBlockNode extends CodeNode {
         container.className = 'relative group bg-gray-100 rounded-md overflow-hidden';
 
         // 원본 요소에 스타일 추가
-        originalElement.className = 'text-sm font-mono p-0 overflow-x-auto whitespace-pre-wrap m-0';
+        originalElement.className = 'text-sm font-mono p-3 overflow-x-auto whitespace-pre-wrap m-0';
 
         // 복사 버튼 (겹친 네모 아이콘)
         const copyButton = document.createElement('button');
         copyButton.className =
-            'absolute top-2 right-2 p-1.5 bg-white/80 hover:bg-white ' +
+            'absolute top-1 right-1 p-1.5 bg-white/80 hover:bg-white ' +
             'border border-gray-300 rounded opacity-0 group-hover:opacity-100 ' +
             'transition-opacity duration-200 flex items-center justify-center ' +
             'text-gray-600 hover:text-gray-800';

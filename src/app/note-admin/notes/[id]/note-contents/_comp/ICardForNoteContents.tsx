@@ -64,13 +64,13 @@ const ICardForNoteContents = ({
 
   return (
     <Card
-      className={`mb-4 transition-all hover:shadow-md relative bg-white rounded-xl border border-gray-200 ${isSelected ? 'ring-1 ring-blue-400 shadow-md' : 'hover:border-gray-300'}`}
+      className={`mb-4 transition-all hover:shadow-md relative bg-white rounded-xl ${isSelected ? 'ring-1 ring-blue-400 shadow-md' : 'hover:border-gray-300'}`}
       onClick={onClick}
     >
       <CardContent className="p-6 bg-white">
         <div className="flex items-start gap-5 mb-5">
-          <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center">
-            <span className="text-sm font-medium text-gray-600">
+          <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center">
+            <span className="text-sm font-medium ">
               {content.order}
             </span>
           </div>

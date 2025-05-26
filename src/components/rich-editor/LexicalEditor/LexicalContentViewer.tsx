@@ -45,7 +45,6 @@ const MATCHERS = [
 // Link click handling plugin
 function LinkClickHandlerPlugin() {
     useEffect(() => {
-        // Handle link clicks to open in new tab
         const handleClick = (e: MouseEvent) => {
             const target = e.target as HTMLElement;
             if (target.tagName === 'A') {
@@ -71,7 +70,6 @@ function EnhanceLinksPlugin() {
     const [editor] = useLexicalComposerContext();
 
     useEffect(() => {
-        // Apply styling to links in the DOM
         const applyLinkStyles = () => {
             const editorLinks = document.querySelectorAll('.editor-container a');
             editorLinks.forEach(link => {
@@ -81,7 +79,6 @@ function EnhanceLinksPlugin() {
             });
         };
 
-        // Run initially and periodically
         applyLinkStyles();
         const interval = setInterval(applyLinkStyles, 500);
 
@@ -98,15 +95,12 @@ function UrlDetectionPlugin() {
     const [editor] = useLexicalComposerContext();
 
     useEffect(() => {
-        // Function to detect URLs in the text and mark them as links
         const detectUrlsInDom = () => {
             const editorElement = document.querySelector('.editor-container');
             if (!editorElement) return;
 
-            // URL pattern 
             const urlRegex = /(https?:\/\/[^\s]+)/g;
 
-            // Find all text nodes not already in a link
             const walker = document.createTreeWalker(
                 editorElement,
                 NodeFilter.SHOW_TEXT,
@@ -125,10 +119,9 @@ function UrlDetectionPlugin() {
                 if (urlRegex.test(textNode.textContent || '')) {
                     textNodesToProcess.push(textNode);
                 }
-                urlRegex.lastIndex = 0; // Reset regex state
+                urlRegex.lastIndex = 0;
             }
 
-            // Process identified text nodes
             textNodesToProcess.forEach(node => {
                 if (!node.textContent) return;
 
@@ -139,14 +132,12 @@ function UrlDetectionPlugin() {
 
                 urlRegex.lastIndex = 0;
                 while ((match = urlRegex.exec(text)) !== null) {
-                    // Add text before URL
                     if (match.index > lastIndex) {
                         fragment.appendChild(document.createTextNode(
                             text.substring(lastIndex, match.index)
                         ));
                     }
 
-                    // Create link element for URL
                     const url = match[0];
                     const link = document.createElement('a');
                     link.href = url;
@@ -155,7 +146,6 @@ function UrlDetectionPlugin() {
                     link.target = '_blank';
                     link.rel = 'noopener noreferrer';
 
-                    // Handle link click
                     link.addEventListener('click', (e) => {
                         e.preventDefault();
                         window.open(url, '_blank', 'noopener,noreferrer');
@@ -165,21 +155,18 @@ function UrlDetectionPlugin() {
                     lastIndex = match.index + url.length;
                 }
 
-                // Add remaining text after last URL
                 if (lastIndex < text.length) {
                     fragment.appendChild(document.createTextNode(
                         text.substring(lastIndex)
                     ));
                 }
 
-                // Replace original node with processed fragment
                 if (fragment.childNodes.length > 0 && node.parentNode) {
                     node.parentNode.replaceChild(fragment, node);
                 }
             });
         };
 
-        // Run detection
         detectUrlsInDom();
         const intervalId = setInterval(detectUrlsInDom, 1000);
 
@@ -196,7 +183,44 @@ function LexicalContentViewer({ content }: { content: string }) {
         namespace: 'ReadOnlyViewer',
         theme: {
             paragraph: 'editor-paragraph',
-            code: 'editor-code',
+            // 코드 하이라이팅 테마 추가
+            code: 'editor-code bg-gray-100 px-1 py-0.5 rounded text-sm font-mono',
+            codeHighlight: {
+                atrule: 'token-atrule text-purple-600',
+                attr: 'token-attr text-blue-600',
+                boolean: 'token-boolean text-orange-600',
+                builtin: 'token-builtin text-purple-600',
+                cdata: 'token-cdata text-gray-600',
+                char: 'token-char text-green-600',
+                class: 'token-class text-blue-600',
+                'class-name': 'token-class-name text-blue-600',
+                comment: 'token-comment text-gray-500 italic',
+                constant: 'token-constant text-orange-600',
+                deleted: 'token-deleted text-red-600',
+                doctype: 'token-doctype text-gray-600',
+                entity: 'token-entity text-orange-600',
+                function: 'token-function text-blue-600',
+                important: 'token-important text-red-600 font-bold',
+                inserted: 'token-inserted text-green-600',
+                keyword: 'token-keyword text-purple-600 font-semibold',
+                namespace: 'token-namespace text-purple-600',
+                number: 'token-number text-orange-600',
+                operator: 'token-operator text-gray-700',
+                prolog: 'token-prolog text-gray-600',
+                property: 'token-property text-blue-600',
+                punctuation: 'token-punctuation text-gray-600',
+                regex: 'token-regex text-green-600',
+                selector: 'token-selector text-green-600',
+                string: 'token-string text-green-600',
+                symbol: 'token-symbol text-orange-600',
+                tag: 'token-tag text-red-600',
+                url: 'token-url text-blue-600',
+                variable: 'token-variable text-orange-600',
+            },
+            // 코드 블록 테마
+            playground: {
+                codeBlock: 'editor-code-block bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto',
+            },
             link: 'text-blue-600 underline cursor-pointer hover:text-blue-800',
         },
         nodes: [
@@ -215,7 +239,7 @@ function LexicalContentViewer({ content }: { content: string }) {
             AutoLinkNode,
             LinkNode,
             ImageNode,
-            LinkDecoratorNode, // Add our custom link decorator node
+            LinkDecoratorNode,
         ],
         editorState: content,
         editable: false,
@@ -227,50 +251,143 @@ function LexicalContentViewer({ content }: { content: string }) {
             <div className="editor-container">
                 <RichTextPlugin
                     contentEditable={
-                        <ContentEditable className="min-h-[150px] prose prose-sm max-w-none text-black bg-white" />
+                        <ContentEditable className="min-h-[150px] prose prose-sm max-w-none focus:outline-none" />
                     }
                     placeholder={null}
                     ErrorBoundary={LexicalErrorBoundary}
                 />
-                {/* Core link support */}
+
                 <LinkPlugin />
-
-                {/* Auto-linking for text containing URLs */}
                 <AutoLinkPlugin matchers={MATCHERS} />
-
-                {/* Enhanced link styling */}
                 <EnhanceLinksPlugin />
-
-                {/* Link click handler */}
                 <LinkClickHandlerPlugin />
-
-                {/* URL detection in existing text */}
                 <UrlDetectionPlugin />
-
-                {/* Code highlighting */}
                 <CodeHighlightPlugin />
             </div>
 
-            {/* Global styles for links */}
+            {/* 전역 스타일 - 코드 하이라이팅 포함 */}
             <style jsx global>{`
-        .editor-container a {
-          color: #2563eb;
-          text-decoration: underline;
-          cursor: pointer;
-          transition: color 0.2s;
-        }
-        
-        .editor-container a:hover {
-          color: #1d4ed8;
-        }
-        
-        /* Specific styling for code blocks */
-        .editor-container pre a,
-        .editor-container code a {
-          color: #2563eb !important;
-          text-decoration: underline !important;
-        }
-      `}</style>
+                .editor-container a {
+                    color: #2563eb;
+                    text-decoration: underline;
+                    cursor: pointer;
+                    transition: color 0.2s;
+                }
+                
+                .editor-container a:hover {
+                    color: #1d4ed8;
+                }
+                
+                /* 코드 블록 스타일링 */
+                .editor-container .editor-code-block {
+                    background-color: #1f2937;
+                    color: #f9fafb;
+                    padding: 1rem;
+                    border-radius: 0.5rem;
+                    overflow-x: auto;
+                    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+                    font-size: 0.875rem;
+                    line-height: 1.5;
+                    margin: 1rem 0;
+                }
+                
+                /* 인라인 코드 스타일링 */
+                .editor-container .editor-code {
+                    background-color: #f3f4f6;
+                    color: #374151;
+                    padding: 0.125rem 0.25rem;
+                    border-radius: 0.25rem;
+                    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+                    font-size: 0.875rem;
+                }
+                
+                /* 토큰 스타일링 */
+                .editor-container .token-comment {
+                    color: #6b7280;
+                    font-style: italic;
+                }
+                
+                .editor-container .token-keyword {
+                    color: #8b5cf6;
+                    font-weight: 600;
+                }
+                
+                .editor-container .token-string {
+                    color: #10b981;
+                }
+                
+                .editor-container .token-number {
+                    color: #f59e0b;
+                }
+                
+                .editor-container .token-function {
+                    color: #3b82f6;
+                }
+                
+                .editor-container .token-operator {
+                    color: #6b7280;
+                }
+                
+                .editor-container .token-punctuation {
+                    color: #6b7280;
+                }
+                
+                .editor-container .token-property {
+                    color: #3b82f6;
+                }
+                
+                .editor-container .token-class-name {
+                    color: #3b82f6;
+                }
+                
+                .editor-container .token-tag {
+                    color: #ef4444;
+                }
+                
+                .editor-container .token-attr {
+                    color: #3b82f6;
+                }
+                
+                .editor-container .token-boolean {
+                    color: #f59e0b;
+                }
+                
+                .editor-container .token-constant {
+                    color: #f59e0b;
+                }
+                
+                .editor-container .token-variable {
+                    color: #f59e0b;
+                }
+                
+                /* 코드 블록 내 링크 스타일 */
+                .editor-container pre a,
+                .editor-container code a {
+                    color: #60a5fa !important;
+                    text-decoration: underline !important;
+                }
+                
+                /* 다크 테마 코드 블록 내 토큰들 */
+                .editor-container .editor-code-block .token-comment {
+                    color: #9ca3af;
+                }
+                
+                .editor-container .editor-code-block .token-keyword {
+                    color: #c084fc;
+                }
+                
+                .editor-container .editor-code-block .token-string {
+                    color: #34d399;
+                }
+                
+                .editor-container .editor-code-block .token-number {
+                    color: #fbbf24;
+                }
+                
+                .editor-container .editor-code-block .token-function {
+                    color: #60a5fa;
+                }
+            `}</style>
         </LexicalComposer>
     );
 }
