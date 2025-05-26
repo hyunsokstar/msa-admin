@@ -41,7 +41,7 @@ export class PlaygroundCodeBlockNode extends CodeNode {
         container.className = 'relative group bg-gray-100 rounded-md overflow-hidden';
 
         // 원본 요소에 스타일 추가
-        originalElement.className = 'text-sm font-mono p-0 overflow-x-auto whitespace-pre-wrap m-0';
+        originalElement.className = 'text-sm font-mono overflow-x-auto whitespace-pre-wrap m-0';
 
         // 복사 버튼 (겹친 네모 아이콘)
         const copyButton = document.createElement('button');
