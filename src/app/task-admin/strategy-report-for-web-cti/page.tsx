@@ -22,6 +22,7 @@ import TechMasteryCertificationSystem from './TechMasteryCertificationSystem';
 import AttitudeList from './AttitudeList';
 import SIProductivityStrategies from './SIProductivityStrategies';
 import CallCenterMSAArchitecture from './CallCenterMSAArchitecture';
+import ReferenceMaterials from './ReferenceMaterials';
 
 const StrategyReport = () => {
   return (
@@ -52,6 +53,8 @@ const StrategyReport = () => {
       {/* <SIProductivityStrategies  /> */}
 
       <CallCenterMSAArchitecture />
+
+      <ReferenceMaterials />
 
       {/* <ModernParadigmsSection /> */}
 
