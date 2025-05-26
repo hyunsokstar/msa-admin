@@ -49,7 +49,7 @@ const StrategyReport = () => {
 
       <GraphQLSuccessCases />
 
-      <SIProductivityStrategies  />
+      {/* <SIProductivityStrategies  /> */}
 
       <CallCenterMSAArchitecture />
 
