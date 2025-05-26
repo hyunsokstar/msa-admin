@@ -432,8 +432,6 @@ function ResizableImage({
                 resizeHandles={['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw']}
                 minConstraints={[120, 80]} // 최소 크기 조금 증가
                 maxConstraints={[1400, 1000]} // 최대 크기 증가
-                // 그리드 스냅 기능 (10px 단위로 조절)
-                grid={[10, 10]}
                 onResizeStart={() => {
                     setIsResizing(true);
                 }}
