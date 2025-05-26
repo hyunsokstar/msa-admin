@@ -3,6 +3,7 @@ import {
     SerializedCodeNode,
 } from '@lexical/code';
 import { EditorConfig, LexicalEditor, SerializedElementNode } from 'lexical';
+import { toast } from 'react-toastify';
 
 declare global {
     interface Window {
@@ -57,21 +58,20 @@ export class PlaygroundCodeBlockNode extends CodeNode {
         `;
         copyButton.title = '코드 복사';
 
-        // 복사 성공 시 버튼 피드백
+        // 복사 성공 시 버튼 피드백 - 꿈틀 애니메이션
         const showSuccessFeedback = () => {
-            const originalHTML = copyButton.innerHTML;
-            const originalClass = copyButton.className;
-            copyButton.innerHTML = `
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="20,6 9,17 4,12"></polyline>
-                </svg>
-            `;
-            copyButton.className = originalClass.replace('text-gray-600', 'text-green-600');
+            // 꿈틀 애니메이션 효과
+            copyButton.style.transform = 'scale(0.9)';
+            copyButton.style.transition = 'transform 0.1s ease-in-out';
 
             setTimeout(() => {
-                copyButton.innerHTML = originalHTML;
-                copyButton.className = originalClass;
-            }, 2000);
+                copyButton.style.transform = 'scale(1.1)';
+            }, 100);
+
+            setTimeout(() => {
+                copyButton.style.transform = 'scale(1)';
+                copyButton.style.transition = '';
+            }, 200);
         };
 
         // 복사 기능
@@ -139,7 +139,15 @@ export class PlaygroundCodeBlockNode extends CodeNode {
                     if (cleanText) {
                         performCopy(cleanText);
                     } else {
-                        alert('복사할 코드를 찾을 수 없습니다.');
+                        // 토스트 메시지만 표시
+                        if (typeof window !== 'undefined' && window.toast) {
+                            window.toast.error('복사할 코드를 찾을 수 없습니다.', {
+                                position: "top-right",
+                                autoClose: 3000,
+                            });
+                        } else {
+                            alert('복사할 코드를 찾을 수 없습니다.');
+                        }
                     }
                 }, 100);
                 return;
@@ -156,7 +164,7 @@ export class PlaygroundCodeBlockNode extends CodeNode {
             // 현대적인 클립보드 API 사용
             if (navigator.clipboard && window.isSecureContext) {
                 navigator.clipboard.writeText(textToCopy).then(() => {
-                    // 성공 시
+                    // 성공 시 - 토스트 메시지와 꿈틀 애니메이션
                     if (typeof window !== 'undefined' && window.toast) {
                         window.toast.success('코드가 복사되었습니다!', {
                             position: "top-right",
@@ -167,11 +175,21 @@ export class PlaygroundCodeBlockNode extends CodeNode {
                             draggable: true,
                         });
                     } else {
-                        alert('코드가 복사되었습니다!');
+                        // alert('코드가 복사되었습니다!');
+                        toast.success('코드가 복사되었습니다!',
+                            {
+                                position: "top-center",
+                                autoClose: 2000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                            }
+                        );
                     }
                     showSuccessFeedback();
                 }).catch((err) => {
-                    // 실패 시
+                    // 실패 시 - 토스트 메시지만
                     console.error('클립보드 복사 실패:', err);
                     if (typeof window !== 'undefined' && window.toast) {
                         window.toast.error('복사에 실패했습니다.', {
@@ -196,7 +214,7 @@ export class PlaygroundCodeBlockNode extends CodeNode {
                 try {
                     const successful = document.execCommand('copy');
                     if (successful) {
-                        // 실제로 성공한 경우에만 성공 메시지
+                        // 실제로 성공한 경우에만 성공 메시지와 애니메이션
                         if (typeof window !== 'undefined' && window.toast) {
                             window.toast.success('코드가 복사되었습니다!', {
                                 position: "top-right",
@@ -207,7 +225,7 @@ export class PlaygroundCodeBlockNode extends CodeNode {
                         }
                         showSuccessFeedback();
                     } else {
-                        // execCommand가 false를 반환한 경우
+                        // execCommand가 false를 반환한 경우 - 토스트 메시지만
                         if (typeof window !== 'undefined' && window.toast) {
                             window.toast.error('복사에 실패했습니다.', {
                                 position: "top-right",
@@ -218,7 +236,7 @@ export class PlaygroundCodeBlockNode extends CodeNode {
                         }
                     }
                 } catch (err) {
-                    // execCommand에서 예외가 발생한 경우
+                    // execCommand에서 예외가 발생한 경우 - 토스트 메시지만
                     console.error('execCommand 복사 실패:', err);
                     if (typeof window !== 'undefined' && window.toast) {
                         window.toast.error('복사에 실패했습니다.', {
