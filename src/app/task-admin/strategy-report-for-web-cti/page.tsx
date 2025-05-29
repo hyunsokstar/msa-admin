@@ -21,9 +21,9 @@ import DevCultureReport from './DevCultureReport';
 import TechMasteryCertificationSystem from './TechMasteryCertificationSystem';
 import AttitudeList from './AttitudeList';
 import SIProductivityStrategies from './SIProductivityStrategies';
-import CallCenterMSAArchitecture from './CallCenterMSAArchitecture';
+import NextProjectArchetecture from './NextProjectArchetecture';
 import ReferenceMaterials from './ReferenceMaterials';
-import CTIMSAImplementationPlan from './CTIMSAImplementationPlan';
+import NextGenerationArchitecture from './NextGenerationArchitecture';
 
 const StrategyReport = () => {
   return (
@@ -35,31 +35,34 @@ const StrategyReport = () => {
       {/* 서론 섹션을 컴포넌트로 분리 */}
       <Introduction />
 
+      
       {/* 기술적 문제 섹션을 컴포넌트로 분리 */}
       <TechnicalIssues />
+      
+      <GraphQLSuccessCases />
+      
+      <NextProjectArchetecture />
+
+      
+      <ReferenceMaterials />
+
+      {/* <EnhancedLearningResources /> */}
+
 
       {/* 나머지 이미 컴포넌트화된 섹션들 */}
-      <KeyStrategies />
+      {/* <KeyStrategies /> */}
 
-      <EnhancedLearningResources />
+      {/* <GraphQLvsRestComparison /> */}
 
-      <GraphQLvsRestComparison />
+      {/* <GraphQLPracticalAdvantages /> */}
 
-      <GraphQLPracticalAdvantages />
-
-      <TechAdoptionStrategies />
-
-      <GraphQLSuccessCases />
+      {/* <TechAdoptionStrategies /> */}
 
       {/* <SIProductivityStrategies  /> */}
 
-      <CallCenterMSAArchitecture />
-
-      <ReferenceMaterials />
-
-      <CTIMSAImplementationPlan />
-
       {/* <ModernParadigmsSection /> */}
+
+      {/* <CTIMSAImplementationPlan /> */}
 
     </div>
   );
