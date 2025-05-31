@@ -24,14 +24,15 @@ import SIProductivityStrategies from './SIProductivityStrategies';
 import NextProjectArchetecture from './NextProjectArchetecture';
 import ReferenceMaterials from './ReferenceMaterials';
 import NextGenerationArchitecture from './NextGenerationArchitecture';
+import ReferenceLectures from './ReferenceLectures';
 
 // 섹션 구분 컴포넌트
-const SectionDivider = ({ 
+const SectionDivider = ({
   gradient = "from-blue-500 to-purple-600",
-  margin = "my-16" 
-}: { 
-  gradient?: string; 
-  margin?: string; 
+  margin = "my-16"
+}: {
+  gradient?: string;
+  margin?: string;
 }) => (
   <div className={`${margin} flex items-center justify-center`}>
     <div className="flex-1 max-w-md">
@@ -87,7 +88,7 @@ const StrategyReport = () => {
       </section>
 
       <MainSectionDivider />
-      
+
       {/* 기술적 문제 섹션 */}
       <section className="mb-8">
         <TechnicalIssues />
@@ -99,7 +100,7 @@ const StrategyReport = () => {
       <section className="mb-8">
         <GraphQLSuccessCases />
       </section>
-      
+
       <MainSectionDivider />
 
       {/* 차세대 프로젝트 아키텍처 */}
@@ -108,10 +109,14 @@ const StrategyReport = () => {
       </section>
 
       <SectionDivider gradient="from-purple-500 to-pink-600" />
-      
+
       {/* 참고 자료 */}
       <section className="mb-8">
         <ReferenceMaterials />
+      </section>
+
+      <section className="mb-8">
+        <ReferenceLectures />
       </section>
 
       {/* 하단 여백 */}
