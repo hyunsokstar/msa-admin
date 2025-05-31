@@ -9,7 +9,6 @@ import TechnicalIssues from './TechnicalIssues';
 import GraphQLSuccessCases from './GraphQLSuccessCases';
 import NextProjectArchetecture from './NextProjectArchetecture';
 import ReferenceMaterials from './ReferenceMaterials';
-import NextGenerationArchitecture from './NextGenerationArchitecture';
 import ReferenceLectures from './ReferenceLectures';
 
 // 섹션 구분 컴포넌트
@@ -100,6 +99,8 @@ const StrategyReport = () => {
       <section className="mb-8">
         <ReferenceMaterials />
       </section>
+
+      <SectionDivider gradient="from-purple-500 to-pink-600" />
 
       <section className="mb-8">
         <ReferenceLectures />
