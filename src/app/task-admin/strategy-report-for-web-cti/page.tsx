@@ -10,6 +10,7 @@ import GraphQLSuccessCases from './GraphQLSuccessCases';
 import NextProjectArchetecture from './NextProjectArchetecture';
 import ReferenceMaterials from './ReferenceMaterials';
 import ReferenceLectures from './ReferenceLectures';
+import RedisScalingDiagram from './RedisScalingDiagram';
 
 // 섹션 구분 컴포넌트
 const SectionDivider = ({
@@ -91,6 +92,12 @@ const StrategyReport = () => {
       {/* 차세대 프로젝트 아키텍처 */}
       <section className="mb-8">
         <NextProjectArchetecture />
+      </section>
+
+      <SectionDivider gradient="from-purple-500 to-pink-600" />
+
+      <section className="mb-8">
+        <RedisScalingDiagram />
       </section>
 
       <SectionDivider gradient="from-purple-500 to-pink-600" />
