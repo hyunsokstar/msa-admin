@@ -15,6 +15,7 @@ import NextGenerationArchitectureWithRedisScaling2 from './NextGenerationArchite
 import KafkaNecessityAnalysis from './KafkaNecessityAnalysis';
 import CtiLearningCurveSummary from './CtiLearningCurveSummary';
 import ChallengeCWorld from './ChallengeCWorld';
+import SummaryX86Architecture from './SummaryX86Architecture';
 
 // 섹션 구분 컴포넌트
 const SectionDivider = ({
@@ -121,6 +122,12 @@ const StrategyReport = () => {
 
       <section className="mb-8">
         <ChallengeCWorld />
+      </section>
+
+      <SectionDivider gradient="from-purple-500 to-pink-600" />
+
+      <section className="mb-8">
+        <SummaryX86Architecture />
       </section>
 
       <SectionDivider gradient="from-purple-500 to-pink-600" />
