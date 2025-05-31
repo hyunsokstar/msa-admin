@@ -1,4 +1,5 @@
 // components/NextGenerationArchitectureWithRedisScaling2.tsx
+
 "use client";
 
 import React from "react";
@@ -286,7 +287,7 @@ const NextGenerationArchitectureWithRedisScaling2: React.FC = () => {
                     Call Service
                 </text>
                 <text x="1030" y="440" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="12" fill="#1e1e1e">
-                    Go (WebRTC)
+                    C/C++ (WebRTC)
                 </text>
                 <text x="1030" y="460" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="11" fill="#1e1e1e">
                     • VoIP/Media 관리
