@@ -17,6 +17,7 @@ import CtiLearningCurveSummary from './CtiLearningCurveSummary';
 import ChallengeCWorld from './ChallengeCWorld';
 import SummaryX86Architecture from './SummaryX86Architecture';
 import ParadigmAndStructureSummary from './ParadigmAndStructureSummary';
+import WhyLearnCInModernMSA from './WhyLearnCInModernMSA';
 
 // 섹션 구분 컴포넌트
 const SectionDivider = ({
@@ -123,6 +124,11 @@ const StrategyReport = () => {
 
       <section className="mb-8">
         <ChallengeCWorld />
+      </section>
+      <SectionDivider gradient="from-purple-500 to-pink-600" />
+
+      <section className="mb-8">
+        <WhyLearnCInModernMSA />
       </section>
 
       <SectionDivider gradient="from-purple-500 to-pink-600" />
