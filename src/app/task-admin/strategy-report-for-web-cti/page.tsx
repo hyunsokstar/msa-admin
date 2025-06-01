@@ -131,9 +131,9 @@ const StrategyReport = () => {
 
       {/* 차기 프로젝트 아키텍처 */}
 
-      <section className="mb-8">
+      {/* <section className="mb-8">
         <RedisScalingDiagram />
-      </section> */}
+      </section>  */}
 
       {/* 하단 여백 */}
       <div className="h-16"></div>
