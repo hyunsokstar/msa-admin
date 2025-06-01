@@ -16,6 +16,7 @@ import KafkaNecessityAnalysis from './KafkaNecessityAnalysis';
 import CtiLearningCurveSummary from './CtiLearningCurveSummary';
 import ChallengeCWorld from './ChallengeCWorld';
 import SummaryX86Architecture from './SummaryX86Architecture';
+import ParadigmAndStructureSummary from './ParadigmAndStructureSummary';
 
 // 섹션 구분 컴포넌트
 const SectionDivider = ({
@@ -127,12 +128,16 @@ const StrategyReport = () => {
       <SectionDivider gradient="from-purple-500 to-pink-600" />
 
       <section className="mb-8">
-        <SummaryX86Architecture />
+        <ParadigmAndStructureSummary />
       </section>
 
       <SectionDivider gradient="from-purple-500 to-pink-600" />
 
-      {/* 기술 습득 러닝 커브 요약 */}
+      <section className="mb-8">
+        <SummaryX86Architecture />
+      </section>
+
+      <SectionDivider gradient="from-purple-500 to-pink-600" />
 
 
       {/* 참고 자료 */}
