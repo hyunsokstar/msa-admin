@@ -121,7 +121,7 @@ const StrategyReport = () => {
         <ReferenceLectures />
       </section>
 
-      <h2>DB 확장 관련</h2>
+      {/* <h2>DB 확장 관련</h2>
 
       <section className="mb-8">
         <KafkaNecessityAnalysis />
@@ -133,7 +133,7 @@ const StrategyReport = () => {
 
       <section className="mb-8">
         <RedisScalingDiagram />
-      </section>
+      </section> */}
 
       {/* 하단 여백 */}
       <div className="h-16"></div>
