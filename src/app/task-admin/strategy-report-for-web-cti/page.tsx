@@ -88,11 +88,11 @@ const StrategyReport = () => {
       <SectionDivider gradient="from-green-500 to-blue-600" />
 
       {/* GraphQL 성공 사례 */}
-      <section className="mb-8">
+      {/* <section className="mb-8">
         <GraphQLSuccessCases />
-      </section>
+      </section> */}
 
-      <MainSectionDivider />
+      {/* <MainSectionDivider /> */}
 
       <section className="mb-8">
         <NextGenerationArchitectureWithRedisScaling2 />
