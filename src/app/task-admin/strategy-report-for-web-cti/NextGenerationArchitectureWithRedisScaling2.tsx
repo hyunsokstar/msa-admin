@@ -271,32 +271,49 @@ const NextGenerationArchitectureWithRedisScaling2: React.FC = () => {
                     • 메시지 검색
                 </text>
 
-                {/* Call Service (y=390) */}
+                {/* Call Service (y=390) - CORE ENGINE */}
                 <rect
-                    x="930"
-                    y="390"
-                    width="200"
-                    height="120"
+                    x="920"
+                    y="380"
+                    width="220"
+                    height="140"
                     fill="url(#wsServiceGrad)"
-                    stroke="#fbbf24"
-                    strokeWidth="2"
-                    rx="12"
+                    stroke="#ff6b35"
+                    strokeWidth="4"
+                    rx="15"
                     filter="url(#shadow)"
                 />
-                <text x="1030" y="420" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="16" fontWeight="bold" fill="#1e1e1e">
-                    Call Service
+                {/* 별표 장식 */}
+                <text x="940" y="405" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="20" fill="#ff6b35">★</text>
+                <text x="1120" y="405" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="20" fill="#ff6b35">★</text>
+
+                {/* CORE ENGINE 라벨 */}
+                <rect
+                    x="940"
+                    y="390"
+                    width="100"
+                    height="25"
+                    fill="#ff6b35"
+                    rx="5"
+                />
+                <text x="990" y="408" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="12" fontWeight="bold" fill="white">
+                    CORE ENGINE
                 </text>
-                <text x="1030" y="440" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="12" fill="#1e1e1e">
+
+                <text x="1030" y="435" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="18" fontWeight="bold" fill="#1e1e1e">
+                    Call Service ⚡
+                </text>
+                <text x="1030" y="455" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="13" fontWeight="bold" fill="#1e1e1e">
                     C/C++ (WebRTC)
                 </text>
-                <text x="1030" y="460" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="11" fill="#1e1e1e">
-                    • VoIP/Media 관리
+                <text x="1030" y="475" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="12" fontWeight="bold" fill="#1e1e1e">
+                    🎯 VoIP/Media 관리
                 </text>
-                <text x="1030" y="475" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="11" fill="#1e1e1e">
-                    • WebSocket 시그널링
+                <text x="1030" y="490" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="12" fontWeight="bold" fill="#1e1e1e">
+                    🔗 WebSocket 시그널링
                 </text>
-                <text x="1030" y="490" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="11" fill="#1e1e1e">
-                    • WebRTC Peer Connection
+                <text x="1030" y="505" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="12" fontWeight="bold" fill="#1e1e1e">
+                    🚀 WebRTC Peer Connection
                 </text>
 
                 {/* Notification Service (y=390) */}
@@ -360,7 +377,7 @@ const NextGenerationArchitectureWithRedisScaling2: React.FC = () => {
                     markerEnd="url(#grpcArrow)"
                 />
                 <path
-                    d="M 800 200 L 1030 390"
+                    d="M 800 200 L 1030 380"
                     stroke="#10b981"
                     strokeWidth="2"
                     fill="none"
@@ -402,7 +419,7 @@ const NextGenerationArchitectureWithRedisScaling2: React.FC = () => {
                     markerEnd="url(#redisArrow)"
                 />
                 <path
-                    d="M 1030 390 L 700 550"
+                    d="M 1030 520 L 700 550"
                     stroke="#DC382D"
                     strokeWidth="1.5"
                     fill="none"
@@ -466,7 +483,7 @@ const NextGenerationArchitectureWithRedisScaling2: React.FC = () => {
                     markerEnd="url(#kafkaArrow)"
                 />
                 <path
-                    d="M 1030 390 L 750 690"
+                    d="M 1030 520 L 750 690"
                     stroke="#8B4513"
                     strokeWidth="1.5"
                     fill="none"
@@ -662,9 +679,9 @@ const NextGenerationArchitectureWithRedisScaling2: React.FC = () => {
                     markerEnd="url(#grpcArrow)"
                 />
 
-                {/* Call → Call DB (y:390 → y:830) */}
+                {/* Call → Call DB (y:520 → y:830) */}
                 <path
-                    d="M 1030 500 L 800 830"
+                    d="M 1030 520 L 800 830"
                     stroke="#1f2937"
                     strokeWidth="2"
                     fill="none"
