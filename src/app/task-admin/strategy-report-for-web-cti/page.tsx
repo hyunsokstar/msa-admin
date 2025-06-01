@@ -102,6 +102,26 @@ const StrategyReport = () => {
       </section>
 
       <SectionDivider gradient="from-purple-500 to-pink-600" />
+      <h2>
+        C 언어 기초 문법 정리 Part(1)
+      </h2>
+      <NoteCardsForCBasics />
+
+      <SectionDivider gradient="from-purple-500 to-pink-600" />
+
+      {/* 참고 자료 */}
+      <section className="mb-8">
+        <h2>Nest Js + Graphql 기본 튜토리얼</h2>
+        <ReferenceMaterials />
+      </section>
+
+      <SectionDivider gradient="from-purple-500 to-pink-600" />
+
+      <section className="mb-8">
+        <ReferenceLectures />
+      </section>
+
+      <h2>DB 확장 관련</h2>
 
       <section className="mb-8">
         <KafkaNecessityAnalysis />
@@ -113,37 +133,6 @@ const StrategyReport = () => {
 
       <section className="mb-8">
         <RedisScalingDiagram />
-      </section>
-
-      <SectionDivider gradient="from-purple-500 to-pink-600" />
-
-      <section className="mb-8">
-        <CtiLearningCurveSummary />
-      </section>
-
-      <SectionDivider gradient="from-purple-500 to-pink-600" />
-
-      <section className="mb-8">
-        <ChallengeCWorld />
-      </section>
-      <SectionDivider gradient="from-purple-500 to-pink-600" />
-
-      <SectionDivider gradient="from-purple-500 to-pink-600" />
-
-      {/* C 언어 기초 문법 정리 Part(1) */}
-      <NoteCardsForCBasics />
-
-      <SectionDivider gradient="from-purple-500 to-pink-600" />
-
-      {/* 참고 자료 */}
-      <section className="mb-8">
-        <ReferenceMaterials />
-      </section>
-
-      <SectionDivider gradient="from-purple-500 to-pink-600" />
-
-      <section className="mb-8">
-        <ReferenceLectures />
       </section>
 
       {/* 하단 여백 */}
