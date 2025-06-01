@@ -505,10 +505,6 @@ const NextGenerationArchitectureWithRedisScaling2: React.FC = () => {
                     markerEnd="url(#kafkaArrow)"
                 />
 
-                {/* Persistent Storage Layer Title */}
-                <text x="700" y="830" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="18" fontWeight="bold" fill="#475569">
-                    Persistent Storage Layer
-                </text>
 
                 {/* User DB (y=830) */}
                 <rect
