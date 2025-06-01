@@ -284,7 +284,6 @@ const NextGenerationArchitectureWithRedisScaling2: React.FC = () => {
                     filter="url(#shadow)"
                 />
                 {/* 별표 장식 */}
-                <text x="940" y="405" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="20" fill="#ff6b35">★</text>
                 <text x="1120" y="405" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="20" fill="#ff6b35">★</text>
 
                 {/* CORE ENGINE 라벨 */}
