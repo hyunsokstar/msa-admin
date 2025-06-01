@@ -28,21 +28,34 @@ const notes: NoteItem[] = [
 
 const NoteCardsForCBasics = () => {
     return (
-        <div className="max-w-5xl mx-auto px-4 py-8">
-            <h2 className="text-2xl font-bold mb-6 text-center">🧠 C언어 기초 문법 정리 Part(1)</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="max-w-6xl mx-auto px-4 py-10">
+            <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">
+                🧠 C언어 기초 문법 정리 Part(1)
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {notes.map((note, index) => (
-                    <Card key={index} className="hover:shadow-md transition-shadow">
-                        <CardHeader>
-                            <CardTitle className="text-base font-semibold text-gray-800">{`${index + 1}. ${note.title}`}</CardTitle>
+                    <Card key={index} className="hover:shadow-lg transition-shadow">
+                        <CardHeader className="pb-2">
+                            <CardTitle className="text-lg font-semibold text-gray-900">
+                                {`${index + 1}. ${note.title}`}
+                            </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <Button asChild className="w-full">
-                                <a href={note.url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2">
-                                    <ExternalLink size={16} />
-                                    바로가기
-                                </a>
-                            </Button>
+                            <div className="flex justify-center mt-4">
+                                <Button
+                                    asChild
+                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+                                >
+                                    <a
+                                        href={note.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center justify-center gap-2"
+                                    >
+                                        <ExternalLink size={16} /> 바로가기
+                                    </a>
+                                </Button>
+                            </div>
                         </CardContent>
                     </Card>
                 ))}
