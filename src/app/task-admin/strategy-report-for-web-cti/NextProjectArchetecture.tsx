@@ -740,19 +740,6 @@ const NextGenerationArchitectureWithRedisScaling: React.FC = () => {
         <path d="M 700 600 L 820 780" stroke="#DC382D" strokeWidth="1.5" fill="none" />
         <path d="M 950 600 L 820 780" stroke="#DC382D" strokeWidth="1.5" fill="none" />
 
-        {/* Database Layer */}
-        <text
-          x="700"
-          y="760"
-          textAnchor="middle"
-          fontFamily="Arial, sans-serif"
-          fontSize="18"
-          fontWeight="bold"
-          fill="#475569"
-        >
-          Persistent Storage Layer
-        </text>
-
         <rect
           x="100"
           y="780"
