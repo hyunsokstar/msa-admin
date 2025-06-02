@@ -2,7 +2,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
 
 interface SectionLink {
@@ -51,8 +50,7 @@ const RightSidebar: React.FC = () => {
       const scrollY = window.scrollY;
       const windowHeight = window.innerHeight;
       const documentHeight = document.documentElement.scrollHeight;
-      
-      // Hide sidebar when near top or bottom
+
       setIsVisible(scrollY > 100 && scrollY < documentHeight - windowHeight - 100);
     };
 
@@ -63,87 +61,88 @@ const RightSidebar: React.FC = () => {
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      element.scrollIntoView({ 
+      element.scrollIntoView({
         behavior: 'smooth',
-        block: 'start'
+        block: 'start',
       });
     }
   };
 
   return (
-    <div 
-      className={`hidden lg:flex flex-col fixed top-1/2 right-6 transform -translate-y-1/2 z-50 transition-all duration-500 ease-in-out ${
-        isVisible ? 'translate-x-0 opacity-100' : 'translate-x-8 opacity-0'
+    <div
+      className={`hidden lg:flex flex-col fixed top-6 right-4 z-50 transition-all duration-500 ease-in-out ${
+        isVisible ? 'translate-x-0 opacity-100' : 'translate-x-4 opacity-0'
       }`}
     >
-      {/* Background with glassmorphism effect */}
+      {/* Glass background */}
       <div className="absolute inset-0 bg-white/70 backdrop-blur-md rounded-2xl shadow-lg border border-white/20 -z-10" />
-      
-      {/* Navigation items */}
-      <div className="p-3 space-y-1 min-w-[180px]">
+
+      {/* Section links */}
+      <div className="px-3 py-2 space-y-1 min-w-[160px]">
         {sections.map((section, index) => {
           const isActive = activeSection === section.id;
-          
+
           return (
             <button
               key={section.id}
               onClick={() => scrollToSection(section.id)}
-              className={`group relative w-full text-left px-3 py-2.5 rounded-lg transition-all duration-300 ease-out ${
-                isActive 
-                  ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-md transform scale-[1.02]' 
+              className={`group relative w-full text-left px-2 py-2 rounded-lg transition-all duration-300 ease-out ${
+                isActive
+                  ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-md transform scale-[1.02]'
                   : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50/80'
               }`}
               style={{
-                animationDelay: `${index * 50}ms`
+                animationDelay: `${index * 50}ms`,
               }}
             >
-              {/* Active indicator */}
-              <div 
+              <div
                 className={`absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-4 bg-gradient-to-b from-blue-500 to-purple-600 rounded-r-full transition-all duration-300 ${
                   isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
                 }`}
               />
-              
-              {/* Content */}
+
               <div className="flex items-center justify-between">
-                <span className={`text-sm font-medium transition-all duration-200 ${
-                  isActive ? 'translate-x-0' : 'group-hover:translate-x-1'
-                }`}>
+                <span
+                  className={`text-sm font-medium transition-all duration-200 ${
+                    isActive ? 'translate-x-0' : 'group-hover:translate-x-1'
+                  }`}
+                >
                   {section.label}
                 </span>
-                
-                <ChevronRight 
+
+                <ChevronRight
                   className={`w-3 h-3 transition-all duration-200 ${
-                    isActive 
-                      ? 'opacity-100 transform rotate-90' 
+                    isActive
+                      ? 'opacity-100 transform rotate-90'
                       : 'opacity-0 group-hover:opacity-60 group-hover:translate-x-1'
                   }`}
                 />
               </div>
-              
-              {/* Hover effect background */}
-              <div className={`absolute inset-0 rounded-lg bg-gradient-to-r from-blue-500/10 to-purple-600/10 transition-all duration-300 ${
-                isActive ? 'opacity-0' : 'opacity-0 group-hover:opacity-100'
-              }`} />
+
+              <div
+                className={`absolute inset-0 rounded-lg bg-gradient-to-r from-blue-500/10 to-purple-600/10 transition-all duration-300 ${
+                  isActive ? 'opacity-0' : 'opacity-0 group-hover:opacity-100'
+                }`}
+              />
             </button>
           );
         })}
       </div>
-      
-      {/* Progress indicator */}
-      <div className="px-3 pb-3">
+
+      {/* Progress */}
+      <div className="px-3 pb-2">
         <div className="w-full h-1 bg-gray-200 rounded-full overflow-hidden">
-          <div 
+          <div
             className="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full transition-all duration-300 ease-out"
-            style={{ 
-              width: `${((sections.findIndex(s => s.id === activeSection) + 1) / sections.length) * 100}%` 
+            style={{
+              width: `${((sections.findIndex((s) => s.id === activeSection) + 1) / sections.length) * 100}%`,
             }}
           />
         </div>
-        <div className="flex justify-between items-center mt-2 px-1">
+        <div className="flex justify-between items-center mt-1 px-1">
           <span className="text-xs text-gray-500 font-medium">목차</span>
           <span className="text-xs text-gray-400">
-            {sections.findIndex(s => s.id === activeSection) + 1}/{sections.length}
+            {sections.findIndex((s) => s.id === activeSection) + 1}/{sections.length}
           </span>
         </div>
       </div>
