@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, ChevronDown } from 'lucide-react';
-import { cn } from '@/lib/utils'; // className 병합 유틸 (필요 없으면 템플릿 문자열로 교체 가능)
+import { cn } from '@/lib/utils';
 
 interface SectionLink {
   id: string;
@@ -18,20 +18,18 @@ const cBasics: SectionLink[] = [
 
 // 그 외 섹션 (1, 2, 3, 6, 7, 8, 9)
 const otherSections: SectionLink[] = [
-  { id: 'introduction', label: '서론' },                     // 1
-  { id: 'technical-issues', label: '기술적 문제' },          // 2
-  { id: 'next-gen-arch', label: '차세대 아키텍처' },         // 3
+  { id: 'introduction',         label: '서론' },                     // 1
+  { id: 'technical-issues',     label: '기술적 문제' },          // 2
+  { id: 'next-gen-arch',        label: '차세대 아키텍처' },         // 3
   // “C 기본” 그룹(4,5)은 따로 분리
-  { id: 'reference-materials', label: '참고 자료' },         // 6
-  { id: 'reference-lectures', label: '강의 자료' },          // 7
-  { id: 'fullstack-cti', label: 'for fullstack' },           // 8
+  { id: 'reference-materials',  label: '참고 자료' },         // 6
+  { id: 'reference-lectures',   label: '강의 자료' },          // 7
+  { id: 'fullstack-cti',        label: 'for fullstack' },           // 8
   { id: 'productivity-strategies', label: '생산성 전략' },    // 9
 ];
 
 const RightSidebar: React.FC = () => {
-  // 현재 화면에 보이는 섹션 ID
   const [activeSection, setActiveSection] = useState<string>('');
-  // “C 기본” 그룹 아코디언 열림 여부
   const [isCBasicsOpen, setIsCBasicsOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -42,7 +40,6 @@ const RightSidebar: React.FC = () => {
             const id = entry.target.id;
             setActiveSection(id);
 
-            // 만약 보이는 섹션이 “C 기본 (1)” 또는 “C 기본 (2)”라면 자동으로 그룹을 연다
             if (cBasics.some((item) => item.id === id)) {
               setIsCBasicsOpen(true);
             }
@@ -52,8 +49,7 @@ const RightSidebar: React.FC = () => {
       { threshold: 0.5, rootMargin: '-20% 0px -35% 0px' }
     );
 
-    // 페이지에 선언된 모든 섹션을 관찰
-    [...otherSections, ...cBasics].forEach((section) => {
+    ;[...otherSections, ...cBasics].forEach((section) => {
       const el = document.getElementById(section.id);
       if (el) observer.observe(el);
     });
@@ -61,7 +57,6 @@ const RightSidebar: React.FC = () => {
     return () => observer.disconnect();
   }, []);
 
-  // 부드럽게 해당 섹션으로 스크롤 이동
   const scrollToSection = (sectionId: string) => {
     const el = document.getElementById(sectionId);
     if (el) {
@@ -70,8 +65,14 @@ const RightSidebar: React.FC = () => {
   };
 
   return (
-    <div className="hidden lg:flex flex-col fixed top-1/2 right-8 transform -translate-y-1/2 space-y-1 z-50 w-max px-2 py-2 bg-white/60 backdrop-blur-sm rounded-xl shadow-lg border border-white/30">
-      {/* ─────────────[1] “서론”, “기술적 문제”, “차세대 아키텍처” 등 일반 섹션 ───────────── */}
+    <div
+      className="
+        hidden lg:flex flex-col fixed top-1/2 right-8 transform -translate-y-1/2
+        space-y-1 z-50 w-max px-1 py-1 bg-white/60 backdrop-blur-sm
+        rounded-lg shadow-lg border border-white/20
+      "
+    >
+      {/* ─────────────[1] 일반 섹션들(서론, 기술적 문제, 차세대 아키텍처 등) ───────────── */}
       {otherSections.map((sec) => {
         const isActive = activeSection === sec.id;
 
@@ -80,27 +81,27 @@ const RightSidebar: React.FC = () => {
             key={sec.id}
             onClick={() => {
               scrollToSection(sec.id);
-              setActiveSection(sec.id); // 클릭 시 즉시 강조
+              setActiveSection(sec.id);
             }}
             className={cn(
-              'relative w-full text-left px-3 py-2 text-sm rounded-md transition-all duration-200 flex items-center justify-between group',
+              'relative w-full text-left px-2 py-1 text-xs rounded-md transition-all duration-150 flex items-center justify-between group',
               isActive
-                ? 'bg-gradient-to-r from-blue-300 to-purple-300 text-white shadow'
-                : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                ? 'bg-gradient-to-r from-blue-200 to-purple-200 text-white shadow-sm'
+                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800'
             )}
           >
             <span className="truncate">{sec.label}</span>
             <ChevronRight
               className={cn(
-                'w-4 h-4 transition-transform',
+                'w-3 h-3 transition-transform',
                 isActive
                   ? 'opacity-100 rotate-90'
-                  : 'opacity-0 group-hover:opacity-50 group-hover:translate-x-1'
+                  : 'opacity-0 group-hover:opacity-40 group-hover:translate-x-0.5'
               )}
             />
             <div
               className={cn(
-                'absolute left-0 top-1/2 -translate-y-1/2 w-1 h-4 bg-gradient-to-b from-blue-300 to-purple-300 rounded-r-full transition-all',
+                'absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-3 bg-gradient-to-b from-blue-200 to-purple-200 rounded-r-full transition-all',
                 isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
               )}
             />
@@ -108,7 +109,7 @@ const RightSidebar: React.FC = () => {
         );
       })}
 
-      {/* ─────────────[2] “C 기본” 아코디언(Disclosure) ───────────── */}
+      {/* ─────────────[2] “C 기본” 그룹 아코디언 ───────────── */}
       <details
         className="group relative w-full"
         open={isCBasicsOpen}
@@ -116,23 +117,23 @@ const RightSidebar: React.FC = () => {
       >
         <summary
           className={cn(
-            'flex items-center justify-between cursor-pointer px-3 py-2 text-sm rounded-md transition-all duration-200',
+            'flex items-center justify-between cursor-pointer px-2 py-1 text-xs rounded-md transition-all duration-150',
             cBasics.some((item) => item.id === activeSection)
-              ? 'bg-gradient-to-r from-blue-300 to-purple-300 text-white shadow'
-              : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+              ? 'bg-gradient-to-r from-blue-200 to-purple-200 text-white shadow-sm'
+              : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800'
           )}
           onClick={() => setIsCBasicsOpen(!isCBasicsOpen)}
         >
           <span className="truncate">C 기본</span>
           <ChevronDown
             className={cn(
-              'w-4 h-4 transition-transform',
+              'w-3 h-3 transition-transform',
               isCBasicsOpen ? 'opacity-100 rotate-180' : 'opacity-50'
             )}
           />
           <div
             className={cn(
-              'absolute left-0 top-1/2 -translate-y-1/2 w-1 h-4 bg-gradient-to-b from-blue-300 to-purple-300 rounded-r-full transition-all',
+              'absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-3 bg-gradient-to-b from-blue-200 to-purple-200 rounded-r-full transition-all',
               cBasics.some((item) => item.id === activeSection)
                 ? 'opacity-100 scale-100'
                 : 'opacity-0 scale-75'
@@ -140,8 +141,7 @@ const RightSidebar: React.FC = () => {
           />
         </summary>
 
-        {/* sub-menu: “C 기본 (1)”, “C 기본 (2)” */}
-        <div className="mt-1 pl-4 space-y-1">
+        <div className="mt-1 pl-3 space-y-0.5">
           {cBasics.map((sub) => {
             const isActive = activeSection === sub.id;
             return (
@@ -152,24 +152,24 @@ const RightSidebar: React.FC = () => {
                   setActiveSection(sub.id);
                 }}
                 className={cn(
-                  'relative w-full text-left px-3 py-1 text-sm rounded-md transition-all duration-200 flex items-center justify-between group',
+                  'relative w-full text-left px-2 py-1 text-xs rounded-md transition-all duration-150 flex items-center justify-between group',
                   isActive
-                    ? 'bg-gradient-to-r from-blue-300 to-purple-300 text-white shadow'
-                    : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                    ? 'bg-gradient-to-r from-blue-200 to-purple-200 text-white shadow-sm'
+                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800'
                 )}
               >
                 <span className="truncate">{sub.label}</span>
                 <ChevronRight
                   className={cn(
-                    'w-4 h-4 transition-transform',
+                    'w-3 h-3 transition-transform',
                     isActive
                       ? 'opacity-100 rotate-90'
-                      : 'opacity-0 group-hover:opacity-50 group-hover:translate-x-1'
+                      : 'opacity-0 group-hover:opacity-40 group-hover:translate-x-0.5'
                   )}
                 />
                 <div
                   className={cn(
-                    'absolute left-0 top-1/2 -translate-y-1/2 w-1 h-4 bg-gradient-to-b from-blue-300 to-purple-300 rounded-r-full transition-all',
+                    'absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-3 bg-gradient-to-b from-blue-200 to-purple-200 rounded-r-full transition-all',
                     isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
                   )}
                 />
@@ -179,7 +179,7 @@ const RightSidebar: React.FC = () => {
         </div>
       </details>
 
-      {/* ─────────────[3] 나머지 섹션(otherSections) 처리를 이미 했으므로 생략 ───────────── */}
+      {/* ─────────────[3] 나머지 섹션(otherSections) 이미 처리 ───────────── */}
     </div>
   );
 };
