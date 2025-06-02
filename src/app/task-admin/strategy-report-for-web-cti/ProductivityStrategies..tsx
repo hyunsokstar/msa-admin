@@ -155,9 +155,7 @@ const ProductivityStrategies: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 py-16">
         {/** Header Section **/}
         <div className="text-center mb-16">
-          {/* 오른쪽 상단으로 너무 치우친 느낌을 줄이기 위해,
-              가장 바깥쪽에 px-4 정도의 여백을 확보하고,
-              내부 요소는 flex-center로 배치했습니다. */}
+          {/* 왼쪽 아이콘과 중앙 텍스트를 inline-flex로 묶고, 배경/블러를 줘서 강조 */}
           <div className="inline-flex items-center gap-3 bg-white/70 backdrop-blur-sm px-6 py-3 rounded-full shadow-lg mx-auto">
             <Zap className="w-6 h-6 text-blue-600" />
             <span className="text-sm font-semibold text-gray-700 uppercase tracking-wider">
@@ -181,35 +179,31 @@ const ProductivityStrategies: React.FC = () => {
           {strategies.map((item, index) => (
             <Card
               key={item.id}
-              className="group relative overflow-hidden bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.02] hover:-translate-y-2"
+              className="relative overflow-hidden bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.02] hover:-translate-y-2"
               style={{
                 animationDelay: `${index * 100}ms`,
               }}
             >
-              {/** 그라디언트 배경 (hover 시 약간 드러나도록) **/}
+              {/** 왼쪽 상단 아이콘: 절대 위치로 고정 **/}
               <div
-                className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
-              />
+                className={`absolute top-4 left-4 inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br ${item.gradient} text-white shadow-lg group-hover:scale-110 transition-transform duration-300`}
+              >
+                {item.icon}
+              </div>
 
-              {/** 카드 우측 상단의 넘버 배지 **/}
-              {/* 원래 top: -3, right: -3 으로 치우쳐 있던 것을
-                  top: -3만 유지하고 right는 -1 정도로 안쪽으로 당겨왔습니다. */}
-              <div className="absolute -top-3 -right-1 w-12 h-12 bg-gradient-to-br from-gray-800 to-gray-600 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+              {/** 오른쪽 상단 넘버 배지: 절대 위치로 고정 **/}
+              <div className="absolute top-4 right-4 w-10 h-10 bg-gradient-to-br from-gray-800 to-gray-600 rounded-full flex items-center justify-center shadow-lg transition-transform duration-300">
                 <span className="text-white font-bold text-sm">{item.id}</span>
               </div>
 
-              <CardHeader className="pb-4">
-                <div
-                  className={`inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br ${item.gradient} text-white shadow-lg mb-4 group-hover:scale-110 transition-transform duration-300`}
-                >
-                  {item.icon}
-                </div>
+              {/** CardHeader의 상단 패딩을 충분히 줘서, 절대 위치 아이콘/배지가 겹치지 않도록 함 **/}
+              <CardHeader className="pt-20 pb-4 px-6">
                 <CardTitle className="text-xl font-bold text-gray-900 leading-tight group-hover:text-gray-700 transition-colors duration-300">
                   {item.title}
                 </CardTitle>
               </CardHeader>
 
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-6 px-6 pb-6">
                 <CardDescription className="text-gray-700 leading-relaxed text-sm">
                   {item.description}
                 </CardDescription>
@@ -235,8 +229,6 @@ const ProductivityStrategies: React.FC = () => {
 
         {/** Bottom “위로 가기” Section **/}
         <div className="mt-20 flex justify-center">
-          {/* inline-flex만 쓰면 부모 폭이 넓을 때 약간 오른쪽으로 치우쳐 보일 수 있는데,
-              mx-auto를 추가하여 부모 컨테이너 내에서 완전 중앙 정렬합니다. */}
           <Button
             onClick={() =>
               document
