@@ -17,6 +17,7 @@ interface TechItem {
 }
 
 const techList: TechItem[] = [
+    // ──────────────── 필수(required) 항목 (importance 내림차순) ────────────────
     {
         category: '언어/환경',
         tech: 'JavaScript / TypeScript',
@@ -33,8 +34,7 @@ const techList: TechItem[] = [
     {
         category: '프레임워크',
         tech: 'Next.js',
-        description:
-            'React 기반의 메타 프레임워크로, 서버 컴포넌트, SSR/SSG 및 App Router 지원.',
+        description: 'React 기반의 메타 프레임워크로, 서버 컴포넌트, SSR/SSG 및 App Router 지원.',
         alternatives: 'Remix, Nuxt.js (Vue)',
         link: 'https://nextjs.org/',
         summary: 'React 기반 통합 솔루션',
@@ -66,18 +66,6 @@ const techList: TechItem[] = [
         tip: 'Access/Refresh Token 분리 전략 권장',
         learningCurve: 3,
         importance: 5,
-        required: true,
-    },
-    {
-        category: '인증',
-        tech: '인증2: NextAuth',
-        description: 'Next.js에 최적화된 인증/세션 관리 라이브러리',
-        alternatives: 'Clerk, Auth0',
-        link: 'https://next-auth.js.org/',
-        summary: 'Next.js 인증 솔루션',
-        tip: 'Provider 설정 및 환경변수 관리 주의',
-        learningCurve: 2,
-        importance: 4,
         required: true,
     },
     {
@@ -120,6 +108,68 @@ const techList: TechItem[] = [
         required: true,
     },
     {
+        category: '디버깅',
+        tech: 'DevTools',
+        description: '크롬/파이어폭스 등 브라우저 내장 디버깅 툴',
+        alternatives: '-',
+        link: 'https://developer.chrome.com/docs/devtools/',
+        summary: '네트워크·JS 디버깅 필수',
+        tip: 'Lighthouse, Performance 탭 활용',
+        learningCurve: 1,
+        importance: 5,
+        required: true,
+    },
+    {
+        category: '인증',
+        tech: '인증2: NextAuth',
+        description: 'Next.js에 최적화된 인증/세션 관리 라이브러리',
+        alternatives: 'Clerk, Auth0',
+        link: 'https://next-auth.js.org/',
+        summary: 'Next.js 인증 솔루션',
+        tip: 'Provider 설정 및 환경변수 관리 주의',
+        learningCurve: 2,
+        importance: 4,
+        required: true,
+    },
+    {
+        category: '테스트',
+        tech: 'Playwright',
+        description: 'E2E 브라우저 테스트 자동화 프레임워크로 크로스 브라우저 지원',
+        alternatives: 'Cypress, Cypress IO',
+        link: 'https://playwright.dev/',
+        summary: '프론트 E2E 테스트',
+        tip: 'GitHub Actions 연동하여 CI 테스트 자동화',
+        learningCurve: 3,
+        importance: 4,
+        required: true,
+    },
+    {
+        category: '툴링',
+        tech: 'ESLint / Prettier',
+        description:
+            '코드 품질(ESLint)과 코드 포맷팅(Prettier)을 자동화하여 협업 품질 유지',
+        alternatives: 'biome.sh',
+        link: 'https://eslint.org/',
+        summary: '자동화 코드 스타일',
+        tip: 'CI 파이프라인에 lint 검사 포함 필수',
+        learningCurve: 1,
+        importance: 4,
+        required: true,
+    },
+    {
+        category: '배포',
+        tech: 'Vercel',
+        description: 'Next.js 최적화 배포 플랫폼. 자동 SSL, CDN, CI 지원',
+        alternatives: 'Netlify, AWS Amplify',
+        link: 'https://vercel.com/',
+        summary: '서버리스 배포 최적화',
+        tip: '환경 변수 세팅과 빌드 명령어 관리 중요',
+        learningCurve: 1,
+        importance: 4,
+        required: true,
+    },
+    // ──────────────── 비필수(non-required) 항목 (importance 내림차순) ────────────────
+    {
         category: 'UI 컴포넌트',
         tech: 'Radix UI',
         description: '접근성 보장 Headless UI 컴포넌트 라이브러리',
@@ -145,18 +195,6 @@ const techList: TechItem[] = [
     },
     {
         category: '테스트',
-        tech: 'Playwright',
-        description: 'E2E 브라우저 테스트 자동화 프레임워크로 크로스 브라우저 지원',
-        alternatives: 'Cypress, Cypress IO',
-        link: 'https://playwright.dev/',
-        summary: '프론트 E2E 테스트',
-        tip: 'GitHub Actions 연동하여 CI 테스트 자동화',
-        learningCurve: 3,
-        importance: 4,
-        required: true,
-    },
-    {
-        category: '테스트',
         tech: 'Jest',
         description: '단위(Unit) 테스트 및 스냅샷 테스트 프레임워크',
         alternatives: 'Vitest, Mocha',
@@ -166,43 +204,6 @@ const techList: TechItem[] = [
         learningCurve: 2,
         importance: 3,
         required: false,
-    },
-    {
-        category: '툴링',
-        tech: 'ESLint / Prettier',
-        description:
-            '코드 품질(ESLint)과 코드 포맷팅(Prettier)을 자동화하여 협업 품질 유지',
-        alternatives: 'biome.sh',
-        link: 'https://eslint.org/',
-        summary: '자동화 코드 스타일',
-        tip: 'CI 파이프라인에 lint 검사 포함 필수',
-        learningCurve: 1,
-        importance: 4,
-        required: true,
-    },
-    {
-        category: '디버깅',
-        tech: 'DevTools',
-        description: '크롬/파이어폭스 등 브라우저 내장 디버깅 툴',
-        alternatives: '-',
-        link: 'https://developer.chrome.com/docs/devtools/',
-        summary: '네트워크·JS 디버깅 필수',
-        tip: 'Lighthouse, Performance 탭 활용',
-        learningCurve: 1,
-        importance: 5,
-        required: true,
-    },
-    {
-        category: '배포',
-        tech: 'Vercel',
-        description: 'Next.js 최적화 배포 플랫폼. 자동 SSL, CDN, CI 지원',
-        alternatives: 'Netlify, AWS Amplify',
-        link: 'https://vercel.com/',
-        summary: '서버리스 배포 최적화',
-        tip: '환경 변수 세팅과 빌드 명령어 관리 중요',
-        learningCurve: 1,
-        importance: 4,
-        required: true,
     },
     {
         category: '성능 최적화',
@@ -338,6 +339,7 @@ const techList: TechItem[] = [
 const FrontendTechTable: React.FC = () => {
     return (
         <div className="w-full overflow-x-auto py-10">
+            <h2 className="text-2xl font-bold mb-4">프론트 엔드 스킬 목록</h2>
             <table className="min-w-full border border-gray-300 text-sm">
                 <thead className="bg-gray-100 text-gray-900">
                     <tr>
