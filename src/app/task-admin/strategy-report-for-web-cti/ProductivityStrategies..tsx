@@ -22,7 +22,7 @@ interface StrategyItem {
 const strategies: StrategyItem[] = [
   {
     id: 1,
-    title: '시스템 이해 + 프롬프트 엔지니어링 + 클린 코드 기반 반복 개발 (feat. Andrew Ng)',
+    title: '클린 아키텍쳐 + 리팩토링 + 테스트 기반 반복 개발 (feat. Andrew Ng)',
     description:
       '시스템 아키텍처를 충분히 이해하고, 프롬프트 엔지니어링을 통해 AI 모델에게 맥락을 명확히 전달한 뒤 클린 코드 원칙을 준수하며 MVP를 빠르게 개발합니다. 이후, 앤드류 응 교수의 “많이 만들어 보고, 반복 개선하라”는 접근법을 적용해 빠른 프로토타이핑을 실현합니다.',
     expectedEffect:
