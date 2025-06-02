@@ -10,7 +10,7 @@ interface SectionLink {
   label: string;
 }
 
-// page.tsx 순서 그대로, “C 기본 (1)”과 “C 기본 (2)”를 개별 아이템으로 나열
+// page.tsx 순서 그대로 정의 (9개 항목)
 const sidebarOrder: SectionLink[] = [
   { id: 'introduction',         label: '서론' },
   { id: 'technical-issues',     label: '기술적 문제' },
@@ -30,19 +30,27 @@ const RightSidebar: React.FC = () => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
+          // 화면에 50% 이상 들어오면 강조
           if (entry.isIntersecting) {
             setActiveSection(entry.target.id);
           }
         });
       },
-      { threshold: 0.5, rootMargin: '-20% 0px -35% 0px' }
+      {
+        threshold: 0.5,
+        rootMargin: '-20% 0px -35% 0px',
+      }
     );
 
+    // page.tsx에서 정의한 순서대로 각 섹션을 관찰
     sidebarOrder.forEach((sec) => {
       const el = document.getElementById(sec.id);
       if (el) observer.observe(el);
     });
-    return () => observer.disconnect();
+
+    return () => {
+      observer.disconnect();
+    };
   }, []);
 
   const scrollToSection = (sectionId: string) => {

@@ -5,7 +5,6 @@
 import React from 'react';
 import Introduction from './Introduction';
 import TechnicalIssues from './TechnicalIssues';
-
 // import GraphQLSuccessCases from './GraphQLSuccessCases';  // 사용하지 않으면 주석
 import NextGenerationArchitectureWithRedisScaling2 from './NextGenerationArchitectureWithRedisScaling2';
 import NoteCardsForCBasics from './NoteCardsForCBasics';
@@ -16,8 +15,7 @@ import FullStackForCTI from './FullStackForCTI';
 import RightSidebar from './RightSidebar';
 import ProductivityStrategies from './ProductivityStrategies.';
 
-
-// 섹션 구분 컴포넌트
+// 섹션 구분 컴포넌트 (파스텔톤 그라디언트 선)
 const SectionDivider = ({
   gradient = 'from-blue-500 to-purple-600',
   margin = 'my-16',
@@ -38,7 +36,7 @@ const SectionDivider = ({
   </div>
 );
 
-// 메인 섹션 구분 컴포넌트 (더 강조)
+// 메인 섹션 구분 컴포넌트 (강조용)
 const MainSectionDivider = () => (
   <div className="my-20 flex items-center justify-center">
     <div className="flex-1 w-full">
@@ -55,7 +53,7 @@ const MainSectionDivider = () => (
   </div>
 );
 
-// 서브 섹션 구분 컴포넌트 (더 부드러운)
+// 서브 섹션 구분 컴포넌트 (부드러운 선)
 const SubSectionDivider = () => (
   <div className="my-12 flex justify-center">
     <div className="w-32 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
@@ -77,42 +75,42 @@ const StrategyReport: React.FC = () => {
           <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-600 mx-auto rounded-full"></div>
         </div>
 
-        {/* 서론 섹션 */}
+        {/* 1. 서론 섹션 */}
         <section id="introduction" className="mb-8">
           <Introduction />
         </section>
 
         <MainSectionDivider />
 
-        {/* 기술적 문제 섹션 */}
+        {/* 2. 기술적 문제 섹션 */}
         <section id="technical-issues" className="mb-8">
           <TechnicalIssues />
         </section>
 
         <SectionDivider gradient="from-green-500 to-blue-600" />
 
-        {/* 차세대 아키텍처(예: Redis + NestJS) */}
+        {/* 3. 차세대 아키텍처 (예: Redis + NestJS) */}
         <section id="next-gen-arch" className="mb-8">
           <NextGenerationArchitectureWithRedisScaling2 />
         </section>
 
         <SectionDivider gradient="from-purple-500 to-pink-600" />
 
-        {/* C 기본 카드 */}
+        {/* 4. C 기본 카드 */}
         <section id="note-c-basics" className="mb-8">
           <NoteCardsForCBasics />
         </section>
 
         <SectionDivider gradient="from-purple-500 to-pink-600" />
 
-        {/* C 구조체 카드 */}
+        {/* 5. C 구조체 카드 */}
         <section id="note-c-structs" className="mb-8">
           <NoteCardsForCStructs />
         </section>
 
         <SectionDivider gradient="from-purple-500 to-pink-600" />
 
-        {/* 참고 자료 (GraphQL 튜토리얼 등) */}
+        {/* 6. 참고 자료 (GraphQL 튜토리얼 등) */}
         <section id="reference-materials" className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">Nest Js + GraphQL 기본 튜토리얼</h2>
           <ReferenceMaterials />
@@ -120,21 +118,21 @@ const StrategyReport: React.FC = () => {
 
         <SectionDivider gradient="from-purple-500 to-pink-600" />
 
-        {/* 참고 강의 목록 */}
+        {/* 7. 참고 강의 목록 */}
         <section id="reference-lectures" className="mb-8">
           <ReferenceLectures />
         </section>
 
         <SectionDivider gradient="from-purple-500 to-pink-600" />
 
-        {/* Full Stack For CTI */}
+        {/* 8. Full Stack For CTI */}
         <section id="fullstack-cti" className="mb-8">
           <FullStackForCTI />
         </section>
 
         <SectionDivider gradient="from-purple-500 to-pink-600" />
 
-        {/* 개발 생산성 향상 전략 */}
+        {/* 9. 개발 생산성 향상 전략 */}
         <section id="productivity-strategies" className="mb-8">
           <ProductivityStrategies />
         </section>
