@@ -258,7 +258,7 @@ const FullStackForCTI: React.FC = () => {
           📚 참고 자료
         </h3>
 
-        {/** 링크를 2열 레이아웃으로 배치 **/}
+        {/** 링크를 3열 레이아웃으로 배치 **/}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {/** Inflearn 섹션 **/}
           <div>
@@ -401,7 +401,7 @@ const FullStackForCTI: React.FC = () => {
           {/** 기타 섹션 **/}
           <div>
             <h4 className="text-xl font-semibold mb-2 text-gray-800">
-              기타
+              기타 / 기사
             </h4>
             <ul className="list-disc pl-5 space-y-2 text-blue-700">
               <li>
@@ -412,6 +412,36 @@ const FullStackForCTI: React.FC = () => {
                   className="hover:underline"
                 >
                   Geek News (Hada.io)
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://news.hada.io/topic?id=18131"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  70% 문제: AI 지원 코딩의 냉혹한 진실
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://news.hada.io/topic?id=21115"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  AI 시대 개발 패턴
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://news.hada.io/topic?id=21161"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  나의 맥 Electron 앱을 Rust로 다시 작성했어요
                 </a>
               </li>
             </ul>
