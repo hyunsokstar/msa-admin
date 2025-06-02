@@ -13,6 +13,7 @@ import FullStackForCTI from './FullStackForCTI';
 import RightSidebar from './RightSidebar';
 import ProductivityStrategies from './ProductivityStrategies.';
 import BackendTechTable from './BackendTechTable';
+import FrontendTechTable from './FrontendTechTable';
 
 // 섹션 구분 컴포넌트 (파스텔톤 그라디언트 선)
 const SectionDivider = ({
@@ -134,6 +135,13 @@ const StrategyReport: React.FC = () => {
         {/* 8. Full Stack For CTI */}
         <section id="fullstack-cti" className="mb-8">
           <BackendTechTable />
+        </section>
+
+        <SectionDivider gradient="from-purple-500 to-pink-600" />
+
+        {/* 8. Full Stack For CTI */}
+        <section id="fullstack-cti" className="mb-8">
+          <FrontendTechTable />
         </section>
 
         <SectionDivider gradient="from-purple-500 to-pink-600" />
