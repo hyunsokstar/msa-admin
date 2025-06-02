@@ -2,7 +2,7 @@ import React from 'react';
 
 const NextGenerationArchitecture = () => {
   return (
-    <div className="w-full p-4 bg-gray-50">
+    <div className="w-full p-4 bg-gray-50 px-4">
       <svg viewBox="0 0 1400 1000" className="w-full h-auto border rounded-lg shadow-lg bg-white">
         <defs>
           {/* Gradients */}
