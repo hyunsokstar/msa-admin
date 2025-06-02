@@ -123,10 +123,10 @@ const StrategyReport: React.FC = () => {
           <ReferenceLectures />
         </section>
 
-        {/* <SectionDivider gradient="from-purple-500 to-pink-600" />
+        {/* <SectionDivider gradient="from-purple-500 to-pink-600" /> */}
 
         {/* 8. Full Stack For CTI */}
-        <section id="fullstack-cti" className="mb-8">
+        {/* <section id="fullstack-cti" className="mb-8">
           <FullStackForCTI />
         </section> */}
 
