@@ -47,24 +47,24 @@ const notes: NoteItem[] = [
 
 const NoteCardsForCStructs = () => {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {notes.map((note, index) => (
                 <Card
                     key={index}
-                    className="shadow-lg border border-gray-300 hover:shadow-xl transition-shadow duration-300 bg-white hover:bg-blue-50"
+                    className="shadow-sm border border-gray-200 hover:shadow-md transition-all bg-white hover:bg-slate-50 rounded-xl p-4"
                 >
-                    <CardHeader>
-                        <CardTitle className="text-lg font-semibold text-blue-700">
+                    <CardHeader className="p-0 mb-2">
+                        <CardTitle className="text-sm font-bold text-blue-700">
                             {note.title}
                         </CardTitle>
                     </CardHeader>
-                    <CardContent>
-                        <p className="text-gray-800 mb-4 text-sm leading-relaxed">
+                    <CardContent className="p-0 text-sm text-gray-700">
+                        <p className="mb-3 leading-snug">
                             {note.summary}
                         </p>
-                        <Button asChild variant="default">
+                        <Button asChild variant="outline" className="text-xs h-8 px-3">
                             <a href={note.url} target="_blank" rel="noopener noreferrer" className="flex items-center">
-                                바로 가기 <ExternalLink className="w-4 h-4 ml-2" />
+                                바로 가기 <ExternalLink className="w-3 h-3 ml-1" />
                             </a>
                         </Button>
                     </CardContent>
