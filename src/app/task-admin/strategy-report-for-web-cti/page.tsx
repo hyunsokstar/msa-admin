@@ -19,6 +19,7 @@ import SummaryX86Architecture from './SummaryX86Architecture';
 import ParadigmAndStructureSummary from './ParadigmAndStructureSummary';
 import WhyLearnCInModernMSA from './WhyLearnCInModernMSA';
 import NoteCardsForCBasics from './NoteCardsForCBasics';
+import NoteCardsForCStructs from './NoteCardsForCStructs';
 
 // 섹션 구분 컴포넌트
 const SectionDivider = ({
@@ -103,9 +104,15 @@ const StrategyReport = () => {
 
       <SectionDivider gradient="from-purple-500 to-pink-600" />
       <h2>
-        C 언어 기초 문법 정리 Part(1)
+        C 언어 기초 문법 정리 Part (1)
       </h2>
       <NoteCardsForCBasics />
+      <h2>
+        C 언어 기초 문법 정리 Part (2)
+      </h2>
+      <SectionDivider gradient="from-purple-500 to-pink-600" />
+      <NoteCardsForCStructs />
+      {/* 차기 프로젝트 아키텍처 */}
 
       <SectionDivider gradient="from-purple-500 to-pink-600" />
 
