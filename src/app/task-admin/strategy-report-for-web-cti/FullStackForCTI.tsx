@@ -126,12 +126,12 @@ const fullStackItems: {
         <ul className="list-disc pl-5 space-y-1">
           <li>
             <strong>통신 품질 보장 & 지연 최적화</strong> <br />
-            CTI 시스템에서 음성/영상/데이터를 실시간 주고받을 때 네트워크 지연(latency)과 패킷 손실(packet loss)이
+            CTI 시스템에서 음성·영상·데이터를 실시간 주고받을 때 네트워크 지연(latency)과 패킷 손실(packet loss)이
             품질 저하로 직결됩니다.
           </li>
           <li>
             <strong>프로토콜 프로그래밍 (SIP, RTP, WebRTC)</strong> <br />
-            SIP로 세션을 생성하고 RTP로 음성 데이터를 전송하거나, WebRTC를 활용해 브라우저 기반 음성/영상 통신을 구현할 때
+            SIP로 세션을 생성하고 RTP로 음성 데이터를 전송하거나, WebRTC를 활용해 브라우저 기반 음성·영상 통신을 구현할 때
             네트워크 계층부터 이해해야 합니다.
           </li>
           <li>
@@ -257,95 +257,166 @@ const FullStackForCTI: React.FC = () => {
         <h3 className="text-2xl font-semibold mb-4 text-indigo-600">
           📚 참고 자료
         </h3>
-        <ul className="list-disc pl-5 space-y-2 text-blue-700">
-          {/* Inflearn */}
-          <li>
-            <a
-              href="https://www.inflearn.com/course/상처-함께-개발하기"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:underline"
-            >
-              Inflearn – 상처 함께 개발하기
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://www.inflearn.com/search?s=network"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:underline"
-            >
-              Inflearn – Network 검색 결과
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://www.inflearn.com/search?s=canvas"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:underline"
-            >
-              Inflearn – Canvas 검색 결과
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://www.inflearn.com/search?s=figma"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:underline"
-            >
-              Inflearn – Figma 검색 결과
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://www.inflearn.com/search?s=java"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:underline"
-            >
-              Inflearn – Java 검색 결과
-            </a>
-          </li>
 
-          {/* FastCampus 디자인 */}
-          <li>
-            <a
-              href="https://fastcampus.co.kr/category_online_dgn"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:underline"
-            >
-              FastCampus – 디자인 강의
-            </a>
-          </li>
+        {/** 링크를 2열 레이아웃으로 배치 **/}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {/** Inflearn 섹션 **/}
+          <div>
+            <h4 className="text-xl font-semibold mb-2 text-gray-800">
+              Inflearn
+            </h4>
+            <ul className="list-disc pl-5 space-y-2 text-blue-700">
+              <li>
+                <a
+                  href="https://www.inflearn.com/course/상처-함께-개발하기"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  상처 함께 개발하기
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.inflearn.com/search?s=network"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  Network 검색 결과
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.inflearn.com/search?s=canvas"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  Canvas 검색 결과
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.inflearn.com/search?s=figma"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  Figma 검색 결과
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.inflearn.com/search?s=java"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  Java 검색 결과
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.inflearn.com/search?s=db"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  DB 검색 결과
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.inflearn.com/search?s=%EB%B0%B0%ED%8F%AC"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  배포 검색 결과
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.inflearn.com/search?s=%EC%8A%A4%ED%94%84%EB%A7%81"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  스프링 검색 결과
+                </a>
+              </li>
+            </ul>
+          </div>
 
-          {/* FastCampus AI 생산성 */}
-          <li>
-            <a
-              href="https://fastcampus.co.kr/category_online_bizchatgpt"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:underline"
-            >
-              FastCampus – AI 생산성 강의
-            </a>
-          </li>
+          {/** FastCampus 섹션 **/}
+          <div>
+            <h4 className="text-xl font-semibold mb-2 text-gray-800">
+              FastCampus
+            </h4>
+            <ul className="list-disc pl-5 space-y-2 text-blue-700">
+              <li>
+                <a
+                  href="https://fastcampus.co.kr/category_online_dgn"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  디자인 강의
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://fastcampus.co.kr/category_online_bizchatgpt"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  AI 생산성 강의
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://fastcampus.co.kr/category_online_aitechrag"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  RAG & AI Agent 강의
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://fastcampus.co.kr/search?keyword=nest%20js%20"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  NestJS 관련 강의
+                </a>
+              </li>
+            </ul>
+          </div>
 
-          {/* FastCampus RAG & AI Agent */}
-          <li>
-            <a
-              href="https://fastcampus.co.kr/category_online_aitechrag"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:underline"
-            >
-              FastCampus – RAG & AI Agent 강의
-            </a>
-          </li>
-        </ul>
+          {/** 기타 섹션 **/}
+          <div>
+            <h4 className="text-xl font-semibold mb-2 text-gray-800">
+              기타
+            </h4>
+            <ul className="list-disc pl-5 space-y-2 text-blue-700">
+              <li>
+                <a
+                  href="https://news.hada.io/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  Geek News (Hada.io)
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </section>
   );
