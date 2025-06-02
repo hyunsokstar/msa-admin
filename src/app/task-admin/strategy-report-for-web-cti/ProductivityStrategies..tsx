@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { 
     Code2, 
     Palette, 
-    GitHub, 
+    Github, 
     Server, 
     Bot, 
     Users, 
@@ -61,7 +61,7 @@ const strategies: StrategyItem[] = [
             '프로젝트 초기 세팅(디렉터리 구조, ESLint/Prettier, Tailwind CSS 설정, 샘플 라우트 등)이 미리 갖춰진 템플릿 저장소를 사용합니다. 해당 템플릿은 조직 내 표준을 반영하여 유지 보수성을 고려한 구성을 제공합니다.',
         expectedEffect:
             '초기 세팅 시간을 획기적으로 단축하여 비즈니스 로직 구현에 더 빠르게 착수할 수 있으며, 조직 내 프로젝트 간 기술 표준화를 통해 코드 일관성을 유지할 수 있습니다.',
-        icon: <GitHub className="w-6 h-6" />,
+        icon: <Github className="w-6 h-6" />,
         gradient: 'from-gray-700 to-gray-900'
     },
     {
