@@ -19,8 +19,8 @@ const sidebarOrder: SectionLink[] = [
   { id: 'note-c-structs', label: 'C 기본 (2)' },
   { id: 'reference-materials', label: '참고 자료' },
   { id: 'reference-lectures', label: '강의 자료' },
-  { id: 'backend-tech-table', label: '백엔드 기술 목록' },
-  { id: 'frontend-tech-table', label: '프론트엔드 기술 목록' },
+  { id: 'backend-tech-table', label: '백엔드 스킬' },
+  { id: 'frontend-tech-table', label: '프론트 스킬 ' },
   // { id: 'fullstack-cti',          label: 'Fullstack CTI' }, // 필요 시 주석 해제
   // { id: 'productivity-strategies', label: '생산성 전략' }, // 필요 시 주석 해제
 ];
