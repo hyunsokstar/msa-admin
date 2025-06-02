@@ -155,11 +155,9 @@ const ProductivityStrategies: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 py-16">
         {/** Header Section **/}
         <div className="text-center mb-16">
-          {/*
-            오른쪽 상단으로 너무 치우친 느낌을 줄이기 위해,
-            가장 바깥쪽에 px-4 정도의 여백을 확보하고, 
-            내부 요소는 flex-center로 배치했습니다.
-          */}
+          {/* 오른쪽 상단으로 너무 치우친 느낌을 줄이기 위해,
+              가장 바깥쪽에 px-4 정도의 여백을 확보하고,
+              내부 요소는 flex-center로 배치했습니다. */}
           <div className="inline-flex items-center gap-3 bg-white/70 backdrop-blur-sm px-6 py-3 rounded-full shadow-lg mx-auto">
             <Zap className="w-6 h-6 text-blue-600" />
             <span className="text-sm font-semibold text-gray-700 uppercase tracking-wider">
@@ -194,10 +192,8 @@ const ProductivityStrategies: React.FC = () => {
               />
 
               {/** 카드 우측 상단의 넘버 배지 **/}
-              {/*
-                원래 top: -3, right: -3 으로 치우쳐 있던 것을
-                top: -3만 유지하고 right는 -1 정도로 안쪽으로 당겨왔습니다.
-              */}
+              {/* 원래 top: -3, right: -3 으로 치우쳐 있던 것을
+                  top: -3만 유지하고 right는 -1 정도로 안쪽으로 당겨왔습니다. */}
               <div className="absolute -top-3 -right-1 w-12 h-12 bg-gradient-to-br from-gray-800 to-gray-600 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
                 <span className="text-white font-bold text-sm">{item.id}</span>
               </div>
@@ -239,10 +235,8 @@ const ProductivityStrategies: React.FC = () => {
 
         {/** Bottom “위로 가기” Section **/}
         <div className="mt-20 flex justify-center">
-          {/*
-            원래 inline-flex만 쓰면 부모 폭이 넓을 때 약간 오른쪽으로 치우쳐 보일
-            수 있는데,mx-auto를 추가하여 부모 컨테이너 내에서 완전 중앙 정렬합니다.
-          */}
+          {/* inline-flex만 쓰면 부모 폭이 넓을 때 약간 오른쪽으로 치우쳐 보일 수 있는데,
+              mx-auto를 추가하여 부모 컨테이너 내에서 완전 중앙 정렬합니다. */}
           <Button
             onClick={() =>
               document
