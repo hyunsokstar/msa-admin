@@ -257,7 +257,7 @@ const FullStackForCTI: React.FC = () => {
                 asChild
               >
                 <a href="https://www.inflearn.com/course/상처-함께-개발하기" target="_blank" rel="noopener noreferrer">
-                  상처 함께 개발하기
+                  함께 개발하기
                 </a>
               </Button>
               <Button
