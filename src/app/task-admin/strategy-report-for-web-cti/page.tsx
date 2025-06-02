@@ -6,27 +6,21 @@ import React from 'react';
 import Introduction from './Introduction';
 import TechnicalIssues from './TechnicalIssues';
 
-import GraphQLSuccessCases from './GraphQLSuccessCases';
-import NextProjectArchetecture from './NextProjectArchetecture';
-import ReferenceMaterials from './ReferenceMaterials';
-import ReferenceLectures from './ReferenceLectures';
-import RedisScalingDiagram from './RedisScalingDiagram';
+// import GraphQLSuccessCases from './GraphQLSuccessCases';  // 사용하지 않으면 주석
 import NextGenerationArchitectureWithRedisScaling2 from './NextGenerationArchitectureWithRedisScaling2';
-import KafkaNecessityAnalysis from './KafkaNecessityAnalysis';
-import CtiLearningCurveSummary from './CtiLearningCurveSummary';
-import ChallengeCWorld from './ChallengeCWorld';
-import SummaryX86Architecture from './SummaryX86Architecture';
-import ParadigmAndStructureSummary from './ParadigmAndStructureSummary';
-import WhyLearnCInModernMSA from './WhyLearnCInModernMSA';
 import NoteCardsForCBasics from './NoteCardsForCBasics';
 import NoteCardsForCStructs from './NoteCardsForCStructs';
-import ProductivityStrategies from './ProductivityStrategies.';
+import ReferenceMaterials from './ReferenceMaterials';
+import ReferenceLectures from './ReferenceLectures';
 import FullStackForCTI from './FullStackForCTI';
+import ProductivityStrategies from './ProductivityStrategies';
+
+import RightSidebar from '@/components/RightSidebar'; // 새로 추가한 사이드바
 
 // 섹션 구분 컴포넌트
 const SectionDivider = ({
-  gradient = "from-blue-500 to-purple-600",
-  margin = "my-16"
+  gradient = 'from-blue-500 to-purple-600',
+  margin = 'my-16',
 }: {
   gradient?: string;
   margin?: string;
@@ -68,80 +62,85 @@ const SubSectionDivider = () => (
   </div>
 );
 
-const StrategyReport = () => {
+const StrategyReport: React.FC = () => {
   return (
-    <div className="w-[80%] mx-auto py-12 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen px-4">
-      {/* 메인 타이틀 */}
-      <div className="text-center mb-16">
-        <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-800 to-purple-700 bg-clip-text text-transparent">
-          차기 웹 CTI 프로젝트 전략 보고서
-        </h1>
-        <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-600 mx-auto rounded-full"></div>
+    <div className="relative">
+      {/** 오른쪽에 고정된 사이드바 **/}
+      <RightSidebar />
+
+      <div className="w-[80%] mx-auto py-12 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen px-4">
+        {/* 메인 타이틀 */}
+        <div className="text-center mb-16">
+          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-800 to-purple-700 bg-clip-text text-transparent">
+            차기 웹 CTI 프로젝트 전략 보고서
+          </h1>
+          <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-600 mx-auto rounded-full"></div>
+        </div>
+
+        {/* 서론 섹션 */}
+        <section id="introduction" className="mb-8">
+          <Introduction />
+        </section>
+
+        <MainSectionDivider />
+
+        {/* 기술적 문제 섹션 */}
+        <section id="technical-issues" className="mb-8">
+          <TechnicalIssues />
+        </section>
+
+        <SectionDivider gradient="from-green-500 to-blue-600" />
+
+        {/* 차세대 아키텍처(예: Redis + NestJS) */}
+        <section id="next-gen-arch" className="mb-8">
+          <NextGenerationArchitectureWithRedisScaling2 />
+        </section>
+
+        <SectionDivider gradient="from-purple-500 to-pink-600" />
+
+        {/* C 기본 카드 */}
+        <section id="note-c-basics" className="mb-8">
+          <NoteCardsForCBasics />
+        </section>
+
+        <SectionDivider gradient="from-purple-500 to-pink-600" />
+
+        {/* C 구조체 카드 */}
+        <section id="note-c-structs" className="mb-8">
+          <NoteCardsForCStructs />
+        </section>
+
+        <SectionDivider gradient="from-purple-500 to-pink-600" />
+
+        {/* 참고 자료 (GraphQL 튜토리얼 등) */}
+        <section id="reference-materials" className="mb-8">
+          <h2 className="text-2xl font-semibold mb-4">Nest Js + GraphQL 기본 튜토리얼</h2>
+          <ReferenceMaterials />
+        </section>
+
+        <SectionDivider gradient="from-purple-500 to-pink-600" />
+
+        {/* 참고 강의 목록 */}
+        <section id="reference-lectures" className="mb-8">
+          <ReferenceLectures />
+        </section>
+
+        <SectionDivider gradient="from-purple-500 to-pink-600" />
+
+        {/* Full Stack For CTI */}
+        <section id="fullstack-cti" className="mb-8">
+          <FullStackForCTI />
+        </section>
+
+        <SectionDivider gradient="from-purple-500 to-pink-600" />
+
+        {/* 개발 생산성 향상 전략 */}
+        <section id="productivity-strategies" className="mb-8">
+          <ProductivityStrategies />
+        </section>
+
+        <div className="h-16"></div>
       </div>
-
-      {/* 서론 섹션 */}
-      <section className="mb-8">
-        <Introduction />
-      </section>
-
-      <MainSectionDivider />
-
-      {/* 기술적 문제 섹션 */}
-      <section className="mb-8">
-        <TechnicalIssues />
-      </section>
-
-      <SectionDivider gradient="from-green-500 to-blue-600" />
-
-      {/* GraphQL 성공 사례 */}
-      {/* <section className="mb-8">
-        <GraphQLSuccessCases />
-      </section> */}
-
-      {/* <MainSectionDivider /> */}
-
-      <section className="mb-8">
-        <NextGenerationArchitectureWithRedisScaling2 />
-      </section>
-
-      <SectionDivider gradient="from-purple-500 to-pink-600" />
-
-      <NoteCardsForCBasics />
-
-      <SectionDivider gradient="from-purple-500 to-pink-600" />
-
-      <NoteCardsForCStructs />
-      {/* 차기 프로젝트 아키텍처 */}
-
-      <SectionDivider gradient="from-purple-500 to-pink-600" />
-
-      {/* 참고 자료 */}
-      <section className="mb-8">
-        <h2>Nest Js + Graphql 기본 튜토리얼</h2>
-        <ReferenceMaterials />
-      </section>
-
-      <SectionDivider gradient="from-purple-500 to-pink-600" />
-
-      <section className="mb-8">
-        <ReferenceLectures />
-      </section>
-
-      <SectionDivider gradient="from-purple-500 to-pink-600" />
-      <section className="mb-8">
-        <FullStackForCTI />
-      </section>
-
-      <SectionDivider gradient="from-purple-500 to-pink-600" />
-
-      <section className="mb-8">
-        <ProductivityStrategies />
-      </section>
-
-
-
-
-      <div className="h-16"></div>
     </div>
   );
 };
