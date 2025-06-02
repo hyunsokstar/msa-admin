@@ -258,6 +258,7 @@ const FullStackForCTI: React.FC = () => {
           📚 참고 자료
         </h3>
         <ul className="list-disc pl-5 space-y-2 text-blue-700">
+          {/* Inflearn */}
           <li>
             <a
               href="https://www.inflearn.com/course/상처-함께-개발하기"
@@ -306,6 +307,42 @@ const FullStackForCTI: React.FC = () => {
               className="hover:underline"
             >
               Inflearn – Java 검색 결과
+            </a>
+          </li>
+
+          {/* FastCampus 디자인 */}
+          <li>
+            <a
+              href="https://fastcampus.co.kr/category_online_dgn"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline"
+            >
+              FastCampus – 디자인 강의
+            </a>
+          </li>
+
+          {/* FastCampus AI 생산성 */}
+          <li>
+            <a
+              href="https://fastcampus.co.kr/category_online_bizchatgpt"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline"
+            >
+              FastCampus – AI 생산성 강의
+            </a>
+          </li>
+
+          {/* FastCampus RAG & AI Agent */}
+          <li>
+            <a
+              href="https://fastcampus.co.kr/category_online_aitechrag"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline"
+            >
+              FastCampus – RAG & AI Agent 강의
             </a>
           </li>
         </ul>
