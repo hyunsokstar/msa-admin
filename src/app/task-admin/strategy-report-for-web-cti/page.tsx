@@ -21,6 +21,7 @@ import WhyLearnCInModernMSA from './WhyLearnCInModernMSA';
 import NoteCardsForCBasics from './NoteCardsForCBasics';
 import NoteCardsForCStructs from './NoteCardsForCStructs';
 import ProductivityStrategies from './ProductivityStrategies.';
+import FullStackForCTI from './FullStackForCTI';
 
 // 섹션 구분 컴포넌트
 const SectionDivider = ({
@@ -125,12 +126,20 @@ const StrategyReport = () => {
       <section className="mb-8">
         <ReferenceLectures />
       </section>
-      
+
+      <SectionDivider gradient="from-purple-500 to-pink-600" />
+      <section className="mb-8">
+        <FullStackForCTI />
+      </section>
+
       <SectionDivider gradient="from-purple-500 to-pink-600" />
 
       <section className="mb-8">
         <ProductivityStrategies />
       </section>
+
+
+
 
       <div className="h-16"></div>
     </div>
