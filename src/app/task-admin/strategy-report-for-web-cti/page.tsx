@@ -69,7 +69,7 @@ const SubSectionDivider = () => (
 
 const StrategyReport = () => {
   return (
-    <div className="w-[80%] mx-auto px-0 py-12 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+    <div className="w-[80%] mx-auto py-12 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen px-4">
       {/* 메인 타이틀 */}
       <div className="text-center mb-16">
         <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-800 to-purple-700 bg-clip-text text-transparent">
