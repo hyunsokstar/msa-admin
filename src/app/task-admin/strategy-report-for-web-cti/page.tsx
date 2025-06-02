@@ -13,9 +13,9 @@ import NoteCardsForCStructs from './NoteCardsForCStructs';
 import ReferenceMaterials from './ReferenceMaterials';
 import ReferenceLectures from './ReferenceLectures';
 import FullStackForCTI from './FullStackForCTI';
-import ProductivityStrategies from './ProductivityStrategies';
+import RightSidebar from './RightSidebar';
+import ProductivityStrategies from './ProductivityStrategies.';
 
-import RightSidebar from '@/components/RightSidebar'; // 새로 추가한 사이드바
 
 // 섹션 구분 컴포넌트
 const SectionDivider = ({
