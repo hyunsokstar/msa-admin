@@ -1,3 +1,4 @@
+// components/StrategyReport.tsx
 'use client';
 
 import React from 'react';
@@ -9,9 +10,9 @@ import NoteCardsForCBasics from './NoteCardsForCBasics';
 import NoteCardsForCStructs from './NoteCardsForCStructs';
 import ReferenceMaterials from './ReferenceMaterials';
 import ReferenceLectures from './ReferenceLectures';
-import FullStackForCTI from './FullStackForCTI';
+// import FullStackForCTI from './FullStackForCTI';  // 현재 사용 안 하시면 주석 처리
 import RightSidebar from './RightSidebar';
-import ProductivityStrategies from './ProductivityStrategies.';
+// import ProductivityStrategies from './ProductivityStrategies.';  // 사용하지 않으면 주석 처리
 import BackendTechTable from './BackendTechTable';
 import FrontendTechTable from './FrontendTechTable';
 
@@ -25,13 +26,13 @@ const SectionDivider = ({
 }) => (
   <div className={`${margin} flex items-center justify-center`}>
     <div className="flex-1 max-w-xl">
-      <div className={`h-px bg-gradient-to-r ${gradient} opacity-60`}></div>
+      <div className={`h-px bg-gradient-to-r ${gradient} opacity-60`} />
     </div>
     <div className="mx-3">
-      <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${gradient} shadow-lg`}></div>
+      <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${gradient} shadow-lg`} />
     </div>
     <div className="flex-1 max-w-xl">
-      <div className={`h-px bg-gradient-to-l ${gradient} opacity-60`}></div>
+      <div className={`h-px bg-gradient-to-l ${gradient} opacity-60`} />
     </div>
   </div>
 );
@@ -123,35 +124,36 @@ const StrategyReport: React.FC = () => {
           <ReferenceLectures />
         </section>
 
-        {/* <SectionDivider gradient="from-purple-500 to-pink-600" /> */}
-
-        {/* 8. Full Stack For CTI */}
-        {/* <section id="fullstack-cti" className="mb-8">
-          <FullStackForCTI />
-        </section> */}
-
         <SectionDivider gradient="from-purple-500 to-pink-600" />
 
-        {/* 8. Full Stack For CTI */}
-        <section id="fullstack-cti" className="mb-8">
+        {/* 8. 백엔드 기술 목록 */}
+        <section id="backend-tech-table" className="mb-8">
           <BackendTechTable />
         </section>
 
         <SectionDivider gradient="from-purple-500 to-pink-600" />
 
-        {/* 8. Full Stack For CTI */}
-        <section id="fullstack-cti" className="mb-8">
+        {/* 9. 프론트엔드 기술 목록 */}
+        <section id="frontend-tech-table" className="mb-8">
           <FrontendTechTable />
         </section>
 
         <SectionDivider gradient="from-purple-500 to-pink-600" />
 
-        {/* 9. 개발 생산성 향상 전략 */}
-        {/* <section id="productivity-strategies" className="mb-8">
-          <ProductivityStrategies />
-        </section> */}
+        {/* ※ 아래 섹션들은 필요 시 주석 해제하세요 */}
+        {/*
+        <SectionDivider gradient="from-purple-500 to-pink-600" />
+        <section id="fullstack-cti" className="mb-8">
+          <FullStackForCTI />
+        </section>
 
-        <div className="h-16"></div>
+        <SectionDivider gradient="from-purple-500 to-pink-600" />
+        <section id="productivity-strategies" className="mb-8">
+          <ProductivityStrategies />
+        </section>
+        */}
+
+        <div className="h-16" />
       </div>
     </div>
   );
