@@ -20,6 +20,7 @@ import ParadigmAndStructureSummary from './ParadigmAndStructureSummary';
 import WhyLearnCInModernMSA from './WhyLearnCInModernMSA';
 import NoteCardsForCBasics from './NoteCardsForCBasics';
 import NoteCardsForCStructs from './NoteCardsForCStructs';
+import ProductivityStrategies from './ProductivityStrategies.';
 
 // 섹션 구분 컴포넌트
 const SectionDivider = ({
@@ -110,7 +111,7 @@ const StrategyReport = () => {
       <h2>
         C 언어 기초 문법 정리 Part (2)
       </h2>
-      
+
       <SectionDivider gradient="from-purple-500 to-pink-600" />
 
       <NoteCardsForCStructs />
@@ -128,6 +129,12 @@ const StrategyReport = () => {
 
       <section className="mb-8">
         <ReferenceLectures />
+      </section>
+      
+      <SectionDivider gradient="from-purple-500 to-pink-600" />
+
+      <section className="mb-8">
+        <ProductivityStrategies />
       </section>
 
       {/* <h2>DB 확장 관련</h2>
