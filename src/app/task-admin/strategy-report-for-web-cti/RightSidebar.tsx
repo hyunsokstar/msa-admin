@@ -2,12 +2,13 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { cn } from '@/lib/utils'; // 선택적으로 className join 유틸 사용
 import { ChevronRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface SectionLink {
   id: string;
   label: string;
-  icon?: React.ReactNode;
 }
 
 const sections: SectionLink[] = [
@@ -23,7 +24,6 @@ const sections: SectionLink[] = [
 
 const RightSidebar: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>('');
-  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -34,118 +34,54 @@ const RightSidebar: React.FC = () => {
           }
         });
       },
-      { threshold: 0.6, rootMargin: '-20% 0px -35% 0px' }
+      { threshold: 0.5, rootMargin: '-20% 0px -35% 0px' }
     );
 
     sections.forEach((section) => {
-      const element = document.getElementById(section.id);
-      if (element) observer.observe(element);
+      const el = document.getElementById(section.id);
+      if (el) observer.observe(el);
     });
 
     return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const windowHeight = window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight;
-
-      setIsVisible(scrollY > 100 && scrollY < documentHeight - windowHeight - 100);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-    }
-  };
-
   return (
-    <div
-      className={`hidden lg:flex flex-col fixed top-6 right-4 z-50 transition-all duration-500 ease-in-out ${
-        isVisible ? 'translate-x-0 opacity-100' : 'translate-x-4 opacity-0'
-      }`}
-    >
-      {/* Glass background */}
-      <div className="absolute inset-0 bg-white/70 backdrop-blur-md rounded-2xl shadow-lg border border-white/20 -z-10" />
+    <div className="hidden lg:flex flex-col fixed top-1/2 right-8 transform -translate-y-1/2 space-y-1 z-50 w-max px-2 py-2 bg-white/60 backdrop-blur-sm rounded-xl shadow-lg border border-white/30">
+      {sections.map((sec) => {
+        const isActive = activeSection === sec.id;
 
-      {/* Section links */}
-      <div className="px-3 py-2 space-y-1 min-w-[160px]">
-        {sections.map((section, index) => {
-          const isActive = activeSection === section.id;
-
-          return (
-            <button
-              key={section.id}
-              onClick={() => scrollToSection(section.id)}
-              className={`group relative w-full text-left px-2 py-2 rounded-lg transition-all duration-300 ease-out ${
-                isActive
-                  ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-md transform scale-[1.02]'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50/80'
-              }`}
-              style={{
-                animationDelay: `${index * 50}ms`,
-              }}
-            >
-              <div
-                className={`absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-4 bg-gradient-to-b from-blue-500 to-purple-600 rounded-r-full transition-all duration-300 ${
-                  isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
-                }`}
-              />
-
-              <div className="flex items-center justify-between">
-                <span
-                  className={`text-sm font-medium transition-all duration-200 ${
-                    isActive ? 'translate-x-0' : 'group-hover:translate-x-1'
-                  }`}
-                >
-                  {section.label}
-                </span>
-
-                <ChevronRight
-                  className={`w-3 h-3 transition-all duration-200 ${
-                    isActive
-                      ? 'opacity-100 transform rotate-90'
-                      : 'opacity-0 group-hover:opacity-60 group-hover:translate-x-1'
-                  }`}
-                />
-              </div>
-
-              <div
-                className={`absolute inset-0 rounded-lg bg-gradient-to-r from-blue-500/10 to-purple-600/10 transition-all duration-300 ${
-                  isActive ? 'opacity-0' : 'opacity-0 group-hover:opacity-100'
-                }`}
-              />
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Progress */}
-      <div className="px-3 pb-2">
-        <div className="w-full h-1 bg-gray-200 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full transition-all duration-300 ease-out"
-            style={{
-              width: `${((sections.findIndex((s) => s.id === activeSection) + 1) / sections.length) * 100}%`,
+        return (
+          <button
+            key={sec.id}
+            onClick={() => {
+              const el = document.getElementById(sec.id);
+              if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
             }}
-          />
-        </div>
-        <div className="flex justify-between items-center mt-1 px-1">
-          <span className="text-xs text-gray-500 font-medium">목차</span>
-          <span className="text-xs text-gray-400">
-            {sections.findIndex((s) => s.id === activeSection) + 1}/{sections.length}
-          </span>
-        </div>
-      </div>
+            className={cn(
+              'relative w-full text-left px-3 py-2 text-sm rounded-md transition-all duration-200 flex items-center justify-between group',
+              isActive
+                ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow'
+                : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+            )}
+          >
+            <span className="truncate">{sec.label}</span>
+            <ChevronRight
+              className={cn(
+                'w-4 h-4 transition-transform',
+                isActive ? 'opacity-100 rotate-90' : 'opacity-0 group-hover:opacity-50 group-hover:translate-x-1'
+              )}
+            />
+            <div
+              className={cn(
+                'absolute left-0 top-1/2 -translate-y-1/2 w-1 h-4 bg-gradient-to-b from-blue-500 to-purple-600 rounded-r-full transition-all',
+                isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
+              )}
+            />
+          </button>
+        );
+      })}
     </div>
   );
 };
