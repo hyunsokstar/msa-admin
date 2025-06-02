@@ -137,21 +137,6 @@ const StrategyReport = () => {
         <ProductivityStrategies />
       </section>
 
-      {/* <h2>DB 확장 관련</h2>
-
-      <section className="mb-8">
-        <KafkaNecessityAnalysis />
-      </section>
-
-      <SectionDivider gradient="from-purple-500 to-pink-600" />
-
-      {/* 차기 프로젝트 아키텍처 */}
-
-      {/* <section className="mb-8">
-        <RedisScalingDiagram />
-      </section>  */}
-
-      {/* 하단 여백 */}
       <div className="h-16"></div>
     </div>
   );
