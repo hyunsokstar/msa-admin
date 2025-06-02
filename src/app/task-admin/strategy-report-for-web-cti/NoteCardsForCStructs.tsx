@@ -49,19 +49,22 @@ const NoteCardsForCStructs = () => {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {notes.map((note, index) => (
-                <Card key={index} className="shadow-md">
+                <Card
+                    key={index}
+                    className="shadow-lg border border-gray-300 hover:shadow-xl transition-shadow duration-300 bg-white hover:bg-blue-50"
+                >
                     <CardHeader>
-                        <CardTitle className="text-xl text-blue-800">
+                        <CardTitle className="text-lg font-semibold text-blue-700">
                             {note.title}
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-gray-700 mb-4 text-base">
+                        <p className="text-gray-800 mb-4 text-sm leading-relaxed">
                             {note.summary}
                         </p>
-                        <Button asChild variant="outline">
-                            <a href={note.url} target="_blank" rel="noopener noreferrer">
-                                바로 가기 <ExternalLink className="w-4 h-4 ml-2 inline" />
+                        <Button asChild variant="default">
+                            <a href={note.url} target="_blank" rel="noopener noreferrer" className="flex items-center">
+                                바로 가기 <ExternalLink className="w-4 h-4 ml-2" />
                             </a>
                         </Button>
                     </CardContent>
