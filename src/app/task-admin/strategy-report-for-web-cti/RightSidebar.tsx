@@ -1,7 +1,6 @@
-// src/components/RightSidebar.tsx
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -25,33 +24,6 @@ const sidebarOrder: SectionLink[] = [
 
 const RightSidebar: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>('');
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          // 화면에 50% 이상 들어오면 강조
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
-        });
-      },
-      {
-        threshold: 0.5,
-        rootMargin: '-20% 0px -35% 0px',
-      }
-    );
-
-    // page.tsx에서 정의한 순서대로 각 섹션을 관찰
-    sidebarOrder.forEach((sec) => {
-      const el = document.getElementById(sec.id);
-      if (el) observer.observe(el);
-    });
-
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
 
   const scrollToSection = (sectionId: string) => {
     const el = document.getElementById(sectionId);

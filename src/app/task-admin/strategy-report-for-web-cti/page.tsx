@@ -1,5 +1,3 @@
-// app/strategy-report-for-web-cti/page.tsx
-
 'use client';
 
 import React from 'react';
