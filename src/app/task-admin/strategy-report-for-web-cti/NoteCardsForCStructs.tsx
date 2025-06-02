@@ -2,7 +2,7 @@
 'use client';
 
 import React from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -47,43 +47,42 @@ const notes: NoteItem[] = [
 
 const NoteCardsForCStructsPart2: React.FC = () => {
   return (
-    <section className="p-6 bg-white rounded-2xl shadow-md">
-      <h2 className="text-2xl font-bold text-blue-700 mb-6">
-        C 언어 기초 문법 정리 Part (2)
+    <div className="max-w-6xl mx-auto px-4 py-10">
+      <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">
+        🧠 C언어 기초 문법 정리 Part(2)
       </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {notes.map((note, index) => (
-          <Card
-            key={index}
-            className="border border-gray-200 shadow-md hover:shadow-lg transition-shadow duration-200 bg-white hover:bg-slate-50 p-4 rounded-xl"
-          >
-            <CardHeader className="p-0 mb-2">
-              <CardTitle className="text-base font-bold text-blue-700">
+          <Card key={index} className="hover:shadow-lg transition-shadow">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg font-semibold text-gray-900">
                 {note.title}
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-0">
-              <p className="text-gray-700 text-sm mb-3 leading-snug">
+            <CardContent>
+              <p className="text-gray-700 text-sm mb-4 leading-snug">
                 {note.summary}
               </p>
-              <Button
-                asChild
-                className="w-full text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white"
-              >
-                <a
-                  href={note.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex justify-center items-center"
+              <div className="flex justify-center mt-4">
+                <Button
+                  asChild
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold"
                 >
-                  바로 가기 <ExternalLink className="w-4 h-4 ml-2" />
-                </a>
-              </Button>
+                  <a
+                    href={note.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2"
+                  >
+                    <ExternalLink size={16} /> 바로가기
+                  </a>
+                </Button>
+              </div>
             </CardContent>
           </Card>
         ))}
       </div>
-    </section>
+    </div>
   );
 };
 
