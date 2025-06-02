@@ -47,24 +47,27 @@ const notes: NoteItem[] = [
 
 const NoteCardsForCStructs = () => {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {notes.map((note, index) => (
                 <Card
                     key={index}
-                    className="shadow-sm border border-gray-200 hover:shadow-md transition-all bg-white hover:bg-slate-50 rounded-xl p-4"
+                    className="border border-gray-200 shadow-md hover:shadow-lg transition-shadow duration-200 bg-white hover:bg-slate-50 p-4 rounded-xl"
                 >
                     <CardHeader className="p-0 mb-2">
-                        <CardTitle className="text-sm font-bold text-blue-700">
+                        <CardTitle className="text-base font-bold text-blue-700">
                             {note.title}
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="p-0 text-sm text-gray-700">
-                        <p className="mb-3 leading-snug">
+                    <CardContent className="p-0">
+                        <p className="text-gray-700 text-sm mb-3 leading-snug">
                             {note.summary}
                         </p>
-                        <Button asChild variant="outline" className="text-xs h-8 px-3">
-                            <a href={note.url} target="_blank" rel="noopener noreferrer" className="flex items-center">
-                                바로 가기 <ExternalLink className="w-3 h-3 ml-1" />
+                        <Button
+                            asChild
+                            className="w-full text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white"
+                        >
+                            <a href={note.url} target="_blank" rel="noopener noreferrer" className="flex justify-center items-center">
+                                바로 가기 <ExternalLink className="w-4 h-4 ml-2" />
                             </a>
                         </Button>
                     </CardContent>
