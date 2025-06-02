@@ -12,6 +12,7 @@ import ReferenceLectures from './ReferenceLectures';
 import FullStackForCTI from './FullStackForCTI';
 import RightSidebar from './RightSidebar';
 import ProductivityStrategies from './ProductivityStrategies.';
+import BackendTechTable from './BackendTechTable';
 
 // 섹션 구분 컴포넌트 (파스텔톤 그라디언트 선)
 const SectionDivider = ({
@@ -130,10 +131,17 @@ const StrategyReport: React.FC = () => {
 
         <SectionDivider gradient="from-purple-500 to-pink-600" />
 
-        {/* 9. 개발 생산성 향상 전략 */}
-        <section id="productivity-strategies" className="mb-8">
-          <ProductivityStrategies />
+        {/* 8. Full Stack For CTI */}
+        <section id="fullstack-cti" className="mb-8">
+          <BackendTechTable />
         </section>
+
+        <SectionDivider gradient="from-purple-500 to-pink-600" />
+
+        {/* 9. 개발 생산성 향상 전략 */}
+        {/* <section id="productivity-strategies" className="mb-8">
+          <ProductivityStrategies />
+        </section> */}
 
         <div className="h-16"></div>
       </div>
