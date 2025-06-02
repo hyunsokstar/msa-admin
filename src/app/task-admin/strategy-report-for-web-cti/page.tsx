@@ -1,148 +1,182 @@
-// app/strategy-report-for-web-cti/page.tsx
-
+// src/components/RightSidebar.tsx
 'use client';
 
-import React from 'react';
-import Introduction from './Introduction';
-import TechnicalIssues from './TechnicalIssues';
+import React, { useState, useEffect } from 'react';
+import { ChevronRight, ChevronDown } from 'lucide-react';
+import { cn } from '@/lib/utils'; // className 병합 유틸 (없으면 템플릿 문자열로 대체 가능)
 
-// import GraphQLSuccessCases from './GraphQLSuccessCases';  // 사용하지 않으면 주석
-import NextGenerationArchitectureWithRedisScaling2 from './NextGenerationArchitectureWithRedisScaling2';
-import NoteCardsForCBasics from './NoteCardsForCBasics';
-import NoteCardsForCStructs from './NoteCardsForCStructs';
-import ReferenceMaterials from './ReferenceMaterials';
-import ReferenceLectures from './ReferenceLectures';
-import FullStackForCTI from './FullStackForCTI';
-import RightSidebar from './RightSidebar';
-import ProductivityStrategies from './ProductivityStrategies.';
+interface SectionLink {
+  id: string;
+  label: string;
+}
 
+// “C 기본” 그룹 내부 섹션
+const cBasics: SectionLink[] = [
+  { id: 'note-c-basics', label: 'C 기본 (1)' },
+  { id: 'note-c-structs', label: 'C 기본 (2)' },
+];
 
-// 섹션 구분 컴포넌트
-const SectionDivider = ({
-  gradient = 'from-blue-500 to-purple-600',
-  margin = 'my-16',
-}: {
-  gradient?: string;
-  margin?: string;
-}) => (
-  <div className={`${margin} flex items-center justify-center`}>
-    <div className="flex-1 max-w-xl">
-      <div className={`h-px bg-gradient-to-r ${gradient} opacity-60`}></div>
-    </div>
-    <div className="mx-3">
-      <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${gradient} shadow-lg`}></div>
-    </div>
-    <div className="flex-1 max-w-xl">
-      <div className={`h-px bg-gradient-to-l ${gradient} opacity-60`}></div>
-    </div>
-  </div>
-);
+// 그 외 섹션
+const otherSections: SectionLink[] = [
+  { id: 'introduction', label: '서론' },
+  { id: 'technical-issues', label: '기술적 문제' },
+  // “C 기본”은 group으로 따로 분리했으므로 여기선 제외
+  { id: 'reference-materials', label: '참고 자료' },
+  { id: 'reference-lectures', label: '강의 자료' },
+  { id: 'fullstack-cti', label: 'for fullstack' },
+  { id: 'productivity-strategies', label: '생산성 전략' },
+];
 
-// 메인 섹션 구분 컴포넌트 (더 강조)
-const MainSectionDivider = () => (
-  <div className="my-20 flex items-center justify-center">
-    <div className="flex-1 w-full">
-      <div className="h-0.5 bg-gradient-to-r from-transparent via-blue-500 to-purple-600 opacity-80"></div>
-    </div>
-    <div className="mx-3 flex space-x-2">
-      <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
-      <div className="w-3 h-3 rounded-full bg-purple-600 shadow-lg"></div>
-      <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
-    </div>
-    <div className="flex-1 w-full">
-      <div className="h-0.5 bg-gradient-to-l from-transparent via-purple-600 to-blue-500 opacity-80"></div>
-    </div>
-  </div>
-);
+const RightSidebar: React.FC = () => {
+  const [activeSection, setActiveSection] = useState<string>('');
+  const [isCBasicsOpen, setIsCBasicsOpen] = useState<boolean>(false);
 
-// 서브 섹션 구분 컴포넌트 (더 부드러운)
-const SubSectionDivider = () => (
-  <div className="my-12 flex justify-center">
-    <div className="w-32 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
-  </div>
-);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const id = entry.target.id;
+            setActiveSection(id);
 
-const StrategyReport: React.FC = () => {
+            // “C 기본” 그룹 안의 항목(id)이 보이면 아코디언을 열어둠
+            if (cBasics.some((item) => item.id === id)) {
+              setIsCBasicsOpen(true);
+            }
+          }
+        });
+      },
+      { threshold: 0.5, rootMargin: '-20% 0px -35% 0px' }
+    );
+
+    // 모든 섹션 요소를 관찰
+    [...otherSections, ...cBasics].forEach((section) => {
+      const el = document.getElementById(section.id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const scrollToSection = (sectionId: string) => {
+    const el = document.getElementById(sectionId);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
-    <div className="relative">
-      {/** 오른쪽에 고정된 사이드바 **/}
-      <RightSidebar />
+    <div className="hidden lg:flex flex-col fixed top-1/2 right-8 transform -translate-y-1/2 space-y-1 z-50 w-max px-2 py-2 bg-white/60 backdrop-blur-sm rounded-xl shadow-lg border border-white/30">
+      {/* ─────────────[1] 일반 섹션들(서론, 기술적 문제 등)───────────── */}
+      {otherSections.map((sec) => {
+        const isActive = activeSection === sec.id;
 
-      <div className="w-[80%] mx-auto py-12 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen px-4">
-        {/* 메인 타이틀 */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-800 to-purple-700 bg-clip-text text-transparent">
-            차기 웹 CTI 프로젝트 전략 보고서
-          </h1>
-          <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-600 mx-auto rounded-full"></div>
+        return (
+          <button
+            key={sec.id}
+            onClick={() => {
+              scrollToSection(sec.id);
+              setActiveSection(sec.id); // ← 클릭 시에도 activeSection 즉시 업데이트
+            }}
+            className={cn(
+              'relative w-full text-left px-3 py-2 text-sm rounded-md transition-all duration-200 flex items-center justify-between group',
+              isActive
+                ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow'
+                : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+            )}
+          >
+            <span className="truncate">{sec.label}</span>
+            <ChevronRight
+              className={cn(
+                'w-4 h-4 transition-transform',
+                isActive
+                  ? 'opacity-100 rotate-90'
+                  : 'opacity-0 group-hover:opacity-50 group-hover:translate-x-1'
+              )}
+            />
+            <div
+              className={cn(
+                'absolute left-0 top-1/2 -translate-y-1/2 w-1 h-4 bg-gradient-to-b from-blue-500 to-purple-600 rounded-r-full transition-all',
+                isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
+              )}
+            />
+          </button>
+        );
+      })}
+
+      {/* ─────────────[2] “C 기본” 그룹 아코디언───────────── */}
+      <details
+        className="group relative w-full"
+        open={isCBasicsOpen}
+        onToggle={(e) => setIsCBasicsOpen((e.target as HTMLDetailsElement).open)}
+      >
+        <summary
+          className={cn(
+            'flex items-center justify-between cursor-pointer px-3 py-2 text-sm rounded-md transition-all duration-200',
+            cBasics.some((item) => item.id === activeSection)
+              ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow'
+              : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+          )}
+          onClick={() => setIsCBasicsOpen(!isCBasicsOpen)} // summary 클릭 시 펼치기/접기
+        >
+          <span className="truncate">C 기본</span>
+          <ChevronDown
+            className={cn(
+              'w-4 h-4 transition-transform',
+              isCBasicsOpen ? 'opacity-100 rotate-180' : 'opacity-50'
+            )}
+          />
+          <div
+            className={cn(
+              'absolute left-0 top-1/2 -translate-y-1/2 w-1 h-4 bg-gradient-to-b from-blue-500 to-purple-600 rounded-r-full transition-all',
+              cBasics.some((item) => item.id === activeSection)
+                ? 'opacity-100 scale-100'
+                : 'opacity-0 scale-75'
+            )}
+          />
+        </summary>
+
+        <div className="mt-1 pl-4 space-y-1">
+          {cBasics.map((sub) => {
+            const isActive = activeSection === sub.id;
+            return (
+              <button
+                key={sub.id}
+                onClick={() => {
+                  scrollToSection(sub.id);
+                  setActiveSection(sub.id); // ← 클릭 시 activeSection 동기화
+                }}
+                className={cn(
+                  'relative w-full text-left px-3 py-1 text-sm rounded-md transition-all duration-200 flex items-center justify-between group',
+                  isActive
+                    ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow'
+                    : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                )}
+              >
+                <span className="truncate">{sub.label}</span>
+                <ChevronRight
+                  className={cn(
+                    'w-4 h-4 transition-transform',
+                    isActive
+                      ? 'opacity-100 rotate-90'
+                      : 'opacity-0 group-hover:opacity-50 group-hover:translate-x-1'
+                  )}
+                />
+                <div
+                  className={cn(
+                    'absolute left-0 top-1/2 -translate-y-1/2 w-1 h-4 bg-gradient-to-b from-blue-500 to-purple-600 rounded-r-full transition-all',
+                    isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
+                  )}
+                />
+              </button>
+            );
+          })}
         </div>
+      </details>
 
-        {/* 서론 섹션 */}
-        <section id="introduction" className="mb-8">
-          <Introduction />
-        </section>
-
-        <MainSectionDivider />
-
-        {/* 기술적 문제 섹션 */}
-        <section id="technical-issues" className="mb-8">
-          <TechnicalIssues />
-        </section>
-
-        <SectionDivider gradient="from-green-500 to-blue-600" />
-
-        {/* 차세대 아키텍처(예: Redis + NestJS) */}
-        <section id="next-gen-arch" className="mb-8">
-          <NextGenerationArchitectureWithRedisScaling2 />
-        </section>
-
-        <SectionDivider gradient="from-purple-500 to-pink-600" />
-
-        {/* C 기본 카드 */}
-        <section id="note-c-basics" className="mb-8">
-          <NoteCardsForCBasics />
-        </section>
-
-        <SectionDivider gradient="from-purple-500 to-pink-600" />
-
-        {/* C 구조체 카드 */}
-        <section id="note-c-structs" className="mb-8">
-          <NoteCardsForCStructs />
-        </section>
-
-        <SectionDivider gradient="from-purple-500 to-pink-600" />
-
-        {/* 참고 자료 (GraphQL 튜토리얼 등) */}
-        <section id="reference-materials" className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Nest Js + GraphQL 기본 튜토리얼</h2>
-          <ReferenceMaterials />
-        </section>
-
-        <SectionDivider gradient="from-purple-500 to-pink-600" />
-
-        {/* 참고 강의 목록 */}
-        <section id="reference-lectures" className="mb-8">
-          <ReferenceLectures />
-        </section>
-
-        <SectionDivider gradient="from-purple-500 to-pink-600" />
-
-        {/* Full Stack For CTI */}
-        <section id="fullstack-cti" className="mb-8">
-          <FullStackForCTI />
-        </section>
-
-        <SectionDivider gradient="from-purple-500 to-pink-600" />
-
-        {/* 개발 생산성 향상 전략 */}
-        <section id="productivity-strategies" className="mb-8">
-          <ProductivityStrategies />
-        </section>
-
-        <div className="h-16"></div>
-      </div>
+      {/* ─────────────[3] 나머지 섹션은 otherSections에서 이미 처리했으므로 생략 ───────────── */}
     </div>
   );
 };
 
-export default StrategyReport;
+export default RightSidebar;
