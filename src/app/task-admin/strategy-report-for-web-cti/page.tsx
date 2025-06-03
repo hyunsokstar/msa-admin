@@ -4,18 +4,16 @@
 import React from 'react';
 import Introduction from './Introduction';
 import TechnicalIssues from './TechnicalIssues';
-// import GraphQLSuccessCases from './GraphQLSuccessCases';  // 사용하지 않으면 주석
 import NextGenerationArchitectureWithRedisScaling2 from './NextGenerationArchitectureWithRedisScaling2';
 import NoteCardsForCBasics from './NoteCardsForCBasics';
 import NoteCardsForCStructs from './NoteCardsForCStructs';
 import ReferenceMaterials from './ReferenceMaterials';
 import ReferenceLectures from './ReferenceLectures';
-// import FullStackForCTI from './FullStackForCTI';  // 현재 사용 안 하시면 주석 처리
 import RightSidebar from './RightSidebar';
-// import ProductivityStrategies from './ProductivityStrategies.';  // 사용하지 않으면 주석 처리
 import BackendTechTable from './BackendTechTable';
 import FrontendTechTable from './FrontendTechTable';
 import DatabaseTechGuide from './DatabaseTechGuide';
+import DGSGraphQLPilotProject from './DGSGraphQLPilotProject';
 import WhyChooseJooq from './WhyChooseJooq ';
 
 // 섹션 구분 컴포넌트 (파스텔톤 그라디언트 선)
@@ -56,13 +54,6 @@ const MainSectionDivider = () => (
   </div>
 );
 
-// 서브 섹션 구분 컴포넌트 (부드러운 선)
-const SubSectionDivider = () => (
-  <div className="my-12 flex justify-center">
-    <div className="w-32 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
-  </div>
-);
-
 const StrategyReport: React.FC = () => {
   return (
     <div className="relative">
@@ -92,7 +83,7 @@ const StrategyReport: React.FC = () => {
 
         <SectionDivider gradient="from-green-500 to-blue-600" />
 
-        {/* 3. 차세대 아키텍처 (예: Redis + NestJS) */}
+        {/* 3. 차세대 아키텍처 */}
         <section id="next-gen-arch" className="mb-8">
           <NextGenerationArchitectureWithRedisScaling2 />
         </section>
@@ -113,7 +104,7 @@ const StrategyReport: React.FC = () => {
 
         <SectionDivider gradient="from-purple-500 to-pink-600" />
 
-        {/* 6. 참고 자료 (GraphQL 튜토리얼 등) */}
+        {/* 6. 참고 자료 */}
         <section id="reference-materials" className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">Nest Js + GraphQL 기본 튜토리얼</h2>
           <ReferenceMaterials />
@@ -142,14 +133,23 @@ const StrategyReport: React.FC = () => {
 
         <SectionDivider gradient="from-purple-500 to-pink-600" />
 
+        {/* 10. DB 기술 가이드 */}
         <section id="fullstack-cti" className="mb-8">
           <DatabaseTechGuide />
         </section>
 
         <SectionDivider gradient="from-purple-500 to-pink-600" />
 
-        <section id="why-choose-jooq" >
+        {/* 11. JOOQ 선택 이유 */}
+        <section id="why-choose-jooq" className="mb-8">
           <WhyChooseJooq />
+        </section>
+
+        <SectionDivider gradient="from-blue-500 to-green-600" />
+
+        {/* 12. DGS 파일럿 프로젝트 */}
+        <section id="dgs-pilot-project" className="mb-8">
+          <DGSGraphQLPilotProject />
         </section>
 
         <div className="h-16" />
