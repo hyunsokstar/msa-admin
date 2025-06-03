@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { ChevronRight, Database, Code, Lightbulb, AlertTriangle, Zap, Target, CheckCircle } from 'lucide-react';
 
 // 유틸리티 함수
-const cn = (...classes) => classes.filter(Boolean).join(' ');
+const cn = (...classes: (string | undefined | null | false)[]) => classes.filter(Boolean).join(' ');
 
 interface SectionLink {
   id: string;
