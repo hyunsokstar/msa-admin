@@ -16,6 +16,7 @@ import RightSidebar from './RightSidebar';
 import BackendTechTable from './BackendTechTable';
 import FrontendTechTable from './FrontendTechTable';
 import DatabaseTechGuide from './DatabaseTechGuide';
+import WhyChooseJooq from './WhyChooseJooq ';
 
 // 섹션 구분 컴포넌트 (파스텔톤 그라디언트 선)
 const SectionDivider = ({
@@ -143,6 +144,12 @@ const StrategyReport: React.FC = () => {
 
         <section id="fullstack-cti" className="mb-8">
           <DatabaseTechGuide />
+        </section>
+
+        <SectionDivider gradient="from-purple-500 to-pink-600" />
+
+        <section id="why-choose-jooq" >
+          <WhyChooseJooq />
         </section>
 
         <div className="h-16" />
