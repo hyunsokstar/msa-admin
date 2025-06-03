@@ -15,6 +15,7 @@ import RightSidebar from './RightSidebar';
 // import ProductivityStrategies from './ProductivityStrategies.';  // 사용하지 않으면 주석 처리
 import BackendTechTable from './BackendTechTable';
 import FrontendTechTable from './FrontendTechTable';
+import DatabaseTechGuide from './DatabaseTechGuide';
 
 // 섹션 구분 컴포넌트 (파스텔톤 그라디언트 선)
 const SectionDivider = ({
@@ -140,18 +141,9 @@ const StrategyReport: React.FC = () => {
 
         <SectionDivider gradient="from-purple-500 to-pink-600" />
 
-        {/* ※ 아래 섹션들은 필요 시 주석 해제하세요 */}
-        {/*
-        <SectionDivider gradient="from-purple-500 to-pink-600" />
         <section id="fullstack-cti" className="mb-8">
-          <FullStackForCTI />
+          <DatabaseTechGuide />
         </section>
-
-        <SectionDivider gradient="from-purple-500 to-pink-600" />
-        <section id="productivity-strategies" className="mb-8">
-          <ProductivityStrategies />
-        </section>
-        */}
 
         <div className="h-16" />
       </div>
