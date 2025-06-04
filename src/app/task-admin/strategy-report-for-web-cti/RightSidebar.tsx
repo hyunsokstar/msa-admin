@@ -17,6 +17,7 @@ const sidebarOrder: SectionLink[] = [
   { id: 'next-gen-arch', label: '차세대 아키텍처' },
   { id: 'backend-tech-table', label: '백엔드 스킬' },
   { id: 'frontend-tech-table', label: '프론트 스킬' },
+  { id: 'next-project-architecture-report', label: '차세대 아키텍쳐' },
   { id: 'productivity-strategies', label: '생산성 전략' },
 ];
 

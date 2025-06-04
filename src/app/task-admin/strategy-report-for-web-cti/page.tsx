@@ -13,6 +13,7 @@ import RightSidebar from './RightSidebar';
 import BackendTechTable from './BackendTechTable';
 import FrontendTechTable from './FrontendTechTable';
 import ProductivityStrategies from './ProductivityStrategies.';
+import NextProjectArchitectureReport from './NextProjectArchitectureReport';
 
 const SectionDivider = ({
   gradient = 'from-blue-500 to-purple-600',
@@ -89,6 +90,12 @@ const StrategyReport: React.FC = () => {
 
         <section id="frontend-tech-table" className="mb-8">
           <FrontendTechTable />
+        </section>
+
+        <SectionDivider gradient="from-purple-500 to-pink-600" />
+
+        <section id="next-project-architecture-report" className="mb-8">
+          <NextProjectArchitectureReport />
         </section>
 
         <SectionDivider gradient="from-purple-500 to-pink-600" />
