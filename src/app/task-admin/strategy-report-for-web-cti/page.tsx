@@ -15,6 +15,7 @@ import FrontendTechTable from './FrontendTechTable';
 import DatabaseTechGuide from './DatabaseTechGuide';
 import DGSGraphQLPilotProject from './DGSGraphQLPilotProject';
 import WhyChooseJooq from './WhyChooseJooq ';
+import ProductivityStrategies from './ProductivityStrategies.';
 
 // 섹션 구분 컴포넌트 (파스텔톤 그라디언트 선)
 const SectionDivider = ({
@@ -124,10 +125,9 @@ const StrategyReport: React.FC = () => {
 
         <SectionDivider gradient="from-purple-500 to-pink-600" /> */}
 
-        {/* 11. JOOQ 선택 이유
         <section id="why-choose-jooq" className="mb-8">
-          <WhyChooseJooq />
-        </section> */}
+          <ProductivityStrategies />
+        </section>
 
 
         <div className="h-16" />
