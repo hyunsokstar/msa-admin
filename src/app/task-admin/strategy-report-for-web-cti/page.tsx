@@ -118,23 +118,17 @@ const StrategyReport: React.FC = () => {
         <SectionDivider gradient="from-purple-500 to-pink-600" />
 
         {/* 10. DB 기술 가이드 */}
-        <section id="fullstack-cti" className="mb-8">
+        {/* <section id="fullstack-cti" className="mb-8">
           <DatabaseTechGuide />
         </section>
 
-        <SectionDivider gradient="from-purple-500 to-pink-600" />
+        <SectionDivider gradient="from-purple-500 to-pink-600" /> */}
 
-        {/* 11. JOOQ 선택 이유 */}
+        {/* 11. JOOQ 선택 이유
         <section id="why-choose-jooq" className="mb-8">
           <WhyChooseJooq />
-        </section>
+        </section> */}
 
-        <SectionDivider gradient="from-blue-500 to-green-600" />
-
-        {/* 12. DGS 파일럿 프로젝트 */}
-        <section id="dgs-pilot-project" className="mb-8">
-          <DGSGraphQLPilotProject />
-        </section>
 
         <div className="h-16" />
       </div>
