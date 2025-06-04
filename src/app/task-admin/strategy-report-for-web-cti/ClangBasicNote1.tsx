@@ -26,7 +26,7 @@ const notes: NoteItem[] = [
     { title: '메모리 동적 할당 및 해제에 대한 기본 예제', url: 'https://nexus-task-master.shop/note-admin/notes/78/note-contents?pageNum=12' },
 ];
 
-const NoteCardsForCBasics = () => {
+const ClangBasicNote1 = () => {
     return (
         <div className="max-w-6xl mx-auto px-4 py-10">
             <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">
@@ -64,4 +64,4 @@ const NoteCardsForCBasics = () => {
     );
 };
 
-export default NoteCardsForCBasics;
+export default ClangBasicNote1;

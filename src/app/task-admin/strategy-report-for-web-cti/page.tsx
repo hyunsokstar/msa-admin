@@ -5,8 +5,8 @@ import Introduction from './Introduction';
 import TechnicalIssues from './TechnicalIssues';
 // import GraphQLSuccessCases from './GraphQLSuccessCases';  // 사용하지 않으면 주석
 import NextGenerationArchitectureWithRedisScaling2 from './NextGenerationArchitectureWithRedisScaling2';
-import NoteCardsForCBasics from './NoteCardsForCBasics';
-import NoteCardsForCStructs from './NoteCardsForCStructs';
+import ClangBasicNote1 from './ClangBasicNote1';
+import NoteCardsForCStructs from './ClangBasicNote2';
 import ReferenceMaterials from './ReferenceMaterials';
 import ReferenceLectures from './ReferenceLectures';
 import FullStackForCTI from './FullStackForCTI';
@@ -90,20 +90,6 @@ const StrategyReport: React.FC = () => {
         {/* 3. 차세대 아키텍처 (예: Redis + NestJS) */}
         <section id="next-gen-arch" className="mb-8">
           <NextGenerationArchitectureWithRedisScaling2 />
-        </section>
-
-        <SectionDivider gradient="from-purple-500 to-pink-600" />
-
-        {/* 4. C 기본 카드 */}
-        <section id="note-c-basics" className="mb-8">
-          <NoteCardsForCBasics />
-        </section>
-
-        <SectionDivider gradient="from-purple-500 to-pink-600" />
-
-        {/* 5. C 구조체 카드 */}
-        <section id="note-c-structs" className="mb-8">
-          <NoteCardsForCStructs />
         </section>
 
         <SectionDivider gradient="from-purple-500 to-pink-600" />

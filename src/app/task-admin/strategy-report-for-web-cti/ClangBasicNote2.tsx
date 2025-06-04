@@ -45,7 +45,7 @@ const notes: NoteItem[] = [
   },
 ];
 
-const NoteCardsForCStructsPart2: React.FC = () => {
+const ClangBasicNote2: React.FC = () => {
   return (
     <div className="max-w-6xl mx-auto px-4 py-10">
       <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">
@@ -86,4 +86,4 @@ const NoteCardsForCStructsPart2: React.FC = () => {
   );
 };
 
-export default NoteCardsForCStructsPart2;
+export default ClangBasicNote2;
