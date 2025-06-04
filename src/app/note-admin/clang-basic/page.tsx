@@ -7,7 +7,6 @@ interface Props {}
 const ClangBasic = (props: Props) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-10 px-2">
-      {/* 보고서 헤더 */}
       <div className="max-w-3xl mx-auto mb-12 text-center">
         <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-800 via-purple-700 to-indigo-700 bg-clip-text text-transparent mb-2">
           C 언어 기초 요약
