@@ -1,5 +1,6 @@
 import ClangBasicNote1 from '@/app/task-admin/strategy-report-for-web-cti/ClangBasicNote1'
 import ClangBasicNote2 from '@/app/task-admin/strategy-report-for-web-cti/ClangBasicNote2'
+import RoadmapForCTIIntegration from '@/app/task-admin/strategy-report-for-web-cti/RoadmapForCTIIntegration'
 import React from 'react'
 
 interface Props {}
@@ -48,6 +49,21 @@ const ClangBasic = (props: Props) => {
           <ClangBasicNote2 />
         </div>
       </section>
+
+      <section
+        id="note-c-structs"
+        className="max-w-3xl mx-auto mb-12"
+      >
+        <div className="bg-white/90 rounded-2xl shadow-lg p-8 border border-purple-100">
+          <h2 className="text-2xl font-semibold text-purple-700 mb-4 flex items-center gap-2">
+            <span className="inline-block w-2 h-6 bg-purple-400 rounded-full mr-2" />
+            C 구조체와 활용
+          </h2>
+          <RoadmapForCTIIntegration />
+        </div>
+      </section>
+
+
     </div>
   )
 }
