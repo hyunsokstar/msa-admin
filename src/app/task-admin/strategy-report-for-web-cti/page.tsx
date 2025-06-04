@@ -1,17 +1,20 @@
+// components/StrategyReport.tsx
 'use client';
 
 import React from 'react';
 import Introduction from './Introduction';
 import TechnicalIssues from './TechnicalIssues';
-// import GraphQLSuccessCases from './GraphQLSuccessCases';  // 사용하지 않으면 주석
 import NextGenerationArchitectureWithRedisScaling2 from './NextGenerationArchitectureWithRedisScaling2';
 import ClangBasicNote1 from './ClangBasicNote1';
 import NoteCardsForCStructs from './ClangBasicNote2';
 import ReferenceMaterials from './ReferenceMaterials';
 import ReferenceLectures from './ReferenceLectures';
-import FullStackForCTI from './FullStackForCTI';
 import RightSidebar from './RightSidebar';
-import ProductivityStrategies from './ProductivityStrategies.';
+import BackendTechTable from './BackendTechTable';
+import FrontendTechTable from './FrontendTechTable';
+import DatabaseTechGuide from './DatabaseTechGuide';
+import DGSGraphQLPilotProject from './DGSGraphQLPilotProject';
+import WhyChooseJooq from './WhyChooseJooq ';
 
 // 섹션 구분 컴포넌트 (파스텔톤 그라디언트 선)
 const SectionDivider = ({
@@ -23,13 +26,13 @@ const SectionDivider = ({
 }) => (
   <div className={`${margin} flex items-center justify-center`}>
     <div className="flex-1 max-w-xl">
-      <div className={`h-px bg-gradient-to-r ${gradient} opacity-60`}></div>
+      <div className={`h-px bg-gradient-to-r ${gradient} opacity-60`} />
     </div>
     <div className="mx-3">
-      <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${gradient} shadow-lg`}></div>
+      <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${gradient} shadow-lg`} />
     </div>
     <div className="flex-1 max-w-xl">
-      <div className={`h-px bg-gradient-to-l ${gradient} opacity-60`}></div>
+      <div className={`h-px bg-gradient-to-l ${gradient} opacity-60`} />
     </div>
   </div>
 );
@@ -48,13 +51,6 @@ const MainSectionDivider = () => (
     <div className="flex-1 w-full">
       <div className="h-0.5 bg-gradient-to-l from-transparent via-purple-600 to-blue-500 opacity-80"></div>
     </div>
-  </div>
-);
-
-// 서브 섹션 구분 컴포넌트 (부드러운 선)
-const SubSectionDivider = () => (
-  <div className="my-12 flex justify-center">
-    <div className="w-32 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
   </div>
 );
 
@@ -87,41 +83,60 @@ const StrategyReport: React.FC = () => {
 
         <SectionDivider gradient="from-green-500 to-blue-600" />
 
-        {/* 3. 차세대 아키텍처 (예: Redis + NestJS) */}
+        {/* 3. 차세대 아키텍처 */}
         <section id="next-gen-arch" className="mb-8">
           <NextGenerationArchitectureWithRedisScaling2 />
         </section>
 
         <SectionDivider gradient="from-purple-500 to-pink-600" />
 
-        {/* 6. 참고 자료 (GraphQL 튜토리얼 등) */}
-        <section id="reference-materials" className="mb-8">
+        {/* <section id="reference-materials" className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">Nest Js + GraphQL 기본 튜토리얼</h2>
           <ReferenceMaterials />
         </section>
 
         <SectionDivider gradient="from-purple-500 to-pink-600" />
 
-        {/* 7. 참고 강의 목록 */}
         <section id="reference-lectures" className="mb-8">
           <ReferenceLectures />
         </section>
 
+        <SectionDivider gradient="from-purple-500 to-pink-600" /> */}
+
+        {/* 8. 백엔드 기술 목록 */}
+        <section id="backend-tech-table" className="mb-8">
+          <BackendTechTable />
+        </section>
+
         <SectionDivider gradient="from-purple-500 to-pink-600" />
 
-        {/* 8. Full Stack For CTI */}
+        {/* 9. 프론트엔드 기술 목록 */}
+        <section id="frontend-tech-table" className="mb-8">
+          <FrontendTechTable />
+        </section>
+
+        <SectionDivider gradient="from-purple-500 to-pink-600" />
+
+        {/* 10. DB 기술 가이드 */}
         <section id="fullstack-cti" className="mb-8">
-          <FullStackForCTI />
+          <DatabaseTechGuide />
         </section>
 
         <SectionDivider gradient="from-purple-500 to-pink-600" />
 
-        {/* 9. 개발 생산성 향상 전략 */}
-        <section id="productivity-strategies" className="mb-8">
-          <ProductivityStrategies />
+        {/* 11. JOOQ 선택 이유 */}
+        <section id="why-choose-jooq" className="mb-8">
+          <WhyChooseJooq />
         </section>
 
-        <div className="h-16"></div>
+        <SectionDivider gradient="from-blue-500 to-green-600" />
+
+        {/* 12. DGS 파일럿 프로젝트 */}
+        <section id="dgs-pilot-project" className="mb-8">
+          <DGSGraphQLPilotProject />
+        </section>
+
+        <div className="h-16" />
       </div>
     </div>
   );

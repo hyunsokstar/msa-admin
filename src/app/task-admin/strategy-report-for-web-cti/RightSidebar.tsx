@@ -1,29 +1,58 @@
+// components/RightSidebar.tsx
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronRight } from 'lucide-react';
-import { cn } from '@/lib/utils';
+
+// 유틸리티 함수
+const cn = (...classes: (string | undefined | null | false)[]) => classes.filter(Boolean).join(' ');
 
 interface SectionLink {
   id: string;
   label: string;
 }
 
-// page.tsx 순서 그대로 정의 (9개 항목)
+// StrategyReport.tsx 에 정의된 section id 순서와 동일하게 설정합니다.
 const sidebarOrder: SectionLink[] = [
-  { id: 'introduction',         label: '서론' },
-  { id: 'technical-issues',     label: '기술적 문제' },
-  { id: 'next-gen-arch',        label: '차세대 아키텍처' },
-  { id: 'note-c-basics',        label: 'C 기본 (1)' },
-  { id: 'note-c-structs',       label: 'C 기본 (2)' },
-  { id: 'reference-materials',  label: '참고 자료' },
-  { id: 'reference-lectures',   label: '강의 자료' },
-  { id: 'fullstack-cti',        label: 'for fullstack' },
-  { id: 'productivity-strategies', label: '생산성 전략' },
+  { id: 'introduction', label: '서론' },
+  { id: 'technical-issues', label: '기술적 문제' },
+  { id: 'next-gen-arch', label: '차세대 아키텍처' },
+  { id: 'note-c-basics', label: 'C 기본 (1)' },
+  { id: 'note-c-structs', label: 'C 기본 (2)' },
+  { id: 'reference-materials', label: '참고 자료' },
+  { id: 'reference-lectures', label: '강의 자료' },
+  { id: 'backend-tech-table', label: '백엔드 스킬' },
+  { id: 'frontend-tech-table', label: '프론트 스킬' },
+  { id: 'fullstack-cti', label: 'DB 기술 가이드' },
+  { id: 'why-choose-jooq', label: 'JOOQ 선택 이유' },
+  { id: 'dgs-pilot-project', label: 'DGS 파일럿' }
 ];
 
 const RightSidebar: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>('');
+
+  // 스크롤 위치에 따라 activeSection 업데이트
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      let current = '';
+      sidebarOrder.forEach((sec) => {
+        const el = document.getElementById(sec.id);
+        if (el) {
+          const offsetTop = el.offsetTop;
+          if (scrollY + 120 >= offsetTop) {
+            current = sec.id;
+          }
+        }
+      });
+      if (current && current !== activeSection) {
+        setActiveSection(current);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [activeSection]);
 
   const scrollToSection = (sectionId: string) => {
     const el = document.getElementById(sectionId);
@@ -34,45 +63,60 @@ const RightSidebar: React.FC = () => {
   };
 
   return (
-    <div
+    <aside
       className="
-        hidden lg:flex flex-col fixed top-1/2 right-8 transform -translate-y-1/2
-        space-y-1 z-50 w-max px-1 py-1 bg-white/60 backdrop-blur-sm
-        rounded-lg shadow-lg border border-white/20
+        hidden lg:flex flex-col fixed
+        top-1/2 right-4 transform -translate-y-1/2
+        space-y-2 z-50 w-40 px-2 py-3
+        bg-white/95 backdrop-blur-lg
+        rounded-xl shadow-xl border border-white/30
+        transition-all duration-300
+        max-h-[80vh] overflow-y-auto
       "
     >
+      {/* 사이드바 제목 */}
+      <div className="text-center mb-3">
+        <h3 className="text-sm font-bold text-teal-600">목차</h3>
+        <div className="w-8 h-px bg-teal-300 mx-auto rounded-full mt-1"></div>
+      </div>
+
       {sidebarOrder.map((sec) => {
         const isActive = activeSection === sec.id;
+
         return (
-          <button
-            key={sec.id}
-            onClick={() => scrollToSection(sec.id)}
-            className={cn(
-              'relative w-full text-left px-2 py-1 text-xs rounded-md transition-all duration-150 flex items-center justify-between group',
-              isActive
-                ? 'bg-gradient-to-r from-blue-200 to-purple-200 text-white shadow-sm'
-                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800'
-            )}
-          >
-            <span className="truncate">{sec.label}</span>
-            <ChevronRight
+          <div key={sec.id} className="space-y-1">
+            {/* 메인 섹션 버튼 */}
+            <button
+              onClick={() => scrollToSection(sec.id)}
               className={cn(
-                'w-3 h-3 transition-transform',
+                'relative w-full text-left px-3 py-2 text-xs rounded-lg transition-all duration-200 flex items-center justify-between group',
                 isActive
-                  ? 'opacity-100 rotate-90'
-                  : 'opacity-0 group-hover:opacity-40 group-hover:translate-x-0.5'
+                  ? 'bg-gradient-to-r from-teal-200 to-pink-200 text-teal-800 shadow-inner'
+                  : 'text-teal-600 hover:bg-teal-50 hover:text-teal-700'
               )}
-            />
-            <div
-              className={cn(
-                'absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-3 bg-gradient-to-b from-blue-200 to-purple-200 rounded-r-full transition-all',
-                isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
-              )}
-            />
-          </button>
+            >
+              <span className="truncate font-medium">{sec.label}</span>
+              <ChevronRight
+                className={cn(
+                  'w-3 h-3 transition-transform',
+                  isActive
+                    ? 'opacity-100 rotate-90 text-teal-500'
+                    : 'opacity-0 group-hover:opacity-50 group-hover:translate-x-0.5'
+                )}
+              />
+              <div
+                className={cn(
+                  'absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-4 rounded-r-full transition-all',
+                  isActive
+                    ? 'bg-gradient-to-b from-teal-400 to-pink-400 opacity-100 scale-100'
+                    : 'opacity-0 scale-75'
+                )}
+              />
+            </button>
+          </div>
         );
       })}
-    </div>
+    </aside>
   );
 };
 
