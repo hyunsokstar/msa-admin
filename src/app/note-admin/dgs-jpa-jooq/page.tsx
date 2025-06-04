@@ -1,6 +1,6 @@
 import React from 'react'
-import DGSGraphQLPilotProject from '../task-admin/strategy-report-for-web-cti/DGSGraphQLPilotProject'
-import WhyChooseJooq from '../task-admin/strategy-report-for-web-cti/WhyChooseJooq '
+import DGSGraphQLPilotProject from '../../task-admin/strategy-report-for-web-cti/DGSGraphQLPilotProject'
+import WhyChooseJooq from '../../task-admin/strategy-report-for-web-cti/WhyChooseJooq '
 
 interface Props {
 
