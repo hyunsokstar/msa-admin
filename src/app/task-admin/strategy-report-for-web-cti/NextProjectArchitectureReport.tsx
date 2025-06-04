@@ -1,7 +1,7 @@
 import React from 'react';
 import { CheckCircle, Code, Database, Globe, Layers, TrendingUp, Users, Zap } from 'lucide-react';
 
-const NextProjectArchitectureReport = () => {
+const ArchitectureReport = () => {
     return (
         <div className="max-w-4xl mx-auto p-8 bg-white min-h-screen">
             {/* Header */}
@@ -44,17 +44,19 @@ const NextProjectArchitectureReport = () => {
 
                         <div className="space-y-4">
                             <div>
-                                <h4 className="font-semibold text-gray-700 mb-2">Next.js (14 or 15)</h4>
+                                <h4 className="font-semibold text-gray-700 mb-2">Next.js 15</h4>
                                 <ul className="text-sm text-gray-600 space-y-1 ml-4">
-                                    <li>• App Router 기반 SSR/ISR 지원</li>
-                                    <li>• React 18 기반 비동기 컴포넌트</li>
-                                    <li>• API 라우트 및 BFF 지원</li>
+                                    <li>• App Router 기반 SSR/ISR/PPR 지원</li>
+                                    <li>• React 19 기반 Server Components</li>
+                                    <li>• Turbopack 번들러 & 향상된 성능</li>
+                                    <li>• Built-in GraphQL Client 지원</li>
                                 </ul>
                             </div>
 
                             <div>
-                                <h4 className="font-semibold text-gray-700 mb-2">React + TailwindCSS + Shadcn UI</h4>
+                                <h4 className="font-semibold text-gray-700 mb-2">React 19 + TailwindCSS + Shadcn UI</h4>
                                 <ul className="text-sm text-gray-600 space-y-1 ml-4">
+                                    <li>• Server/Client Components 최적화</li>
                                     <li>• 빠른 UI 개발 및 반응형 대응</li>
                                     <li>• 디자인 시스템 통합 가능</li>
                                 </ul>
@@ -81,9 +83,10 @@ const NextProjectArchitectureReport = () => {
                             <div>
                                 <h4 className="font-semibold text-gray-700 mb-2">GraphQL (Netflix DGS)</h4>
                                 <ul className="text-sm text-gray-600 space-y-1 ml-4">
-                                    <li>• API 응답을 프론트가 직접 제어</li>
+                                    <li>• 내장 GraphQL Client로 직접 연결</li>
                                     <li>• over-fetching, under-fetching 문제 해결</li>
-                                    <li>• API 문서 자동화</li>
+                                    <li>• 스키마 자동 생성 및 타입 안전성</li>
+                                    <li>• Apollo Client 없이도 완전한 GraphQL 지원</li>
                                 </ul>
                             </div>
 
@@ -109,11 +112,12 @@ const NextProjectArchitectureReport = () => {
 
                 <div className="space-y-6">
                     <div className="border-l-4 border-yellow-400 bg-yellow-50 p-4 rounded-r-lg">
-                        <h3 className="text-lg font-semibold text-gray-800 mb-2">🎯 "왜 GraphQL인가?"</h3>
+                        <h3 className="text-lg font-semibold text-gray-800 mb-2">🎯 "왜 Next.js 15 + DGS인가?"</h3>
                         <ul className="text-gray-700 space-y-1">
-                            <li>• REST API의 한계 (복잡한 응답 조합, 프론트의 요청 폭증)를 보완</li>
-                            <li>• UI 팀이 요구하는 정확한 데이터만 반환 → <strong>퍼포먼스와 개발 속도</strong> 동시 개선</li>
+                            <li>• Next.js 15의 내장 GraphQL Client가 DGS와 완벽 호환</li>
+                            <li>• Apollo Client 없이도 Server Components에서 직접 GraphQL 호출</li>
                             <li>• DGS 프레임워크는 <strong>Spring Boot 친화적</strong>이며 Netflix에서 실전 검증됨</li>
+                            <li>• 타입스크립트 코드 생성으로 <strong>타입 안전성</strong> 확보</li>
                         </ul>
                     </div>
 
@@ -151,7 +155,7 @@ const NextProjectArchitectureReport = () => {
                                         생산성
                                     </div>
                                 </td>
-                                <td className="px-6 py-4 text-gray-700">BFF, GraphQL, UI 프레임워크 통합으로 빠른 피처 개발</td>
+                                <td className="px-6 py-4 text-gray-700">Next.js 15 내장 GraphQL + DGS 통합으로 빠른 피처 개발</td>
                             </tr>
                             <tr>
                                 <td className="px-6 py-4 font-medium text-gray-900">
@@ -231,33 +235,36 @@ const NextProjectArchitectureReport = () => {
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-lg p-8">
                     <div className="flex flex-col items-center space-y-6">
                         {/* Frontend Layer */}
-                        <div className="bg-white rounded-lg shadow-md p-4 border-2 border-blue-300 w-full max-w-md text-center">
+                        <div className="bg-white rounded-lg shadow-md p-4 border-2 border-blue-300 w-full max-w-lg text-center">
                             <div className="flex items-center justify-center gap-2 mb-2">
                                 <Code className="w-5 h-5 text-blue-600" />
-                                <span className="font-semibold text-gray-800">Next.js (App Router)</span>
+                                <span className="font-semibold text-gray-800">Next.js 15 (App Router + Server Components)</span>
                             </div>
+                            <p className="text-xs text-gray-600">React 19, Turbopack, PPR</p>
                         </div>
 
                         {/* Arrow Down */}
                         <div className="text-2xl text-gray-400">↓</div>
 
-                        {/* GraphQL Client */}
-                        <div className="bg-white rounded-lg shadow-md p-4 border-2 border-green-300 w-full max-w-md text-center">
+                        {/* Direct GraphQL Connection */}
+                        <div className="bg-white rounded-lg shadow-md p-4 border-2 border-green-300 w-full max-w-lg text-center">
                             <div className="flex items-center justify-center gap-2 mb-2">
                                 <Globe className="w-5 h-5 text-green-600" />
-                                <span className="font-semibold text-gray-800">GraphQL Client (urql/apollo)</span>
+                                <span className="font-semibold text-gray-800">Built-in GraphQL Client</span>
                             </div>
+                            <p className="text-xs text-gray-600">Apollo Client 불필요, 직접 연결</p>
                         </div>
 
                         {/* Arrow Down */}
                         <div className="text-2xl text-gray-400">↓</div>
 
                         {/* GraphQL Server */}
-                        <div className="bg-white rounded-lg shadow-md p-4 border-2 border-purple-300 w-full max-w-md text-center">
+                        <div className="bg-white rounded-lg shadow-md p-4 border-2 border-purple-300 w-full max-w-lg text-center">
                             <div className="flex items-center justify-center gap-2 mb-2">
                                 <Layers className="w-5 h-5 text-purple-600" />
                                 <span className="font-semibold text-gray-800">Netflix DGS (GraphQL Server)</span>
                             </div>
+                            <p className="text-xs text-gray-600">Spring Boot 3.x 기반</p>
                         </div>
 
                         {/* Arrows Down to Two Components */}
@@ -273,6 +280,7 @@ const NextProjectArchitectureReport = () => {
                                     <Database className="w-5 h-5 text-orange-600" />
                                     <span className="font-semibold text-gray-800">JPA / Domain</span>
                                 </div>
+                                <p className="text-xs text-gray-600">CRUD, 트랜잭션 처리</p>
                             </div>
 
                             <div className="bg-white rounded-lg shadow-md p-4 border-2 border-red-300 text-center">
@@ -280,7 +288,15 @@ const NextProjectArchitectureReport = () => {
                                     <Database className="w-5 h-5 text-red-600" />
                                     <span className="font-semibold text-gray-800">jOOQ / Report Query</span>
                                 </div>
+                                <p className="text-xs text-gray-600">복잡한 쿼리, 통계/리포트</p>
                             </div>
+                        </div>
+
+                        {/* CQRS Pattern Note */}
+                        <div className="bg-yellow-100 border-2 border-yellow-300 rounded-lg p-3 mt-4">
+                            <p className="text-sm font-medium text-gray-800 text-center">
+                                📋 CQRS 패턴: Command(JPA) ↔ Query(jOOQ) 분리
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -289,4 +305,4 @@ const NextProjectArchitectureReport = () => {
     );
 };
 
-export default NextProjectArchitectureReport;
+export default ArchitectureReport;
