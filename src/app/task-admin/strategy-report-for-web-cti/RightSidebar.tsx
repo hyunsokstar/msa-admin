@@ -4,7 +4,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronRight } from 'lucide-react';
 
-// 유틸리티 함수
 const cn = (...classes: (string | undefined | null | false)[]) => classes.filter(Boolean).join(' ');
 
 interface SectionLink {
@@ -12,24 +11,18 @@ interface SectionLink {
   label: string;
 }
 
-// StrategyReport.tsx 에 정의된 section id 순서와 동일하게 설정합니다.
 const sidebarOrder: SectionLink[] = [
   { id: 'introduction', label: '서론' },
   { id: 'technical-issues', label: '기술적 문제' },
   { id: 'next-gen-arch', label: '차세대 아키텍처' },
-  // { id: 'reference-materials', label: '참고 자료' },
-  // { id: 'reference-lectures', label: '강의 자료' },
   { id: 'backend-tech-table', label: '백엔드 스킬' },
   { id: 'frontend-tech-table', label: '프론트 스킬' },
-  // { id: 'fullstack-cti', label: 'DB 기술 가이드' },
-  // { id: 'why-choose-jooq', label: 'JOOQ 선택 이유' },
-  // { id: 'dgs-pilot-project', label: 'DGS 파일럿' }
+  { id: 'productivity-strategies', label: '생산성 전략' },
 ];
 
 const RightSidebar: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>('');
 
-  // 스크롤 위치에 따라 activeSection 업데이트
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
@@ -72,7 +65,6 @@ const RightSidebar: React.FC = () => {
         max-h-[80vh] overflow-y-auto
       "
     >
-      {/* 사이드바 제목 */}
       <div className="text-center mb-3">
         <h3 className="text-sm font-bold text-teal-600">목차</h3>
         <div className="w-8 h-px bg-teal-300 mx-auto rounded-full mt-1"></div>
@@ -83,7 +75,6 @@ const RightSidebar: React.FC = () => {
 
         return (
           <div key={sec.id} className="space-y-1">
-            {/* 메인 섹션 버튼 */}
             <button
               onClick={() => scrollToSection(sec.id)}
               className={cn(
