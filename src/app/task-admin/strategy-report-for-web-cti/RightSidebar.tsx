@@ -17,8 +17,7 @@ const sidebarOrder: SectionLink[] = [
   { id: 'introduction', label: '서론' },
   { id: 'technical-issues', label: '기술적 문제' },
   { id: 'next-gen-arch', label: '차세대 아키텍처' },
-  { id: 'note-c-basics', label: 'C 기본 (1)' },
-  { id: 'note-c-structs', label: 'C 기본 (2)' },
+
   { id: 'reference-materials', label: '참고 자료' },
   { id: 'reference-lectures', label: '강의 자료' },
   { id: 'backend-tech-table', label: '백엔드 스킬' },
