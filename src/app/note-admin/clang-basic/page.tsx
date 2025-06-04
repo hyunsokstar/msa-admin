@@ -1,9 +1,9 @@
-import ClangBasicNote1 from '@/app/task-admin/strategy-report-for-web-cti/ClangBasicNote1'
-import ClangBasicNote2 from '@/app/task-admin/strategy-report-for-web-cti/ClangBasicNote2'
-import RoadmapForCTIIntegration from '@/app/task-admin/strategy-report-for-web-cti/RoadmapForCTIIntegration'
-import React from 'react'
+import ClangBasicNote1 from '@/app/task-admin/strategy-report-for-web-cti/ClangBasicNote1';
+import ClangBasicNote2 from '@/app/task-admin/strategy-report-for-web-cti/ClangBasicNote2';
+import RoadmapForCTIIntegration from '@/app/task-admin/strategy-report-for-web-cti/RoadmapForCTIIntegration';
+import React from 'react';
 
-interface Props { }
+interface Props {}
 
 const ClangBasic = (props: Props) => {
     return (
@@ -17,10 +17,10 @@ const ClangBasic = (props: Props) => {
                 </p>
             </div>
 
-            {/* 4. C 기본 카드 */}
+            {/* C 기본 문법 카드 */}
             <section
                 id="note-c-basics"
-                className="max-w-3xl mx-auto mb-12"
+                className="max-w-3xl mx-auto" // Removed mb-12, separator will handle spacing
             >
                 <div className="bg-white/90 rounded-2xl shadow-lg p-8 border border-blue-100">
                     <h2 className="text-2xl font-semibold text-blue-700 mb-4 flex items-center gap-2">
@@ -32,36 +32,39 @@ const ClangBasic = (props: Props) => {
             </section>
 
             {/* 구분선 */}
-            <div className="flex justify-center my-8">
+            <div className="flex justify-center my-8"> {/* Creates 32px margin top & bottom */}
                 <div className="w-24 h-1 bg-gradient-to-r from-blue-300 via-purple-300 to-indigo-300 rounded-full" />
             </div>
 
-            {/* 5. C 구조체 카드 */}
-
-            <div className="bg-white/90 rounded-2xl shadow-lg p-8 border border-purple-100">
-                <h2 className="text-2xl font-semibold text-purple-700 mb-4 flex items-center gap-2">
-                    <span className="inline-block w-2 h-6 bg-purple-400 rounded-full mr-2" />
-                    C 구조체와 활용
-                </h2>
-                <ClangBasicNote2 />
-            </div>
-
+            {/* C 구조체와 활용 카드 */}
             <section
                 id="note-c-structs"
-                className="max-w-3xl mx-auto mb-12"
+                className="max-w-3xl mx-auto mb-8" // Added mb-8 for spacing to the next section
             >
                 <div className="bg-white/90 rounded-2xl shadow-lg p-8 border border-purple-100">
                     <h2 className="text-2xl font-semibold text-purple-700 mb-4 flex items-center gap-2">
                         <span className="inline-block w-2 h-6 bg-purple-400 rounded-full mr-2" />
+                        C 구조체와 활용
+                    </h2>
+                    <ClangBasicNote2 />
+                </div>
+            </section>
+
+            {/* C 로드맵 카드 */}
+            <section
+                id="note-c-roadmap" // Corrected ID
+                className="max-w-3xl mx-auto mb-12" // Retains mb-12 for final page spacing
+            >
+                <div className="bg-white/90 rounded-2xl shadow-lg p-8 border border-indigo-100"> {/* Thematic border color */}
+                    <h2 className="text-2xl font-semibold text-indigo-700 mb-4 flex items-center gap-2"> {/* Thematic text color */}
+                        <span className="inline-block w-2 h-6 bg-indigo-400 rounded-full mr-2" /> {/* Thematic accent color */}
                         C 로드맵
                     </h2>
                     <RoadmapForCTIIntegration />
                 </div>
             </section>
-
-
         </div>
-    )
-}
+    );
+};
 
-export default ClangBasic
+export default ClangBasic;
