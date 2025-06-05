@@ -16,6 +16,7 @@ import DatabaseTechGuide from './DatabaseTechGuide';
 import DGSGraphQLPilotProject from './DGSGraphQLPilotProject';
 import WhyChooseJooq from './WhyChooseJooq ';
 import CQRSJooqN1Solution from './CQRSJooqN1Solution';
+import NextProjectArchitectureReport from './NextProjectArchitectureReport';
 
 const SectionDivider = ({
   gradient = 'from-blue-500 to-purple-600',
