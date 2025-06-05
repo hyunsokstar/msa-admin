@@ -101,18 +101,17 @@ const StrategyReport: React.FC = () => {
           <NextProjectArchitectureReport />
         </section>
 
-        <SectionDivider gradient="from-purple-500 to-pink-600" />
-
-        {/* 11. JOOQ 선택 이유 */}
-        <section id="cqrs-jooq-n1-solution" className="mb-8">
-          <CQRSJooqN1Solution />
-        </section>
-
         <SectionDivider gradient="from-blue-500 to-green-600" />
 
         {/* 12. DGS 파일럿 프로젝트 */}
         <section id="dgs-pilot-project" className="mb-8">
           <DGSGraphQLPilotProject />
+        </section>
+
+        <SectionDivider gradient="from-purple-500 to-pink-600" />
+
+        <section id="cqrs-jooq-n1-solution" className="mb-8">
+          <CQRSJooqN1Solution />
         </section>
 
         <div className="h-16" />
