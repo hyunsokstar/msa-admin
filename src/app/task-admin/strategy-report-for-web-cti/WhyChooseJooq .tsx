@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 const Header = () => (
     <div className="text-center mb-8">
         <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent mb-3">
-            그래도 JOOQ를 선택해야 하는 이유
+            JOOQ를 선택해야 하는 이유
         </h1>
         <p className="text-lg text-gray-600 mb-2">생산성과 혁신을 위한 현명한 선택</p>
         <p className="text-sm text-gray-500">복잡함보다는 명확함을, 학습보다는 실행을</p>
