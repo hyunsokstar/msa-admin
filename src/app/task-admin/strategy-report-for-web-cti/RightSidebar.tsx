@@ -23,7 +23,7 @@ const sidebarOrder: SectionLink[] = [
   { id: 'backend-tech-table', label: '백엔드 스킬' },
   { id: 'frontend-tech-table', label: '프론트 스킬' },
   { id: 'fullstack-cti', label: 'DB 기술 가이드' },
-  { id: 'why-choose-jooq', label: 'JOOQ 선택 이유' },
+  { id: 'cqrs-jooq-n1-solution', label: 'n+1 문제' },
   { id: 'dgs-pilot-project', label: 'DGS 파일럿' }
 ];
 
