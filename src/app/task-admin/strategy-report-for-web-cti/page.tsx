@@ -12,7 +12,10 @@ import ReferenceLectures from './ReferenceLectures';
 import RightSidebar from './RightSidebar';
 import BackendTechTable from './BackendTechTable';
 import FrontendTechTable from './FrontendTechTable';
-import ProductivityStrategies from './ProductivityStrategies.';
+import DatabaseTechGuide from './DatabaseTechGuide';
+import DGSGraphQLPilotProject from './DGSGraphQLPilotProject';
+import WhyChooseJooq from './WhyChooseJooq ';
+import CQRSJooqN1Solution from './CQRSJooqN1Solution';
 import NextProjectArchitectureReport from './NextProjectArchitectureReport';
 import RestVsGraphQLComparison from './RestVsGraphQLComparison';
 
@@ -97,6 +100,13 @@ const StrategyReport: React.FC = () => {
 
         <section id="next-project-architecture-report" className="mb-8">
           <NextProjectArchitectureReport />
+        </section>
+
+        <SectionDivider gradient="from-blue-500 to-green-600" />
+
+        {/* 12. DGS 파일럿 프로젝트 */}
+        <section id="dgs-pilot-project" className="mb-8">
+          <DGSGraphQLPilotProject />
         </section>
 
         <SectionDivider gradient="from-purple-500 to-pink-600" />
