@@ -18,6 +18,7 @@ import WhyChooseJooq from './WhyChooseJooq ';
 import CQRSJooqN1Solution from './CQRSJooqN1Solution';
 import NextProjectArchitectureReport from './NextProjectArchitectureReport';
 import RestVsGraphQLComparison from './RestVsGraphQLComparison';
+import JooqAnalysisComponent from './JooqAnalysisComponent';
 
 const SectionDivider = ({
   gradient = 'from-blue-500 to-purple-600',
@@ -113,6 +114,12 @@ const StrategyReport: React.FC = () => {
 
         <section id="rest-api-vs-graphql" className="mb-8">
           <RestVsGraphQLComparison />
+        </section>
+
+        <SectionDivider gradient="from-purple-500 to-pink-600" />
+
+        <section id="jooq-analysis" className="mb-8">
+          <JooqAnalysisComponent />
         </section>
 
         <div className="h-16" />

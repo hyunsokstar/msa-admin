@@ -19,6 +19,7 @@ const sidebarOrder: SectionLink[] = [
   { id: 'frontend-tech-table', label: '프론트 스킬' },
   { id: 'next-project-architecture-report', label: '차세대 아키텍쳐' },
   { id: 'rest-api-vs-graphql', label: 'rest api vs graphql' },
+  { id: 'jooq-analysis', label: 'jooq 분석' },
 ];
 
 const RightSidebar: React.FC = () => {
