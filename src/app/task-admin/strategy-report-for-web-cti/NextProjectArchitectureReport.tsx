@@ -1,6 +1,7 @@
 import React from 'react';
 import { CheckCircle, Code, Database, Globe, Layers, TrendingUp, Users, Zap } from 'lucide-react';
 
+
 const ArchitectureReport = () => {
     return (
         <div className="max-w-4xl mx-auto p-8 bg-white min-h-screen">

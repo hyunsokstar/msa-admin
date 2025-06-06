@@ -14,6 +14,7 @@ import BackendTechTable from './BackendTechTable';
 import FrontendTechTable from './FrontendTechTable';
 import ProductivityStrategies from './ProductivityStrategies.';
 import NextProjectArchitectureReport from './NextProjectArchitectureReport';
+import RestVsGraphQLComparison from './RestVsGraphQLComparison';
 
 const SectionDivider = ({
   gradient = 'from-blue-500 to-purple-600',
@@ -100,8 +101,8 @@ const StrategyReport: React.FC = () => {
 
         <SectionDivider gradient="from-purple-500 to-pink-600" />
 
-        <section id="productivity-strategies" className="mb-8">
-          <ProductivityStrategies />
+        <section id="rest-api-vs-graphql" className="mb-8">
+          <RestVsGraphQLComparison />
         </section>
 
         <div className="h-16" />
