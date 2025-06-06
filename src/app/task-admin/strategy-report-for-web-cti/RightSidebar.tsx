@@ -14,7 +14,7 @@ interface SectionLink {
 const sidebarOrder: SectionLink[] = [
   { id: 'introduction', label: '서론' },
   { id: 'technical-issues', label: '기술적 문제' },
-  { id: 'next-gen-arch', label: '차세대 아키텍처' },
+  { id: 'next-gen-arch', label: '풀스택 아키텍처' },
   // { id: 'backend-tech-table', label: '백엔드 스킬' },
   // { id: 'frontend-tech-table', label: '프론트 스킬' },
   { id: 'next-project-architecture-report', label: '차세대 아키텍쳐' },
