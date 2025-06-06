@@ -101,7 +101,7 @@ const JooqAnalysisComponent = () => {
         "Altair 또는 API 테스트"
     ];
 
-    const getSeverityColor = (severity) => {
+    const getSeverityColor = (severity: string) => {
         switch (severity) {
             case 'high': return 'bg-red-100 text-red-800 border-red-200';
             case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
