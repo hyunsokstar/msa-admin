@@ -87,18 +87,6 @@ const StrategyReport: React.FC = () => {
 
         <SectionDivider gradient="from-purple-500 to-pink-600" />
 
-        <section id="backend-tech-table" className="mb-8">
-          <BackendTechTable />
-        </section>
-
-        <SectionDivider gradient="from-purple-500 to-pink-600" />
-
-        <section id="frontend-tech-table" className="mb-8">
-          <FrontendTechTable />
-        </section>
-
-        <SectionDivider gradient="from-purple-500 to-pink-600" />
-
         <section id="next-project-architecture-report" className="mb-8">
           <NextProjectArchitectureReport />
         </section>
