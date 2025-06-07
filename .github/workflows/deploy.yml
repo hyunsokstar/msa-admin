@@ -36,44 +36,6 @@
 #           git pull
 #           bash ~/deploy.sh
 
-# name: Deploy to EC2
-
-# on:
-#   push:
-#     branches: [ main ]
-
-# jobs:
-#   deploy:
-#     runs-on: ubuntu-latest
-    
-#     steps:
-#     - uses: actions/checkout@v3
-    
-#     - name: Setup Node.js
-#       uses: actions/setup-node@v3
-#       with:
-#         node-version: '20'
-        
-#     - name: Install dependencies
-#       run: npm ci
-      
-#     - name: Run tests
-#       run: npm test || echo "No tests specified"
-      
-#     - name: Deploy to EC2
-#       uses: appleboy/ssh-action@master
-#       with:
-#         host: ${{ secrets.SSH_HOST }}
-#         username: ${{ secrets.SSH_USER }}
-#         key: ${{ secrets.SSH_PRIVATE_KEY }}
-#         script: |
-#           cd ~/msa-admin
-#           git stash -u
-#           git reset --hard HEAD
-#           git clean -fd
-#           git pull
-#           bash ~/deploy.sh
-
 name: Deploy to EC2
 
 on:
@@ -97,25 +59,21 @@ jobs:
     - name: Install dependencies
       run: npm install
       
-    # 방법 2: 조건부 설치 (대안)
-    # - name: Install dependencies
-    #   run: |
-    #     if [ -f package-lock.json ]; then
-    #       npm ci
-    #     else
-    #       npm install
-    #     fi
-      
-    # 방법 3: 캐시 클리어 후 설치 (문제가 지속될 경우)
-    # - name: Clear cache and install dependencies
-    #   run: |
-    #     npm cache clean --force
-    #     npm install
+    # ESLint 의존성 설치
+    - name: Install ESLint config
+      run: npm install --save-dev eslint-config-next
       
     - name: Run tests
       run: npm test || echo "No tests specified"
       
-    - name: Build project (Next.js인 경우)
+    # 환경변수 설정 후 빌드
+    - name: Create environment file
+      run: |
+        echo "NEXT_PUBLIC_SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env.local
+        echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> .env.local
+        echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" >> .env.local
+      
+    - name: Build project
       run: npm run build
       
     - name: Deploy to EC2
