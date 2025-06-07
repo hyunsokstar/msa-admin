@@ -1,3 +1,79 @@
+# name: Deploy to EC2
+
+# on:
+#   push:
+#     branches: [ main ]
+
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+    
+#     steps:
+#     - uses: actions/checkout@v3
+    
+#     - name: Setup Node.js
+#       uses: actions/setup-node@v3
+#       with:
+#         node-version: '20'
+        
+#     - name: Install dependencies
+#       run: npm ci
+      
+#     - name: Run tests
+#       run: npm test || echo "No tests specified"
+      
+#     - name: Deploy to EC2
+#       uses: appleboy/ssh-action@master
+#       with:
+#         host: ${{ secrets.SSH_HOST }}
+#         username: ${{ secrets.SSH_USER }}
+#         key: ${{ secrets.SSH_PRIVATE_KEY }}
+#         script: |
+#           cd ~/msa-admin
+#           git stash -u
+#           git reset --hard HEAD
+#           git clean -fd
+#           git pull
+#           bash ~/deploy.sh
+
+# name: Deploy to EC2
+
+# on:
+#   push:
+#     branches: [ main ]
+
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+    
+#     steps:
+#     - uses: actions/checkout@v3
+    
+#     - name: Setup Node.js
+#       uses: actions/setup-node@v3
+#       with:
+#         node-version: '20'
+        
+#     - name: Install dependencies
+#       run: npm ci
+      
+#     - name: Run tests
+#       run: npm test || echo "No tests specified"
+      
+#     - name: Deploy to EC2
+#       uses: appleboy/ssh-action@master
+#       with:
+#         host: ${{ secrets.SSH_HOST }}
+#         username: ${{ secrets.SSH_USER }}
+#         key: ${{ secrets.SSH_PRIVATE_KEY }}
+#         script: |
+#           cd ~/msa-admin
+#           git stash -u
+#           git reset --hard HEAD
+#           git clean -fd
+#           git pull
+#           bash ~/deploy.sh
+
 name: Deploy to EC2
 
 on:
@@ -9,21 +85,41 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4  # 최신 버전으로 업데이트
     
     - name: Setup Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4  # 최신 버전으로 업데이트
       with:
         node-version: '20'
+        cache: 'npm'  # npm 캐시 활성화
         
+    # 방법 1: npm install 사용 (권장)
     - name: Install dependencies
-      run: npm ci
+      run: npm install
+      
+    # 방법 2: 조건부 설치 (대안)
+    # - name: Install dependencies
+    #   run: |
+    #     if [ -f package-lock.json ]; then
+    #       npm ci
+    #     else
+    #       npm install
+    #     fi
+      
+    # 방법 3: 캐시 클리어 후 설치 (문제가 지속될 경우)
+    # - name: Clear cache and install dependencies
+    #   run: |
+    #     npm cache clean --force
+    #     npm install
       
     - name: Run tests
       run: npm test || echo "No tests specified"
       
+    - name: Build project (Next.js인 경우)
+      run: npm run build
+      
     - name: Deploy to EC2
-      uses: appleboy/ssh-action@master
+      uses: appleboy/ssh-action@v0.1.7  # 최신 버전 사용
       with:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USER }}
@@ -34,4 +130,7 @@ jobs:
           git reset --hard HEAD
           git clean -fd
           git pull
+          # EC2에서도 npm install 사용
+          npm install
+          npm run build
           bash ~/deploy.sh
