@@ -47,37 +47,21 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v4  # 최신 버전으로 업데이트
+    - uses: actions/checkout@v3
     
     - name: Setup Node.js
-      uses: actions/setup-node@v4  # 최신 버전으로 업데이트
+      uses: actions/setup-node@v3
       with:
         node-version: '20'
-        cache: 'npm'  # npm 캐시 활성화
         
-    # 방법 1: npm install 사용 (권장)
     - name: Install dependencies
-      run: npm install
-      
-    # ESLint 의존성 설치
-    - name: Install ESLint config
-      run: npm install --save-dev eslint-config-next
+      run: npm install  # npm ci → npm install만 변경
       
     - name: Run tests
       run: npm test || echo "No tests specified"
       
-    # 환경변수 설정 후 빌드
-    - name: Create environment file
-      run: |
-        echo "NEXT_PUBLIC_SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env.local
-        echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> .env.local
-        echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" >> .env.local
-      
-    - name: Build project
-      run: npm run build
-      
     - name: Deploy to EC2
-      uses: appleboy/ssh-action@v0.1.7  # 최신 버전 사용
+      uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USER }}
@@ -88,7 +72,4 @@ jobs:
           git reset --hard HEAD
           git clean -fd
           git pull
-          # EC2에서도 npm install 사용
-          npm install
-          npm run build
           bash ~/deploy.sh
