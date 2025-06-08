@@ -1,4 +1,5 @@
-"use client";
+// app/layouts/ClientRootLayout.tsx
+'use client';
 
 import * as React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -9,7 +10,6 @@ import { usePathname } from "next/navigation";
 import { useRef, useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import 'react-data-grid/lib/styles.css';
-
 
 const HeaderMenus = dynamic(() => import("@/components/menu/HeaderMenus"), {
   ssr: false,
@@ -46,12 +46,12 @@ export default function ClientRootLayout({
     if (prevPath.current !== pathname) {
       setIsTransitioning(true);
       setShowLoading(true);
-      
+
       const timer = setTimeout(() => {
         setShowLoading(false);
         setIsTransitioning(false);
       }, 800);
-      
+
       return () => clearTimeout(timer);
     }
     prevPath.current = pathname;
@@ -59,7 +59,8 @@ export default function ClientRootLayout({
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="relative">
+      {/* 상단 헤더 + 로딩바 */}
+      <div className="relative w-full">
         <AnimatePresence>
           {showLoading && (
             <motion.div
@@ -74,6 +75,10 @@ export default function ClientRootLayout({
         <HeaderMenus />
       </div>
 
+      {/* 본문 레이아웃: 여백 최소화 */}
+      <main className="w-full px-2 sm:px-4 md:px-6">{children}</main>
+
+      {/* 토스트 컨테이너 */}
       <ToastContainer
         position="top-center"
         autoClose={2000}
@@ -85,8 +90,6 @@ export default function ClientRootLayout({
         draggable
         pauseOnHover
       />
-
-      {children}
     </QueryClientProvider>
   );
 }
