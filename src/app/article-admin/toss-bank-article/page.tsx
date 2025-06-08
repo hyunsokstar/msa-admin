@@ -1,30 +1,28 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronRight, Code, GitBranch, Zap, Users, Layers, Database, Cloud, Cpu, Terminal, Rocket, Target, Building2, ExternalLink, BookOpen } from 'lucide-react';
+import { Code, GitBranch, Zap, Users, Layers, Database, Cloud, Cpu, Terminal, Rocket, Target, Building2, ExternalLink, BookOpen, ChevronDown, ChevronUp } from 'lucide-react';
 
-interface SectionProps {
-    title: string;
-    icon: React.ReactNode;
-    children: React.ReactNode;
-    defaultOpen?: boolean;
-}
-
-const CollapsibleSection: React.FC<SectionProps> = ({ title, icon, children, defaultOpen = false }) => {
+// CollapsibleSection 컴포넌트 정의
+const CollapsibleSection = ({ title, icon, children, defaultOpen = false }) => {
     const [isOpen, setIsOpen] = useState(defaultOpen);
 
     return (
-        <div className="mb-6 bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="mb-6 bg-white rounded-lg shadow-sm overflow-hidden">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-full px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 flex items-center justify-between hover:from-blue-100 hover:to-indigo-100 transition-colors"
+                className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
             >
                 <div className="flex items-center gap-3">
-                    <div className="text-blue-600">{icon}</div>
+                    {icon}
                     <h2 className="text-xl font-bold text-gray-800">{title}</h2>
                 </div>
-                {isOpen ? <ChevronDown className="text-gray-600" /> : <ChevronRight className="text-gray-600" />}
+                {isOpen ? (
+                    <ChevronUp className="w-5 h-5 text-gray-500" />
+                ) : (
+                    <ChevronDown className="w-5 h-5 text-gray-500" />
+                )}
             </button>
             {isOpen && (
-                <div className="px-6 py-4">
+                <div className="px-6 py-4 border-t border-gray-100">
                     {children}
                 </div>
             )}
@@ -32,14 +30,14 @@ const CollapsibleSection: React.FC<SectionProps> = ({ title, icon, children, def
     );
 };
 
-const TechBadge: React.FC<{ title: string; desc: string; color: string }> = ({ title, desc, color }) => (
+const TechBadge = ({ title, desc, color }) => (
     <div className={`${color} p-4 rounded-lg`}>
         <h4 className="font-bold text-sm mb-1">{title}</h4>
         <p className="text-xs opacity-80">{desc}</p>
     </div>
 );
 
-const ReferenceLink: React.FC<{ title: string; url: string; description: string }> = ({ title, url, description }) => (
+const ReferenceLink = ({ title, url, description }) => (
     <div className="bg-gray-50 p-4 rounded-lg">
         <div className="flex items-start gap-3">
             <ExternalLink className="w-4 h-4 text-blue-600 mt-1 flex-shrink-0" />
@@ -59,7 +57,7 @@ const ReferenceLink: React.FC<{ title: string; url: string; description: string 
     </div>
 );
 
-const TossReportPage: React.FC = () => {
+const TossReportPage = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 p-4">
             <div className="max-w-6xl mx-auto">
