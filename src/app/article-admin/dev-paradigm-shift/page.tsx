@@ -390,9 +390,9 @@ export default function ParadigmShiftReport() {
                                         핵심 역량 변화
                                     </h4>
                                     <ul className="text-sm space-y-1 text-gray-700 dark:text-gray-300">
-                                        <li>• 문제 정의 능력 > 문제 해결 능력</li>
-                                        <li>• 시스템 사고 > 단편적 사고</li>
-                                        <li>• 실행 속도 > 완벽한 계획</li>
+                                        <li>• 문제 정의 능력 {'>'} 문제 해결 능력</li>
+                                        <li>• 시스템 사고 {'>'} 단편적 사고</li>
+                                        <li>• 실행 속도 {'>'} 완벽한 계획</li>
                                     </ul>
                                 </div>
                             </div>
