@@ -1,8 +1,16 @@
+'use client';
 import React, { useState } from 'react';
 import { Code, GitBranch, Zap, Users, Layers, Database, Cloud, Cpu, Terminal, Rocket, Target, Building2, ExternalLink, BookOpen, ChevronDown, ChevronUp } from 'lucide-react';
 
 // CollapsibleSection 컴포넌트 정의
-const CollapsibleSection = ({ title, icon, children, defaultOpen = false }) => {
+type CollapsibleSectionProps = {
+    title: React.ReactNode;
+    icon: React.ReactNode;
+    children: React.ReactNode;
+    defaultOpen?: boolean;
+};
+
+const CollapsibleSection = ({ title, icon, children, defaultOpen = false }: CollapsibleSectionProps) => {
     const [isOpen, setIsOpen] = useState(defaultOpen);
 
     return (
