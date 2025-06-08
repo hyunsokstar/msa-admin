@@ -72,8 +72,8 @@ export default function HeaderMenus() {
   if (isLoading) {
     return (
       <Card className="bg-white/90 backdrop-blur-md border-none shadow-lg w-full">
-        <nav className="relative px-8 py-4 flex justify-between items-center container mx-auto max-w-[1600px]">
-          <div className="flex space-x-8">
+        <nav className="relative px-2 py-4 flex justify-between items-center container mx-auto max-w-[1600px]">
+          <div className="flex">
             {[1, 2, 3].map((i) => (
               <div key={i} className="h-8 w-28 bg-gray-200/80 rounded-lg animate-pulse" />
             ))}
@@ -87,7 +87,7 @@ export default function HeaderMenus() {
   if (isError || !menuItems) {
     return (
       <Card className="bg-white/90 backdrop-blur-md border-none shadow-lg w-full">
-        <nav className="relative px-8 py-4 flex justify-between items-center container mx-auto max-w-[1600px]">
+        <nav className="relative px-2 py-4 flex justify-between items-center container mx-auto max-w-[1600px]">
           <div className="text-red-500 font-medium">Failed to load menu items</div>
           <AuthMenus />
         </nav>
@@ -162,7 +162,7 @@ export default function HeaderMenus() {
 
   return (
     <Card className="bg-white border-none shadow-lg w-full z-[9999]">
-      <nav className="relative px-8 py-4 flex justify-between items-center container mx-auto max-w-[1600px]">
+      <nav className="relative px-3 py-4 flex justify-between items-center ">
         <div className="flex items-center space-x-8">
           <button onClick={() => router.push('/')} className="text-gray-700 hover:text-blue-500 transition-colors">
             <Home className="h-6 w-6" />
