@@ -38,14 +38,26 @@ const CollapsibleSection = ({ title, icon, children, defaultOpen = false }: Coll
     );
 };
 
-const TechBadge = ({ title, desc, color }) => (
+type TechBadgeProps = {
+    title: string;
+    desc: string;
+    color: string;
+};
+
+const TechBadge = ({ title, desc, color }: TechBadgeProps) => (
     <div className={`${color} p-4 rounded-lg`}>
         <h4 className="font-bold text-sm mb-1">{title}</h4>
         <p className="text-xs opacity-80">{desc}</p>
     </div>
 );
 
-const ReferenceLink = ({ title, url, description }) => (
+type ReferenceLinkProps = {
+    title: string;
+    url: string;
+    description: string;
+};
+
+const ReferenceLink = ({ title, url, description }: ReferenceLinkProps) => (
     <div className="bg-gray-50 p-4 rounded-lg">
         <div className="flex items-start gap-3">
             <ExternalLink className="w-4 h-4 text-blue-600 mt-1 flex-shrink-0" />
