@@ -14,6 +14,7 @@ import SortableNoteContentList from './_comp/SortableNoteContentList'
 import PageNavigationForNoteContentList from './_comp/PageNavigationForNoteContentList'
 import { toast } from 'react-toastify'
 import IDialogButtonForShowNoteList from './_comp/IDialogButtonForShowNoteList'
+import IDialogButtonForNoteList from '@/components/dialog/IDialogButtonForNoteList'
 
 interface Props {
   params: Promise<{
@@ -79,7 +80,7 @@ const NoteContentListPageForNote = ({ params }: Props) => {
 
   const { deleteNoteContent, isPending: isDeleting } = pageNum
     ? useApiForDeleteNoteContent({ noteId, pageNum })
-    : { deleteNoteContent: () => {}, isPending: false }
+    : { deleteNoteContent: () => { }, isPending: false }
 
   const handleScrollToContent = (contentId: string) => {
     const element = contentRefs.current[contentId]
@@ -150,7 +151,12 @@ const NoteContentListPageForNote = ({ params }: Props) => {
                   <h1 className='text-xl font-bold'>
                     {noteTitle ? (
                       <span className='flex items-center'>
-                        <span className='mr-2'>Note:</span>
+                        <IDialogButtonForNoteList
+                          collectionId={collectionId}
+                          currentNoteId={noteId}
+                          currentNoteTitle={noteTitle}
+                        />
+
                         <span className='text-blue-600'>
                           {decodeURIComponent(noteTitle)}
                         </span>
