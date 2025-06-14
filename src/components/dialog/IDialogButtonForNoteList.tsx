@@ -44,17 +44,32 @@ const IDialogButtonForNoteList = ({
                     variant="outline"
                     size="icon"
                     title={`현재 노트: ${decodeURIComponent(currentNoteTitle)}`}
+                    className='mr-2'
                 >
                     <List className="h-5 w-5" />
                 </Button>
             }
         >
-            <ITableForNoteListForSelectedCollectionWithDnd
-                collectionId={collectionId}
-                currentNoteId={currentNoteId}
-                onClickNote={handleSelectNote}
-                onCloseDialog={() => setIsOpen(false)} // ✅ 이 부분 추가 필수!
-            />
+            <div className="p-2">
+                <div className="mb-2">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                            window.location.href = '/note-admin/note-collection-list'
+                        }}
+                        className="text-sm text-blue-600 hover:underline"
+                    >
+                        ← 노트 모음으로
+                    </Button>
+                </div>
+                <ITableForNoteListForSelectedCollectionWithDnd
+                    collectionId={collectionId}
+                    currentNoteId={currentNoteId}
+                    onClickNote={handleSelectNote}
+                    onCloseDialog={() => setIsOpen(false)}
+                />
+            </div>
         </CommonDialogButton>
     )
 }
