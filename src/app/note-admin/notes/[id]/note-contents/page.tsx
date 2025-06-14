@@ -15,6 +15,7 @@ import PageNavigationForNoteContentList from './_comp/PageNavigationForNoteConte
 import { toast } from 'react-toastify'
 import IDialogButtonForShowNoteList from './_comp/IDialogButtonForShowNoteList'
 import IDialogButtonForNoteList from '@/components/dialog/IDialogButtonForNoteList'
+import { PageControlForNoteContent } from './_comp/PageControlForNoteContent'
 
 interface Props {
   params: Promise<{
@@ -187,7 +188,14 @@ const NoteContentListPageForNote = ({ params }: Props) => {
                   </Button>
                 </div>
 
-                <div className='text-sm text-gray-500'>Page {pageNum}</div>
+                {/* <div className='text-sm text-gray-500'>Page {pageNum}</div> */}
+                <PageControlForNoteContent
+                  noteId={noteId}
+                  collectionId={collectionId}
+                  noteTitle={noteTitle}
+                  currentPage={pageNum}
+                // totalPages={data?.pages?.length || 1}
+                />
 
                 <div className='flex items-center gap-2'>
                   <IDialogButtonForCreateNoteContents
@@ -199,26 +207,36 @@ const NoteContentListPageForNote = ({ params }: Props) => {
             </div>
 
             <div className='flex-1 overflow-y-auto p-4'>
-              <div className='space-y-2'>
-                {data?.data.map((content: NoteContent) => (
-                  <div
-                    key={content.id}
-                    ref={el => {
-                      if (el) contentRefs.current[content.id] = el
-                    }}
-                  >
-                    <ICardForNoteContents
-                      content={content}
-                      isSelected={selectedNote?.id === content.id}
-                      isUpdateMode={isUpdateMode}
-                      onClick={() => setSelectedNote(content)}
-                      noteId={noteId}
-                      pageNum={pageNum}
-                    />
-                  </div>
-                ))}
-              </div>
+              {data?.data.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-full text-center text-gray-400 space-y-2">
+                  <div className="text-5xl">🗒️</div>
+                  <p className="text-lg font-semibold text-gray-500">아직 작성된 내용이 없어요</p>
+                  <p className="text-sm text-gray-400">+ 버튼을 눌러 새로운 노트를 시작해보세요!</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {data?.data.map((content: NoteContent) => (
+                    <div
+                      key={content.id}
+                      ref={el => {
+                        if (el) contentRefs.current[content.id] = el
+                      }}
+                    >
+                      <ICardForNoteContents
+                        content={content}
+                        isSelected={selectedNote?.id === content.id}
+                        isUpdateMode={isUpdateMode}
+                        onClick={() => setSelectedNote(content)}
+                        noteId={noteId}
+                        pageNum={pageNum}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+
             </div>
+
           </section>
 
           <section className='w-2/5 bg-white rounded-lg shadow-md flex flex-col'>
