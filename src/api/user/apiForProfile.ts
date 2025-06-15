@@ -1,3 +1,4 @@
+// C:\Users\terec\msa-admin\src\api\user\apiForProfile.ts
 import { PersonalDevSpec, PersonalDevSpecsResponse } from "@/types/typeForProfile";
 
 export const apiForGetPersonalDevSpecs = async (context: any) => {
@@ -56,3 +57,4 @@ export const apiForGetPersonalDevSpecs = async (context: any) => {
     throw error;
   }
 };
+

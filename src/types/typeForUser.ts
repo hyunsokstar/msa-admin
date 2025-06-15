@@ -58,12 +58,8 @@ export interface PersonalMemo {
 
 export interface PersonalBookmark {
     id: string;
-    title: string;
     url: string;
-    favicon_url?: string;
-    description?: string;
-    category?: string;
-    created_at: string;
+    description: string;
     user_id: string;
 }
 
