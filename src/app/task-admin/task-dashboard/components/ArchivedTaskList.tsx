@@ -113,7 +113,7 @@ const ArchivedTaskList = ({ archivedTasks = [] }: Props) => {
                 minWidth: 130,
                 resizable: true,
                 sortable: true,
-                renderCell: ({ row }) => row.created_by_user_name,
+                renderCell: ({ row }: { row: TaskDashboardWithUserName }) => row.created_by_user_name,
                 renderEditCell: ISelectBoxForUserAtGrid,
             },
             {
