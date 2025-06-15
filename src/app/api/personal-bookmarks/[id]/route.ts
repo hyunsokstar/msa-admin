@@ -1,6 +1,3 @@
-
-
-// ===== 2. 동적 라우트 파일 =====
 // C:\Users\terec\msa-admin\src\app\api\personal-bookmarks\[id]\route.ts
 
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
@@ -10,18 +7,19 @@ import { NextRequest, NextResponse } from 'next/server';
 // PUT - 즐겨찾기 수정
 export async function PUT(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const supabase = createRouteHandlerClient({ cookies });
 
+        // 로그인한 유저 가져오기
         const { data: { user }, error: userError } = await supabase.auth.getUser();
         if (userError || !user) {
             return NextResponse.json({ error: 'User not authenticated' }, { status: 401 });
         }
 
         const body = await request.json();
-        const { id } = params;
+        const { id } = await params;
 
         // 수정 가능한 필드만 추출
         const filteredUpdateData: any = {};
@@ -32,7 +30,7 @@ export async function PUT(
             .from('user_bookmarks')
             .update(filteredUpdateData)
             .eq('id', id)
-            .eq('user_id', user.id)
+            .eq('user_id', user.id) // 본인 것만 수정 가능
             .select()
             .single();
 
@@ -42,37 +40,43 @@ export async function PUT(
         }
 
         if (!data) {
-            return NextResponse.json({ error: 'Bookmark not found or unauthorized' }, { status: 404 });
+            return NextResponse.json({
+                error: 'Bookmark not found or unauthorized'
+            }, { status: 404 });
         }
 
         return NextResponse.json({ data }, { status: 200 });
 
     } catch (error) {
         console.error('Server error in PUT /api/personal-bookmarks/[id]:', error);
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+        return NextResponse.json(
+            { error: 'Internal server error' },
+            { status: 500 }
+        );
     }
 }
 
 // DELETE - 단일 즐겨찾기 삭제
 export async function DELETE(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const supabase = createRouteHandlerClient({ cookies });
 
+        // 로그인한 유저 가져오기
         const { data: { user }, error: userError } = await supabase.auth.getUser();
         if (userError || !user) {
             return NextResponse.json({ error: 'User not authenticated' }, { status: 401 });
         }
 
-        const { id } = params;
+        const { id } = await params;
 
         const { data, error } = await supabase
             .from('user_bookmarks')
             .delete()
             .eq('id', id)
-            .eq('user_id', user.id)
+            .eq('user_id', user.id) // 본인 것만 삭제 가능
             .select()
             .single();
 
@@ -82,14 +86,21 @@ export async function DELETE(
         }
 
         if (!data) {
-            return NextResponse.json({ error: 'Bookmark not found or unauthorized' }, { status: 404 });
+            return NextResponse.json({
+                error: 'Bookmark not found or unauthorized'
+            }, { status: 404 });
         }
 
-        return NextResponse.json({ message: 'Bookmark deleted successfully', data }, { status: 200 });
+        return NextResponse.json({
+            message: 'Bookmark deleted successfully',
+            data
+        }, { status: 200 });
 
     } catch (error) {
         console.error('Server error in DELETE /api/personal-bookmarks/[id]:', error);
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+        return NextResponse.json(
+            { error: 'Internal server error' },
+            { status: 500 }
+        );
     }
 }
-
