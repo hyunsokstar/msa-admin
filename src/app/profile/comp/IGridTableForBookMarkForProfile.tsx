@@ -41,10 +41,30 @@ const IGridTableForBookMarkForProfile: React.FC = () => {
     const [localBookmarks, setLocalBookmarks] = useState<BookmarkRow[]>([]);
     const [hasChanges, setHasChanges] = useState(false);
 
-    // 북마크 데이터 동기화
+    // 북마크 데이터 동기화 - 타입 안전성 보장
     useEffect(() => {
-        if (bookmarksData?.data) {
-            setLocalBookmarks(bookmarksData.data);
+        if (bookmarksData) {
+            // bookmarksData의 구조를 확인하고 적절히 처리
+            let bookmarks: BookmarkRow[] = [];
+
+            if (Array.isArray(bookmarksData)) {
+                // bookmarksData가 직접 배열인 경우
+                bookmarks = bookmarksData as BookmarkRow[];
+            } else if (bookmarksData && typeof bookmarksData === 'object') {
+                // bookmarksData가 객체이고 data 속성을 가지는 경우
+                if ('data' in bookmarksData && Array.isArray(bookmarksData.data)) {
+                    bookmarks = bookmarksData.data as BookmarkRow[];
+                }
+                // 또는 다른 속성명을 사용하는 경우 (예: items, results 등)
+                else if ('items' in bookmarksData && Array.isArray(bookmarksData.items)) {
+                    bookmarks = bookmarksData.items as BookmarkRow[];
+                }
+                else if ('results' in bookmarksData && Array.isArray(bookmarksData.results)) {
+                    bookmarks = bookmarksData.results as BookmarkRow[];
+                }
+            }
+
+            setLocalBookmarks(bookmarks);
             setHasChanges(false);
         }
     }, [bookmarksData]);
@@ -160,6 +180,25 @@ const IGridTableForBookMarkForProfile: React.FC = () => {
         }
     };
 
+    // 원본 북마크 데이터 가져오기 헬퍼 함수
+    const getOriginalBookmarks = (): BookmarkRow[] => {
+        if (!bookmarksData) return [];
+
+        if (Array.isArray(bookmarksData)) {
+            return bookmarksData as BookmarkRow[];
+        } else if (bookmarksData && typeof bookmarksData === 'object') {
+            if ('data' in bookmarksData && Array.isArray(bookmarksData.data)) {
+                return bookmarksData.data as BookmarkRow[];
+            } else if ('items' in bookmarksData && Array.isArray(bookmarksData.items)) {
+                return bookmarksData.items as BookmarkRow[];
+            } else if ('results' in bookmarksData && Array.isArray(bookmarksData.results)) {
+                return bookmarksData.results as BookmarkRow[];
+            }
+        }
+
+        return [];
+    };
+
     // Save 버튼 핸들러 - 변경된 항목들을 실제로 업데이트
     const handleSave = async () => {
         if (selectedRows.size === 0) {
@@ -169,7 +208,7 @@ const IGridTableForBookMarkForProfile: React.FC = () => {
 
         try {
             const selectedIds = Array.from(selectedRows);
-            const originalBookmarks = bookmarksData?.data || [];
+            const originalBookmarks = getOriginalBookmarks();
 
             // 변경된 항목들만 찾아서 업데이트
             const updatePromises = [];
@@ -243,7 +282,7 @@ const IGridTableForBookMarkForProfile: React.FC = () => {
         setLocalBookmarks(rows);
 
         // 변경사항이 있는지 체크
-        const originalBookmarks = bookmarksData?.data || [];
+        const originalBookmarks = getOriginalBookmarks();
         const hasAnyChanges = rows.some(row => {
             const original = originalBookmarks.find(b => b.id === row.id);
             return original && (original.url !== row.url || original.description !== row.description);
@@ -338,10 +377,10 @@ const IGridTableForBookMarkForProfile: React.FC = () => {
                         onClick={handleSave}
                         disabled={selectedRows.size === 0 || isAnyMutationLoading}
                         className={`flex items-center space-x-1 px-3 py-1 text-xs rounded transition-colors ${selectedRows.size === 0 || isAnyMutationLoading
-                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                : hasChanges
-                                    ? 'bg-orange-500 text-white hover:bg-orange-600'
-                                    : 'bg-blue-500 text-white hover:bg-blue-600'
+                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            : hasChanges
+                                ? 'bg-orange-500 text-white hover:bg-orange-600'
+                                : 'bg-blue-500 text-white hover:bg-blue-600'
                             }`}
                     >
                         <Save className="w-3 h-3" />

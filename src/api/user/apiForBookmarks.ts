@@ -1,7 +1,9 @@
-// C:\Users\terec\msa-admin\src\api\user\apiForBookmarks.ts
-import { PersonalBookmark } from "@/types/typeForUser";
+// ========================================
+// 1. API 함수 수정 (apiForBookmarks.ts)
+// ========================================
+import { PersonalBookmark, PersonalBookmarksResponse } from "@/types/typeForBookMark";
 
-export const apiForGetPersonalBookmarks = async () => {
+export const apiForGetPersonalBookmarks = async (): Promise<PersonalBookmarksResponse> => {
     try {
         const response = await fetch('/api/personal-bookmarks', {
             method: 'GET',
@@ -15,7 +17,8 @@ export const apiForGetPersonalBookmarks = async () => {
             throw new Error(errorData.error || 'Failed to fetch personal bookmarks');
         }
 
-        const responseData: PersonalBookmark = await response.json();
+        // API가 {data: PersonalBookmark[]} 형태로 반환
+        const responseData: PersonalBookmarksResponse = await response.json();
         console.log('Bookmarks response data:', responseData);
 
         return responseData;
@@ -93,7 +96,7 @@ export const apiForDeletePersonalBookmark = async (id: string) => {
 
 export const apiForDeleteMultipleBookmarks = async (ids: string[]) => {
     try {
-        const response = await fetch('/api/personal-bookmarks/bulk-delete', {
+        const response = await fetch('/api/personal-bookmarks', {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -112,4 +115,3 @@ export const apiForDeleteMultipleBookmarks = async (ids: string[]) => {
         throw error;
     }
 };
-
