@@ -1,8 +1,4 @@
 
-
-
-
-
 // ===== 5. 수정된 메인 페이지 =====
 // src/pages/ProjectTimelineStep1.tsx (또는 적절한 경로)
 
@@ -36,7 +32,7 @@ const ProjectTimelineStep1 = () => {
             {/* 월별 구분 표시 */}
             <div className="mb-6" >
                 <h2 className="text-lg font-semibold mb-3" > 월별 통계 </h2>
-                < MonthSelector
+                <MonthSelector
                     dates={dates}
                     onMonthSelect={handleMonthSelect}
                 />
