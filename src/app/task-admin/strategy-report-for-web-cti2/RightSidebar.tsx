@@ -17,6 +17,7 @@ const sidebarOrder: SectionLink[] = [
   { id: 'cti-task-master-progress', label: 'Personal App' },
   { id: 'tauri-native-features', label: '네이티브 활용' },
   { id: 'reference-sites', label: '참고 사이트' },
+  { id: 'tech-debt-management', label: '기술 부채 관리' },
 ];
 
 const RightSidebar: React.FC = () => {
@@ -122,15 +123,15 @@ const RightSidebar: React.FC = () => {
   };
 
   return (
-    <aside className="h-screen sticky top-0 p-6 bg-white/80 backdrop-blur-md border-l border-gray-200 shadow-lg">
+    <aside className="h-screen sticky top-0 p-4 bg-white/80 backdrop-blur-md border-l border-gray-200 shadow-lg">
       {/* 헤더 섹션 */}
-      <div className="mb-8">
-        <h2 className="text-xl font-bold text-blue-700 mb-2">목차</h2>
+      <div className="mb-6">
+        <h2 className="text-lg font-bold text-blue-700 mb-2">목차</h2>
         <div className="w-full h-0.5 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full"></div>
       </div>
 
       {/* 네비게이션 링크들 */}
-      <nav className="space-y-2">
+      <nav className="space-y-1.5">
         {sidebarOrder.map((sec, index) => {
           const isActive = activeSection === sec.id;
 
@@ -139,28 +140,28 @@ const RightSidebar: React.FC = () => {
               <button
                 onClick={() => scrollToSection(sec.id)}
                 className={cn(
-                  'w-full text-left px-4 py-4 rounded-xl transition-all duration-300 flex items-center justify-between group',
+                  'w-full text-left px-3 py-3 rounded-lg transition-all duration-300 flex items-center justify-between group',
                   'border border-transparent hover:border-blue-200',
                   isActive
                     ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg transform scale-105'
                     : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700 hover:shadow-md'
                 )}
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   <div className={cn(
-                    'w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all',
+                    'w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-all',
                     isActive
                       ? 'bg-white/20 text-white'
                       : 'bg-blue-100 text-blue-600 group-hover:bg-blue-200'
                   )}>
                     {index + 1}
                   </div>
-                  <span className="font-medium text-sm leading-tight">{sec.label}</span>
+                  <span className="font-medium text-xs leading-tight">{sec.label}</span>
                 </div>
 
                 <ChevronRight
                   className={cn(
-                    'w-5 h-5 transition-all duration-300 flex-shrink-0',
+                    'w-4 h-4 transition-all duration-300 flex-shrink-0',
                     isActive
                       ? 'opacity-100 rotate-90 text-white'
                       : 'opacity-60 group-hover:opacity-80 group-hover:translate-x-1'
@@ -171,7 +172,7 @@ const RightSidebar: React.FC = () => {
               {/* 활성 상태 인디케이터 */}
               <div
                 className={cn(
-                  'absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 rounded-r-full transition-all duration-300',
+                  'absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full transition-all duration-300',
                   isActive
                     ? 'bg-gradient-to-b from-blue-400 to-purple-500 opacity-100 scale-100'
                     : 'opacity-0 scale-75'
@@ -183,16 +184,16 @@ const RightSidebar: React.FC = () => {
       </nav>
 
       {/* 진행률 표시 */}
-      <div className="mt-8 p-4 bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl border border-blue-100">
-        <div className="text-sm text-gray-600 mb-2 flex items-center justify-between">
+      <div className="mt-6 p-3 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg border border-blue-100">
+        <div className="text-xs text-gray-600 mb-2 flex items-center justify-between">
           <span>읽기 진행률</span>
           <span className="font-semibold text-blue-600">
             {Math.round(((sidebarOrder.findIndex(s => s.id === activeSection) + 1) / sidebarOrder.length) * 100)}%
           </span>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-2">
+        <div className="w-full bg-gray-200 rounded-full h-1.5">
           <div
-            className="bg-gradient-to-r from-blue-400 to-purple-500 h-2 rounded-full transition-all duration-500"
+            className="bg-gradient-to-r from-blue-400 to-purple-500 h-1.5 rounded-full transition-all duration-500"
             style={{
               width: `${((sidebarOrder.findIndex(s => s.id === activeSection) + 1) / sidebarOrder.length) * 100}%`
             }}
@@ -201,14 +202,14 @@ const RightSidebar: React.FC = () => {
       </div>
 
       {/* 푸터 정보 */}
-      <div className="mt-6 text-center">
+      <div className="mt-4 text-center">
         <div className="text-xs text-gray-500 mb-2">총 {sidebarOrder.length}개 섹션</div>
         <div className="flex justify-center space-x-1">
           {sidebarOrder.map((_, index) => (
             <div
               key={index}
               className={cn(
-                'w-2 h-2 rounded-full transition-all duration-300',
+                'w-1.5 h-1.5 rounded-full transition-all duration-300',
                 index <= sidebarOrder.findIndex(s => s.id === activeSection)
                   ? 'bg-blue-400'
                   : 'bg-gray-300'

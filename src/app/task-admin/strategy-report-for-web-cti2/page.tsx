@@ -8,6 +8,7 @@ import CTITaskMasterProgress from './PersonalToolProgress';
 import CTIMainProgress from './CTIMainProgress';
 import ReferenceForCti from './ReferenceForCti';
 import ReferSite from './ReferSite';
+import TechDebtReport from './TechDebtReport';
 
 const MainSectionDivider = () => (
   <div className="my-8 flex items-center justify-center">
@@ -65,13 +66,20 @@ const StrategyReport: React.FC = () => {
               <ReferSite />
             </section>
 
+            <MainSectionDivider />
+
+            {/* 참고 사이트 및 리소스 */}
+            <section id="tech-debt-management" className="min-h-[400px]">
+              <TechDebtReport />
+            </section>
+
             {/* 추가 여백으로 마지막 섹션 감지 보장 */}
             <div className="h-32" />
           </div>
         </div>
 
         {/* 오른쪽 사이드바 - 자연스러운 위치 */}
-        <div className="w-80 flex-shrink-0">
+        <div className="w-72 flex-shrink-0">
           <RightSidebar />
         </div>
       </div>
