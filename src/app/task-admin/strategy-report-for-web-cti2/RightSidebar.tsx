@@ -14,29 +14,75 @@ interface SectionLink {
 const sidebarOrder: SectionLink[] = [
   { id: 'introduction', label: '프로젝트 구성' },
   { id: 'cti-main-progress', label: 'CTI 메인 현황' },
-  { id: 'cti-task-master-progress', label: 'Task Master 현황' },
+  { id: 'cti-task-master-progress', label: 'Personal App' },
+  { id: 'tauri-native-features', label: '네이티브 활용' },
 ];
 
 const RightSidebar: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>('introduction');
 
   useEffect(() => {
-    // Intersection Observer를 사용한 더 정확한 섹션 감지
+    // 더 유연한 Intersection Observer 설정
     const observerOptions = {
       root: null,
-      rootMargin: '-20% 0px -60% 0px', // 상단 20%, 하단 60% 여백에서 감지
-      threshold: 0.1
+      rootMargin: '-10% 0px -70% 0px', // 더 유연한 감지 범위
+      threshold: [0, 0.1, 0.3, 0.5] // 여러 threshold 값
     };
+
+    let currentIntersecting: string[] = [];
 
     const observerCallback = (entries: IntersectionObserverEntry[]) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          setActiveSection(entry.target.id);
+          if (!currentIntersecting.includes(entry.target.id)) {
+            currentIntersecting.push(entry.target.id);
+          }
+        } else {
+          currentIntersecting = currentIntersecting.filter(id => id !== entry.target.id);
         }
       });
+
+      // 가장 위에 있는 섹션을 활성화
+      if (currentIntersecting.length > 0) {
+        const topSection = sidebarOrder.find(section =>
+          currentIntersecting.includes(section.id)
+        );
+        if (topSection) {
+          setActiveSection(topSection.id);
+        }
+      }
     };
 
     const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    // 스크롤 기반 폴백 시스템
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+
+      // 페이지 하단 근처에 도달했을 때 마지막 섹션 활성화
+      if (scrollY + windowHeight >= documentHeight - 100) {
+        setActiveSection(sidebarOrder[sidebarOrder.length - 1].id);
+        return;
+      }
+
+      // 일반적인 스크롤 기반 감지
+      let currentSection = 'introduction';
+      sidebarOrder.forEach((section) => {
+        const element = document.getElementById(section.id);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          const elementTop = rect.top + scrollY;
+
+          if (scrollY + 150 >= elementTop) {
+            currentSection = section.id;
+          }
+        }
+      });
+
+      setActiveSection(currentSection);
+    };
 
     // 모든 섹션 관찰 시작
     sidebarOrder.forEach((section) => {
@@ -46,40 +92,22 @@ const RightSidebar: React.FC = () => {
       }
     });
 
-    // 페이지 로드 시 초기 활성 섹션 설정
-    const setInitialActiveSection = () => {
-      const scrollY = window.scrollY;
-      let currentSection = 'introduction';
+    // 스크롤 이벤트도 등록 (폴백용)
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
-      sidebarOrder.forEach((section) => {
-        const element = document.getElementById(section.id);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          const elementTop = rect.top + scrollY;
-
-          if (scrollY + 200 >= elementTop) {
-            currentSection = section.id;
-          }
-        }
-      });
-
-      setActiveSection(currentSection);
-    };
-
-    // 초기 설정 및 리사이즈 시 재계산
-    setInitialActiveSection();
-    window.addEventListener('resize', setInitialActiveSection);
+    // 초기 설정
+    handleScroll();
 
     return () => {
       observer.disconnect();
-      window.removeEventListener('resize', setInitialActiveSection);
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      const headerOffset = 100; // 고정 헤더나 여백 고려
+      const headerOffset = 80; // 헤더 오프셋 줄임
       const elementPosition = element.getBoundingClientRect().top + window.scrollY;
       const offsetPosition = elementPosition - headerOffset;
 
