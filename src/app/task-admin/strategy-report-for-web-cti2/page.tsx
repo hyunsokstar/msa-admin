@@ -7,6 +7,7 @@ import RightSidebar from './RightSidebar';
 import CTITaskMasterProgress from './PersonalToolProgress';
 import CTIMainProgress from './CTIMainProgress';
 import ReferenceForCti from './ReferenceForCti';
+import ReferSite from './ReferSite';
 
 const MainSectionDivider = () => (
   <div className="my-8 flex items-center justify-center">
@@ -55,6 +56,13 @@ const StrategyReport: React.FC = () => {
         {/* Tauri 네이티브 기능 활용 방안 */}
         <section id="tauri-native-features" className="min-h-[600px]">
           <ReferenceForCti />
+        </section>
+
+        <MainSectionDivider />
+
+        {/* 참고 사이트 및 리소스 */}
+        <section id="reference-sites" className="min-h-[400px]">
+          <ReferSite />
         </section>
 
         {/* 추가 여백으로 마지막 섹션 감지 보장 */}

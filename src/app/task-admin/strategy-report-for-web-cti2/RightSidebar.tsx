@@ -16,6 +16,7 @@ const sidebarOrder: SectionLink[] = [
   { id: 'cti-main-progress', label: 'CTI 메인 현황' },
   { id: 'cti-task-master-progress', label: 'Personal App' },
   { id: 'tauri-native-features', label: '네이티브 활용' },
+  { id: 'reference-sites', label: '참고 사이트' },
 ];
 
 const RightSidebar: React.FC = () => {
