@@ -27,46 +27,53 @@ const MainSectionDivider = () => (
 
 const StrategyReport: React.FC = () => {
   return (
-    <div className="">
-      <RightSidebar />
+    <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      <div className="flex">
+        {/* 메인 콘텐츠 영역 */}
+        <div className="flex-1 w-full">
+          <div className="px-8 py-6 max-w-[95%] mx-auto">
+            {/* 프로젝트 구성 및 소개 */}
+            <section id="introduction" className="min-h-[400px]">
+              <Introduction />
+            </section>
 
-      <div className="w-[80%] mx-auto py-4 bg-gradient-to-br from-slate-50 to-blue-50">
+            <MainSectionDivider />
 
-        {/* 프로젝트 구성 및 소개 */}
-        <section id="introduction" className="min-h-[400px]">
-          <Introduction />
-        </section>
+            {/* CTI 메인 시스템 진행현황 */}
+            <section id="cti-main-progress" className="min-h-[300px]">
+              <CTIMainProgress />
+            </section>
 
-        <MainSectionDivider />
+            <MainSectionDivider />
 
-        {/* CTI 메인 시스템 진행현황 */}
-        <section id="cti-main-progress" className="min-h-[300px]">
-          <CTIMainProgress />
-        </section>
+            {/* CTI Task Master 개인도구 진행현황 */}
+            <section id="cti-task-master-progress" className="min-h-[500px]">
+              <CTITaskMasterProgress />
+            </section>
 
-        <MainSectionDivider />
+            <MainSectionDivider />
 
-        {/* CTI Task Master 개인도구 진행현황 */}
-        <section id="cti-task-master-progress" className="min-h-[500px]">
-          <CTITaskMasterProgress />
-        </section>
+            {/* Tauri 네이티브 기능 활용 방안 */}
+            <section id="tauri-native-features" className="min-h-[600px]">
+              <ReferenceForCti />
+            </section>
 
-        <MainSectionDivider />
+            <MainSectionDivider />
 
-        {/* Tauri 네이티브 기능 활용 방안 */}
-        <section id="tauri-native-features" className="min-h-[600px]">
-          <ReferenceForCti />
-        </section>
+            {/* 참고 사이트 및 리소스 */}
+            <section id="reference-sites" className="min-h-[400px]">
+              <ReferSite />
+            </section>
 
-        <MainSectionDivider />
+            {/* 추가 여백으로 마지막 섹션 감지 보장 */}
+            <div className="h-32" />
+          </div>
+        </div>
 
-        {/* 참고 사이트 및 리소스 */}
-        <section id="reference-sites" className="min-h-[400px]">
-          <ReferSite />
-        </section>
-
-        {/* 추가 여백으로 마지막 섹션 감지 보장 */}
-        <div className="h-32" />
+        {/* 오른쪽 사이드바 - 자연스러운 위치 */}
+        <div className="w-80 flex-shrink-0">
+          <RightSidebar />
+        </div>
       </div>
     </div>
   );
