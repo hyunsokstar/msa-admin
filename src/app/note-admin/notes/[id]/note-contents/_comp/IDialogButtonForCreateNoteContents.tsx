@@ -139,8 +139,6 @@ export default function IDialogButtonForCreateNoteContents({ noteId, pageNum }: 
         isOpen={open}
         onClose={handleOpenChange}
         title={`새 노트 내용 작성 (페이지 ${pageNum})`}
-        width="full"
-        maxWidth="max-w-none" // 풀사이즈
         // className="h-screen"  // 화면 높이 꽉 채움
         footer={DialogFooter}
       >
