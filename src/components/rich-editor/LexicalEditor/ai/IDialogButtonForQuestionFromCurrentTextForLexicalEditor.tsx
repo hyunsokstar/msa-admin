@@ -186,7 +186,6 @@ const IDialogButtonForQuestionFromCurrentTextForLexicalEditor: React.FC<Props> =
                 onClose={() => setIsOpen(false)}
                 title="AI 질문하기 (Claude)"
                 footer={dialogFooter}
-                width="full"
             >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
                     {/* 왼쪽: 현재 텍스트 + 질문 입력 영역 */}
