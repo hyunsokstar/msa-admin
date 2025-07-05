@@ -1,4 +1,3 @@
-// src/app/Note/[id]/_comp/IDialogButtonForCreateNoteContents.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -45,24 +44,18 @@ export default function IDialogButtonForCreateNoteContents({ noteId, pageNum }: 
     },
   });
 
-  // 다이얼로그가 열릴 때 강제 업데이트
   useEffect(() => {
     if (open) {
-      const timers = [100, 300, 500, 800, 1200, 2000].map((delay) => {
-        return setTimeout(() => {
-          setForceUpdate(prev => prev + 1);
-        }, delay);
-      });
-
-      return () => {
-        timers.forEach(timer => clearTimeout(timer));
-      };
+      const timers = [100, 300, 500, 800, 1200, 2000].map((delay) =>
+        setTimeout(() => setForceUpdate((prev) => prev + 1), delay)
+      );
+      return () => timers.forEach(clearTimeout);
     }
   }, [open]);
 
   const handleOpenChange = (newOpen: boolean) => {
     if (newOpen && !isAuthenticated) {
-      toast.error('로그인이 필요합니다.');
+      toast.error("로그인이 필요합니다.");
       return;
     }
     setOpen(newOpen);
@@ -71,12 +64,14 @@ export default function IDialogButtonForCreateNoteContents({ noteId, pageNum }: 
   const handleCreate = async (data: FormValues) => {
     try {
       if (!user) {
-        toast.error('로그인이 필요합니다.');
+        toast.error("로그인이 필요합니다.");
         return;
       }
 
-      const maxOrder = noteContents?.data?.reduce((max, content) =>
-        Math.max(max, content.order || 0), 0) ?? 0;
+      const maxOrder = noteContents?.data?.reduce(
+        (max, content) => Math.max(max, content.order || 0),
+        0
+      ) ?? 0;
 
       await createMutation.mutateAsync({
         noteId,
@@ -87,25 +82,22 @@ export default function IDialogButtonForCreateNoteContents({ noteId, pageNum }: 
           order: maxOrder + 1,
           path: data.path,
           writer: user.id,
-        }
+        },
       });
 
-      toast.success('노트가 성공적으로 생성되었습니다.');
+      toast.success("노트가 성공적으로 생성되었습니다.");
       setOpen(false);
       form.reset();
     } catch (error) {
-      toast.error('노트 생성에 실패했습니다.');
-      console.error('Failed to create note content:', error);
+      toast.error("노트 생성에 실패했습니다.");
+      console.error("Failed to create note content:", error);
     }
   };
 
-  if (!isAuthenticated) {
-    return null;
-  }
+  if (!isAuthenticated) return null;
 
-  // 푸터 컴포넌트
   const DialogFooter = (
-    <div className="grid grid-cols-2 gap-4 w-full mt-6 sticky bottom-0 bg-white dark:bg-gray-900 py-4 border-t border-gray-200 dark:border-gray-800">
+    <div className="grid grid-cols-2 gap-4 w-full mt-6 sticky bottom-0 bg-white dark:bg-gray-900 py-4 border-t border-gray-200 dark:border-gray-800 px-4">
       <CommonButton
         type="button"
         variant="outline"
@@ -126,7 +118,7 @@ export default function IDialogButtonForCreateNoteContents({ noteId, pageNum }: 
         onClick={form.handleSubmit(handleCreate)}
       >
         <Save className="h-5 w-5 mr-2" />
-        {createMutation.isPending ? '생성 중...' : '노트 생성'}
+        {createMutation.isPending ? "생성 중..." : "노트 생성"}
       </CommonButton>
     </div>
   );
@@ -148,13 +140,14 @@ export default function IDialogButtonForCreateNoteContents({ noteId, pageNum }: 
         onClose={handleOpenChange}
         title={`새 노트 내용 작성 (페이지 ${pageNum})`}
         width="full"
-        maxWidth="max-w-[95vw]" // 최대 너비 증가
+        maxWidth="max-w-none" // 풀사이즈
+        className="h-screen"  // 화면 높이 꽉 채움
         footer={DialogFooter}
       >
         <Form {...form}>
-          <form className="flex flex-col h-full">
-            <div className="flex flex-col gap-4">
-              <div className="grid grid-cols-2 gap-4">
+          <form className="flex flex-col h-full px-4 pb-6">
+            <div className="flex flex-col gap-4 flex-1 overflow-y-auto">
+              <div className="grid grid-cols-2 gap-4 pt-2">
                 <FormField
                   control={form.control}
                   name="title"
@@ -171,7 +164,6 @@ export default function IDialogButtonForCreateNoteContents({ noteId, pageNum }: 
                     </FormItem>
                   )}
                 />
-
                 <FormField
                   control={form.control}
                   name="path"
@@ -196,12 +188,12 @@ export default function IDialogButtonForCreateNoteContents({ noteId, pageNum }: 
                 render={({ field }) => (
                   <FormItem className="flex-1">
                     <FormControl>
-                      <div className="relative h-[calc(80vh-200px)] mb-16"> {/* 높이 증가 및 하단 여백 추가 */}
+                      <div className="relative h-[calc(100vh-300px)]">
                         <div className="absolute inset-0 pl-12 overflow-visible">
                           <LexicalEditor
                             content={field.value}
                             onChange={field.onChange}
-                            key={`editor-${forceUpdate}`} // 강제 리렌더링용 키
+                            key={`editor-${forceUpdate}`}
                           />
                         </div>
                       </div>
