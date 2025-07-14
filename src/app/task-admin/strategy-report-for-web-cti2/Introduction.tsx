@@ -215,7 +215,7 @@ const PubSubArchitecture = () => {
                     <td className="py-4 px-4 font-bold text-red-600 text-lg">1</td>
                     <td className="py-4 px-4 text-gray-700 font-medium">
                       <strong>채널명 뭘로 할지?</strong>
-                      <div className="text-sm text-gray-500 mt-1">예: agent:status:{agentId} 형태로 할지, 다른 규칙으로 할지</div>
+                      <div className="text-sm text-gray-500 mt-1">예: agent:status:{`{agentId}`} 형태로 할지, 다른 규칙으로 할지</div>
                     </td>
                   </tr>
                   <tr className="hover:bg-red-50">
