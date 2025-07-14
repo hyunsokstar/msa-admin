@@ -38,41 +38,6 @@ const StrategyReport: React.FC = () => {
               <Introduction />
             </section>
 
-            <MainSectionDivider />
-
-            {/* CTI 메인 시스템 진행현황 */}
-            <section id="cti-main-progress" className="min-h-[300px]">
-              <CTIMainProgress />
-            </section>
-
-            <MainSectionDivider />
-
-            {/* CTI Task Master 개인도구 진행현황 */}
-            <section id="cti-task-master-progress" className="min-h-[500px]">
-              <CTITaskMasterProgress />
-            </section>
-
-            <MainSectionDivider />
-
-            {/* Tauri 네이티브 기능 활용 방안 */}
-            <section id="tauri-native-features" className="min-h-[600px]">
-              <ReferenceForCti />
-            </section>
-
-            <MainSectionDivider />
-
-            {/* 참고 사이트 및 리소스 */}
-            <section id="reference-sites" className="min-h-[400px]">
-              <ReferSite />
-            </section>
-
-            <MainSectionDivider />
-
-            {/* 참고 사이트 및 리소스 */}
-            <section id="tech-debt-management" className="min-h-[400px]">
-              <TechDebtReport />
-            </section>
-
             {/* 추가 여백으로 마지막 섹션 감지 보장 */}
             <div className="h-32" />
           </div>
