@@ -10,14 +10,11 @@ interface SectionLink {
   label: string;
 }
 
-// Redis 가이드 내 섹션들
+// Redis 가이드 내 섹션들 (실제 존재하는 섹션들만)
 const sidebarOrder: SectionLink[] = [
   { id: 'redis-architecture', label: '핵심 아키텍처' },
-  { id: 'implementation-patterns', label: '구현 패턴' },
-  { id: 'zustand-comparison', label: 'Zustand vs 직접구독' },
+  { id: 'implementation-patterns', label: '구현 패턴 요약' },
   { id: 'backend-collaboration', label: '백엔드 협의사항' },
-  { id: 'implementation-guide', label: '구현 권장사항' },
-  { id: 'references', label: '참고 자료' },
 ];
 
 const RightSidebar: React.FC = () => {
