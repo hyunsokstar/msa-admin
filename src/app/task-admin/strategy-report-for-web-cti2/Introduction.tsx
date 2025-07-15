@@ -44,15 +44,7 @@ const RedisEventGuide: React.FC = () => {
                       <div>4. UI 상태 업데이트</div>
                     </div>
                   </div>
-                  <div>
-                    <h4 className="font-semibold text-blue-800 mb-2">핵심 장점</h4>
-                    <div className="space-y-1 text-blue-700 text-sm">
-                      <div>• 실시간 양방향 통신</div>
-                      <div>• 낮은 레이턴시</div>
-                      <div>• 확장 가능한 구조</div>
-                      <div>• 서버 부하 분산</div>
-                    </div>
-                  </div>
+
                 </div>
               </div>
             </CardContent>
