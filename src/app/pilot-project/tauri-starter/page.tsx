@@ -144,7 +144,33 @@ Template created! To get started run:`}
                 </div>
 
                 <div className="mb-6">
-                    <h3 className="text-xl font-medium text-gray-700 mb-3">3.3 앱 창 정보</h3>
+                    <h3 className="text-xl font-medium text-gray-700 mb-3">3.3 첫 실행 화면</h3>
+                    <p className="text-gray-600 mb-4">다음과 같은 네이티브 데스크톱 앱 화면이 나타납니다:</p>
+
+                    <div className="border-2 border-gray-200 rounded-lg p-4 bg-gray-50">
+                        <img
+                            src="C:\Users\terec\msa-admin\public\sample\tauri_project_start.png"
+                            alt="Tauri 첫 실행 화면 - Welcome to Tauri + React"
+                            className="w-full max-w-2xl mx-auto rounded-lg shadow-lg border border-gray-300"
+                        />
+                        <p className="text-center text-gray-500 text-sm mt-2 italic">
+                            📱 실제 데스크톱 앱으로 실행되는 Tauri + React 애플리케이션
+                        </p>
+                    </div>
+
+                    <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <h4 className="text-lg font-semibold text-blue-800 mb-2">🎯 중요 포인트</h4>
+                        <ul className="list-disc list-inside text-blue-700 space-y-1">
+                            <li><strong>브라우저가 아닌 네이티브 데스크톱 윈도우</strong>로 실행됩니다</li>
+                            <li>창 제목이 <code className="bg-blue-100 px-1 rounded text-sm">nexus-call-hub</code>로 표시됩니다</li>
+                            <li>Tauri, Vite, React 로고가 중앙에 배치되어 있습니다</li>
+                            <li>하단에 입력 필드와 "Greet" 버튼이 있습니다</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div className="mb-6">
+                    <h3 className="text-xl font-medium text-gray-700 mb-3">3.4 앱 창 정보</h3>
                     <ul className="list-disc list-inside text-gray-600 space-y-1">
                         <li><strong>창 제목</strong>: <code className="bg-gray-100 px-2 py-1 rounded text-sm">nexus-call-hub</code></li>
                         <li><strong>프레임워크</strong>: Tauri + Vite + React</li>
