@@ -2,198 +2,259 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Calendar, Phone, Users, BarChart3, Shield, Settings, Zap, Database, CheckCircle } from 'lucide-react';
+import { Calendar, Phone, Users, BarChart3, Shield, Settings, Zap, Database, CheckCircle, Server, Layers, Globe } from 'lucide-react';
 
 const NexusCallHubManual = () => {
+    const systemArchitecture = {
+        presentationTier: {
+            title: 'Presentation Tier: Tauri + React',
+            icon: <Layers className="h-5 w-5" />,
+            technologies: ['Tauri 2.0', 'React 18', 'TypeScript', 'Tailwind CSS', 'shadcn/ui', 'TanStack Router', 'Zustand'],
+            responsibilities: [
+                '상담사 전용 UI/UX 인터페이스',
+                '실시간 데이터 시각화 및 대시보드',
+                '데스크톱 네이티브 기능 (알림, 파일 접근)',
+                '멀티 윈도우 관리 시스템',
+                '오프라인 모드 및 로컬 캐싱'
+            ]
+        },
+        businessTier: {
+            title: 'Business Logic Tier: Spring Boot',
+            icon: <Server className="h-5 w-5" />,
+            technologies: ['Spring Boot 3.x', 'Spring Security', 'Spring WebSocket', 'JPA/Hibernate', 'Redis', 'Apache Kafka'],
+            responsibilities: [
+                '통화 비즈니스 로직 및 워크플로우',
+                '사용자 인증/권한 관리 시스템',
+                '실시간 이벤트 처리 및 메시징',
+                'API Gateway 및 서비스 오케스트레이션',
+                '통화 상태 관리 및 모니터링'
+            ]
+        },
+        dataTier: {
+            title: 'Data/Telecom Tier: PBX + Database',
+            icon: <Globe className="h-5 w-5" />,
+            technologies: ['FreeSWITCH', 'PostgreSQL', 'MongoDB', 'Elasticsearch', 'SIP Protocol', 'RTP/RTCP'],
+            responsibilities: [
+                '실제 음성 통화 처리 및 라우팅',
+                'PSTN 게이트웨이 연동',
+                '통화 데이터 영구 저장',
+                '통화 녹음 및 품질 분석',
+                '대용량 로그 데이터 처리'
+            ]
+        }
+    };
+
     const developmentPhases = [
         {
             id: 'phase1',
-            title: '인증 & 기반 시스템 구축',
-            subtitle: 'Authentication & Core Infrastructure',
+            title: '3-Tier 아키텍처 기반 구축',
+            subtitle: 'Enterprise Architecture Foundation',
             icon: <Shield className="h-6 w-6" />,
-            progress: 100,
-            status: 'Completed',
-            duration: '8-12일',
-            techStack: ['React Hook Form', 'Zod', 'Zustand', 'SQLite', 'Tauri Secure Storage'],
+            progress: 25,
+            status: 'In Progress',
+            duration: '3주',
+            techStack: ['Spring Boot 3.x', 'Tauri 2.0', 'PostgreSQL', 'Redis', 'Docker'],
             features: [
-                'JWT 토큰 기반 인증 시스템',
-                '자동 로그인 (Remember Me)',
-                '사용자 프로필 관리',
-                '권한 시스템 (Agent/Supervisor/Admin)',
-                '라우터 가드 및 접근 제어'
+                '3-Tier 아키텍처 설계 및 구현',
+                'Spring Boot REST API 서버',
+                'Tauri 클라이언트 기본 구조',
+                '데이터베이스 스키마 설계',
+                '인증 및 보안 시스템'
             ],
-            deliverables: ['로그인/로그아웃 기능', 'SQLite 데이터베이스', '사용자 권한 관리', '보안 라우팅'],
+            deliverables: ['아키텍처 문서', 'API 서버', 'Tauri 앱', 'DB 스키마', '인증 시스템'],
             priority: 'Critical'
         },
         {
             id: 'phase2',
-            title: '통화 시스템 구축',
-            subtitle: 'Call System & WebRTC Integration',
+            title: '통화 시스템 & PBX 연동',
+            subtitle: 'Call System Integration',
             icon: <Phone className="h-6 w-6" />,
-            progress: 15,
-            status: 'In Progress',
-            duration: '16-22일',
-            techStack: ['WebRTC API', 'getUserMedia', 'RTCPeerConnection', 'shadcn/ui', 'Recharts'],
+            progress: 0,
+            status: 'Planned',
+            duration: '4주',
+            techStack: ['FreeSWITCH ESL', 'SIP Protocol', 'WebSocket', 'Spring Boot', 'Kafka'],
             features: [
-                'WebRTC 엔진 구축',
-                '통화 UI 컴포넌트 (다이얼패드)',
-                '통화 상태 관리 (발신/수신)',
-                '오디오 장치 관리',
-                'DTMF & 통화 제어 기능'
+                'FreeSWITCH ESL 연동 모듈',
+                '통화 시작/종료 API 개발',
+                '실시간 통화 상태 동기화',
+                'SIP 프로토콜 처리',
+                '통화 큐 관리 시스템'
             ],
-            deliverables: ['통화 연결/종료', '음성 품질 모니터링', '멀티 통화 지원', '통화 제어 인터페이스'],
+            deliverables: ['PBX 연동 모듈', '통화 API', '상태 동기화', 'SIP 핸들러', '큐 관리자'],
             priority: 'Critical'
         },
         {
             id: 'phase3',
             title: '실시간 대시보드 & 모니터링',
-            subtitle: 'Real-time Dashboard & Monitoring',
+            subtitle: 'Real-time Dashboard System',
             icon: <Users className="h-6 w-6" />,
             progress: 0,
-            status: 'Planned',
-            duration: '11-15일',
-            techStack: ['React Dashboard', 'WebSocket', 'Tauri Notification', 'Audio API'],
+            status: 'Design',
+            duration: '3주',
+            techStack: ['React', 'WebSocket', 'Recharts', 'Spring WebSocket', 'Elasticsearch'],
             features: [
                 '상담사 실시간 대시보드',
-                '통화 기록 자동 저장',
-                '실시간 알림 시스템',
-                '팀 모니터링 기능',
-                '대기 통화 큐 관리'
+                '통화 현황 모니터링',
+                '팀 성과 실시간 표시',
+                '알림 및 이벤트 시스템',
+                '관리자 모니터링 콘솔'
             ],
-            deliverables: ['실시간 상태 표시', '통화 히스토리', '데스크톱 알림', '팀 현황 모니터링'],
+            deliverables: ['실시간 대시보드', '모니터링 시스템', '알림 엔진', '관리자 콘솔', '성과 지표'],
             priority: 'Critical'
         },
         {
             id: 'phase4',
-            title: '통계 & 분석 시스템',
-            subtitle: 'Statistics & Analytics',
+            title: '대용량 데이터 처리 & 분석',
+            subtitle: 'Big Data Analytics',
             icon: <BarChart3 className="h-6 w-6" />,
             progress: 0,
-            status: 'Design',
-            duration: '15-20일',
-            techStack: ['Recharts', '통계 알고리즘', '데이터 마이닝', '파일 내보내기 라이브러리'],
+            status: 'Research',
+            duration: '4주',
+            techStack: ['Kafka', 'Elasticsearch', 'Spring Batch', 'MongoDB', 'Apache Spark'],
             features: [
-                '통계 대시보드 (일/주/월별)',
-                '개인별 성과 분석',
-                '고급 분석 기능',
-                'CSV/Excel/PDF 리포트',
-                '예측 분석 (AI/ML)'
+                '대용량 통화 데이터 처리',
+                '실시간 분석 및 통계',
+                '예측 분석 모델',
+                '성과 리포트 자동 생성',
+                'AI 기반 품질 분석'
             ],
-            deliverables: ['성과 분석 차트', '리포트 시스템', '데이터 내보내기', '예측 모델'],
+            deliverables: ['데이터 파이프라인', '분석 엔진', '예측 모델', '리포트 시스템', '품질 분석기'],
             priority: 'Important'
         },
         {
             id: 'phase5',
-            title: '고급 기능 & 통합',
-            subtitle: 'Advanced Features & Integration',
+            title: '확장성 & 고가용성 구축',
+            subtitle: 'Scalability & High Availability',
             icon: <Zap className="h-6 w-6" />,
             progress: 0,
-            status: 'Research',
-            duration: '16-20일',
-            techStack: ['고객 DB', '스크립트 엔진', '음성 녹음 API', 'API 클라이언트'],
+            status: 'Planned',
+            duration: '3주',
+            techStack: ['Kubernetes', 'Docker', 'NGINX', 'Redis Cluster', 'PostgreSQL HA'],
             features: [
-                'CRM 연동 시스템',
-                '상담 스크립트 팝업',
-                '통화 녹음 & 품질관리',
-                '외부 API 통합',
-                'Webhook 시스템'
+                '마이크로서비스 아키텍처 전환',
+                '로드 밸런싱 및 오토 스케일링',
+                '장애 복구 시스템',
+                '데이터베이스 클러스터링',
+                '무중단 배포 시스템'
             ],
-            deliverables: ['고객 정보 관리', '스크립트 가이드', '음성 파일 관리', 'PBX 연동'],
-            priority: 'Nice to Have'
+            deliverables: ['MSA 구조', '스케일링 시스템', '장애 복구', 'DB 클러스터', 'CI/CD 파이프라인'],
+            priority: 'Important'
         },
         {
             id: 'phase6',
-            title: '배포 & 운영 최적화',
-            subtitle: 'Deployment & Production Optimization',
+            title: '운영 최적화 & 모니터링',
+            subtitle: 'Production Optimization',
             icon: <Settings className="h-6 w-6" />,
-            progress: 5,
-            status: 'Planning',
-            duration: '18-23일',
-            techStack: ['Tauri Builder', 'Auto Updater', 'CI/CD', 'Vitest', 'Playwright'],
+            progress: 0,
+            status: 'Planned',
+            duration: '2주',
+            techStack: ['Prometheus', 'Grafana', 'ELK Stack', 'Jaeger', 'SonarQube'],
             features: [
-                '성능 최적화',
-                '보안 강화',
-                '멀티 플랫폼 배포',
-                '모니터링 & 로깅',
-                '테스트 & 품질관리'
+                '성능 모니터링 시스템',
+                '로그 수집 및 분석',
+                '분산 추적 시스템',
+                '코드 품질 관리',
+                '보안 취약점 스캔'
             ],
-            deliverables: ['배포 패키지', '자동 업데이트', '성능 모니터링', 'E2E 테스트'],
-            priority: 'Important'
+            deliverables: ['모니터링 대시보드', '로그 시스템', '추적 시스템', '품질 게이트', '보안 스캔'],
+            priority: 'Nice to Have'
         }
     ];
 
-    const currentTechStack = {
-        frontend: [
-            'Tauri 2.0',
-            'Vite',
-            'React 18 + TypeScript',
-            'TanStack Router',
-            'Tailwind CSS',
-            'shadcn/ui',
-            'Zustand',
-            'React Hook Form'
-        ],
-        backend: [
-            'Rust',
-            'SQLite',
-            'sqlx',
-            'Tauri Commands',
-            'Secure Storage',
-            'File System API'
-        ],
-        communication: [
-            'WebRTC API',
-            'Tauri IPC',
-            'WebSocket (planned)',
-            'REST API (planned)'
-        ]
+    const scalabilityMetrics = [
+        {
+            metric: '동시 상담사 수',
+            current: '100명',
+            target: '2,000명',
+            strategy: '수평 확장 + 로드 밸런싱'
+        },
+        {
+            metric: '동시 통화 처리',
+            current: '50통화',
+            target: '1,500통화',
+            strategy: 'FreeSWITCH 클러스터링'
+        },
+        {
+            metric: '응답 시간',
+            current: '< 100ms',
+            target: '< 50ms',
+            strategy: 'Redis 캐싱 + CDN'
+        },
+        {
+            metric: '데이터 처리량',
+            current: '1GB/일',
+            target: '100GB/일',
+            strategy: 'Kafka + Elasticsearch'
+        }
+    ];
+
+    const technologyStack = {
+        frontend: {
+            title: 'Frontend (Presentation Tier)',
+            technologies: [
+                { name: 'Tauri 2.0', purpose: '네이티브 데스크톱 래퍼' },
+                { name: 'React 18', purpose: 'UI 컴포넌트 프레임워크' },
+                { name: 'TypeScript', purpose: '타입 안전성' },
+                { name: 'TanStack Router', purpose: '라우팅 관리' },
+                { name: 'Zustand', purpose: '상태 관리' },
+                { name: 'shadcn/ui', purpose: 'UI 컴포넌트 라이브러리' },
+                { name: 'Recharts', purpose: '데이터 시각화' }
+            ]
+        },
+        backend: {
+            title: 'Backend (Business Logic Tier)',
+            technologies: [
+                { name: 'Spring Boot 3.x', purpose: '메인 애플리케이션 프레임워크' },
+                { name: 'Spring Security', purpose: '인증 및 보안' },
+                { name: 'Spring WebSocket', purpose: '실시간 통신' },
+                { name: 'JPA/Hibernate', purpose: 'ORM 및 데이터 접근' },
+                { name: 'Apache Kafka', purpose: '이벤트 스트리밍' },
+                { name: 'Redis', purpose: '캐싱 및 세션 저장소' },
+                { name: 'Swagger', purpose: 'API 문서화' }
+            ]
+        },
+        infrastructure: {
+            title: 'Infrastructure (Data/Telecom Tier)',
+            technologies: [
+                { name: 'FreeSWITCH', purpose: 'PBX 및 통화 처리' },
+                { name: 'PostgreSQL', purpose: '주 데이터베이스' },
+                { name: 'MongoDB', purpose: '비정형 데이터 저장' },
+                { name: 'Elasticsearch', purpose: '로그 검색 및 분석' },
+                { name: 'Docker', purpose: '컨테이너화' },
+                { name: 'Kubernetes', purpose: '오케스트레이션' },
+                { name: 'NGINX', purpose: '로드 밸런서' }
+            ]
+        }
     };
 
-    const milestones = [
+    const riskAssessment = [
         {
-            phase: 'MVP 출시',
-            timeline: '7주 후',
-            description: 'Phase 1-3 완료 시 기본 콜센터 기능',
-            features: ['로그인/사용자 관리', '기본 통화 기능', '실시간 대시보드', '통화 기록']
-        },
-        {
-            phase: '완전 기능 버전',
-            timeline: '13주 후',
-            description: 'Phase 1-5 완료 시 고급 기능 포함',
-            features: ['모든 통화 기능', '통계/분석', 'CRM 연동', '고급 관리 기능']
-        },
-        {
-            phase: '프로덕션 배포',
-            timeline: '16주 후',
-            description: 'Phase 1-6 완료 시 상용 서비스',
-            features: ['안정성 보장', '자동 업데이트', '모니터링', '24/7 운영 가능']
-        }
-    ];
-
-    const riskFactors = [
-        {
-            risk: 'WebRTC 호환성 문제',
+            risk: 'PBX 통합 복잡성',
             probability: 'High',
             impact: 'High',
-            mitigation: 'SIP.js 백업 솔루션 준비'
+            mitigation: 'FreeSWITCH 전문가 영입 및 단계적 통합',
+            timeline: 'Phase 2'
         },
         {
-            risk: '성능 이슈 (대용량 데이터)',
+            risk: '대용량 트래픽 처리',
             probability: 'Medium',
             impact: 'High',
-            mitigation: '가상화 & 페이징 조기 적용'
+            mitigation: '점진적 스케일링 및 성능 테스트',
+            timeline: 'Phase 5'
         },
         {
-            risk: '음성 품질 문제',
+            risk: '실시간 동기화 이슈',
             probability: 'Medium',
-            impact: 'High',
-            mitigation: '네트워크 진단 도구 내장'
-        },
-        {
-            risk: '크로스 플랫폼 호환성',
-            probability: 'Low',
             impact: 'Medium',
-            mitigation: 'Tauri 공식 가이드 준수'
+            mitigation: 'WebSocket + Kafka 이중화',
+            timeline: 'Phase 3'
+        },
+        {
+            risk: '데이터 정합성 문제',
+            probability: 'Low',
+            impact: 'High',
+            mitigation: '트랜잭션 관리 및 데이터 검증',
+            timeline: 'Phase 1'
         }
     ];
 
@@ -201,10 +262,9 @@ const NexusCallHubManual = () => {
         switch (status) {
             case 'Completed': return 'bg-green-100 text-green-800';
             case 'In Progress': return 'bg-blue-100 text-blue-800';
-            case 'Planning': return 'bg-yellow-100 text-yellow-800';
+            case 'Planned': return 'bg-yellow-100 text-yellow-800';
             case 'Design': return 'bg-purple-100 text-purple-800';
             case 'Research': return 'bg-orange-100 text-orange-800';
-            case 'Planned': return 'bg-gray-100 text-gray-800';
             default: return 'bg-gray-100 text-gray-800';
         }
     };
@@ -232,54 +292,107 @@ const NexusCallHubManual = () => {
             {/* Header */}
             <div className="text-center space-y-4">
                 <h1 className="text-4xl font-bold text-gray-900">🏢 Nexus Call Hub</h1>
-                <p className="text-xl text-gray-600">콜센터 상담 시스템 개발 계획 메뉴얼</p>
+                <p className="text-xl text-gray-600">대규모 콜센터 상담 시스템 - 엔터프라이즈 아키텍처</p>
                 <div className="flex items-center justify-center space-x-2 text-sm text-gray-500">
                     <Calendar className="h-4 w-4" />
-                    <span>프로젝트 기간: 12-16주 (약 3-4개월)</span>
+                    <span>목표: 2,000명 동시 상담사 지원 | 개발 기간: 19주</span>
                 </div>
             </div>
 
-            {/* Current Status */}
-            <Card className="border-2 border-blue-200">
-                <CardHeader className="bg-blue-50">
-                    <CardTitle className="text-2xl text-blue-900 flex items-center gap-2">
-                        <CheckCircle className="h-6 w-6" />
-                        현재 완료 상황
+            {/* System Architecture */}
+            <Card className="border-2 border-indigo-200">
+                <CardHeader className="bg-indigo-50">
+                    <CardTitle className="text-2xl text-indigo-900 flex items-center gap-2">
+                        <Layers className="h-6 w-6" />
+                        엔터프라이즈 3-Tier 아키텍처
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="pt-6">
-                    <div className="grid md:grid-cols-2 gap-6">
-                        <div>
-                            <h3 className="text-lg font-semibold mb-3 text-green-700">✅ 완료된 기능</h3>
-                            <ul className="space-y-2 text-gray-700">
-                                <li className="flex items-start space-x-2">
-                                    <span className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></span>
-                                    <span>Tauri + Vite + React + Tailwind + shadcn/ui 기본 셋업</span>
-                                </li>
-                                <li className="flex items-start space-x-2">
-                                    <span className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></span>
-                                    <span>TanStack Router 라우팅 시스템</span>
-                                </li>
-                                <li className="flex items-start space-x-2">
-                                    <span className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></span>
-                                    <span>멀티 윈도우 매니저 (window.rs)</span>
-                                </li>
-                                <li className="flex items-start space-x-2">
-                                    <span className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></span>
-                                    <span>런처 UI 및 기본 네비게이션</span>
-                                </li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h3 className="text-lg font-semibold mb-3 text-blue-700">🔄 다음 단계</h3>
-                            <div className="space-y-3">
-                                <div className="p-3 bg-blue-50 rounded-lg">
-                                    <div className="font-medium text-blue-800">Phase 1: 인증 시스템</div>
-                                    <div className="text-sm text-blue-600">로그인/사용자 관리 구축</div>
+                    <div className="space-y-6">
+                        {/* Presentation Tier */}
+                        <div className="border rounded-lg p-4 bg-blue-50">
+                            <div className="flex items-center gap-3 mb-4">
+                                {systemArchitecture.presentationTier.icon}
+                                <h3 className="text-lg font-semibold text-blue-800">
+                                    {systemArchitecture.presentationTier.title}
+                                </h3>
+                            </div>
+                            <div className="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <h4 className="font-medium mb-2">핵심 기술</h4>
+                                    <div className="flex flex-wrap gap-1">
+                                        {systemArchitecture.presentationTier.technologies.map((tech, idx) => (
+                                            <Badge key={idx} variant="outline" className="text-xs">{tech}</Badge>
+                                        ))}
+                                    </div>
                                 </div>
-                                <div className="p-3 bg-purple-50 rounded-lg">
-                                    <div className="font-medium text-purple-800">Phase 2: 통화 시스템</div>
-                                    <div className="text-sm text-purple-600">WebRTC 기반 통화 기능</div>
+                                <div>
+                                    <h4 className="font-medium mb-2">주요 책임</h4>
+                                    <ul className="text-sm space-y-1">
+                                        {systemArchitecture.presentationTier.responsibilities.slice(0, 3).map((resp, idx) => (
+                                            <li key={idx} className="text-gray-600">• {resp}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="text-center text-gray-400 text-sm">⬇ REST API + WebSocket ⬇</div>
+
+                        {/* Business Logic Tier */}
+                        <div className="border rounded-lg p-4 bg-green-50">
+                            <div className="flex items-center gap-3 mb-4">
+                                {systemArchitecture.businessTier.icon}
+                                <h3 className="text-lg font-semibold text-green-800">
+                                    {systemArchitecture.businessTier.title}
+                                </h3>
+                            </div>
+                            <div className="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <h4 className="font-medium mb-2">핵심 기술</h4>
+                                    <div className="flex flex-wrap gap-1">
+                                        {systemArchitecture.businessTier.technologies.map((tech, idx) => (
+                                            <Badge key={idx} variant="outline" className="text-xs">{tech}</Badge>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 className="font-medium mb-2">주요 책임</h4>
+                                    <ul className="text-sm space-y-1">
+                                        {systemArchitecture.businessTier.responsibilities.slice(0, 3).map((resp, idx) => (
+                                            <li key={idx} className="text-gray-600">• {resp}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="text-center text-gray-400 text-sm">⬇ PBX Protocol (ESL/AMI) ⬇</div>
+
+                        {/* Data/Telecom Tier */}
+                        <div className="border rounded-lg p-4 bg-orange-50">
+                            <div className="flex items-center gap-3 mb-4">
+                                {systemArchitecture.dataTier.icon}
+                                <h3 className="text-lg font-semibold text-orange-800">
+                                    {systemArchitecture.dataTier.title}
+                                </h3>
+                            </div>
+                            <div className="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <h4 className="font-medium mb-2">핵심 기술</h4>
+                                    <div className="flex flex-wrap gap-1">
+                                        {systemArchitecture.dataTier.technologies.map((tech, idx) => (
+                                            <Badge key={idx} variant="outline" className="text-xs">{tech}</Badge>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 className="font-medium mb-2">주요 책임</h4>
+                                    <ul className="text-sm space-y-1">
+                                        {systemArchitecture.dataTier.responsibilities.slice(0, 3).map((resp, idx) => (
+                                            <li key={idx} className="text-gray-600">• {resp}</li>
+                                        ))}
+                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -287,40 +400,58 @@ const NexusCallHubManual = () => {
                 </CardContent>
             </Card>
 
-            {/* Tech Stack Overview */}
+            {/* Scalability Metrics */}
+            <Card className="border-2 border-green-200">
+                <CardHeader className="bg-green-50">
+                    <CardTitle className="text-2xl text-green-900">🎯 확장성 목표 지표</CardTitle>
+                </CardHeader>
+                <CardContent className="pt-6">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {scalabilityMetrics.map((metric, idx) => (
+                            <div key={idx} className="bg-white border rounded-lg p-4">
+                                <h3 className="font-semibold text-gray-800 mb-2">{metric.metric}</h3>
+                                <div className="space-y-2">
+                                    <div className="text-sm">
+                                        <span className="text-gray-500">현재: </span>
+                                        <span className="font-medium text-blue-600">{metric.current}</span>
+                                    </div>
+                                    <div className="text-sm">
+                                        <span className="text-gray-500">목표: </span>
+                                        <span className="font-medium text-green-600">{metric.target}</span>
+                                    </div>
+                                    <div className="text-xs text-gray-600">
+                                        {metric.strategy}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </CardContent>
+            </Card>
+
+            {/* Technology Stack */}
             <Card>
                 <CardHeader>
                     <CardTitle className="text-2xl flex items-center gap-2">
                         <Database className="h-6 w-6" />
-                        기술 스택 현황
+                        기술 스택 상세
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
                     <div className="grid md:grid-cols-3 gap-6">
-                        <div>
-                            <h3 className="text-lg font-semibold mb-3 text-blue-700">Frontend</h3>
-                            <div className="space-y-2">
-                                {currentTechStack.frontend.map((tech, idx) => (
-                                    <Badge key={idx} variant="outline" className="mr-1 mb-1">{tech}</Badge>
-                                ))}
+                        {Object.entries(technologyStack).map(([key, stack]) => (
+                            <div key={key} className="space-y-4">
+                                <h3 className="text-lg font-semibold text-gray-800">{stack.title}</h3>
+                                <div className="space-y-3">
+                                    {stack.technologies.map((tech, idx) => (
+                                        <div key={idx} className="border rounded-lg p-3">
+                                            <div className="font-medium text-sm text-gray-800">{tech.name}</div>
+                                            <div className="text-xs text-gray-600 mt-1">{tech.purpose}</div>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <h3 className="text-lg font-semibold mb-3 text-green-700">Backend</h3>
-                            <div className="space-y-2">
-                                {currentTechStack.backend.map((tech, idx) => (
-                                    <Badge key={idx} variant="outline" className="mr-1 mb-1">{tech}</Badge>
-                                ))}
-                            </div>
-                        </div>
-                        <div>
-                            <h3 className="text-lg font-semibold mb-3 text-purple-700">Communication</h3>
-                            <div className="space-y-2">
-                                {currentTechStack.communication.map((tech, idx) => (
-                                    <Badge key={idx} variant="outline" className="mr-1 mb-1">{tech}</Badge>
-                                ))}
-                            </div>
-                        </div>
+                        ))}
                     </div>
                 </CardContent>
             </Card>
@@ -341,7 +472,7 @@ const NexusCallHubManual = () => {
                                         <div>
                                             <CardTitle className="text-xl">Phase {index + 1}: {phase.title}</CardTitle>
                                             <p className="text-sm text-gray-500">{phase.subtitle}</p>
-                                            <p className="text-xs text-blue-600 font-medium">예상 소요 시간: {phase.duration}</p>
+                                            <p className="text-xs text-blue-600 font-medium">소요 시간: {phase.duration}</p>
                                         </div>
                                     </div>
                                     <div className="flex items-center space-x-2">
@@ -402,29 +533,6 @@ const NexusCallHubManual = () => {
                 </div>
             </div>
 
-            {/* Milestones */}
-            <Card className="border-2 border-green-200">
-                <CardHeader className="bg-green-50">
-                    <CardTitle className="text-2xl text-green-900">🎯 프로젝트 마일스톤</CardTitle>
-                </CardHeader>
-                <CardContent className="pt-6">
-                    <div className="grid md:grid-cols-3 gap-6">
-                        {milestones.map((milestone, idx) => (
-                            <div key={idx} className="text-center p-4 border rounded-lg">
-                                <div className="text-xl font-bold text-blue-600 mb-2">{milestone.phase}</div>
-                                <div className="text-lg text-gray-800 mb-2">{milestone.timeline}</div>
-                                <div className="text-sm text-gray-600 mb-3">{milestone.description}</div>
-                                <div className="space-y-1">
-                                    {milestone.features.map((feature, featureIdx) => (
-                                        <div key={featureIdx} className="text-xs text-gray-500">• {feature}</div>
-                                    ))}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </CardContent>
-            </Card>
-
             {/* Risk Assessment */}
             <Card className="border-2 border-orange-200">
                 <CardHeader className="bg-orange-50">
@@ -439,10 +547,11 @@ const NexusCallHubManual = () => {
                                     <th className="text-center py-3 px-4 font-semibold">발생 확률</th>
                                     <th className="text-center py-3 px-4 font-semibold">영향도</th>
                                     <th className="text-left py-3 px-4 font-semibold">대응 방안</th>
+                                    <th className="text-center py-3 px-4 font-semibold">시점</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {riskFactors.map((risk, idx) => (
+                                {riskAssessment.map((risk, idx) => (
                                     <tr key={idx} className="border-b hover:bg-gray-50">
                                         <td className="py-3 px-4 text-gray-800">{risk.risk}</td>
                                         <td className="py-3 px-4 text-center">
@@ -456,6 +565,7 @@ const NexusCallHubManual = () => {
                                             </Badge>
                                         </td>
                                         <td className="py-3 px-4 text-gray-600">{risk.mitigation}</td>
+                                        <td className="py-3 px-4 text-center text-sm text-gray-500">{risk.timeline}</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -464,52 +574,73 @@ const NexusCallHubManual = () => {
                 </CardContent>
             </Card>
 
-            {/* Key Benefits */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="text-2xl">💡 기대 효과</CardTitle>
+            {/* Success Criteria */}
+            <Card className="border-2 border-purple-200">
+                <CardHeader className="bg-purple-50">
+                    <CardTitle className="text-2xl text-purple-900">🏆 성공 기준</CardTitle>
                 </CardHeader>
-                <CardContent>
-                    <div className="grid md:grid-cols-2 gap-6">
+                <CardContent className="pt-6">
+                    <div className="grid md:grid-cols-3 gap-6">
                         <div className="space-y-4">
-                            <h3 className="text-lg font-semibold text-blue-800">🔧 기술적 효과</h3>
+                            <h3 className="text-lg font-semibold text-purple-800">📈 성능 지표</h3>
                             <ul className="space-y-2 text-gray-700">
                                 <li className="flex items-start space-x-2">
-                                    <span className="text-blue-500 mt-1">•</span>
-                                    <span>Tauri 기반 네이티브 성능의 데스크톱 앱</span>
+                                    <span className="text-purple-500 mt-1">•</span>
+                                    <span>2,000명 동시 상담사 지원</span>
                                 </li>
                                 <li className="flex items-start space-x-2">
-                                    <span className="text-blue-500 mt-1">•</span>
-                                    <span>WebRTC를 통한 실시간 음성 통신</span>
+                                    <span className="text-purple-500 mt-1">•</span>
+                                    <span>1,500개 동시 통화 처리</span>
                                 </li>
                                 <li className="flex items-start space-x-2">
-                                    <span className="text-blue-500 mt-1">•</span>
-                                    <span>멀티 윈도우 시스템으로 효율적인 UI/UX</span>
+                                    <span className="text-purple-500 mt-1">•</span>
+                                    <span>응답 시간 50ms 이하 유지</span>
                                 </li>
                                 <li className="flex items-start space-x-2">
-                                    <span className="text-blue-500 mt-1">•</span>
-                                    <span>TypeScript + React로 유지보수성 향상</span>
+                                    <span className="text-purple-500 mt-1">•</span>
+                                    <span>99.9% 시스템 가용성</span>
                                 </li>
                             </ul>
                         </div>
                         <div className="space-y-4">
-                            <h3 className="text-lg font-semibold text-green-800">💼 비즈니스 효과</h3>
+                            <h3 className="text-lg font-semibold text-blue-800">🔧 기술적 목표</h3>
+                            <ul className="space-y-2 text-gray-700">
+                                <li className="flex items-start space-x-2">
+                                    <span className="text-blue-500 mt-1">•</span>
+                                    <span>마이크로서비스 아키텍처 구현</span>
+                                </li>
+                                <li className="flex items-start space-x-2">
+                                    <span className="text-blue-500 mt-1">•</span>
+                                    <span>자동 스케일링 시스템</span>
+                                </li>
+                                <li className="flex items-start space-x-2">
+                                    <span className="text-blue-500 mt-1">•</span>
+                                    <span>실시간 모니터링 구축</span>
+                                </li>
+                                <li className="flex items-start space-x-2">
+                                    <span className="text-blue-500 mt-1">•</span>
+                                    <span>코드 커버리지 80% 이상</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div className="space-y-4">
+                            <h3 className="text-lg font-semibold text-green-800">💼 비즈니스 목표</h3>
                             <ul className="space-y-2 text-gray-700">
                                 <li className="flex items-start space-x-2">
                                     <span className="text-green-500 mt-1">•</span>
-                                    <span>콜센터 상담 효율성 극대화</span>
+                                    <span>상담 효율성 30% 향상</span>
                                 </li>
                                 <li className="flex items-start space-x-2">
                                     <span className="text-green-500 mt-1">•</span>
-                                    <span>실시간 모니터링으로 서비스 품질 향상</span>
+                                    <span>운영 비용 25% 절감</span>
                                 </li>
                                 <li className="flex items-start space-x-2">
                                     <span className="text-green-500 mt-1">•</span>
-                                    <span>데이터 기반 의사결정 지원</span>
+                                    <span>고객 만족도 4.5/5.0 달성</span>
                                 </li>
                                 <li className="flex items-start space-x-2">
                                     <span className="text-green-500 mt-1">•</span>
-                                    <span>확장 가능한 시스템 아키텍처</span>
+                                    <span>시장 출시 6개월 단축</span>
                                 </li>
                             </ul>
                         </div>
@@ -519,8 +650,11 @@ const NexusCallHubManual = () => {
 
             {/* Footer */}
             <div className="text-center py-8 border-t">
-                <p className="text-gray-500">
-                    📞 Nexus Call Hub - 차세대 콜센터 상담 시스템 | 개발 기간: 12-16주
+                <p className="text-gray-500 mb-2">
+                    📞 Nexus Call Hub - 대규모 엔터프라이즈 콜센터 시스템
+                </p>
+                <p className="text-sm text-gray-400">
+                    목표: 2,000명 동시 상담사 | 개발 기간: 19주 | 3-Tier 아키텍처
                 </p>
             </div>
         </div>
