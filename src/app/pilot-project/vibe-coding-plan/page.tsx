@@ -1,5 +1,3 @@
-// src\app\pilot-project\vibe-coding-plan\page.tsx
-
 "use client";
 
 import React, { useState } from 'react';
@@ -21,7 +19,11 @@ import {
     Shield,
     Globe,
     Code,
-    Filter
+    Filter,
+    Settings,
+    Network,
+    Cpu,
+    GitBranch
 } from 'lucide-react';
 
 interface Course {
@@ -29,12 +31,13 @@ interface Course {
     title: string;
     description: string;
     url: string;
-    category: 'AI/ML' | 'Data' | 'Development' | 'Design';
+    category: 'AI/ML' | 'Data' | 'Development' | 'Design' | 'Business';
     level: 'Beginner' | 'Intermediate' | 'Advanced';
     duration: string;
     skills: string[];
     icon: React.ReactNode;
     platform: 'Inflearn' | 'FastCampus';
+    instructor?: string;
 }
 
 const VibeCodingPlan: React.FC = () => {
@@ -42,6 +45,7 @@ const VibeCodingPlan: React.FC = () => {
     const [hoveredCard, setHoveredCard] = useState<string | null>(null);
 
     const courses: Course[] = [
+        // Inflearn 강의들
         {
             id: 'llama-roadmap',
             title: '라마 활용 로드맵',
@@ -150,6 +154,8 @@ const VibeCodingPlan: React.FC = () => {
             icon: <BarChart3 className="w-4 h-4" />,
             platform: 'Inflearn'
         },
+        
+        // FastCampus 기존 강의들
         {
             id: 'fastcampus-nlp',
             title: 'Data Science & NLP 종합 과정',
@@ -173,6 +179,69 @@ const VibeCodingPlan: React.FC = () => {
             skills: ['RAG', 'Vector Database', 'LLM', 'AI Engineering'],
             icon: <Shield className="w-4 h-4" />,
             platform: 'FastCampus'
+        },
+
+        // 새로 추가된 FastCampus 강의들
+        {
+            id: 'jo-daeheop-series',
+            title: '조대협의 항로 시리즈',
+            description: '조대협 강사의 백엔드 개발 전문 과정 시리즈',
+            url: 'https://fastcampus.co.kr/search?keyword=조대협의%20항로',
+            category: 'Development',
+            level: 'Advanced',
+            duration: '24주',
+            skills: ['Backend', 'Spring', 'MSA', 'Architecture'],
+            icon: <Code className="w-4 h-4" />,
+            platform: 'FastCampus',
+            instructor: '조대협'
+        },
+        {
+            id: 'spring-ai',
+            title: 'Spring AI 완전 정복',
+            description: 'Spring Framework와 AI를 결합한 차세대 애플리케이션 개발',
+            url: 'https://fastcampus.co.kr/dev_online_springai',
+            category: 'AI/ML',
+            level: 'Intermediate',
+            duration: '12주',
+            skills: ['Spring AI', 'Java', 'Spring Boot', 'AI Integration'],
+            icon: <Bot className="w-4 h-4" />,
+            platform: 'FastCampus'
+        },
+        {
+            id: 'codefactory-mcp',
+            title: '코드 팩토리 MCP Study',
+            description: 'Model Context Protocol 실무 활용 스터디',
+            url: 'https://fastcampus.co.kr/biz_online_codefactory',
+            category: 'Business',
+            level: 'Intermediate',
+            duration: '8주',
+            skills: ['MCP', 'Business Automation', 'Protocol Design', 'API Development'],
+            icon: <Settings className="w-4 h-4" />,
+            platform: 'FastCampus'
+        },
+        {
+            id: 'work-automation',
+            title: '업무 자동화 마스터 클래스',
+            description: 'AI와 자동화 도구를 활용한 업무 효율성 극대화',
+            url: 'https://fastcampus.co.kr/biz_online_mcpn8n',
+            category: 'Business',
+            level: 'Beginner',
+            duration: '10주',
+            skills: ['N8N', 'Automation', 'Workflow', 'Business Process'],
+            icon: <Zap className="w-4 h-4" />,
+            platform: 'FastCampus'
+        },
+        {
+            id: 'ai-agent-fullcourse',
+            title: 'AI Agent Full Course - GraphRAG',
+            description: 'GraphRAG를 활용한 차세대 AI 에이전트 완전 정복',
+            url: 'https://fastcampus.co.kr/data_online_graphrag',
+            category: 'AI/ML',
+            level: 'Advanced',
+            duration: '16주',
+            skills: ['GraphRAG', 'Knowledge Graph', 'Multi-Agent System', 'Advanced RAG'],
+            icon: <Network className="w-4 h-4" />,
+            platform: 'FastCampus'
         }
     ];
 
@@ -181,7 +250,8 @@ const VibeCodingPlan: React.FC = () => {
         { id: 'AI/ML', name: 'AI/ML', icon: <Brain className="w-4 h-4" /> },
         { id: 'Data', name: '데이터', icon: <BarChart3 className="w-4 h-4" /> },
         { id: 'Development', name: '개발', icon: <Code className="w-4 h-4" /> },
-        { id: 'Design', name: '디자인', icon: <Palette className="w-4 h-4" /> }
+        { id: 'Design', name: '디자인', icon: <Palette className="w-4 h-4" /> },
+        { id: 'Business', name: '비즈니스', icon: <Settings className="w-4 h-4" /> }
     ];
 
     const filteredCourses = activeCategory === 'all'
@@ -205,6 +275,14 @@ const VibeCodingPlan: React.FC = () => {
         }
     };
 
+    const getCategoryStats = () => {
+        const stats = categories.slice(1).map(category => ({
+            ...category,
+            count: courses.filter(course => course.category === category.id).length
+        }));
+        return stats;
+    };
+
     return (
         <div className="min-h-screen bg-gray-50/50">
             {/* Header */}
@@ -221,7 +299,7 @@ const VibeCodingPlan: React.FC = () => {
                     </div>
                     <div className="ml-auto flex items-center space-x-2">
                         <div className="rounded-md bg-secondary px-2 py-1 text-xs font-medium">
-                            11개 코스
+                            {courses.length}개 코스
                         </div>
                         <div className="rounded-md bg-secondary px-2 py-1 text-xs font-medium">
                             AI 전문가 과정
@@ -235,24 +313,51 @@ const VibeCodingPlan: React.FC = () => {
                 <div className="mb-8">
                     <h2 className="text-3xl font-bold tracking-tight">AI 전문가 과정</h2>
                     <p className="text-muted-foreground mt-2">
-                        LLM부터 RAG, MCP, LangGraph까지 최신 AI 기술을 마스터하고 차세대 AI 전문가로 성장하세요
+                        LLM부터 RAG, MCP, LangGraph, Spring AI까지 최신 AI 기술을 마스터하고 차세대 AI 전문가로 성장하세요
                     </p>
                 </div>
 
-                {/* Stats Cards */}
+                {/* Enhanced Stats Cards */}
                 <div className="grid gap-4 md:grid-cols-4 mb-8">
-                    {[
-                        { icon: <Target className="h-4 w-4" />, value: '11+', label: '전문 코스' },
-                        { icon: <Clock className="h-4 w-4" />, value: '100+', label: '학습 시간' },
-                        { icon: <Star className="h-4 w-4" />, value: '4.9', label: '평균 평점' },
-                        { icon: <Users className="h-4 w-4" />, value: '5000+', label: '수강생' }
-                    ].map((stat, index) => (
-                        <div key={index} className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
-                            <div className="flex items-center space-x-2">
-                                <div className="text-muted-foreground">{stat.icon}</div>
-                                <div className="text-2xl font-bold">{stat.value}</div>
+                    <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+                        <div className="flex items-center space-x-2">
+                            <div className="text-muted-foreground"><Target className="h-4 w-4" /></div>
+                            <div className="text-2xl font-bold">{courses.length}+</div>
+                        </div>
+                        <p className="text-sm text-muted-foreground mt-1">전문 코스</p>
+                    </div>
+                    <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+                        <div className="flex items-center space-x-2">
+                            <div className="text-muted-foreground"><Clock className="h-4 w-4" /></div>
+                            <div className="text-2xl font-bold">150+</div>
+                        </div>
+                        <p className="text-sm text-muted-foreground mt-1">학습 시간</p>
+                    </div>
+                    <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+                        <div className="flex items-center space-x-2">
+                            <div className="text-muted-foreground"><Star className="h-4 w-4" /></div>
+                            <div className="text-2xl font-bold">4.9</div>
+                        </div>
+                        <p className="text-sm text-muted-foreground mt-1">평균 평점</p>
+                    </div>
+                    <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+                        <div className="flex items-center space-x-2">
+                            <div className="text-muted-foreground"><Users className="h-4 w-4" /></div>
+                            <div className="text-2xl font-bold">10K+</div>
+                        </div>
+                        <p className="text-sm text-muted-foreground mt-1">수강생</p>
+                    </div>
+                </div>
+
+                {/* Category Overview */}
+                <div className="grid gap-4 md:grid-cols-5 mb-8">
+                    {getCategoryStats().map((category) => (
+                        <div key={category.id} className="rounded-lg border bg-card text-card-foreground shadow-sm p-4 text-center">
+                            <div className="flex justify-center mb-2 text-muted-foreground">
+                                {category.icon}
                             </div>
-                            <p className="text-sm text-muted-foreground mt-1">{stat.label}</p>
+                            <div className="text-lg font-bold">{category.count}</div>
+                            <p className="text-xs text-muted-foreground">{category.name}</p>
                         </div>
                     ))}
                 </div>
@@ -268,13 +373,19 @@ const VibeCodingPlan: React.FC = () => {
                             <button
                                 key={category.id}
                                 onClick={() => setActiveCategory(category.id)}
-                                className={`inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${activeCategory === category.id
+                                className={`inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+                                    activeCategory === category.id
                                         ? 'bg-primary text-primary-foreground shadow hover:bg-primary/90'
                                         : 'border border-input bg-background hover:bg-accent hover:text-accent-foreground'
-                                    }`}
+                                }`}
                             >
                                 {category.icon}
                                 <span className="ml-2">{category.name}</span>
+                                {activeCategory !== 'all' && activeCategory === category.id && (
+                                    <span className="ml-2 bg-primary-foreground/20 text-xs px-1 py-0.5 rounded">
+                                        {filteredCourses.length}
+                                    </span>
+                                )}
                             </button>
                         ))}
                     </div>
@@ -299,6 +410,11 @@ const VibeCodingPlan: React.FC = () => {
                                         <h3 className="font-semibold leading-none tracking-tight text-sm">
                                             {course.title}
                                         </h3>
+                                        {course.instructor && (
+                                            <p className="text-xs text-blue-600 font-medium">
+                                                {course.instructor} 강사
+                                            </p>
+                                        )}
                                         <div className="flex items-center space-x-2">
                                             <span className={`inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-semibold ${getPlatformColor(course.platform)}`}>
                                                 {course.platform}
@@ -347,8 +463,9 @@ const VibeCodingPlan: React.FC = () => {
                                     href={course.url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className={`inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${hoveredCard === course.id ? 'scale-[1.02]' : ''
-                                        }`}
+                                    className={`inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-all hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+                                        hoveredCard === course.id ? 'scale-[1.02]' : ''
+                                    }`}
                                 >
                                     강의 보러가기
                                     <ChevronRight className="ml-2 h-4 w-4" />
@@ -356,6 +473,37 @@ const VibeCodingPlan: React.FC = () => {
                             </div>
                         </div>
                     ))}
+                </div>
+
+                {/* Special Highlights */}
+                <div className="mt-12 grid gap-6 md:grid-cols-2">
+                    <div className="rounded-lg border bg-gradient-to-br from-blue-50 to-indigo-50 p-6">
+                        <div className="flex items-center space-x-2 mb-3">
+                            <Code className="h-5 w-5 text-blue-600" />
+                            <h3 className="text-lg font-semibold text-blue-900">조대협의 항로 시리즈</h3>
+                        </div>
+                        <p className="text-blue-800 text-sm mb-4">
+                            백엔드 개발의 거장 조대협 강사의 실무 중심 시리즈 강의
+                        </p>
+                        <div className="flex items-center space-x-2 text-sm text-blue-700">
+                            <GitBranch className="h-4 w-4" />
+                            <span>Spring · MSA · Architecture</span>
+                        </div>
+                    </div>
+                    
+                    <div className="rounded-lg border bg-gradient-to-br from-purple-50 to-pink-50 p-6">
+                        <div className="flex items-center space-x-2 mb-3">
+                            <Network className="h-5 w-5 text-purple-600" />
+                            <h3 className="text-lg font-semibold text-purple-900">GraphRAG 전문가 과정</h3>
+                        </div>
+                        <p className="text-purple-800 text-sm mb-4">
+                            차세대 RAG 기술인 GraphRAG를 마스터하는 고급 AI 과정
+                        </p>
+                        <div className="flex items-center space-x-2 text-sm text-purple-700">
+                            <Cpu className="h-4 w-4" />
+                            <span>Knowledge Graph · Multi-Agent</span>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Call to Action */}
@@ -391,10 +539,15 @@ const VibeCodingPlan: React.FC = () => {
                         </p>
                     </div>
                     <div className="flex justify-center items-center gap-6 text-sm text-muted-foreground">
-                        <span>11개 전문 과정</span>
+                        <span>{courses.length}개 전문 과정</span>
                         <span>AI/ML 특화</span>
                         <span>실무 프로젝트</span>
                         <span>커뮤니티 지원</span>
+                    </div>
+                    <div className="mt-4 pt-4 border-t">
+                        <p className="text-xs text-muted-foreground">
+                            🚀 최신 AI 기술을 활용하여 미래 기술을 선도하는 개발자가 되세요!
+                        </p>
                     </div>
                 </div>
             </footer>
