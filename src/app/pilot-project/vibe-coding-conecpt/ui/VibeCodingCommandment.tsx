@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react';
 import {
-    Code, Zap, Bot, Rocket, Share2, Target, DollarSign,
-    Battery, Sword, Trophy, CheckCircle, Clock, ChevronRight,
-    BookOpen, ExternalLink
+    Zap, Shield, Rocket, Settings, Server, Eye, Users,
+    Users2, Activity, FlaskConical, Plane, CheckCircle,
+    Clock, ChevronRight, BookOpen, ExternalLink, Target,
+    Star, Code, Package, Wrench
 } from 'lucide-react';
 
 interface CommandmentData {
@@ -22,324 +23,409 @@ interface CommandmentData {
         timeframe: string;
         tools: string[];
     };
-    courses: { title: string; url: string; }[];
+    references: { title: string; url: string; }[];
+    boilerplates: { title: string; description: string; tech: string; url: string; }[];
 }
 
-const VibeCodingCommandment = () => {
+const VibeCodingCommandmentV3 = () => {
     const [hoveredCard, setHoveredCard] = useState<number | null>(null);
     const [selectedCard, setSelectedCard] = useState<number | null>(null);
 
     const commandments: CommandmentData[] = [
         {
             id: 1,
-            icon: <Code className="w-6 h-6" />,
-            title: "시스템 설계자, 아키텍트 전문가, 풀스택 개발의 시대가 도래",
-            subtitle: "한 명이 전체 시스템을 설계하고 구현하는 시대",
-            description: "마이크로서비스부터 프론트엔드까지 전체 아키텍처를 설계할 수 있는 풀스택 아키텍트가 필요하다. 단순 코딩이 아닌 시스템 전체를 조망하고, 확장성과 유지보수성을 고려한 설계 능력이 핵심 경쟁력이다. 아키텍처는 전략 전술이자 무기 체계이며, 아키텍처는 기세 싸움이고, 아키텍처 품질은 반도체처럼 거의 하드웨어나 마찬가지다.",
-            action: "프로젝트 요구사항을 들으면 30분 내로 전체 시스템 아키텍처 설계 완료",
+            icon: <Zap className="w-6 h-6" />,
+            title: "엘리베이터, 에스컬레이터, 눈치우는 기계 같은 편리함",
+            subtitle: "사용자가 생각하기도 전에 문제를 해결하는 직관적 시스템",
+            description: "버튼 하나로 모든 것이 해결되는 엘리베이터처럼, 복잡한 비즈니스 로직을 단순하고 직관적인 인터페이스로 추상화하라. 사용자는 내부 구조를 몰라도 되고, 개발자는 확장 가능한 아키텍처를 구축해야 한다. 진정한 편리함은 복잡성을 숨기는 것이 아니라 올바르게 관리하는 것이다.",
+            action: "복잡한 워크플로우를 3단계 이하로 단순화, UX 만족도 95% 이상 달성",
             actionPlan: {
-                title: "풀스택 아키텍트 로드맵",
-                category: "설계",
+                title: "직관적 시스템 설계",
+                category: "UX/UI",
                 priority: "높음",
                 steps: [
-                    "마이크로서비스 패턴 12가지 학습 완료",
-                    "AWS/K8s 환경에서 3개 프로젝트 배포",
-                    "시스템 설계 면접 문제 50개 풀이",
-                    "실제 프로젝트 아키텍처 문서 3개 작성"
+                    "사용자 여정 맵핑 및 Pain Point 분석",
+                    "원클릭 솔루션 및 자동화 워크플로우 설계",
+                    "Progressive Disclosure 패턴으로 복잡성 관리",
+                    "A/B 테스트로 사용성 지속 개선",
+                    "접근성(WCAG 2.1) 및 반응형 설계 완성"
                 ],
-                timeframe: "3개월",
-                tools: ["AWS", "Kubernetes", "Docker", "Microservices"]
+                timeframe: "8주",
+                tools: ["Figma", "React", "TypeScript", "Framer Motion", "Analytics"]
             },
-            courses: [
-                { title: "Golang 마이크로서비스", url: "https://fastcampus.co.kr/dev_online_golang" },
-                { title: "SQL 및 데이터베이스", url: "https://fastcampus.co.kr/biz_online_sqlwai" },
-                { title: "Vibe Coder 개발", url: "https://fastcampus.co.kr/dev_online_vibecoder" },
-                { title: "DevOps Kubernetes", url: "https://fastcampus.co.kr/dev_online_devops_kubernetes" },
-                { title: "Docker & Kubernetes", url: "https://fastcampus.co.kr/dev_online_dk" },
-                { title: "Spring Batch", url: "https://fastcampus.co.kr/dev_online_springbatch" },
-                { title: "업무자동화 AI 에이전트", url: "https://www.inflearn.com/course/회사에서-바로쓰는-업무자동화-ai에이전트" },
-                { title: "MSA Workshop", url: "https://fastcampus.co.kr/dev_online_msaworkshop2" },
-                { title: "Spring Cloud 마이크로서비스", url: "https://www.inflearn.com/course/스프링-클라우드-마이크로서비스" },
-                { title: "Spring Cloud MSA", url: "https://www.inflearn.com/search?s=Spring+Cloud로+개발하는+마이크로서비스+애플리케이션(MSA)" }
+            references: [
+                { title: "사용자 경험 설계", url: "https://www.nngroup.com/articles/" },
+                { title: "직관적 인터페이스 원칙", url: "https://lawsofux.com/" },
+                { title: "Progressive Disclosure", url: "https://www.interaction-design.org/literature/article/progressive-disclosure" },
+                { title: "접근성 가이드라인", url: "https://www.w3.org/WAI/WCAG21/quickref/" },
+                { title: "Google Material Design", url: "https://material.io/design" },
+                { title: "Apple Human Interface", url: "https://developer.apple.com/design/human-interface-guidelines/" }
+            ],
+            boilerplates: [
+                { title: "React Admin Dashboard", description: "완전한 관리자 대시보드 템플릿", tech: "React + TypeScript", url: "https://github.com/marmelab/react-admin" },
+                { title: "Next.js SaaS Starter", description: "SaaS 앱을 위한 완전한 스타터 킷", tech: "Next.js + Prisma", url: "https://github.com/vercel/nextjs-subscription-payments" },
+                { title: "Chakra UI Components", description: "접근성을 고려한 UI 컴포넌트 라이브러리", tech: "React + Chakra UI", url: "https://chakra-ui.com/" },
+                { title: "Headless UI Templates", description: "완전히 접근 가능한 UI 컴포넌트", tech: "React + Tailwind", url: "https://headlessui.com/" }
             ]
         },
         {
             id: 2,
-            icon: <Zap className="w-6 h-6" />,
-            title: "속도가 품질을 결정한다: MVP → 반복 → 완성",
-            subtitle: "느린 완벽보다 빠른 개선",
-            description: "TDD, 핫 리로드, 라이브 코딩으로 피드백 루프를 극단적으로 단축하라. 기능 하나당 설계 10분, 구현 30분, 테스트 10분의 리듬을 만들어라. 속도가 느려지면 아키텍처를 의심하라. MVP는 최소 노력과 개발기간으로 반복주기를 한번 돌 수 있게 하는 제품이며, 빠른 프로토타이핑이 시장 검증의 핵심이다.",
-            action: "기능 요청부터 배포까지 4시간 내 완료 목표",
+            icon: <Shield className="w-6 h-6" />,
+            title: "전차 부대, 드론 같은 치열함",
+            subtitle: "정확하고 빠르며 목표 지향적인 개발 전략",
+            description: "전차가 장애물을 뚫고 나아가듯, 드론이 정확한 타겟을 노리듯, 개발에서도 명확한 목표와 전략으로 돌파구를 만들어라. 기술적 부채, 레거시 시스템, 성능 병목을 정면 돌파하고, 경쟁사보다 10배 빠른 솔루션으로 시장을 선점하라. 치열함 없이는 혁신도 없다.",
+            action: "핵심 성능 지표 30% 개선, 기술적 부채 50% 감소",
             actionPlan: {
-                title: "스피드 개발 루틴",
-                category: "속도",
+                title: "전략적 돌파 시스템",
+                category: "성능최적화",
                 priority: "높음",
                 steps: [
-                    "핫 리로드 개발 환경 구축 (Vite, Next.js)",
-                    "CI/CD 파이프라인 자동화 설정",
-                    "개발 → 테스트 → 배포 템플릿 구축",
-                    "1시간 단위로 개발 속도 측정 및 개선"
+                    "성능 병목 지점 정밀 분석 및 우선순위 설정",
+                    "레거시 코드 리팩토링 전략 수립",
+                    "자동화된 성능 모니터링 시스템 구축",
+                    "마이크로 최적화 vs 아키텍처 개선 균형점 찾기",
+                    "경쟁 분석 및 벤치마킹으로 목표 설정"
                 ],
-                timeframe: "6주",
-                tools: ["GitHub Actions", "Docker", "Vite", "Testing Tools"]
+                timeframe: "12주",
+                tools: ["Lighthouse", "WebPageTest", "New Relic", "DataDog", "Artillery"]
             },
-            courses: [
-                { title: "TDD 리팩토링 연습", url: "https://velog.io/@solar/자바지기-의식적인-연습으로-TDD-리팩토링-연습하기" },
-                { title: "MVP 개발 방법론", url: "https://geekdive-corp.com/column/mvp-methodology-guide" },
-                { title: "프로토타입 빠르게 만들기", url: "https://steemit.com/prototype/@mechuriya/mvp" },
-                { title: "MVP 앱 개발 가이드", url: "https://thecodest.co/ko/blog/mvp-제품을-성공적으로-구축하는-방법/" },
-                { title: "NodeJS 풀스택 개발", url: "https://codingnoona.thinkific.com/courses/4-nodejs" },
-                { title: "Next.js 풀스택", url: "https://codingapple.com/" },
-                { title: "DevPeople MVP 개발", url: "https://devpeople.kr/" },
-                { title: "애자일 개발 방법론", url: "https://k-rnd.com/product-development-and-mvp-methodology/" }
+            references: [
+                { title: "웹 성능 최적화", url: "https://web.dev/performance/" },
+                { title: "Core Web Vitals", url: "https://web.dev/vitals/" },
+                { title: "성능 모니터링", url: "https://developers.google.com/web/tools/lighthouse" },
+                { title: "레거시 시스템 개선", url: "https://martinfowler.com/articles/extract-composite-service.html" },
+                { title: "기술 부채 관리", url: "https://martinfowler.com/bliki/TechnicalDebt.html" },
+                { title: "성능 예산 설정", url: "https://web.dev/performance-budgets-101/" }
+            ],
+            boilerplates: [
+                { title: "Performance Monitoring Kit", description: "실시간 성능 모니터링 대시보드", tech: "Node.js + Grafana", url: "https://github.com/Unitech/pm2" },
+                { title: "Webpack Bundle Analyzer", description: "번들 사이즈 최적화 도구", tech: "Webpack Plugin", url: "https://github.com/webpack-contrib/webpack-bundle-analyzer" },
+                { title: "Lighthouse CI", description: "자동화된 성능 테스트 파이프라인", tech: "CI/CD + Lighthouse", url: "https://github.com/GoogleChrome/lighthouse-ci" },
+                { title: "React Performance Tools", description: "React 앱 성능 최적화 도구 모음", tech: "React + Profiler", url: "https://github.com/facebook/react/tree/main/packages/react-dom" }
             ]
         },
         {
             id: 3,
-            icon: <Bot className="w-6 h-6" />,
-            title: "AI 협업 마스터: 도구가 아닌 팀원으로 활용",
-            subtitle: "AI와 페어 프로그래밍하지 못하면 도태된다",
-            description: "GPT-4, Copilot, Cursor를 단순 코드 생성기로 쓰지 마라. 아키텍처 설계, 코드 리뷰, 문서화, 디버깅까지 AI와 협업하라. 인간은 전략과 창의, AI는 반복과 정확성을 담당하는 하이브리드 개발이 새로운 표준이다. Cursor는 코파일럿보다 훨씬 뛰어난 성능을 보여주며, AI IDE의 혁신이 개발 패러다임을 바꾸고 있다.",
-            action: "코딩 시간의 40%를 AI 협업으로 대체",
+            icon: <Rocket className="w-6 h-6" />,
+            title: "당위적 혁신에 대한 열망",
+            subtitle: "기존 방식을 파괴하고 새로운 패러다임을 창조한다",
+            description: "단순히 기능을 구현하는 것이 아니라, 왜 이 방식이어야 하는가를 끊임없이 질문하라. iPhone이 휴대폰의 정의를 바꾸고, Tesla가 자동차 산업을 혁신했듯이, 개발에서도 근본적 가정에 도전하고 완전히 새로운 접근 방식을 제시하라. 혁신은 선택이 아닌 당위다.",
+            action: "기존 솔루션 대비 혁신적 접근으로 10배 개선된 솔루션 개발",
             actionPlan: {
-                title: "AI 페어 프로그래밍",
-                category: "AI",
-                priority: "중간",
+                title: "패러다임 혁신 프로젝트",
+                category: "혁신",
+                priority: "높음",
                 steps: [
-                    "Claude/GPT-4 프롬프팅 기법 마스터",
-                    "Cursor IDE + Copilot 워크플로우 구축",
-                    "AI 코드 리뷰 자동화 시스템 구축",
-                    "매일 AI와 페어 프로그래밍 2시간 실행"
+                    "기존 시장 솔루션의 근본적 한계 분석",
+                    "First Principles 사고로 문제 재정의",
+                    "파괴적 기술(AI, Blockchain, WebAssembly) 적용 실험",
+                    "MVP로 혁신적 아이디어 빠른 검증",
+                    "특허 출원 및 기술 표준화 기여"
                 ],
-                timeframe: "4주",
-                tools: ["Claude", "Cursor", "GitHub Copilot", "Custom GPT"]
+                timeframe: "지속적",
+                tools: ["Figma", "Jupyter", "Docker", "Kubernetes", "TensorFlow"]
             },
-            courses: [
-                { title: "Cursor AI 마스터", url: "https://www.inflearn.com/course/ai-활용한-서비스-만들기-next14" },
-                { title: "바이브코딩 Cursor AI", url: "https://fastcampus.co.kr/data_online_vibecoding" },
-                { title: "AI 코딩 솔루션 비교", url: "https://reviewinsight.blog/2025/05/29/바이브-코딩-ai-코딩-솔루션-5종-비교-cursor-ai-copilot-replit-tabnine/" },
-                { title: "Cursor vs Copilot", url: "https://clickup.com/ko/blog/474329/cursor-vs-copilot" },
-                { title: "Windsurf vs Cursor", url: "https://apidog.com/kr/blog/windsurf-cursor-cline-github-copilot-kr/" },
-                { title: "Cursor AI 개발 후기", url: "https://ash-tensor.github.io/web/리뷰/2024/11/02/cursor-ai-review.html" },
-                { title: "Cursor AI 대안들", url: "https://apidog.com/kr/blog/top-10-cursor-ai-alternatives-2/" },
-                { title: "진짜 AI 코드 에디터", url: "https://velog.io/@junghoon0112/진짜-AI-코드-에디터의-등장-feat.-써보고-vscode-바로-지움" }
+            references: [
+                { title: "파괴적 혁신 이론", url: "https://hbr.org/2015/12/what-is-disruptive-innovation" },
+                { title: "First Principles Thinking", url: "https://jamesclear.com/first-principles" },
+                { title: "Design Thinking Process", url: "https://www.interaction-design.org/literature/topics/design-thinking" },
+                { title: "Lean Startup 방법론", url: "http://theleanstartup.com/" },
+                { title: "혁신의 딜레마", url: "https://www.claytonchristensen.com/books/the-innovators-dilemma/" },
+                { title: "Exponential Organizations", url: "https://www.openexo.com/" }
+            ],
+            boilerplates: [
+                { title: "AI-Powered Web App", description: "AI 기능이 통합된 웹 애플리케이션", tech: "Next.js + OpenAI", url: "https://github.com/vercel/ai" },
+                { title: "Blockchain DApp Starter", description: "탈중앙화 앱 개발 스타터 킷", tech: "React + Web3.js", url: "https://github.com/austintgriffith/scaffold-eth" },
+                { title: "WebAssembly Toolkit", description: "고성능 웹 앱을 위한 WASM 도구", tech: "Rust + WASM", url: "https://github.com/rustwasm/wasm-pack" },
+                { title: "Edge Computing Template", description: "엣지 컴퓨팅 애플리케이션 템플릿", tech: "Deno Deploy", url: "https://github.com/denoland/deploy_examples" }
             ]
         },
         {
             id: 4,
-            icon: <Rocket className="w-6 h-6" />,
-            title: "혁명적 기술 혁신과 진정성 필요",
-            subtitle: "기존 방식을 파괴하고 새로운 표준을 만들어라",
-            description: "뒤플래시가 DVR을 재정의하고, 피터 틸이 PayPal로 금융을 혁신했듯이, 기존 솔루션에 만족하지 마라. 점진적 개선이 아닌 10배 더 나은 완전히 새로운 접근을 시도하라. 비즈니스 혁신은 기술적 혁신을 통해 10배 더 많은 가치를 창출할 수 있으며, 창의성과 혁신은 조직의 생존 전략이다.",
-            action: "기존 솔루션을 10배 개선할 수 있는 근본적 접근 방식 발견",
+            icon: <Settings className="w-6 h-6" />,
+            title: "Toss 같은 업무 혁신 시스템 개혁",
+            subtitle: "모든 프로세스를 자동화하고 최적화하여 생산성을 극대화",
+            description: "Toss가 금융을 단순하게 만들었듯이, 개발 업무의 모든 마찰을 제거하라. 반복 작업은 자동화하고, 의사결정은 데이터로 하며, 협업은 비동기로 최적화하라. 1분이면 되는 일을 10분 걸리게 하는 모든 시스템을 혁신하라. 시간은 가장 소중한 자원이다.",
+            action: "개발 프로세스 자동화 80% 달성, 배포 시간 90% 단축",
             actionPlan: {
-                title: "10배 혁신 사고",
-                category: "혁신",
+                title: "업무 혁신 자동화",
+                category: "프로세스",
                 priority: "높음",
                 steps: [
-                    "기존 시장 솔루션 10개 분석 및 한계점 도출",
-                    "TRIZ 창의적 문제해결 방법론 학습",
-                    "주 1회 브레인스토밍 세션 진행",
-                    "MVP 프로토타입 2주 내 제작 후 피드백 수집"
+                    "현재 워크플로우의 모든 병목지점 식별",
+                    "CI/CD 파이프라인 완전 자동화 구축",
+                    "코드 리뷰, 테스트, 배포 자동화 시스템",
+                    "Slack Bot, GitHub Actions으로 반복 업무 자동화",
+                    "데이터 기반 의사결정을 위한 대시보드 구축"
                 ],
-                timeframe: "지속적",
-                tools: ["Figma", "No-code Tools", "User Research", "Analytics"]
+                timeframe: "10주",
+                tools: ["GitHub Actions", "Jenkins", "Slack API", "Notion API", "Zapier"]
             },
-            courses: [
-                { title: "비즈니스 혁신 전략", url: "https://www.ibm.com/kr-ko/think/insights/succeeding-business-transformation-change-management" },
-                { title: "비즈니스 혁신 마인드세트", url: "https://www.pninsight.com/post/비즈니스-혁신을-위한-6가지-마인드세트" },
-                { title: "비즈니스 혁신 10가지 원칙", url: "https://www.hanbit.co.kr/channel/view.html?cmscode=CMS6252177921" },
-                { title: "비즈니스 모델 혁신", url: "https://m.blog.naver.com/businessinsight/221102582579" },
-                { title: "창의성 혁신 모델", url: "https://conceptplayground.com/amabile-t-m-1988-조직의-창의성-혁신-모델1/" },
-                { title: "비즈니스 모델 혁신 사례", url: "https://brunch.co.kr/@dol74/75" },
-                { title: "팀의 창의성 높이기", url: "https://www.hbrkorea.com/article/view/atype/ma/category_id/8_1/article_no/2046" },
-                { title: "창의성 발휘 경험", url: "https://www.jobplanet.co.kr/contents/news-602" }
+            references: [
+                { title: "DevOps 문화와 실천", url: "https://aws.amazon.com/devops/what-is-devops/" },
+                { title: "자동화 전략", url: "https://martinfowler.com/articles/deployment-pipeline.html" },
+                { title: "지속적 통합/배포", url: "https://www.atlassian.com/continuous-delivery" },
+                { title: "애자일 방법론", url: "https://agilemanifesto.org/" },
+                { title: "린 소프트웨어 개발", url: "https://www.lean.org/lexicon-terms/lean-software-development/" },
+                { title: "생산성 측정", url: "https://blog.gitprime.com/developer-productivity-metrics/" }
+            ],
+            boilerplates: [
+                { title: "GitHub Actions Workflows", description: "완전한 CI/CD 파이프라인 템플릿", tech: "YAML + Actions", url: "https://github.com/actions/starter-workflows" },
+                { title: "Slack Bot Framework", description: "업무 자동화를 위한 Slack 봇", tech: "Node.js + Slack API", url: "https://github.com/slackapi/bolt-js" },
+                { title: "Terraform Infrastructure", description: "인프라를 코드로 관리하는 템플릿", tech: "Terraform + AWS", url: "https://github.com/terraform-aws-modules" },
+                { title: "Monitoring Dashboard", description: "개발팀 생산성 모니터링 대시보드", tech: "Grafana + Prometheus", url: "https://github.com/grafana/grafana" }
             ]
         },
         {
             id: 5,
-            icon: <Share2 className="w-6 h-6" />,
-            title: "보일러플레이트와 기본기 공유를 통한 팀전력 향상",
-            subtitle: "개인의 기본기가 팀의 전투력이 된다",
-            description: "코드 컨벤션, 아키텍처 패턴, 문제 해결 노하우를 체계적으로 문서화하고 공유하라. 반복 작업은 보일러플레이트로 자동화하고, 개인 노하우는 팀 표준으로 승격시켜라. 개발자의 협업 도구와 소스 콘트롤 시스템을 활용한 지식 공유가 팀 생산성을 극대화한다.",
-            action: "주 1회 기술 공유 세션, 개인 노하우의 80%를 팀 자산으로 전환",
+            icon: <Server className="w-6 h-6" />,
+            title: "넷플릭스 같은 초거대규모 서비스에 대한 도전적이고 혁신적 아키텍처",
+            subtitle: "수억 명이 동시에 사용해도 끄떡없는 시스템을 설계하라",
+            description: "넷플릭스가 전 세계 2억 명의 스트리밍을 감당하듯, 극한의 확장성을 고려한 아키텍처를 설계하라. 마이크로서비스, 이벤트 드리븐, CQRS, 샤딩, 캐싱 전략까지 모든 패턴을 마스터하고 실제로 적용할 수 있어야 한다. 소규모에서 시작해도 언젠가는 글로벌 스케일을 고려하라.",
+            action: "동시 접속자 100만 명 처리 가능한 아키텍처 설계 및 구현",
             actionPlan: {
-                title: "팀 지식 허브 구축",
-                category: "공유",
-                priority: "중간",
+                title: "대규모 시스템 아키텍처",
+                category: "아키텍처",
+                priority: "높음",
                 steps: [
-                    "Notion/Obsidian 기반 지식 베이스 구축",
-                    "코드 스니펫 라이브러리 및 보일러플레이트 제작",
-                    "월 4회 기술 발표 및 코드 리뷰 세션",
-                    "개인 노하우를 팀 스탠다드로 문서화"
+                    "마이크로서비스 아키텍처 패턴 12가지 실습",
+                    "이벤트 드리븐 아키텍처 및 메시지 큐 시스템",
+                    "데이터베이스 샤딩 및 분산 캐싱 전략",
+                    "Circuit Breaker, Bulkhead 패턴으로 장애 격리",
+                    "부하 테스트 및 성능 튜닝 실전 경험"
                 ],
-                timeframe: "8주",
-                tools: ["Notion", "Storybook", "Wiki", "Recording Tools"]
+                timeframe: "6개월",
+                tools: ["Kubernetes", "Kafka", "Redis Cluster", "Elasticsearch", "Istio"]
             },
-            courses: [
-                { title: "개발자 생산성 관리", url: "https://sgate.ispark.kr/team-sgate/developer-productivity-metrics" },
-                { title: "개발자 업무 생산성", url: "https://blog.jandi.com/ko/2020/03/06/channy-1/" },
-                { title: "좋은 개발자 5가지 기준", url: "https://medium.com/code-states/good-developer-1-좋은-개발자의-5가지-기준-b4b9f166caf7" },
-                { title: "개발자 협업 도구", url: "https://techneedle.com/archives/37470" },
-                { title: "코딩 프레임워크", url: "https://tcpschool.com/deep2018/deep2018_deeplearning_framework" },
-                { title: "DevOps 실무 교육", url: "https://expertlabs.it/workshop/" },
-                { title: "인프런 스터디", url: "https://www.inflearn.com/community/studies" },
-                { title: "풀스택 개발 스쿨", url: "https://fastcampus.co.kr/dev_school_pbs" }
+            references: [
+                { title: "Netflix 기술 블로그", url: "https://netflixtechblog.com/" },
+                { title: "마이크로서비스 패턴", url: "https://microservices.io/patterns/" },
+                { title: "시스템 설계 면접", url: "https://github.com/donnemartin/system-design-primer" },
+                { title: "대규모 시스템 설계", url: "https://github.com/ByteByteGoHq/system-design-101" },
+                { title: "분산 시스템 원칙", url: "https://github.com/aphyr/distsys-class" },
+                { title: "AWS 아키텍처 센터", url: "https://aws.amazon.com/architecture/" }
+            ],
+            boilerplates: [
+                { title: "Microservices Starter", description: "Spring Boot 마이크로서비스 템플릿", tech: "Spring Boot + Docker", url: "https://github.com/spring-projects/spring-petclinic-microservices" },
+                { title: "Event-Driven Architecture", description: "이벤트 드리븐 시스템 템플릿", tech: "Kafka + Spring Cloud", url: "https://github.com/eventuate-examples" },
+                { title: "Kubernetes Manifests", description: "프로덕션 레디 K8s 배포 템플릿", tech: "Kubernetes + Helm", url: "https://github.com/kubernetes/examples" },
+                { title: "API Gateway Template", description: "확장 가능한 API 게이트웨이", tech: "Kong + Docker", url: "https://github.com/Kong/kong" }
             ]
         },
         {
             id: 6,
-            icon: <Target className="w-6 h-6" />,
-            title: "실무 전문가로서 프로페셔널의 극치를 추구",
-            subtitle: "진정한 스승인 AI로부터 끊임없이 배워라",
-            description: "토푸리아 같은 자신감, 마이크 타이슨과 같은 성실함, 조던과 같은 승부욕, 데브라이너 같은 넓은 시야를 가져라. AI는 단순 도구가 아닌 진정한 스승이다. 끊임없이 질문하고 배우며 전문가의 경지에 도달하라. 지속적인 학습과 실무 경험이 전문성을 만든다.",
-            action: "AI와의 대화를 통한 일일 학습 2시간, 팀 내 멘토 역할 수행",
+            icon: <Eye className="w-6 h-6" />,
+            title: "표범 같은 생존력",
+            subtitle: "어떤 환경에서도 적응하고 생존하는 개발자",
+            description: "표범이 다양한 환경에서 생존하듯, 개발자도 기술 스택, 도메인, 팀 문화가 바뀌어도 빠르게 적응해야 한다. 새로운 프레임워크를 2주 내에 마스터하고, 다른 산업으로 이직해도 즉시 기여할 수 있는 학습 능력과 적응력을 키워라. 변화는 위기가 아닌 기회다.",
+            action: "분기마다 새로운 기술 스택 1개씩 마스터, 다양한 도메인 경험 축적",
             actionPlan: {
-                title: "AI 멘토링 체계",
-                category: "학습",
-                priority: "높음",
+                title: "적응력 강화 시스템",
+                category: "학습능력",
+                priority: "중간",
                 steps: [
-                    "매일 오전 1시간 AI와 기술 토론",
-                    "새로운 기술 스택 학습 시 AI 튜터 활용",
-                    "복잡한 문제를 AI와 함께 단계별 분해",
-                    "학습 내용을 팀원들에게 1:1 멘토링"
+                    "기술 트렌드 모니터링 및 학습 우선순위 설정",
+                    "다양한 도메인(핀테크, 헬스케어, 이커머스) 프로젝트 경험",
+                    "크로스 플랫폼 개발 경험 (웹, 모바일, 데스크톱)",
+                    "오픈소스 기여로 다양한 코드베이스 경험",
+                    "멘토링/교육을 통한 지식 체계화"
                 ],
-                timeframe: "일일 루틴",
-                tools: ["Claude", "ChatGPT", "Custom GPT", "Learning Platforms"]
+                timeframe: "지속적",
+                tools: ["GitHub", "Stack Overflow", "MDN", "Documentation", "Community"]
             },
-            courses: [
-                { title: "Claude AI 활용법", url: "https://www.anthropic.com" },
-                { title: "AI 튜터링 시스템", url: "https://docs.anthropic.com" },
-                { title: "전문가 학습 방법론", url: "https://www.inflearn.com" },
-                { title: "멘토링 스킬", url: "https://fastcampus.co.kr" },
-                { title: "리더십 개발", url: "https://www.coursera.org" },
-                { title: "커뮤니케이션 스킬", url: "https://www.udemy.com" },
-                { title: "코칭 기법", url: "https://www.edx.org" },
-                { title: "지속적 학습 체계", url: "https://www.linkedin.com/learning" }
+            references: [
+                { title: "효과적 학습법", url: "https://www.coursera.org/learn/learning-how-to-learn" },
+                { title: "기술 로드맵", url: "https://roadmap.sh/" },
+                { title: "개발자 커리어", url: "https://stackoverflow.blog/2020/10/05/career-advice-for-developers/" },
+                { title: "지속적 학습", url: "https://hbr.org/2016/09/the-case-for-continuous-learning" },
+                { title: "T자형 인재", url: "https://chiefexecutive.net/ideo-ceo-tim-brown-t-shaped-stars-the-backbone-of-ideoae/" },
+                { title: "성장 마인드셋", url: "https://hbr.org/2016/01/what-having-a-growth-mindset-actually-means" }
+            ],
+            boilerplates: [
+                { title: "Full-Stack Template", description: "모던 풀스택 개발 템플릿", tech: "Next.js + TypeScript", url: "https://github.com/vercel/next.js/tree/canary/examples" },
+                { title: "Multi-Platform App", description: "크로스 플랫폼 앱 개발 템플릿", tech: "React Native + Expo", url: "https://github.com/expo/examples" },
+                { title: "Learning Projects", description: "다양한 기술 스택 학습용 프로젝트", tech: "Various", url: "https://github.com/practical-tutorials/project-based-learning" },
+                { title: "Portfolio Template", description: "개발자 포트폴리오 템플릿", tech: "React + Tailwind", url: "https://github.com/soumyajit4419/Portfolio" }
             ]
         },
         {
             id: 7,
-            icon: <DollarSign className="w-6 h-6" />,
-            title: "웹/앱 시장의 재발견: 소규모 개발 조직의 성공",
-            subtitle: "작은 팀이 다양한 비즈니스 모델로 큰 수익을 창출한다",
-            description: "위시켓 프리랜싱, SI 파견, SaaS 솔루션 판매, 오픈소스 라이선싱, 기술 컨설팅까지 다양한 수익 모델을 활용하라. 하나의 기술 스택으로 여러 비즈니스를 동시에 운영할 수 있다. 1인 창업가들이 SaaS로 수십억을 버는 시대가 도래했으며, 사이드 프로젝트가 새로운 비즈니스 모델로 자리잡고 있다.",
-            action: "메인 개발 + 2가지 이상 부수입원 확보, 월 500만원 이상 수익 구조 구축",
+            icon: <Users className="w-6 h-6" />,
+            title: "항공모함 전단 같은 체계와 강력함, 협동 체계",
+            subtitle: "개인의 역량이 팀의 시너지로 증폭되는 협업 시스템",
+            description: "항공모함이 수십 개의 전투기와 함께 작전하듯, 개발팀도 각자의 전문성이 완벽하게 조화를 이뤄야 한다. 코드 리뷰, 페어 프로그래밍, 기술 공유, 멘토링까지 팀의 집단 지성을 극대화하는 시스템을 구축하라. 혼자서는 할 수 없는 일을 팀으로 만들어내라.",
+            action: "팀 생산성 50% 향상, 코드 품질 지표 90% 이상 달성",
             actionPlan: {
-                title: "수익 다각화 전략",
-                category: "비즈니스",
-                priority: "중간",
+                title: "팀 시너지 최적화",
+                category: "협업",
+                priority: "높음",
                 steps: [
-                    "주력 개발 외 2개 수익원 발굴 (컨설팅, 강의)",
-                    "SaaS 사이드 프로젝트 런칭",
-                    "위시켓/프리랜서 플랫폼 프로필 최적화",
-                    "기술 블로그/유튜브로 개인 브랜딩"
+                    "코드 리뷰 문화 및 가이드라인 정립",
+                    "페어/몹 프로그래밍 세션 정기화",
+                    "기술 공유 세션 및 내부 테크톡 운영",
+                    "멘토링 시스템 및 온보딩 프로세스 구축",
+                    "팀 KPI 측정 및 지속적 개선"
                 ],
-                timeframe: "6개월",
-                tools: ["Stripe", "Gumroad", "YouTube", "Blog Platforms"]
+                timeframe: "8주",
+                tools: ["GitHub", "Slack", "Notion", "Figma", "Linear"]
             },
-            courses: [
-                { title: "SaaS 비즈니스 시작하기", url: "https://akisociety.com/home/course/saas-비즈니스로-성공하기/13" },
-                { title: "1인 SaaS 창업", url: "https://maily.so/josh/posts/92ze9yndoep" },
-                { title: "인디해커 AI SaaS", url: "https://insomenia.com/" },
-                { title: "사이드 프로젝트 수익화", url: "https://chill-with.com/29" },
-                { title: "SaaS 가격 모델", url: "https://cpl.thalesgroup.com/ko/software-monetization/saas-pricing-models-examples" },
-                { title: "크리에이터 SaaS", url: "https://maily.so/josh/posts/2nznlw0kop5" },
-                { title: "직무 강의 수익화", url: "https://blog.nocodecamp.kr/knowledge-creator-monetization/" },
-                { title: "IT 프로젝트 경험", url: "https://bside.best/story/detail/S230403061455" }
+            references: [
+                { title: "효과적 코드 리뷰", url: "https://google.github.io/eng-practices/review/" },
+                { title: "페어 프로그래밍 가이드", url: "https://martinfowler.com/articles/on-pair-programming.html" },
+                { title: "팀 문화 구축", url: "https://rework.withgoogle.com/guides/" },
+                { title: "애자일 팀 구성", url: "https://www.atlassian.com/agile/teams" },
+                { title: "심리적 안전감", url: "https://rework.withgoogle.com/guides/understanding-team-effectiveness/" },
+                { title: "DevOps 문화", url: "https://aws.amazon.com/devops/what-is-devops/" }
+            ],
+            boilerplates: [
+                { title: "Team Workflow Template", description: "팀 협업을 위한 워크플로우 템플릿", tech: "GitHub + Actions", url: "https://github.com/github/super-linter" },
+                { title: "Code Review Checklist", description: "효과적인 코드 리뷰 체크리스트", tech: "Markdown", url: "https://github.com/joho/awesome-code-review" },
+                { title: "Documentation Template", description: "팀 문서화 템플릿", tech: "Docusaurus", url: "https://github.com/facebook/docusaurus" },
+                { title: "Team Dashboard", description: "팀 생산성 대시보드", tech: "React + Charts", url: "https://github.com/gitpod-io/gitpod" }
             ]
         },
         {
             id: 8,
-            icon: <Battery className="w-6 h-6" />,
-            title: "에너지 엔지니어링: 시간이 아닌 에너지 관리",
-            subtitle: "개발자의 진짜 자산은 집중력이다",
-            description: "포모도로, 딥워크, 운동, 수면 관리까지 개발 루틴에 포함시켜라. 8시간 집중 vs 12시간 멍때리기 중 전자가 10배 생산적이다. 번아웃은 실력이 아닌 에너지 관리 실패다. 딥워크를 위한 4가지 도구와 집중력 향상 기법이 개발자의 핵심 역량이다.",
-            action: "일일 딥워크 4시간 확보, 주 3회 이상 운동",
+            icon: <Users2 className="w-6 h-6" />,
+            title: "바르셀로나, 맨시티, 파리 생제르망 같은 개인 능력 + 조직력 + 팀전술",
+            subtitle: "최고 수준의 개인 기량과 완벽한 팀 플레이의 조화",
+            description: "메시, 음바페, 데 브라위너처럼 개인적으로도 최고 수준이면서, 팀 전술에 완벽하게 맞춰 플레이할 수 있어야 한다. 알고리즘 실력, 아키텍처 설계, 코드 품질 등 개인 역량을 극한까지 끌어올리면서도, 팀의 코딩 컨벤션과 협업 방식에 자연스럽게 녹아들어라.",
+            action: "개인 기술 역량 Top 10% 달성 + 팀 기여도 최상위 평가",
             actionPlan: {
-                title: "에너지 최적화 시스템",
-                category: "생산성",
+                title: "개인-팀 밸런스 최적화",
+                category: "종합역량",
                 priority: "높음",
                 steps: [
-                    "포모도로 25분 집중 + 5분 휴식 루틴 구축",
-                    "업무 시작 전 30분 명상/운동",
-                    "방해 요소 차단 (알림 끄기, 별도 작업 공간)",
-                    "주 3회 유산소/근력 운동 스케줄링"
+                    "알고리즘/자료구조 마스터 (LeetCode 상위 5%)",
+                    "시스템 설계 전문가 수준 달성",
+                    "팀 코딩 스탠다드 및 베스트 프랙티스 정립",
+                    "기술 리더십 및 멘토링 역할 수행",
+                    "오픈소스 메인테이너로 외부 기여"
                 ],
-                timeframe: "3주 습관화",
-                tools: ["Toggl", "Forest App", "Headspace", "Fitness Apps"]
+                timeframe: "1년",
+                tools: ["LeetCode", "System Design", "GitHub", "Tech Blogs", "Conferences"]
             },
-            courses: [
-                { title: "딥워크 4가지 도구", url: "https://techneedle.com/archives/37470" },
-                { title: "개발자 생산성 관리", url: "https://sgate.ispark.kr/team-sgate/developer-productivity-metrics" },
-                { title: "개발자 업무 생산성", url: "https://blog.jandi.com/ko/2020/03/06/channy-1/" },
-                { title: "포모도로 기법", url: "https://en.wikipedia.org/wiki/Pomodoro_Technique" },
-                { title: "집중력 향상", url: "https://www.mindtools.com/pages/article/deep-work.htm" },
-                { title: "에너지 관리", url: "https://www.healthline.com/health/energy-management" },
-                { title: "번아웃 예방", url: "https://www.mayoclinic.org/healthy-lifestyle/adult-health/in-depth/burnout/art-20046642" },
-                { title: "개발자 웰빙", url: "https://stackoverflow.blog/2020/05/20/good-better-best-creating-stack-overflow-health/" }
+            references: [
+                { title: "알고리즘 마스터리", url: "https://leetcode.com/explore/" },
+                { title: "시스템 설계 가이드", url: "https://github.com/donnemartin/system-design-primer" },
+                { title: "코드 품질 가이드", url: "https://github.com/ryanmcdermott/clean-code-javascript" },
+                { title: "기술 리더십", url: "https://www.oreilly.com/library/view/the-manager's-path/9781491973882/" },
+                { title: "소프트웨어 장인정신", url: "https://manifesto.softwarecraftsmanship.org/" },
+                { title: "효과적 엔지니어", url: "https://www.effectiveengineer.com/" }
+            ],
+            boilerplates: [
+                { title: "Algorithm Practice Kit", description: "알고리즘 문제 해결 템플릿", tech: "Python/Java/JS", url: "https://github.com/kdn251/interviews" },
+                { title: "System Design Templates", description: "시스템 설계 템플릿 모음", tech: "Architecture", url: "https://github.com/karanpratapsingh/system-design" },
+                { title: "Code Quality Tools", description: "코드 품질 관리 도구 모음", tech: "ESLint + Prettier", url: "https://github.com/typicode/husky" },
+                { title: "Tech Leadership Guide", description: "기술 리더를 위한 가이드", tech: "Markdown", url: "https://github.com/LappleApple/awesome-leading-and-managing" }
             ]
         },
         {
             id: 9,
-            icon: <Sword className="w-6 h-6" />,
-            title: "실전적 문제 해결력: 자폭 드론 같은 정확한 타격",
-            subtitle: "문제의 핵심을 정확히 뚫고 최소 비용으로 해결한다",
-            description: "복잡한 시스템 장애든 까다로운 요구사항이든, 문제의 본질을 빠르게 파악하고 최소한의 노력으로 최대 효과를 낸다. 90% 해결책에 시간을 쏟지 말고, 80% 해결책을 빠르게 구현한 후 반복 개선하라. 5-Why 분석법과 근본 원인 분석이 핵심 스킬이다.",
-            action: "문제 발생 시 15분 내 근본 원인 파악, 1시간 내 임시 해결, 1일 내 완전 해결",
+            icon: <Activity className="w-6 h-6" />,
+            title: "보더 콜리 같은 에너지와 매와 같은 시야",
+            subtitle: "끝없는 에너지와 예리한 통찰력으로 기회를 포착한다",
+            description: "보더 콜리의 무한한 에너지와 집중력, 매의 날카로운 시야와 정확한 판단력을 동시에 가져야 한다. 새벽부터 밤까지 코딩에 몰입하면서도, 기술 트렌드와 비즈니스 기회를 놓치지 않는 통찰력을 기르라. 에너지 관리와 전략적 사고의 완벽한 밸런스가 핵심이다.",
+            action: "일일 딥워크 6시간 + 주간 트렌드 분석 및 전략 수립",
             actionPlan: {
-                title: "15분 문제 해결 시스템",
-                category: "문제해결",
+                title: "에너지-통찰력 시너지",
+                category: "생산성",
                 priority: "높음",
                 steps: [
-                    "문제 분류 템플릿 구축 (기술/비즈니스/인력)",
-                    "5-Why 분석법으로 근본 원인 탐지",
-                    "솔루션 우선순위 매트릭스 활용",
-                    "문제 해결 케이스 스터디 데이터베이스 구축"
+                    "포모도로 기법으로 집중력 극대화",
+                    "기술 트렌드 모니터링 시스템 구축",
+                    "주간 회고 및 전략 수정 루틴 정립",
+                    "체력 관리(운동, 수면, 영양) 시스템화",
+                    "의사결정 프레임워크 구축 및 적용"
                 ],
-                timeframe: "4주",
-                tools: ["Miro", "Notion", "Root Cause Analysis", "Decision Matrix"]
+                timeframe: "12주",
+                tools: ["Notion", "Toggl", "RescueTime", "Headspace", "Feedly"]
             },
-            courses: [
-                { title: "문제 해결 방법론", url: "https://www.coursera.org/learn/problem-solving" },
-                { title: "5-Why 분석법", url: "https://en.wikipedia.org/wiki/Five_whys" },
-                { title: "근본 원인 분석", url: "https://www.isixsigma.com/tools-templates/cause-effect/root-cause-analysis/" },
-                { title: "시스템 사고", url: "https://www.systemicleadershipinstitute.org/systemic-thinking/" },
-                { title: "디버깅 기법", url: "https://www.debuggingbook.org/" },
-                { title: "트러블슈팅", url: "https://www.redhat.com/sysadmin/troubleshooting-strategies" },
-                { title: "의사결정 매트릭스", url: "https://www.mindtools.com/pages/article/newTED_03.htm" },
-                { title: "문제 해결 도구", url: "https://asq.org/quality-resources/problem-solving" }
+            references: [
+                { title: "딥워크 마스터리", url: "https://www.calnewport.com/books/deep-work/" },
+                { title: "에너지 관리법", url: "https://hbr.org/2007/10/manage-your-energy-not-your-time" },
+                { title: "전략적 사고", url: "https://hbr.org/2019/09/strategic-thinking" },
+                { title: "의사결정 과학", url: "https://www.amazon.com/Decisive-Chip-Heath/dp/0307956393" },
+                { title: "고성과자의 습관", url: "https://brendon.com/books/high-performance-habits/" },
+                { title: "피크 퍼스", url: "https://www.amazon.com/Peak-Performance-Elevate-Burnout-Science/dp/162336793X" }
+            ],
+            boilerplates: [
+                { title: "Productivity Dashboard", description: "개인 생산성 트래킹 대시보드", tech: "React + Chart.js", url: "https://github.com/kamranahmedse/developer-roadmap" },
+                { title: "Habit Tracker", description: "습관 관리 및 추적 앱", tech: "React Native", url: "https://github.com/iSoron/uhabits" },
+                { title: "Focus Timer", description: "포모도로 기법 타이머 앱", tech: "JavaScript", url: "https://github.com/chrisns/pomodoro" },
+                { title: "Trend Monitor", description: "기술 트렌드 모니터링 도구", tech: "Python + RSS", url: "https://github.com/RSS-Bridge/rss-bridge" }
             ]
         },
         {
             id: 10,
-            icon: <Trophy className="w-6 h-6" />,
-            title: "코딩이 스포츠가 되어야 한다",
-            subtitle: "코딩을 예술과 속도의 경지로 끌어올려라",
-            description: "라멜로 볼의 노룩 패스처럼 직관적이고, 브라질 삼바 축구처럼 창의적이며, 이제동의 폭풍 저그처럼 압도적인 속도로 코딩하라. 기계적 반복이 아닌 리듬과 플로우가 있는 코딩을 추구하라. 라이브 코딩과 개발 과정의 콘텐츠화가 새로운 트렌드다.",
-            action: "라이브 코딩 세션 진행, 코딩 스트림으로 팬 확보, 개발 과정을 콘텐츠화",
+            icon: <FlaskConical className="w-6 h-6" />,
+            title: "실험 정신 및 개선",
+            subtitle: "가설을 세우고, 실험하며, 데이터로 검증하는 과학적 접근",
+            description: "모든 것을 가설로 접근하고, A/B 테스트로 검증하며, 데이터로 의사결정을 내려라. 사용자 행동, 성능 개선, 새로운 기술 도입까지 모든 것을 실험으로 접근하라. 실패는 학습이고, 성공은 확장이다. 과학적 방법론을 개발에 적용하는 것이 진정한 전문가의 접근법이다.",
+            action: "월 3개 이상 실험 진행, 데이터 기반 의사결정 100% 달성",
             actionPlan: {
-                title: "코딩 퍼포먼스 브랜딩",
-                category: "퍼포먼스",
-                priority: "중간",
+                title: "실험 중심 개발 문화",
+                category: "실험/데이터",
+                priority: "높음",
                 steps: [
-                    "Twitch/YouTube 채널 개설 및 정기 방송",
-                    "라이브 코딩 콘텐츠 기획 (튜토리얼, 챌린지)",
-                    "소셜 미디어로 개발 과정 일일 공유",
-                    "개발자 커뮤니티에서 적극적 활동"
+                    "실험 설계 및 가설 수립 프레임워크 구축",
+                    "A/B 테스트 인프라 및 도구 구축",
+                    "사용자 행동 분석 및 메트릭 정의",
+                    "실험 결과 분석 및 의사결정 프로세스",
+                    "실패한 실험에서의 학습 체계화"
                 ],
-                timeframe: "3개월",
-                tools: ["OBS Studio", "Streamlabs", "Social Media", "GitHub"]
+                timeframe: "10주",
+                tools: ["Google Analytics", "Mixpanel", "Optimizely", "DataDog", "Jupyter"]
             },
-            courses: [
-                { title: "라이브 코딩 가이드", url: "https://www.twitch.tv/directory/game/Science%20%26%20Technology" },
-                { title: "개발자 브랜딩", url: "https://blog.codinghorror.com/" },
-                { title: "스트리밍 기술", url: "https://obsproject.com/" },
-                { title: "커뮤니티 빌딩", url: "https://dev.to/" },
-                { title: "콘텐츠 제작", url: "https://www.youtube.com/creators/" },
-                { title: "소셜 미디어 전략", url: "https://buffer.com/resources/" },
-                { title: "개발자 인플루언서", url: "https://github.com/trending" },
-                { title: "코딩 챌린지", url: "https://www.codewars.com/" }
+            references: [
+                { title: "실험 주도 개발", url: "https://www.thoughtworks.com/insights/articles/how-to-implement-hypothesis-driven-development" },
+                { title: "A/B 테스트 가이드", url: "https://blog.optimizely.com/2010/11/29/how-to-run-an-ab-test/" },
+                { title: "데이터 분석", url: "https://www.kaggle.com/learn" },
+                { title: "린 분석", url: "https://leananalyticsbook.com/" },
+                { title: "측정의 과학", url: "https://www.amazon.com/How-Measure-Anything-Intangibles-Business/dp/1452654204" },
+                { title: "실험 설계", url: "https://web.stanford.edu/~hastie/Papers/ESLII.pdf" }
+            ],
+            boilerplates: [
+                { title: "A/B Testing Framework", description: "A/B 테스트를 위한 프레임워크", tech: "React + Statistics", url: "https://github.com/Netflix/conductor" },
+                { title: "Analytics Dashboard", description: "사용자 분석 대시보드", tech: "D3.js + React", url: "https://github.com/apache/superset" },
+                { title: "Experiment Tracker", description: "실험 관리 및 추적 도구", tech: "Python + MLflow", url: "https://github.com/mlflow/mlflow" },
+                { title: "Feature Flag System", description: "피처 플래그 관리 시스템", tech: "Node.js + Redis", url: "https://github.com/Unleash/unleash" }
+            ]
+        },
+        {
+            id: 11,
+            icon: <Plane className="w-6 h-6" />,
+            title: "F-22 랩터 같은 초격차 추구",
+            subtitle: "압도적 기술력으로 경쟁자들과 차원이 다른 수준을 달성한다",
+            description: "F-22 랩터가 다른 전투기들과 비교조차 되지 않는 압도적 성능을 보이듯, 개발자로서도 초격차 기술력을 추구하라. AI, 블록체인, 양자컴퓨팅까지 미래 기술을 선도적으로 학습하고, 10년 후에도 통용될 깊이 있는 컴퓨터 사이언스 지식을 쌓아라. 단순 코딩을 넘어 기술 혁신을 이끄는 리더가 되어야 한다.",
+            action: "미래 기술 분야에서 전문가 수준 달성, 기술 혁신 프로젝트 리딩",
+            actionPlan: {
+                title: "초격차 기술력 구축",
+                category: "미래기술",
+                priority: "높음",
+                steps: [
+                    "AI/ML 모델 설계 및 최적화 전문성 구축",
+                    "블록체인/Web3 생태계 깊이 있는 이해",
+                    "양자컴퓨팅, 엣지컴퓨팅 등 차세대 기술 학습",
+                    "오픈소스 프로젝트 리딩 및 기술 표준 기여",
+                    "국제 컨퍼런스 발표 및 기술 커뮤니티 리더십"
+                ],
+                timeframe: "지속적",
+                tools: ["TensorFlow", "PyTorch", "Solidity", "Qiskit", "Kubernetes"]
+            },
+            references: [
+                { title: "AI/ML 최신 동향", url: "https://paperswithcode.com/" },
+                { title: "블록체인 기술", url: "https://ethereum.org/en/developers/" },
+                { title: "양자컴퓨팅", url: "https://qiskit.org/learn/" },
+                { title: "미래 기술 트렌드", url: "https://www.gartner.com/en/research/methodologies/gartner-hype-cycle" },
+                { title: "연구 논문", url: "https://arxiv.org/" },
+                { title: "기술 리더십", url: "https://www.oreilly.com/radar/" }
+            ],
+            boilerplates: [
+                { title: "AI/ML Pipeline", description: "머신러닝 파이프라인 템플릿", tech: "Python + MLOps", url: "https://github.com/microsoft/MLOps" },
+                { title: "Blockchain DApp", description: "탈중앙화 애플리케이션 템플릿", tech: "Ethereum + React", url: "https://github.com/austintgriffith/scaffold-eth" },
+                { title: "Quantum Computing", description: "양자컴퓨팅 알고리즘 구현", tech: "Qiskit + Python", url: "https://github.com/Qiskit/qiskit-tutorials" },
+                { title: "Research Project", description: "연구 프로젝트 템플릿", tech: "Jupyter + LaTeX", url: "https://github.com/jupyter/jupyter" }
             ]
         }
     ];
@@ -354,184 +440,227 @@ const VibeCodingCommandment = () => {
     };
 
     return (
-        <div className="min-h-screen bg-background">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
             {/* Header */}
-            <div className="border-b py-16">
-                <div className="container max-w-4xl mx-auto px-4 text-center">
-                    <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">
-                        개발자 <span className="text-primary">바이브 코딩 10계명</span>
+            <div className="relative overflow-hidden bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 text-white">
+                <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%239C92AC\" fill-opacity=\"0.1\"%3E%3Ccircle cx=\"30\" cy=\"30\" r=\"1\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')" }}></div>
+                <div className="relative container max-w-6xl mx-auto px-6 py-20 text-center">
+                    <div className="inline-flex items-center gap-3 mb-6 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20">
+                        <Star className="w-5 h-5 text-yellow-400" />
+                        <span className="text-sm font-medium">Version 3.0 Revolutionary</span>
+                    </div>
+                    <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 bg-gradient-to-r from-white via-blue-100 to-indigo-200 bg-clip-text text-transparent">
+                        바이브 코딩 11계명
                     </h1>
-                    <p className="text-xl text-muted-foreground">
-                        시장을 지배하는 개발자를 위한 실전 가이드
+                    <p className="text-xl md:text-2xl text-blue-100 mb-8 max-w-3xl mx-auto leading-relaxed">
+                        F-22 랩터급 초격차 개발자를 위한 혁명적 실전 가이드
                     </p>
+                    <div className="flex flex-wrap justify-center gap-4 text-sm">
+                        <div className="flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full">
+                            <Target className="w-4 h-4" />
+                            <span>11가지 혁신 영역</span>
+                        </div>
+                        <div className="flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full">
+                            <CheckCircle className="w-4 h-4" />
+                            <span>참고자료 + 보일러플레이트</span>
+                        </div>
+                        <div className="flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full">
+                            <BookOpen className="w-4 h-4" />
+                            <span>실전 템플릿 200+</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             {/* Commandments */}
-            <div className="container mx-auto px-4 py-16">
-                <div className="max-w-7xl mx-auto">
-                    <div className="space-y-8">
+            <div className="container mx-auto px-6 py-16">
+                <div className="max-w-8xl mx-auto">
+                    <div className="space-y-12">
                         {commandments.map((commandment) => (
                             <div
                                 key={commandment.id}
-                                className="grid lg:grid-cols-3 gap-6 items-stretch"
+                                className="group relative"
                                 onMouseEnter={() => setHoveredCard(commandment.id)}
                                 onMouseLeave={() => setHoveredCard(null)}
                             >
-                                {/* 첫 번째 열: 계명 */}
-                                <div
-                                    className={`group relative overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer ${hoveredCard === commandment.id || selectedCard === commandment.id ? 'ring-2 ring-primary ring-offset-2' : ''
-                                        }`}
-                                    onClick={() => setSelectedCard(selectedCard === commandment.id ? null : commandment.id)}
-                                >
-                                    <div className="p-6 h-full flex flex-col">
-                                        {/* Header */}
-                                        <div className="flex items-start gap-4 mb-4">
-                                            <div className="flex-shrink-0">
-                                                <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 text-primary">
-                                                    {commandment.icon}
-                                                </div>
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex items-center gap-3 mb-2">
-                                                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm font-medium">
-                                                        {commandment.id}
-                                                    </span>
-                                                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                                                        Commandment
-                                                    </span>
-                                                </div>
-                                                <h3 className="text-lg font-semibold text-foreground mb-1 group-hover:text-primary transition-colors leading-tight">
-                                                    {commandment.title}
-                                                </h3>
-                                                <p className="text-sm font-medium text-primary">
-                                                    {commandment.subtitle}
-                                                </p>
-                                            </div>
-                                        </div>
+                                {/* 배경 그라데이션 */}
+                                <div className={`absolute inset-0 bg-gradient-to-r from-blue-500/5 via-indigo-500/5 to-purple-500/5 rounded-2xl transition-all duration-300 ${hoveredCard === commandment.id ? 'from-blue-500/10 via-indigo-500/10 to-purple-500/10 scale-105' : ''
+                                    }`}></div>
 
-                                        {/* Description */}
-                                        <div className="mb-4 flex-1">
-                                            <p className="text-sm text-muted-foreground leading-relaxed">
-                                                {commandment.description}
-                                            </p>
-                                        </div>
-
-                                        {/* Action */}
-                                        <div className="mt-auto">
-                                            <div className="rounded-md bg-muted/50 p-3 border-l-4 border-primary">
-                                                <div className="flex items-center gap-2 mb-2">
-                                                    <CheckCircle className="w-4 h-4 text-primary" />
-                                                    <span className="text-sm font-medium text-foreground">실전 적용</span>
-                                                </div>
-                                                <p className="text-sm text-muted-foreground">
-                                                    {commandment.action}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* 두 번째 열: 실행 계획 */}
-                                <div className={`rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-md transition-all duration-200 ${hoveredCard === commandment.id || selectedCard === commandment.id ? 'ring-2 ring-primary ring-offset-2' : ''
-                                    }`}>
-                                    <div className="p-6 h-full flex flex-col">
-                                        {/* 실행 계획 헤더 */}
-                                        <div className="flex items-center justify-between mb-4">
-                                            <div className="flex items-center gap-3">
-                                                <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold">
-                                                    {commandment.id}
-                                                </span>
-                                                <h3 className="text-lg font-semibold text-foreground">
-                                                    {commandment.actionPlan.title}
-                                                </h3>
-                                            </div>
-                                            <div className="flex flex-col gap-2">
-                                                <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getPriorityColor(commandment.actionPlan.priority)}`}>
-                                                    {commandment.actionPlan.priority}
-                                                </span>
-                                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                                                    {commandment.actionPlan.category}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        {/* 기간 */}
-                                        <div className="flex items-center gap-2 mb-4 text-sm text-muted-foreground">
-                                            <Clock className="w-4 h-4 text-primary" />
-                                            <span>예상 기간: {commandment.actionPlan.timeframe}</span>
-                                        </div>
-
-                                        {/* 실행 단계 */}
-                                        <div className="mb-6 flex-1">
-                                            <h4 className="text-sm font-medium text-foreground mb-3 flex items-center gap-2">
-                                                <CheckCircle className="w-4 h-4 text-primary" />
-                                                실행 단계
-                                            </h4>
-                                            <div className="space-y-2">
-                                                {commandment.actionPlan.steps.map((step, index) => (
-                                                    <div key={index} className="flex items-start gap-3">
-                                                        <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary text-xs font-medium mt-0.5 flex-shrink-0">
-                                                            {index + 1}
-                                                        </span>
-                                                        <span className="text-sm text-muted-foreground leading-relaxed">{step}</span>
+                                <div className="relative grid lg:grid-cols-3 gap-8 items-stretch p-6">
+                                    {/* 첫 번째 열: 계명 + 액션 플랜 */}
+                                    <div
+                                        className={`relative overflow-hidden rounded-xl bg-white/80 backdrop-blur-sm border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer ${hoveredCard === commandment.id || selectedCard === commandment.id
+                                            ? 'ring-2 ring-blue-500 ring-offset-2 transform translate-y-[-4px]'
+                                            : ''
+                                            }`}
+                                        onClick={() => setSelectedCard(selectedCard === commandment.id ? null : commandment.id)}
+                                    >
+                                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500"></div>
+                                        <div className="p-8 h-full flex flex-col">
+                                            {/* Header */}
+                                            <div className="flex items-start gap-5 mb-6">
+                                                <div className="flex-shrink-0">
+                                                    <div className="relative">
+                                                        <div className="flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg">
+                                                            {commandment.icon}
+                                                        </div>
+                                                        <div className="absolute -top-2 -right-2 flex items-center justify-center w-7 h-7 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-sm font-bold shadow-md">
+                                                            {commandment.id}
+                                                        </div>
                                                     </div>
-                                                ))}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-center gap-3 mb-3">
+                                                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                            계명 #{commandment.id}
+                                                        </span>
+                                                    </div>
+                                                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors leading-tight">
+                                                        {commandment.title}
+                                                    </h3>
+                                                    <p className="text-sm font-semibold text-indigo-600">
+                                                        {commandment.subtitle}
+                                                    </p>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        {/* 도구 */}
-                                        <div className="pt-4 border-t border-muted mt-auto">
-                                            <h4 className="text-sm font-medium text-foreground mb-2">필요 도구</h4>
-                                            <div className="flex flex-wrap gap-2">
-                                                {commandment.actionPlan.tools.map((tool, index) => (
-                                                    <span
-                                                        key={index}
-                                                        className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-muted text-muted-foreground"
-                                                    >
-                                                        {tool}
-                                                    </span>
-                                                ))}
+                                            {/* Description */}
+                                            <div className="mb-6">
+                                                <p className="text-sm text-gray-700 leading-relaxed">
+                                                    {commandment.description}
+                                                </p>
+                                            </div>
+
+                                            {/* Action */}
+                                            <div className="mb-6">
+                                                <div className="rounded-lg bg-gradient-to-r from-blue-50 to-indigo-50 p-4 border border-blue-200">
+                                                    <div className="flex items-center gap-2 mb-2">
+                                                        <Target className="w-4 h-4 text-blue-600" />
+                                                        <span className="text-sm font-semibold text-gray-900">목표 액션</span>
+                                                    </div>
+                                                    <p className="text-sm text-gray-700 font-medium">
+                                                        {commandment.action}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            {/* Action Plan Summary */}
+                                            <div className="mt-auto">
+                                                <div className="border-t border-gray-200 pt-4">
+                                                    <div className="flex items-center justify-between mb-3">
+                                                        <h4 className="text-sm font-bold text-gray-900">{commandment.actionPlan.title}</h4>
+                                                        <div className="flex gap-2">
+                                                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold border ${getPriorityColor(commandment.actionPlan.priority)}`}>
+                                                                {commandment.actionPlan.priority}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-2 text-xs text-gray-600">
+                                                        <Clock className="w-3 h-3" />
+                                                        <span>{commandment.actionPlan.timeframe}</span>
+                                                        <span className="mx-2">•</span>
+                                                        <span>{commandment.actionPlan.category}</span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                {/* 세 번째 열: 관련 강의 */}
-                                <div className={`rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-md transition-all duration-200 ${hoveredCard === commandment.id || selectedCard === commandment.id ? 'ring-2 ring-primary ring-offset-2' : ''
-                                    }`}>
-                                    <div className="p-6 h-full flex flex-col">
-                                        {/* 헤더 */}
-                                        <div className="flex items-center gap-3 mb-4">
-                                            <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 text-sm font-bold">
-                                                {commandment.id}
-                                            </span>
-                                            <h3 className="text-lg font-semibold text-foreground">
-                                                관련 강의
-                                            </h3>
+                                    {/* 두 번째 열: 참고 자료 */}
+                                    <div className={`rounded-xl bg-white/80 backdrop-blur-sm border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300 ${hoveredCard === commandment.id || selectedCard === commandment.id
+                                        ? 'ring-2 ring-indigo-500 ring-offset-2 transform translate-y-[-4px]'
+                                        : ''
+                                        }`}>
+                                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+                                        <div className="p-8 h-full flex flex-col">
+                                            {/* 헤더 */}
+                                            <div className="flex items-center gap-3 mb-6">
+                                                <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-sm font-bold">
+                                                    {commandment.id}
+                                                </div>
+                                                <h3 className="text-lg font-bold text-gray-900">
+                                                    참고 자료
+                                                </h3>
+                                            </div>
+
+                                            {/* 참고 자료 섹션 */}
+                                            <div className="flex-1">
+                                                <h4 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                                    <BookOpen className="w-4 h-4 text-indigo-600" />
+                                                    핵심 레퍼런스
+                                                </h4>
+                                                <div className="space-y-2 max-h-96 overflow-y-auto">
+                                                    {commandment.references.map((reference, index) => (
+                                                        <a
+                                                            key={index}
+                                                            href={reference.url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="flex items-center gap-3 p-3 rounded-lg hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 transition-all group border border-transparent hover:border-indigo-200"
+                                                        >
+                                                            <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-indigo-600 flex-shrink-0 transition-colors" />
+                                                            <span className="text-sm text-gray-700 group-hover:text-gray-900 leading-tight font-medium">
+                                                                {reference.title}
+                                                            </span>
+                                                            <ChevronRight className="w-3 h-3 text-gray-400 group-hover:text-indigo-600 ml-auto opacity-0 group-hover:opacity-100 transition-all" />
+                                                        </a>
+                                                    ))}
+                                                </div>
+                                            </div>
                                         </div>
+                                    </div>
 
-                                        {/* 강의 섹션 */}
-                                        <div className="flex-1">
-                                            <h4 className="text-sm font-medium text-foreground mb-3 flex items-center gap-2">
-                                                <BookOpen className="w-4 h-4 text-blue-500" />
-                                                추천 강의 & 리소스
-                                            </h4>
-                                            <div className="space-y-2 max-h-80 overflow-y-auto">
-                                                {commandment.courses.map((course, index) => (
-                                                    <a
-                                                        key={index}
-                                                        href={course.url}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="flex items-center gap-2 p-2 rounded-md hover:bg-muted/50 transition-colors group"
-                                                    >
-                                                        <ExternalLink className="w-3 h-3 text-muted-foreground group-hover:text-primary flex-shrink-0" />
-                                                        <span className="text-sm text-muted-foreground group-hover:text-foreground leading-tight">
-                                                            {course.title}
-                                                        </span>
-                                                    </a>
-                                                ))}
+                                    {/* 세 번째 열: 보일러플레이트 */}
+                                    <div className={`rounded-xl bg-white/80 backdrop-blur-sm border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300 ${hoveredCard === commandment.id || selectedCard === commandment.id
+                                        ? 'ring-2 ring-purple-500 ring-offset-2 transform translate-y-[-4px]'
+                                        : ''
+                                        }`}>
+                                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500"></div>
+                                        <div className="p-8 h-full flex flex-col">
+                                            {/* 헤더 */}
+                                            <div className="flex items-center gap-3 mb-6">
+                                                <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-r from-purple-500 to-pink-600 text-white text-sm font-bold">
+                                                    {commandment.id}
+                                                </div>
+                                                <h3 className="text-lg font-bold text-gray-900">
+                                                    보일러플레이트
+                                                </h3>
+                                            </div>
+
+                                            {/* 보일러플레이트 섹션 */}
+                                            <div className="flex-1">
+                                                <h4 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                                    <Package className="w-4 h-4 text-purple-600" />
+                                                    실전 템플릿
+                                                </h4>
+                                                <div className="space-y-4 max-h-96 overflow-y-auto">
+                                                    {commandment.boilerplates.map((boilerplate, index) => (
+                                                        <a
+                                                            key={index}
+                                                            href={boilerplate.url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="block p-4 rounded-lg hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 transition-all group border border-gray-100 hover:border-purple-200"
+                                                        >
+                                                            <div className="flex items-start justify-between gap-3 mb-2">
+                                                                <h5 className="text-sm font-semibold text-gray-900 group-hover:text-purple-700">
+                                                                    {boilerplate.title}
+                                                                </h5>
+                                                                <ExternalLink className="w-3 h-3 text-gray-400 group-hover:text-purple-600 flex-shrink-0 transition-colors" />
+                                                            </div>
+                                                            <p className="text-xs text-gray-600 mb-2 leading-relaxed">
+                                                                {boilerplate.description}
+                                                            </p>
+                                                            <div className="flex items-center gap-2">
+                                                                <Code className="w-3 h-3 text-purple-500" />
+                                                                <span className="text-xs font-medium text-purple-600">
+                                                                    {boilerplate.tech}
+                                                                </span>
+                                                            </div>
+                                                        </a>
+                                                    ))}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -541,8 +670,32 @@ const VibeCodingCommandment = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Footer */}
+            <div className="bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 text-white py-12">
+                <div className="container max-w-4xl mx-auto px-6 text-center">
+                    <h3 className="text-2xl font-bold mb-4">F-22 랩터급 초격차 개발자로 거듭나세요</h3>
+                    <p className="text-blue-100 mb-6">
+                        바이브 코딩 11계명을 실천하여 압도적 기술력을 갖춘 개발자가 되어보세요
+                    </p>
+                    <div className="flex items-center justify-center gap-6 text-sm">
+                        <span className="flex items-center gap-2">
+                            <Star className="w-4 h-4 text-yellow-400" />
+                            Version 3.0
+                        </span>
+                        <span className="flex items-center gap-2">
+                            <Wrench className="w-4 h-4 text-blue-400" />
+                            실전 템플릿
+                        </span>
+                        <span className="flex items-center gap-2">
+                            <Plane className="w-4 h-4 text-purple-400" />
+                            초격차 추구
+                        </span>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };
 
-export default VibeCodingCommandment;
+export default VibeCodingCommandmentV3;
