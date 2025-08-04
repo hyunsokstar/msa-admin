@@ -1,11 +1,19 @@
+"use client";
 // C:\Users\terec\msa-admin\src\app\pilot-project\roadmap-for-spring-boot\page.tsx
-import React from 'react';
-import { ChevronDown, ChevronRight, AlertTriangle, CheckCircle, TrendingUp, Shield, Server, Users, Coffee, Database, Network, Globe, Clock, BookOpen, ExternalLink, Star, Zap, Lock, Trophy, AlertCircle, Info, Cpu, HardDrive, Activity, Target, Code, Layers } from 'lucide-react';
+import React, { useState } from 'react';
+import { ChevronDown, ChevronRight, AlertTriangle, CheckCircle, TrendingUp, Shield, Server, Users, Coffee, Database, Network, Globe, Clock, BookOpen, ExternalLink, Star, Zap, Lock, Trophy, AlertCircle, Info, Cpu, Activity, Target, Code, Layers, HardDrive } from 'lucide-react';
 
-const DEFAULT_SECTION = 'overview';
+interface ExpandedItems {
+    [key: string]: boolean;
+}
 
 const SpringBootManual = () => {
-    const [activeSection, setActiveSection] = React.useState(DEFAULT_SECTION);
+    const [activeSection, setActiveSection] = useState<string>('overview');
+    const [expandedItems, setExpandedItems] = useState<ExpandedItems>({});
+
+    const toggleExpanded = (id: string): void => {
+        setExpandedItems(prev => ({ ...prev, [id]: !prev[id] }));
+    };
 
     const sections = [
         { id: 'overview', title: '개요', icon: BookOpen },
@@ -120,7 +128,7 @@ const SpringBootManual = () => {
         </div>
     );
 
-    const renderContent = () => {
+    const renderContent = (): React.ReactNode => {
         switch (activeSection) {
             case 'overview':
                 return (
@@ -305,369 +313,257 @@ const SpringBootManual = () => {
                     </div>
                 );
 
-            case 'ecosystem':
-                return (
-                    <div className="space-y-6">
-                        <Section title="🌐 Spring 생태계 전체 구조">
-                            <div className="bg-gray-50 p-6 rounded-lg">
-                                <div className="text-center mb-6">
-                                    <h4 className="text-lg font-semibold text-gray-900">Spring Framework 기반 통합 생태계</h4>
-                                    <p className="text-gray-600 mt-2">Convention over Configuration 철학으로 구성된 포괄적 플랫폼</p>
-                                </div>
-                                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                                    <div className="bg-white p-4 rounded-lg border border-blue-200">
-                                        <h5 className="font-semibold text-blue-900 mb-3 flex items-center">
-                                            <Server className="h-5 w-5 mr-2" />
-                                            Core Platform
-                                        </h5>
-                                        <ul className="space-y-2 text-sm text-gray-700">
-                                            <li>• <strong>Spring Framework:</strong> DI/IoC, AOP</li>
-                                            <li>• <strong>Spring Boot:</strong> Auto-configuration</li>
-                                            <li>• <strong>Spring MVC:</strong> Web Framework</li>
-                                            <li>• <strong>Spring WebFlux:</strong> Reactive Web</li>
-                                        </ul>
-                                    </div>
-                                    <div className="bg-white p-4 rounded-lg border border-green-200">
-                                        <h5 className="font-semibold text-green-900 mb-3 flex items-center">
-                                            <Database className="h-5 w-5 mr-2" />
-                                            Data & Integration
-                                        </h5>
-                                        <ul className="space-y-2 text-sm text-gray-700">
-                                            <li>• <strong>Spring Data:</strong> JPA, MongoDB, Redis</li>
-                                            <li>• <strong>Spring Integration:</strong> EIP 패턴</li>
-                                            <li>• <strong>Spring Batch:</strong> 대용량 처리</li>
-                                            <li>• <strong>Spring AMQP:</strong> 메시징</li>
-                                        </ul>
-                                    </div>
-                                    <div className="bg-white p-4 rounded-lg border border-purple-200">
-                                        <h5 className="font-semibold text-purple-900 mb-3 flex items-center">
-                                            <Shield className="h-5 w-5 mr-2" />
-                                            Security & Cloud
-                                        </h5>
-                                        <ul className="space-y-2 text-sm text-gray-700">
-                                            <li>• <strong>Spring Security:</strong> 인증/인가</li>
-                                            <li>• <strong>Spring Cloud:</strong> 마이크로서비스</li>
-                                            <li>• <strong>Spring Session:</strong> 세션 관리</li>
-                                            <li>• <strong>Spring Vault:</strong> 시크릿 관리</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </Section>
-
-                        <Section title="📦 Spring Boot Starter 생태계">
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                <div>
-                                    <h4 className="font-semibold text-gray-900 mb-4">웹 & API 개발</h4>
-                                    <div className="space-y-3">
-                                        {[
-                                            { name: 'spring-boot-starter-web', desc: 'Spring MVC, Tomcat, Jackson' },
-                                            { name: 'spring-boot-starter-webflux', desc: 'Reactive Web, Netty' },
-                                            { name: 'spring-boot-starter-validation', desc: 'Bean Validation, Hibernate Validator' },
-                                            { name: 'spring-boot-starter-hateoas', desc: 'HATEOAS REST API' },
-                                            { name: 'spring-boot-starter-graphql', desc: 'GraphQL 서버' }
-                                        ].map((starter, index) => (
-                                            <div key={index} className="flex items-start p-3 bg-blue-50 rounded-lg">
-                                                <Code className="h-4 w-4 text-blue-600 mt-0.5 mr-3 flex-shrink-0" />
-                                                <div>
-                                                    <div className="font-medium text-blue-900">{starter.name}</div>
-                                                    <div className="text-sm text-blue-700">{starter.desc}</div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                                <div>
-                                    <h4 className="font-semibold text-gray-900 mb-4">데이터 & 메시징</h4>
-                                    <div className="space-y-3">
-                                        {[
-                                            { name: 'spring-boot-starter-data-jpa', desc: 'JPA, Hibernate, HikariCP' },
-                                            { name: 'spring-boot-starter-data-mongodb', desc: 'MongoDB Document DB' },
-                                            { name: 'spring-boot-starter-data-redis', desc: 'Redis Key-Value Store' },
-                                            { name: 'spring-boot-starter-amqp', desc: 'RabbitMQ 메시징' },
-                                            { name: 'spring-boot-starter-kafka', desc: 'Apache Kafka 스트리밍' }
-                                        ].map((starter, index) => (
-                                            <div key={index} className="flex items-start p-3 bg-green-50 rounded-lg">
-                                                <Database className="h-4 w-4 text-green-600 mt-0.5 mr-3 flex-shrink-0" />
-                                                <div>
-                                                    <div className="font-medium text-green-900">{starter.name}</div>
-                                                    <div className="text-sm text-green-700">{starter.desc}</div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        </Section>
-
-                        <Section title="🛠️ 개발 도구 & 플러그인">
-                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                                <div>
-                                    <h4 className="font-semibold text-gray-900 mb-4">빌드 도구</h4>
-                                    <div className="space-y-3">
-                                        <div className="p-3 border border-gray-200 rounded-lg">
-                                            <div className="font-medium text-gray-900">Maven Plugin</div>
-                                            <div className="text-sm text-gray-600 mt-1">spring-boot-maven-plugin</div>
-                                            <div className="text-xs text-gray-500">실행, 패키징, 네이티브 이미지</div>
-                                        </div>
-                                        <div className="p-3 border border-gray-200 rounded-lg">
-                                            <div className="font-medium text-gray-900">Gradle Plugin</div>
-                                            <div className="text-sm text-gray-600 mt-1">org.springframework.boot</div>
-                                            <div className="text-xs text-gray-500">멀티 모듈, 최적화 빌드</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <h4 className="font-semibold text-gray-900 mb-4">IDE 지원</h4>
-                                    <div className="space-y-3">
-                                        <div className="p-3 border border-gray-200 rounded-lg">
-                                            <div className="font-medium text-gray-900">Spring Tools Suite</div>
-                                            <div className="text-sm text-gray-600 mt-1">Eclipse 기반 전용 IDE</div>
-                                            <div className="text-xs text-gray-500">Auto-completion, Live Beans</div>
-                                        </div>
-                                        <div className="p-3 border border-gray-200 rounded-lg">
-                                            <div className="font-medium text-gray-900">IntelliJ IDEA</div>
-                                            <div className="text-sm text-gray-600 mt-1">Spring 플러그인 내장</div>
-                                            <div className="text-xs text-gray-500">코드 생성, 리팩토링</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <h4 className="font-semibold text-gray-900 mb-4">모니터링</h4>
-                                    <div className="space-y-3">
-                                        <div className="p-3 border border-gray-200 rounded-lg">
-                                            <div className="font-medium text-gray-900">Spring Boot Actuator</div>
-                                            <div className="text-sm text-gray-600 mt-1">헬스체크, 메트릭</div>
-                                            <div className="text-xs text-gray-500">Production 모니터링</div>
-                                        </div>
-                                        <div className="p-3 border border-gray-200 rounded-lg">
-                                            <div className="font-medium text-gray-900">Micrometer</div>
-                                            <div className="text-sm text-gray-600 mt-1">메트릭 수집</div>
-                                            <div className="text-xs text-gray-500">Prometheus, Grafana 연동</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </Section>
-
-                        <Section title="🔗 서드파티 통합 생태계">
-                            <div className="space-y-4">
-                                <div className="bg-gradient-to-r from-orange-50 to-red-50 p-6 rounded-lg">
-                                    <h4 className="font-semibold text-gray-900 mb-4">주요 통합 라이브러리</h4>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                        <div className="text-center p-3 bg-white rounded border">
-                                            <div className="font-medium text-gray-900">MapStruct</div>
-                                            <div className="text-sm text-gray-600">Bean 매핑</div>
-                                        </div>
-                                        <div className="text-center p-3 bg-white rounded border">
-                                            <div className="font-medium text-gray-900">QueryDSL</div>
-                                            <div className="text-sm text-gray-600">Type-safe 쿼리</div>
-                                        </div>
-                                        <div className="text-center p-3 bg-white rounded border">
-                                            <div className="font-medium text-gray-900">Flyway</div>
-                                            <div className="text-sm text-gray-600">DB 마이그레이션</div>
-                                        </div>
-                                        <div className="text-center p-3 bg-white rounded border">
-                                            <div className="font-medium text-gray-900">Swagger/OpenAPI</div>
-                                            <div className="text-sm text-gray-600">API 문서화</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                    <div>
-                                        <h4 className="font-semibold text-gray-900 mb-3">클라우드 & 컨테이너</h4>
-                                        <ul className="space-y-2 text-sm text-gray-700">
-                                            <li>• <strong>Docker:</strong> 컨테이너화 지원</li>
-                                            <li>• <strong>Kubernetes:</strong> 서비스 디스커버리</li>
-                                            <li>• <strong>AWS:</strong> Lambda, ECS, EKS 통합</li>
-                                            <li>• <strong>Google Cloud:</strong> GKE, Cloud Functions</li>
-                                            <li>• <strong>Azure:</strong> Container Apps, Functions</li>
-                                        </ul>
-                                    </div>
-                                    <div>
-                                        <h4 className="font-semibold text-gray-900 mb-3">AI & Machine Learning</h4>
-                                        <ul className="space-y-2 text-sm text-gray-700">
-                                            <li>• <strong>Spring AI:</strong> OpenAI, Anthropic</li>
-                                            <li>• <strong>TensorFlow Java:</strong> ML 모델 서빙</li>
-                                            <li>• <strong>Apache Spark:</strong> 빅데이터 처리</li>
-                                            <li>• <strong>Elastic Search:</strong> 검색 & 분석</li>
-                                            <li>• <strong>Apache Kafka:</strong> 실시간 스트리밍</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </Section>
-
-                        <Section title="📊 생태계 활용 통계">
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                <div className="bg-blue-50 p-4 rounded-lg text-center">
-                                    <div className="text-2xl font-bold text-blue-600">300만+</div>
-                                    <div className="text-sm text-blue-800">Maven Downloads/월</div>
-                                </div>
-                                <div className="bg-green-50 p-4 rounded-lg text-center">
-                                    <div className="text-2xl font-bold text-green-600">50만+</div>
-                                    <div className="text-sm text-green-800">GitHub Stars</div>
-                                </div>
-                                <div className="bg-purple-50 p-4 rounded-lg text-center">
-                                    <div className="text-2xl font-bold text-purple-600">200+</div>
-                                    <div className="text-sm text-purple-800">공식 Starter</div>
-                                </div>
-                                <div className="bg-orange-50 p-4 rounded-lg text-center">
-                                    <div className="text-2xl font-bold text-orange-600">85%</div>
-                                    <div className="text-sm text-orange-800">Java 프로젝트 채택율</div>
-                                </div>
-                            </div>
-                        </Section>
-                    </div>
-                );
-
             case 'roadmap':
                 return (
                     <div className="space-y-6">
-                        <>
-                            <Section title="🗺️ 12주 Spring Boot 마스터 로드맵 2025">
-                                <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                                    <div className="flex items-start">
-                                        <Target className="h-5 w-5 text-blue-500 mt-0.5 mr-3" />
-                                        <div>
-                                            <h2 className="font-medium text-blue-800">학습 목표</h2>
-                                            <p className="text-blue-700 text-sm mt-1">
-                                                초급자부터 시작하여 12주 후 엔터프라이즈급 Spring Boot 애플리케이션을
-                                                설계하고 구현할 수 있는 실무 역량 확보
-                                            </p>
-                                        </div>
+                        <Section title="🗺️ 12주 Spring Boot 마스터 로드맵 2025">
+                            <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                <div className="flex items-start">
+                                    <Target className="h-5 w-5 text-blue-500 mt-0.5 mr-3" />
+                                    <div>
+                                        <h4 className="font-medium text-blue-800">학습 목표</h4>
+                                        <p className="text-blue-700 text-sm mt-1">
+                                            초급자부터 시작하여 12주 후 엔터프라이즈급 Spring Boot 애플리케이션을
+                                            설계하고 구현할 수 있는 실무 역량 확보
+                                        </p>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div className="space-y-6">
-                                    {roadmapPhases.map((phase, index) => (
-                                        <div key={index} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
-                                            <div className="flex items-start justify-between mb-4">
+                            <div className="space-y-6">
+                                {roadmapPhases.map((phase, index) => (
+                                    <div key={index} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                                        <div className="flex items-start justify-between mb-4">
+                                            <div className="flex items-center">
+                                                <div className="flex items-center justify-center w-10 h-10 bg-blue-100 text-blue-600 rounded-full text-sm font-bold mr-4">
+                                                    {index + 1}
+                                                </div>
+                                                <div>
+                                                    <h4 className="text-lg font-semibold text-gray-900">{phase.weeks}</h4>
+                                                    <p className="text-gray-600">{phase.title}</p>
+                                                </div>
+                                            </div>
+                                            <span className={`px-3 py-1 text-xs font-medium rounded-full ${phase.focus === 'Foundation' ? 'bg-green-100 text-green-800' :
+                                                phase.focus === 'Getting Started' ? 'bg-blue-100 text-blue-800' :
+                                                    phase.focus === 'Web Development' ? 'bg-purple-100 text-purple-800' :
+                                                        phase.focus === 'Database Integration' ? 'bg-orange-100 text-orange-800' :
+                                                            phase.focus === 'Production Ready' ? 'bg-red-100 text-red-800' :
+                                                                'bg-indigo-100 text-indigo-800'
+                                                }`}>
+                                                {phase.focus}
+                                            </span>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                            <div>
+                                                <h5 className="font-medium text-gray-900 mb-3">학습 주제</h5>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                                    {phase.topics.map((topic, topicIndex) => (
+                                                        <div key={topicIndex} className="flex items-center text-sm text-gray-700 bg-gray-50 p-2 rounded">
+                                                            <CheckCircle className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
+                                                            {topic}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <h5 className="font-medium text-gray-900 mb-3">실습 프로젝트</h5>
+                                                <div className="space-y-2">
+                                                    {phase.projects.map((project, projectIndex) => (
+                                                        <div key={projectIndex} className="flex items-center text-sm text-blue-700 bg-blue-50 p-2 rounded">
+                                                            <Code className="h-4 w-4 text-blue-500 mr-2 flex-shrink-0" />
+                                                            {project}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </Section>
+
+                        <Section title="📚 단계별 상세 학습 계획">
+                            <div className="space-y-4">
+                                <div className="border border-gray-200 rounded-lg p-4">
+                                    <button
+                                        onClick={() => toggleExpanded('week1-2')}
+                                        className="flex items-center justify-between w-full text-left"
+                                    >
+                                        <h4 className="font-semibold text-gray-900">1-2주차: Java & Spring 기초 마스터</h4>
+                                        {expandedItems['week1-2'] ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+                                    </button>
+                                    {expandedItems['week1-2'] && (
+                                        <div className="mt-4 text-sm text-gray-700">
+                                            <p>Java 및 Spring의 기본 개념을 이해하고, 간단한 애플리케이션을 개발합니다.</p>
+                                            <ul className="list-disc list-inside mt-2">
+                                                <li>Java 17+ 기본기 다지기</li>
+                                                <li>Spring Core (DI/IoC) 이해하기</li>
+                                                <li>Maven/Gradle을 통한 빌드 관리</li>
+                                                <li>IDE 설정 및 프로젝트 구조 이해하기</li>
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="border border-gray-200 rounded-lg p-4">
+                                    <button
+                                        onClick={() => toggleExpanded('week3-4')}
+                                        className="flex items-center justify-between w-full text-left"
+                                    >
+                                        <h4 className="font-semibold text-gray-900">3-4주차: Spring Boot 시작</h4>
+                                        {expandedItems['week3-4'] ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+                                    </button>
+                                    {expandedItems['week3-4'] && (
+                                        <div className="mt-4 text-sm text-gray-700">
+                                            <p>Spring Boot의 구조와 설정 방법을 배우고, 간단한 RESTful API를 개발합니다.</p>
+                                            <ul className="list-disc list-inside mt-2">
+                                                <li>Spring Boot 기본 구조 이해하기</li>
+                                                <li>Auto-configuration 원리 배우기</li>
+                                                <li>Properties 파일을 통한 설정 관리</li>
+                                                <li>Profiles을 이용한 환경별 설정 방법 배우기</li>
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="border border-gray-200 rounded-lg p-4">
+                                    <button
+                                        onClick={() => toggleExpanded('week5-6')}
+                                        className="flex items-center justify-between w-full text-left"
+                                    >
+                                        <h4 className="font-semibold text-gray-900">5-6주차: Web & REST API</h4>
+                                        {expandedItems['week5-6'] ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+                                    </button>
+                                    {expandedItems['week5-6'] && (
+                                        <div className="mt-4 text-sm text-gray-700">
+                                            <p>Spring MVC를 이용한 웹 애플리케이션 개발 및 RESTful API 설계를 학습합니다.</p>
+                                            <ul className="list-disc list-inside mt-2">
+                                                <li>Spring MVC 구조 및 동작 원리 이해하기</li>
+                                                <li>RESTful API 설계 원칙 배우기</li>
+                                                <li>Validation 및 Exception Handling 기법 익히기</li>
+                                                <li>API 문서화를 위한 Swagger/OpenAPI 사용법 배우기</li>
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="border border-gray-200 rounded-lg p-4">
+                                    <button
+                                        onClick={() => toggleExpanded('week7-8')}
+                                        className="flex items-center justify-between w-full text-left"
+                                    >
+                                        <h4 className="font-semibold text-gray-900">7-8주차: Data Access</h4>
+                                        {expandedItems['week7-8'] ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+                                    </button>
+                                    {expandedItems['week7-8'] && (
+                                        <div className="mt-4 text-sm text-gray-700">
+                                            <p>Spring Data JPA를 이용한 데이터베이스 연동 및 쿼리 메소드 사용법을 학습합니다.</p>
+                                            <ul className="list-disc list-inside mt-2">
+                                                <li>Spring Data JPA 기본 개념 이해하기</li>
+                                                <li>Database 연동 및 설정 방법 배우기</li>
+                                                <li>Transaction 관리 및 쿼리 메소드 활용하기</li>
+                                                <li>JPA Criteria API 및 QueryDSL 사용법 익히기</li>
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="border border-gray-200 rounded-lg p-4">
+                                    <button
+                                        onClick={() => toggleExpanded('week9-10')}
+                                        className="flex items-center justify-between w-full text-left"
+                                    >
+                                        <h4 className="font-semibold text-gray-900">9-10주차: Security & Testing</h4>
+                                        {expandedItems['week9-10'] ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+                                    </button>
+                                    {expandedItems['week9-10'] && (
+                                        <div className="mt-4 text-sm text-gray-700">
+                                            <p>Spring Security를 이용한 인증 및 인가 구현, 단위 테스트 및 통합 테스트 기법을 학습합니다.</p>
+                                            <ul className="list-disc list-inside mt-2">
+                                                <li>Spring Security 기본 개념 이해하기</li>
+                                                <li>JWT를 이용한 Stateless 인증 구현하기</li>
+                                                <li>OAuth 2.1 / OIDC를 이용한 소셜 로그인 구현하기</li>
+                                                <li>JUnit과 Mockito를 이용한 테스트 코드 작성법 배우기</li>
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="border border-gray-200 rounded-lg p-4">
+                                    <button
+                                        onClick={() => toggleExpanded('week11-12')}
+                                        className="flex items-center justify-between w-full text-left"
+                                    >
+                                        <h4 className="font-semibold text-gray-900">11-12주차: Advanced & Microservices</h4>
+                                        {expandedItems['week11-12'] ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+                                    </button>
+                                    {expandedItems['week11-12'] && (
+                                        <div className="mt-4 text-sm text-gray-700">
+                                            <p>Spring Cloud를 이용한 마이크로서비스 아키텍처 구현 및 Docker를 이용한 컨테이너 배포를 학습합니다.</p>
+                                            <ul className="list-disc list-inside mt-2">
+                                                <li>Spring Cloud 기본 개념 이해하기</li>
+                                                <li>마이크로서비스 간 통신 방법 배우기</li>
+                                                <li>Docker를 이용한 컨테이너 이미지 생성 및 배포하기</li>
+                                                <li>Kubernetes를 이용한 오케스트레이션 기법 익히기</li>
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </Section>
+
+                        <Section title="🎯 학습 성과 측정">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 className="font-semibold text-gray-900 mb-4">주차별 체크포인트</h4>
+                                    <div className="space-y-3">
+                                        {[
+                                            { week: '2주차', task: 'Spring IoC/DI 개념 설명 가능', difficulty: 'Basic' },
+                                            { week: '4주차', task: 'Spring Boot 프로젝트 구조 이해', difficulty: 'Basic' },
+                                            { week: '6주차', task: 'RESTful API 설계 및 구현', difficulty: 'Intermediate' },
+                                            { week: '8주차', task: 'JPA 연관관계 매핑 활용', difficulty: 'Intermediate' },
+                                            { week: '10주차', task: '보안 인증/인가 구현', difficulty: 'Advanced' },
+                                            { week: '12주차', task: '마이크로서비스 아키텍처 구성', difficulty: 'Advanced' }
+                                        ].map((checkpoint, index) => (
+                                            <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                                                 <div className="flex items-center">
-                                                    <div className="flex items-center justify-center w-10 h-10 bg-blue-100 text-blue-600 rounded-full text-sm font-bold mr-4">
-                                                        {index + 1}
-                                                    </div>
+                                                    <CheckCircle className="h-4 w-4 text-green-500 mr-3" />
                                                     <div>
-                                                        <h4 className="text-lg font-semibold text-gray-900">{phase.weeks}</h4>
-                                                        <p className="text-gray-600">{phase.title}</p>
+                                                        <span className="font-medium text-gray-900">{checkpoint.week}</span>
+                                                        <span className="text-gray-700 ml-2">{checkpoint.task}</span>
                                                     </div>
                                                 </div>
-                                                <span className={`px-3 py-1 text-xs font-medium rounded-full ${phase.focus === 'Foundation' ? 'bg-green-100 text-green-800' :
-                                                    phase.focus === 'Getting Started' ? 'bg-blue-100 text-blue-800' :
-                                                        phase.focus === 'Web Development' ? 'bg-purple-100 text-purple-800' :
-                                                            phase.focus === 'Database Integration' ? 'bg-orange-100 text-orange-800' :
-                                                                phase.focus === 'Production Ready' ? 'bg-red-100 text-red-800' :
-                                                                    'bg-indigo-100 text-indigo-800'
+                                                <span className={`px-2 py-1 text-xs font-medium rounded ${checkpoint.difficulty === 'Basic' ? 'bg-green-100 text-green-800' :
+                                                    checkpoint.difficulty === 'Intermediate' ? 'bg-yellow-100 text-yellow-800' :
+                                                        'bg-red-100 text-red-800'
                                                     }`}>
-                                                    {phase.focus}
+                                                    {checkpoint.difficulty}
                                                 </span>
                                             </div>
-
-                                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                                <div>
-                                                    <h5 className="font-medium text-gray-900 mb-3">학습 주제</h5>
-                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                                        {phase.topics.map((topic, topicIndex) => (
-                                                            <div key={topicIndex} className="flex items-center text-sm text-gray-700 bg-gray-50 p-2 rounded">
-                                                                <CheckCircle className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
-                                                                {topic}
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <h5 className="font-medium text-gray-900 mb-3">실습 프로젝트</h5>
-                                                    <div className="space-y-2">
-                                                        {phase.projects.map((project, projectIndex) => (
-                                                            <div key={projectIndex} className="flex items-center text-sm text-blue-700 bg-blue-50 p-2 rounded">
-                                                                <Code className="h-4 w-4 text-blue-500 mr-2 flex-shrink-0" />
-                                                                {project}
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </Section>
-                            <div className="flex items-center justify-between w-full text-left">
-                                <h4 className="font-semibold text-gray-900">1-2주차: Java & Spring 기초 마스터</h4>
-                                <ChevronRight className="h-5 w-5" />
-                            </div>
-                            {/* Static: not expandable in server component */}
-                            {/* Details for week 1-2 would go here if expandable */}
-                            <div className="flex items-center justify-between w-full text-left">
-                                <h4 className="font-semibold text-gray-900">3-4주차: Spring Boot 핵심 이해</h4>
-                                <ChevronRight className="h-5 w-5" />
-                            </div>
-                            {/* Static: not expandable in server component */}
-                            {/* Details for week 3-4 would go here if expandable */}
-                            <div className="flex items-center justify-between w-full text-left">
-                                <h4 className="font-semibold text-gray-900">11-12주차: 마이크로서비스 & 배포</h4>
-                                <ChevronRight className="h-5 w-5" />
-                            </div>
-                            {/* Static: not expandable in server component */}
-                            {/* Details for week 11-12 would go here if expandable */}
-
-                            <Section title="🎯 학습 성과 측정">
-                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                    <div>
-                                        <h4 className="font-semibold text-gray-900 mb-4">주차별 체크포인트</h4>
-                                        <div className="space-y-3">
-                                            {[
-                                                { week: '2주차', task: 'Spring IoC/DI 개념 설명 가능', difficulty: 'Basic' },
-                                                { week: '4주차', task: 'Spring Boot 프로젝트 구조 이해', difficulty: 'Basic' },
-                                                { week: '6주차', task: 'RESTful API 설계 및 구현', difficulty: 'Intermediate' },
-                                                { week: '8주차', task: 'JPA 연관관계 매핑 활용', difficulty: 'Intermediate' },
-                                                { week: '10주차', task: '보안 인증/인가 구현', difficulty: 'Advanced' },
-                                                { week: '12주차', task: '마이크로서비스 아키텍처 구성', difficulty: 'Advanced' }
-                                            ].map((checkpoint, index) => (
-                                                <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                                                    <div className="flex items-center">
-                                                        <CheckCircle className="h-4 w-4 text-green-500 mr-3" />
-                                                        <div>
-                                                            <span className="font-medium text-gray-900">{checkpoint.week}</span>
-                                                            <span className="text-gray-700 ml-2">{checkpoint.task}</span>
-                                                        </div>
-                                                    </div>
-                                                    <span className={`px-2 py-1 text-xs font-medium rounded ${checkpoint.difficulty === 'Basic' ? 'bg-green-100 text-green-800' :
-                                                        checkpoint.difficulty === 'Intermediate' ? 'bg-yellow-100 text-yellow-800' :
-                                                            'bg-red-100 text-red-800'
-                                                        }`}>
-                                                        {checkpoint.difficulty}
-                                                    </span>
-                                                </div>
-                                            ))}
-                                        </div>
+                                        ))}
                                     </div>
-                                    <div>
-                                        <h4 className="font-semibold text-gray-900 mb-4">최종 역량 평가</h4>
-                                        <div className="space-y-4">
-                                            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                                                <h5 className="font-medium text-blue-900 mb-2">기술적 역량</h5>
-                                                <ul className="text-sm text-blue-800 space-y-1">
-                                                    <li>✅ Spring Framework 생태계 활용</li>
-                                                    <li>✅ 엔터프라이즈 패턴 적용</li>
-                                                    <li>✅ 테스트 주도 개발 (TDD)</li>
-                                                    <li>✅ 성능 최적화 기법</li>
-                                                </ul>
-                                            </div>
-                                            <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                                                <h5 className="font-medium text-green-900 mb-2">프로젝트 결과물</h5>
-                                                <ul className="text-sm text-green-800 space-y-1">
-                                                    <li>📦 GitHub 포트폴리오 (12개 프로젝트)</li>
-                                                    <li>📊 성능 테스트 보고서</li>
-                                                    <li>📖 기술 문서 작성</li>
-                                                    <li>🚀 클라우드 배포 경험</li>
-                                                </ul>
-                                            </div>
+                                </div>
+                                <div>
+                                    <h4 className="font-semibold text-gray-900 mb-4">최종 역량 평가</h4>
+                                    <div className="space-y-4">
+                                        <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                            <h5 className="font-medium text-blue-900 mb-2">기술적 역량</h5>
+                                            <ul className="text-sm text-blue-800 space-y-1">
+                                                <li>✅ Spring Framework 생태계 활용</li>
+                                                <li>✅ 엔터프라이즈 패턴 적용</li>
+                                                <li>✅ 테스트 주도 개발 (TDD)</li>
+                                                <li>✅ 성능 최적화 기법</li>
+                                            </ul>
+                                        </div>
+                                        <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                                            <h5 className="font-medium text-green-900 mb-2">프로젝트 결과물</h5>
+                                            <ul className="text-sm text-green-800 space-y-1">
+                                                <li>📦 GitHub 포트폴리오 (12개 프로젝트)</li>
+                                                <li>📊 성능 테스트 보고서</li>
+                                                <li>📖 기술 문서 작성</li>
+                                                <li>🚀 클라우드 배포 경험</li>
+                                            </ul>
                                         </div>
                                     </div>
                                 </div>
-                            </Section>
-                        </>
+                            </div>
+                        </Section>
                     </div>
                 );
 
@@ -2120,9 +2016,6 @@ volumes:
                         </Section>
                     </div>
                 );
-
-            default:
-                return <div>Content not found</div>;
         }
     };
 
