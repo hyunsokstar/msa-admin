@@ -12,7 +12,6 @@ import {
     Database,
     TrendingUp,
     BarChart3,
-    ExternalLink,
     Star,
     Clock,
     Target,
@@ -21,7 +20,8 @@ import {
     Rocket,
     Shield,
     Globe,
-    Code
+    Code,
+    Filter
 } from 'lucide-react';
 
 interface Course {
@@ -51,7 +51,7 @@ const VibeCodingPlan: React.FC = () => {
             level: 'Intermediate',
             duration: '12주',
             skills: ['LLaMA', 'AI 모델링', 'Python', 'Transformers'],
-            icon: <Brain className="w-6 h-6" />,
+            icon: <Brain className="w-4 h-4" />,
             platform: 'Inflearn'
         },
         {
@@ -63,7 +63,7 @@ const VibeCodingPlan: React.FC = () => {
             level: 'Advanced',
             duration: '8주',
             skills: ['RAG', 'ChatBot', 'Vector DB', 'LangChain'],
-            icon: <Bot className="w-6 h-6" />,
+            icon: <Bot className="w-4 h-4" />,
             platform: 'Inflearn'
         },
         {
@@ -75,7 +75,7 @@ const VibeCodingPlan: React.FC = () => {
             level: 'Intermediate',
             duration: '6주',
             skills: ['MCP', 'Automation', 'API Integration', 'Workflow'],
-            icon: <Zap className="w-6 h-6" />,
+            icon: <Zap className="w-4 h-4" />,
             platform: 'Inflearn'
         },
         {
@@ -87,7 +87,7 @@ const VibeCodingPlan: React.FC = () => {
             level: 'Advanced',
             duration: '10주',
             skills: ['LangGraph', 'AI Agent', 'Multi-Agent', 'Graph AI'],
-            icon: <Users className="w-6 h-6" />,
+            icon: <Users className="w-4 h-4" />,
             platform: 'Inflearn'
         },
         {
@@ -99,7 +99,7 @@ const VibeCodingPlan: React.FC = () => {
             level: 'Beginner',
             duration: '5주',
             skills: ['Figma', 'AI Design', 'Prototyping', 'UI/UX'],
-            icon: <Palette className="w-6 h-6" />,
+            icon: <Palette className="w-4 h-4" />,
             platform: 'Inflearn'
         },
         {
@@ -111,7 +111,7 @@ const VibeCodingPlan: React.FC = () => {
             level: 'Intermediate',
             duration: '7주',
             skills: ['Public Data', 'Government API', 'Data Processing', 'AI Service'],
-            icon: <Database className="w-6 h-6" />,
+            icon: <Database className="w-4 h-4" />,
             platform: 'Inflearn'
         },
         {
@@ -123,7 +123,7 @@ const VibeCodingPlan: React.FC = () => {
             level: 'Beginner',
             duration: '4주',
             skills: ['Cursor AI', 'Financial Analysis', 'Data Visualization', 'Python'],
-            icon: <TrendingUp className="w-6 h-6" />,
+            icon: <TrendingUp className="w-4 h-4" />,
             platform: 'Inflearn'
         },
         {
@@ -135,7 +135,7 @@ const VibeCodingPlan: React.FC = () => {
             level: 'Advanced',
             duration: '9주',
             skills: ['LangGraph', 'MCP', 'Agent Development', 'Advanced AI'],
-            icon: <Rocket className="w-6 h-6" />,
+            icon: <Rocket className="w-4 h-4" />,
             platform: 'Inflearn'
         },
         {
@@ -147,7 +147,7 @@ const VibeCodingPlan: React.FC = () => {
             level: 'Intermediate',
             duration: '6주',
             skills: ['ChatGPT', 'Data Analysis', 'Statistical Analysis', 'Business Intelligence'],
-            icon: <BarChart3 className="w-6 h-6" />,
+            icon: <BarChart3 className="w-4 h-4" />,
             platform: 'Inflearn'
         },
         {
@@ -159,7 +159,7 @@ const VibeCodingPlan: React.FC = () => {
             level: 'Advanced',
             duration: '16주',
             skills: ['NLP', 'Deep Learning', 'Python', 'Machine Learning'],
-            icon: <Brain className="w-6 h-6" />,
+            icon: <Brain className="w-4 h-4" />,
             platform: 'FastCampus'
         },
         {
@@ -171,7 +171,7 @@ const VibeCodingPlan: React.FC = () => {
             level: 'Advanced',
             duration: '20주',
             skills: ['RAG', 'Vector Database', 'LLM', 'AI Engineering'],
-            icon: <Shield className="w-6 h-6" />,
+            icon: <Shield className="w-4 h-4" />,
             platform: 'FastCampus'
         }
     ];
@@ -190,167 +190,153 @@ const VibeCodingPlan: React.FC = () => {
 
     const getLevelColor = (level: string) => {
         switch (level) {
-            case 'Beginner': return 'bg-green-100 text-green-800';
-            case 'Intermediate': return 'bg-blue-100 text-blue-800';
-            case 'Advanced': return 'bg-purple-100 text-purple-800';
-            default: return 'bg-gray-100 text-gray-800';
+            case 'Beginner': return 'bg-green-50 text-green-700 border-green-200';
+            case 'Intermediate': return 'bg-blue-50 text-blue-700 border-blue-200';
+            case 'Advanced': return 'bg-purple-50 text-purple-700 border-purple-200';
+            default: return 'bg-gray-50 text-gray-700 border-gray-200';
         }
     };
 
     const getPlatformColor = (platform: string) => {
         switch (platform) {
-            case 'Inflearn': return 'bg-emerald-100 text-emerald-800';
-            case 'FastCampus': return 'bg-orange-100 text-orange-800';
-            default: return 'bg-gray-100 text-gray-800';
+            case 'Inflearn': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+            case 'FastCampus': return 'bg-orange-50 text-orange-700 border-orange-200';
+            default: return 'bg-gray-50 text-gray-700 border-gray-200';
         }
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+        <div className="min-h-screen bg-gray-50/50">
             {/* Header */}
-            <div className="bg-white/80 backdrop-blur-sm border-b border-white/50 shadow-sm sticky top-0 z-10">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center justify-between h-16">
-                        <div className="flex items-center">
-                            <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg mr-3">
-                                <Lightbulb className="h-6 w-6 text-white" />
-                            </div>
-                            <div>
-                                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                                    바이브코딩 마스터 플랜 2025
-                                </h1>
-                                <p className="text-sm text-gray-500">AI 시대를 선도하는 개발자 되기</p>
-                            </div>
+            <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                <div className="container flex h-14 items-center">
+                    <div className="flex items-center space-x-3">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
+                            <Lightbulb className="h-4 w-4" />
                         </div>
-                        <div className="flex items-center space-x-3">
-                            <span className="bg-blue-100 text-blue-800 text-xs font-medium px-3 py-1 rounded-full">
-                                11개 코스
-                            </span>
-                            <span className="bg-purple-100 text-purple-800 text-xs font-medium px-3 py-1 rounded-full">
-                                AI 전문가 과정
-                            </span>
+                        <div>
+                            <h1 className="text-lg font-semibold">바이브코딩 마스터 플랜</h1>
+                            <p className="text-xs text-muted-foreground">AI 시대를 선도하는 개발자 되기</p>
+                        </div>
+                    </div>
+                    <div className="ml-auto flex items-center space-x-2">
+                        <div className="rounded-md bg-secondary px-2 py-1 text-xs font-medium">
+                            11개 코스
+                        </div>
+                        <div className="rounded-md bg-secondary px-2 py-1 text-xs font-medium">
+                            AI 전문가 과정
                         </div>
                     </div>
                 </div>
-            </div>
+            </header>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="container py-6">
                 {/* Hero Section */}
-                <div className="text-center mb-12">
-                    <div className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                        <h2 className="text-4xl md:text-5xl font-bold mb-4">
-                            AI 혁신의 중심에서
-                        </h2>
-                        <h3 className="text-3xl md:text-4xl font-bold">
-                            미래를 코딩하세요
-                        </h3>
-                    </div>
-                    <p className="text-xl text-gray-600 mt-6 max-w-3xl mx-auto">
-                        LLM부터 RAG, MCP, LangGraph까지 최신 AI 기술을 마스터하고
-                        <br />
-                        <span className="font-semibold text-blue-600">차세대 AI 전문가</span>로 성장하세요
+                <div className="mb-8">
+                    <h2 className="text-3xl font-bold tracking-tight">AI 전문가 과정</h2>
+                    <p className="text-muted-foreground mt-2">
+                        LLM부터 RAG, MCP, LangGraph까지 최신 AI 기술을 마스터하고 차세대 AI 전문가로 성장하세요
                     </p>
                 </div>
 
-                {/* Stats */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+                {/* Stats Cards */}
+                <div className="grid gap-4 md:grid-cols-4 mb-8">
                     {[
-                        { icon: <Target className="w-8 h-8" />, value: '11+', label: '전문 코스', color: 'blue' },
-                        { icon: <Clock className="w-8 h-8" />, value: '100+', label: '학습 시간', color: 'green' },
-                        { icon: <Star className="w-8 h-8" />, value: '4.9', label: '평균 평점', color: 'yellow' },
-                        { icon: <Users className="w-8 h-8" />, value: '5000+', label: '수강생', color: 'purple' }
+                        { icon: <Target className="h-4 w-4" />, value: '11+', label: '전문 코스' },
+                        { icon: <Clock className="h-4 w-4" />, value: '100+', label: '학습 시간' },
+                        { icon: <Star className="h-4 w-4" />, value: '4.9', label: '평균 평점' },
+                        { icon: <Users className="h-4 w-4" />, value: '5000+', label: '수강생' }
                     ].map((stat, index) => (
-                        <div key={index} className="bg-white/70 backdrop-blur-sm rounded-xl p-6 text-center border border-white/50 shadow-lg">
-                            <div className={`inline-flex items-center justify-center w-16 h-16 bg-${stat.color}-100 text-${stat.color}-600 rounded-full mb-4`}>
-                                {stat.icon}
+                        <div key={index} className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+                            <div className="flex items-center space-x-2">
+                                <div className="text-muted-foreground">{stat.icon}</div>
+                                <div className="text-2xl font-bold">{stat.value}</div>
                             </div>
-                            <div className={`text-3xl font-bold text-${stat.color}-600 mb-2`}>{stat.value}</div>
-                            <div className="text-gray-600 font-medium">{stat.label}</div>
+                            <p className="text-sm text-muted-foreground mt-1">{stat.label}</p>
                         </div>
                     ))}
                 </div>
 
                 {/* Category Filter */}
-                <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/50 shadow-lg mb-8">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">카테고리별 탐색</h3>
-                    <div className="flex flex-wrap gap-3">
+                <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6 mb-8">
+                    <div className="flex items-center space-x-2 mb-4">
+                        <Filter className="h-4 w-4" />
+                        <h3 className="text-lg font-semibold">카테고리</h3>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
                         {categories.map((category) => (
                             <button
                                 key={category.id}
                                 onClick={() => setActiveCategory(category.id)}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${activeCategory === category.id
-                                    ? 'bg-blue-500 text-white shadow-lg transform scale-105'
-                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                className={`inline-flex items-center rounded-md px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${activeCategory === category.id
+                                        ? 'bg-primary text-primary-foreground shadow hover:bg-primary/90'
+                                        : 'border border-input bg-background hover:bg-accent hover:text-accent-foreground'
                                     }`}
                             >
                                 {category.icon}
-                                {category.name}
+                                <span className="ml-2">{category.name}</span>
                             </button>
                         ))}
                     </div>
                 </div>
 
                 {/* Course Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {filteredCourses.map((course) => (
                         <div
                             key={course.id}
-                            className="group bg-white/70 backdrop-blur-sm rounded-xl border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
+                            className="group rounded-lg border bg-card text-card-foreground shadow-sm transition-all hover:shadow-md"
                             onMouseEnter={() => setHoveredCard(course.id)}
                             onMouseLeave={() => setHoveredCard(null)}
                         >
                             {/* Card Header */}
-                            <div className="p-6 border-b border-gray-100">
-                                <div className="flex items-start justify-between mb-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg text-white">
-                                            {course.icon}
-                                        </div>
-                                        <div>
-                                            <h3 className="font-bold text-gray-900 text-lg leading-tight">
-                                                {course.title}
-                                            </h3>
-                                            <div className="flex items-center gap-2 mt-2">
-                                                <span className={`text-xs px-2 py-1 rounded-full ${getPlatformColor(course.platform)}`}>
-                                                    {course.platform}
-                                                </span>
-                                                <span className={`text-xs px-2 py-1 rounded-full ${getLevelColor(course.level)}`}>
-                                                    {course.level}
-                                                </span>
-                                            </div>
+                            <div className="p-6 pb-4">
+                                <div className="flex items-start space-x-3">
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary">
+                                        {course.icon}
+                                    </div>
+                                    <div className="flex-1 space-y-1">
+                                        <h3 className="font-semibold leading-none tracking-tight text-sm">
+                                            {course.title}
+                                        </h3>
+                                        <div className="flex items-center space-x-2">
+                                            <span className={`inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-semibold ${getPlatformColor(course.platform)}`}>
+                                                {course.platform}
+                                            </span>
+                                            <span className={`inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-semibold ${getLevelColor(course.level)}`}>
+                                                {course.level}
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
-                                <p className="text-gray-600 text-sm leading-relaxed">
+                                <p className="text-sm text-muted-foreground mt-3 leading-relaxed">
                                     {course.description}
                                 </p>
                             </div>
 
-                            {/* Card Body */}
-                            <div className="p-6 space-y-4">
+                            {/* Card Content */}
+                            <div className="p-6 pt-0 space-y-4">
                                 <div className="flex items-center justify-between text-sm">
-                                    <div className="flex items-center gap-2 text-gray-500">
-                                        <Clock className="w-4 h-4" />
-                                        {course.duration}
+                                    <div className="flex items-center space-x-1 text-muted-foreground">
+                                        <Clock className="h-3 w-3" />
+                                        <span>{course.duration}</span>
                                     </div>
-                                    <div className="text-blue-600 font-medium">
-                                        {course.category}
-                                    </div>
+                                    <div className="text-sm font-medium">{course.category}</div>
                                 </div>
 
                                 <div>
-                                    <h4 className="text-sm font-semibold text-gray-900 mb-2">핵심 스킬</h4>
-                                    <div className="flex flex-wrap gap-2">
+                                    <h4 className="text-sm font-medium mb-2">핵심 스킬</h4>
+                                    <div className="flex flex-wrap gap-1">
                                         {course.skills.slice(0, 4).map((skill, index) => (
                                             <span
                                                 key={index}
-                                                className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-md"
+                                                className="inline-flex items-center rounded-md bg-secondary px-2 py-1 text-xs font-medium text-secondary-foreground"
                                             >
                                                 {skill}
                                             </span>
                                         ))}
                                         {course.skills.length > 4 && (
-                                            <span className="text-xs text-gray-500">
+                                            <span className="text-xs text-muted-foreground">
                                                 +{course.skills.length - 4}개 더
                                             </span>
                                         )}
@@ -361,13 +347,11 @@ const VibeCodingPlan: React.FC = () => {
                                     href={course.url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className={`w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-lg font-medium transition-all ${hoveredCard === course.id
-                                        ? 'transform scale-105 shadow-lg'
-                                        : 'hover:transform hover:scale-105'
+                                    className={`inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${hoveredCard === course.id ? 'scale-[1.02]' : ''
                                         }`}
                                 >
                                     강의 보러가기
-                                    <ChevronRight className="w-4 h-4" />
+                                    <ChevronRight className="ml-2 h-4 w-4" />
                                 </a>
                             </div>
                         </div>
@@ -375,22 +359,22 @@ const VibeCodingPlan: React.FC = () => {
                 </div>
 
                 {/* Call to Action */}
-                <div className="mt-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-center text-white">
-                    <h3 className="text-3xl font-bold mb-4">AI 전문가 여정을 시작하세요</h3>
-                    <p className="text-xl text-blue-100 mb-6">
+                <div className="mt-12 rounded-lg border bg-card p-8 text-center">
+                    <h3 className="text-2xl font-bold tracking-tight">AI 전문가 여정을 시작하세요</h3>
+                    <p className="text-muted-foreground mt-2 text-lg">
                         바이브코딩과 함께 미래 기술을 선도하는 개발자가 되어보세요
                     </p>
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <div className="flex items-center gap-2 text-blue-100">
-                            <Star className="w-5 h-5 text-yellow-400" />
+                    <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-6 text-sm text-muted-foreground">
+                        <div className="flex items-center space-x-2">
+                            <Star className="h-4 w-4" />
                             <span>실무 중심 프로젝트</span>
                         </div>
-                        <div className="flex items-center gap-2 text-blue-100">
-                            <Target className="w-5 h-5 text-green-400" />
+                        <div className="flex items-center space-x-2">
+                            <Target className="h-4 w-4" />
                             <span>단계별 체계적 학습</span>
                         </div>
-                        <div className="flex items-center gap-2 text-blue-100">
-                            <Rocket className="w-5 h-5 text-orange-400" />
+                        <div className="flex items-center space-x-2">
+                            <Rocket className="h-4 w-4" />
                             <span>최신 AI 기술 마스터</span>
                         </div>
                     </div>
@@ -398,24 +382,19 @@ const VibeCodingPlan: React.FC = () => {
             </div>
 
             {/* Footer */}
-            <footer className="bg-slate-900 text-white py-12 mt-16">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <div className="mb-6">
-                        <h4 className="text-2xl font-bold mb-2">바이브코딩 커뮤니티</h4>
-                        <p className="text-slate-300">
+            <footer className="border-t bg-background">
+                <div className="container py-8 text-center">
+                    <div className="mb-4">
+                        <h4 className="text-lg font-semibold">바이브코딩 커뮤니티</h4>
+                        <p className="text-sm text-muted-foreground">
                             AI 시대를 이끌어갈 개발자들과 함께 성장하세요
                         </p>
                     </div>
-                    <div className="flex justify-center items-center gap-8 text-sm text-slate-400">
-                        <span>• 11개 전문 과정</span>
-                        <span>• AI/ML 특화</span>
-                        <span>• 실무 프로젝트</span>
-                        <span>• 커뮤니티 지원</span>
-                    </div>
-                    <div className="mt-8 pt-8 border-t border-slate-700">
-                        <p className="text-slate-400 text-sm">
-                            🚀 AI 혁신의 파도를 타고 미래로 나아가세요!
-                        </p>
+                    <div className="flex justify-center items-center gap-6 text-sm text-muted-foreground">
+                        <span>11개 전문 과정</span>
+                        <span>AI/ML 특화</span>
+                        <span>실무 프로젝트</span>
+                        <span>커뮤니티 지원</span>
                     </div>
                 </div>
             </footer>
