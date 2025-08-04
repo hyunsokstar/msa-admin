@@ -74,7 +74,7 @@ const MSAPrinciplesManual = () => {
         },
         {
             id: 2,
-            title: "당위의 혁산 + 고객 중심 주의",
+            title: "당위의 혁신 + 고객 중심 주의",
             description: "기존 관습을 재검토하고 고객 가치 최우선",
             details: [
                 "기존 방식에 대한 지속적인 의문과 개선",
