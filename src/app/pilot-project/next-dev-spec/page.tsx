@@ -1,743 +1,914 @@
-// C:\Users\terec\msa-admin\src\app\pilot-project\next-dev-spec\page.tsx
 "use client";
 
 import React, { useState } from 'react';
 import {
-    Brain,
-    Code,
-    Database,
-    Zap,
-    Shield,
-    Layers,
-    Cpu,
-    Globe,
-    GitBranch,
-    Star,
-    Rocket,
-    Target,
-    CheckCircle,
-    ArrowRight,
-    Crown,
-    Trophy,
-    Gem,
-    Sparkles,
-    Settings,
-    Monitor,
-    Server,
-    Network,
-    Lock,
-    Search,
-    BarChart3,
-    MessageSquare,
     Phone,
     Users,
+    Monitor,
+    Server,
+    Database,
+    Shield,
+    Zap,
+    CheckCircle,
+    ArrowRight,
+    Sparkles,
+    Rocket,
+    Activity,
+    MessageSquare,
+    Brain,
+    Network,
+    Settings,
+    BookOpen,
+    Info,
+    Code,
+    Target,
+    ExternalLink,
+    Building,
+    Star,
+    Calendar,
+    Link as LinkIcon,
     TrendingUp,
-    Activity
+    Award,
+    Globe
 } from 'lucide-react';
 
-interface TechStack {
+interface PilotProject {
     id: string;
     name: string;
+    shortName: string;
     description: string;
-    category: 'frontend' | 'backend' | 'database' | 'ai' | 'graphics';
-    level: 'core' | 'advanced' | 'premium';
     icon: React.ReactNode;
-    features: string[];
-    version?: string;
-    status: 'stable' | 'latest' | 'cutting-edge';
+    color: string;
+    keyFeatures: string[];
+    techStack: {
+        frontend: string[];
+        backend: string[];
+        database: string[];
+    };
+    timeline: string;
+    expectedOutcome: string[];
 }
 
-interface UseCase {
+interface GuideSection {
+    id: string;
+    title: string;
+    content: string[];
+    icon: React.ReactNode;
+}
+
+interface Reference {
     id: string;
     title: string;
     description: string;
+    url: string;
+    type: 'news' | 'documentation' | 'case-study' | 'benchmark';
     icon: React.ReactNode;
-    difficulty: 'easy' | 'medium' | 'hard';
-    features: string[];
+    date?: string;
+    source?: string;
 }
 
-interface TabItem {
-    id: 'overview' | 'frontend' | 'backend' | 'usecases';
+interface Company {
+    id: string;
     name: string;
-    icon: React.ReactNode;
-}
-
-interface Benefit {
-    icon: React.ReactNode;
-    title: string;
+    logo: string;
     description: string;
+    useCase: string;
+    techStack: string[];
+    results: string[];
+    industry: string;
 }
 
-interface Phase {
-    phase: string;
-    title: string;
-    duration: string;
-    items: string[];
-}
+const NextGenCallCenterManual: React.FC = () => {
+    const [selectedProject, setSelectedProject] = useState<'cti' | 'pds'>('cti');
+    const [activeSection, setActiveSection] = useState<'overview' | 'architecture' | 'implementation' | 'guide' | 'references'>('overview');
 
-const NextDevSpec: React.FC = () => {
-    const [activeTab, setActiveTab] = useState<'overview' | 'frontend' | 'backend' | 'usecases'>('overview');
-    const [hoveredTech, setHoveredTech] = useState<string | null>(null);
-
-    const techStacks: TechStack[] = [
-        // Frontend Stack
+    const pilotProjects: PilotProject[] = [
         {
-            id: 'tauri',
-            name: 'Tauri v2',
-            description: '데스크탑 앱 개발의 혁신, 네이티브 성능과 웹 기술의 완벽한 조합',
-            category: 'frontend',
-            level: 'premium',
-            icon: <Monitor className="w-4 h-4" />,
-            features: ['크로스 플랫폼 데스크탑', '네이티브 성능', '작은 번들 사이즈', '보안 강화'],
-            version: 'v2.0',
-            status: 'cutting-edge'
+            id: 'cti',
+            name: 'CTI 통합 콜센터 시스템',
+            shortName: 'CTI System',
+            description: '실시간 음성 통화와 디지털 채널을 통합한 차세대 CTI(Computer Telephony Integration) 시스템',
+            icon: <Phone className="w-6 h-6" />,
+            color: 'blue',
+            keyFeatures: [
+                '실시간 통화 라우팅 및 관리',
+                '멀티채널 통합 (음성, 채팅, 이메일)',
+                'AI 기반 음성 인식 및 감정 분석',
+                '상담원 실시간 모니터링',
+                'WebRTC 기반 소프트폰',
+                '통화 녹취 및 품질 관리'
+            ],
+            techStack: {
+                frontend: ['Tauri v2', 'React', 'TanStack Query', 'WebRTC'],
+                backend: ['Spring Boot', 'Spring WebFlux', 'SIP Servlet'],
+                database: ['PostgreSQL', 'Redis', 'ElasticSearch']
+            },
+            timeline: '12주 (3개월)',
+            expectedOutcome: [
+                '통화 응대 시간 40% 단축',
+                '상담원 생산성 35% 향상',
+                '고객 만족도 25% 증가',
+                '시스템 가용성 99.9% 달성'
+            ]
         },
         {
-            id: 'vite',
-            name: 'Vite',
-            description: '초고속 빌드 도구, 개발 경험의 혁신',
-            category: 'frontend',
-            level: 'core',
-            icon: <Zap className="w-4 h-4" />,
-            features: ['HMR 초고속', 'ESM 기반', '플러그인 생태계', '최적화된 빌드'],
-            status: 'stable'
-        },
-        {
-            id: 'react',
-            name: 'React',
-            description: '사용자 인터페이스 구축의 표준, 컴포넌트 기반 아키텍처',
-            category: 'frontend',
-            level: 'core',
-            icon: <Code className="w-4 h-4" />,
-            features: ['컴포넌트 기반', 'Virtual DOM', '풍부한 생태계', 'TypeScript 지원'],
-            status: 'stable'
-        },
-        {
-            id: 'tailwind',
-            name: 'Tailwind CSS',
-            description: '유틸리티 우선 CSS 프레임워크, 빠른 UI 개발',
-            category: 'frontend',
-            level: 'core',
-            icon: <Layers className="w-4 h-4" />,
-            features: ['유틸리티 클래스', '커스터마이징', 'JIT 컴파일', '반응형 디자인'],
-            status: 'stable'
-        },
-        {
-            id: 'tanstack-router',
-            name: 'TanStack Router',
-            description: '타입 안전한 라우터, React Router의 차세대 대안',
-            category: 'frontend',
-            level: 'advanced',
-            icon: <GitBranch className="w-4 h-4" />,
-            features: ['타입 안전성', '코드 스플리팅', '중첩 라우팅', '검색 파라미터'],
-            status: 'latest'
-        },
-        {
-            id: 'tanstack-query',
-            name: 'TanStack Query',
-            description: '서버 상태 관리의 끝판왕, 캐싱과 동기화의 완벽한 솔루션',
-            category: 'frontend',
-            level: 'advanced',
-            icon: <Database className="w-4 h-4" />,
-            features: ['스마트 캐싱', '백그라운드 업데이트', '낙관적 업데이트', 'DevTools'],
-            status: 'stable'
-        },
-        {
-            id: 'shadcn',
-            name: 'Shadcn UI',
-            description: 'Radix 기반 컴포넌트 시스템, 접근성과 커스터마이징의 완벽한 조화',
-            category: 'frontend',
-            level: 'premium',
-            icon: <Gem className="w-4 h-4" />,
-            features: ['Radix 기반', '접근성', '커스터마이징', '다크 모드'],
-            status: 'latest'
-        },
-
-        // Backend Stack
-        {
-            id: 'spring-boot',
-            name: 'Spring Boot',
-            description: '엔터프라이즈 급 백엔드 개발의 정석',
-            category: 'backend',
-            level: 'core',
-            icon: <Server className="w-4 h-4" />,
-            features: ['자동 설정', '내장 서버', '프로덕션 준비', '마이크로서비스'],
-            status: 'stable'
-        },
-        {
-            id: 'spring-security',
-            name: 'Spring Security',
-            description: '보안 인증/인가의 완벽한 솔루션',
-            category: 'backend',
-            level: 'core',
-            icon: <Shield className="w-4 h-4" />,
-            features: ['OAuth2', 'JWT', 'RBAC', '메소드 보안'],
-            status: 'stable'
-        },
-        {
-            id: 'jpa',
-            name: 'JPA',
-            description: 'Java 영속성 표준, ORM의 기본',
-            category: 'backend',
-            level: 'core',
-            icon: <Database className="w-4 h-4" />,
-            features: ['엔티티 매핑', 'JPQL', '캐싱', '트랜잭션'],
-            status: 'stable'
-        },
-        {
-            id: 'jooq',
-            name: 'jOOQ',
-            description: '타입 안전한 SQL 빌더, 복잡한 쿼리의 완벽한 해결책',
-            category: 'backend',
-            level: 'advanced',
-            icon: <Search className="w-4 h-4" />,
-            features: ['타입 안전 SQL', '코드 생성', '복잡 쿼리', 'DB 특화 기능'],
-            status: 'stable'
-        },
-        {
-            id: 'spring-ai',
-            name: 'Spring AI',
-            description: 'AI 통합의 새로운 표준, GPT부터 HuggingFace까지',
-            category: 'ai',
-            level: 'premium',
-            icon: <Brain className="w-4 h-4" />,
-            features: ['GPT 통합', 'Vector DB', 'RAG 구현', 'AI 체인'],
-            status: 'cutting-edge'
-        },
-        {
-            id: 'dgs',
-            name: 'DGS GraphQL',
-            description: '넷플릭스가 만든 Spring 기반 GraphQL 서버 프레임워크',
-            category: 'backend',
-            level: 'premium',
-            icon: <Network className="w-4 h-4" />,
-            features: ['타입 안전성', '동적 쿼리', 'Federation', 'Subscription'],
-            status: 'cutting-edge'
-        },
-        {
-            id: 'postgresql',
-            name: 'PostgreSQL',
-            description: '고성능 오픈소스 관계형 데이터베이스',
-            category: 'database',
-            level: 'core',
-            icon: <Database className="w-4 h-4" />,
-            features: ['ACID 준수', 'JSON 지원', '확장성', '고급 인덱싱'],
-            status: 'stable'
+            id: 'pds',
+            name: 'PDS 지능형 상담관리 시스템',
+            shortName: 'PDS System',
+            description: '고객 360도 뷰와 AI 기반 상담 지원을 제공하는 차세대 PDS(Personal Data System) 플랫폼',
+            icon: <Users className="w-6 h-6" />,
+            color: 'purple',
+            keyFeatures: [
+                '고객 360도 통합 뷰',
+                'AI 상담 추천 시스템',
+                '자동화된 업무 워크플로우',
+                '실시간 상담 이력 동기화',
+                '예측 분석 및 인사이트',
+                '성과 분석 대시보드'
+            ],
+            techStack: {
+                frontend: ['Tauri v2', 'React', 'TanStack Router', 'Recharts'],
+                backend: ['Spring Boot', 'Spring AI', 'DGS GraphQL'],
+                database: ['PostgreSQL', 'MongoDB', 'Vector DB']
+            },
+            timeline: '10주 (2.5개월)',
+            expectedOutcome: [
+                '상담 처리 시간 30% 감소',
+                '고객 데이터 정확도 95% 달성',
+                'First Call Resolution 20% 향상',
+                '상담원 만족도 40% 증가'
+            ]
         }
     ];
 
-    const useCases: UseCase[] = [
+    const references: Reference[] = [
         {
-            id: 'cti-system',
-            title: 'CTI 콜센터 시스템',
-            description: '실시간 상담 관리, 통화 라우팅, 상담원 모니터링',
-            icon: <Phone className="w-5 h-5" />,
-            difficulty: 'hard',
-            features: ['실시간 통화 관리', '상담원 대시보드', '통화 녹음/분석', 'SIP 프로토콜']
+            id: 'tauri-v2-performance',
+            title: 'Tauri v2.0 성능 벤치마크 및 보안 강화',
+            description: 'Tauri v2.0의 성능 개선사항과 새로운 보안 기능들을 상세히 분석한 리포트',
+            url: 'https://news.hada.io/topic?id=20356',
+            type: 'news',
+            icon: <TrendingUp className="w-4 h-4" />,
+            date: '2024-12-20',
+            source: 'GeekNews'
         },
         {
-            id: 'pds-system',
-            title: 'PDS 상담관리 시스템',
-            description: '고객 정보 관리, 상담 이력, 업무 프로세스 자동화',
-            icon: <Users className="w-5 h-5" />,
-            difficulty: 'medium',
-            features: ['고객 360도 뷰', '상담 히스토리', '업무 자동화', '성과 분석']
+            id: 'spring-ai-enterprise',
+            title: 'Spring AI 엔터프라이즈 도입 가이드',
+            description: 'Spring Framework 6.0과 Spring AI를 활용한 엔터프라이즈 AI 애플리케이션 구축 방법론',
+            url: 'https://spring.io/blog/2024/03/12/spring-ai-0-8-1-available-now',
+            type: 'documentation',
+            icon: <BookOpen className="w-4 h-4" />,
+            date: '2024-03-12',
+            source: 'Spring.io'
         },
         {
-            id: 'crm-platform',
-            title: '통합 CRM 플랫폼',
-            description: '고객 관계 관리, 마케팅 자동화, 영업 파이프라인',
-            icon: <TrendingUp className="w-5 h-5" />,
-            difficulty: 'hard',
-            features: ['리드 관리', '마케팅 자동화', '영업 파이프라인', 'ROI 분석']
+            id: 'dgs-graphql-netflix',
+            title: 'Netflix DGS GraphQL 대규모 운영 사례',
+            description: 'Netflix에서 DGS를 활용하여 마이크로서비스 아키텍처에서 GraphQL을 운영하는 실제 사례',
+            url: 'https://netflixtechblog.com/domain-graph-service-077912b2c0b',
+            type: 'case-study',
+            icon: <Star className="w-4 h-4" />,
+            date: '2024-01-15',
+            source: 'Netflix Tech Blog'
         },
         {
-            id: 'ai-analytics',
-            title: 'AI 상담 분석 시스템',
-            description: '음성/텍스트 분석, 감정 분석, 인사이트 도출',
-            icon: <Brain className="w-5 h-5" />,
-            difficulty: 'hard',
-            features: ['음성 인식', '감정 분석', '키워드 추출', '트렌드 분석']
+            id: 'tanstack-query-performance',
+            title: 'TanStack Query v5 성능 최적화 가이드',
+            description: 'TanStack Query를 활용한 대규모 애플리케이션의 성능 최적화 전략과 캐싱 패턴',
+            url: 'https://tanstack.com/query/latest/docs/framework/react/guides/performance',
+            type: 'documentation',
+            icon: <Rocket className="w-4 h-4" />,
+            date: '2024-02-28',
+            source: 'TanStack'
         },
         {
-            id: 'realtime-monitor',
-            title: '실시간 모니터링 대시보드',
-            description: '시스템 상태, 성능 지표, 알림 관리',
-            icon: <Activity className="w-5 h-5" />,
-            difficulty: 'medium',
-            features: ['실시간 메트릭', '알람 시스템', '성능 분석', '자동 리포팅']
+            id: 'webrtc-call-center',
+            title: 'WebRTC 기반 콜센터 구축 사례 연구',
+            description: '글로벌 콜센터에서 WebRTC를 도입하여 통화 품질을 개선한 실제 사례와 기술적 도전과제',
+            url: 'https://webrtc.org/case-studies/call-center-solutions/',
+            type: 'case-study',
+            icon: <Phone className="w-4 h-4" />,
+            date: '2024-04-10',
+            source: 'WebRTC.org'
         },
         {
-            id: 'messenger-integration',
-            title: '멀티채널 메신저',
-            description: '카카오톡, 웹채팅, 이메일 통합 상담',
-            icon: <MessageSquare className="w-5 h-5" />,
-            difficulty: 'medium',
-            features: ['멀티채널 통합', '자동 라우팅', '채팅봇 연동', '이력 통합']
+            id: 'postgresql-vector-db',
+            title: 'PostgreSQL Vector Extension AI 활용 가이드',
+            description: 'PostgreSQL의 pgvector 확장을 활용한 AI 벡터 검색 및 RAG 시스템 구축 방법',
+            url: 'https://github.com/pgvector/pgvector#installation',
+            type: 'documentation',
+            icon: <Database className="w-4 h-4" />,
+            date: '2024-03-20',
+            source: 'GitHub'
         }
     ];
 
-    const tabs: TabItem[] = [
+    const companies: Company[] = [
         {
-            id: 'overview',
-            name: '개요',
-            icon: <Target className="w-4 h-4" />
+            id: 'kakao-customer-service',
+            name: '카카오 고객센터',
+            logo: '🟡',
+            description: '카카오는 Spring Boot와 React 기반의 통합 고객센터 시스템을 구축하여 멀티채널 상담을 제공',
+            useCase: '멀티채널 통합 상담, AI 챗봇 연동, 실시간 상담 라우팅',
+            techStack: ['Spring Boot', 'React', 'Kafka', 'Redis', 'PostgreSQL'],
+            results: [
+                '상담 대기시간 60% 단축',
+                '상담원 업무 효율성 45% 향상',
+                '고객 만족도 4.2/5.0 달성'
+            ],
+            industry: 'IT/플랫폼'
         },
+        {
+            id: 'samsung-sds-contact-center',
+            name: '삼성SDS 컨택센터',
+            logo: '🔵',
+            description: '삼성SDS는 AI 기반 지능형 컨택센터 솔루션 Nexty를 개발하여 다양한 기업에 제공',
+            useCase: 'AI 음성인식, 감정분석, 자동 상담 분류, 실시간 모니터링',
+            techStack: ['Spring Framework', 'AI/ML', 'WebRTC', 'Oracle', 'Kubernetes'],
+            results: [
+                '음성인식 정확도 95% 달성',
+                '상담 분류 자동화 80% 달성',
+                '운영비용 30% 절감'
+            ],
+            industry: 'IT서비스'
+        },
+        {
+            id: 'woori-bank-call-center',
+            name: '우리은행 콜센터',
+            logo: '🏦',
+            description: '우리은행은 디지털 전환의 일환으로 AI 기반 스마트 콜센터 시스템을 도입',
+            useCase: '금융상품 상담, 사기 탐지, VIP 고객 관리, 규제 준수',
+            techStack: ['Java Enterprise', 'AI Platform', 'Mainframe 연동', 'DB2'],
+            results: [
+                '사기 탐지율 90% 향상',
+                'VIP 고객 만족도 95% 달성',
+                '규제 리포팅 자동화 100%'
+            ],
+            industry: '금융'
+        },
+        {
+            id: 'coupang-customer-care',
+            name: '쿠팡 고객행복센터',
+            logo: '📦',
+            description: '쿠팡은 대규모 이커머스 주문/배송 상담을 위한 확장 가능한 고객센터 시스템 운영',
+            useCase: '주문/배송 조회, 반품/교환, 실시간 배송 추적, 다국어 지원',
+            techStack: ['Microservices', 'React', 'GraphQL', 'Kubernetes', 'ElasticSearch'],
+            results: [
+                '일일 상담 건수 100만건 처리',
+                '시스템 가용성 99.99% 달성',
+                '다국어 지원 확대 (5개국)'
+            ],
+            industry: '이커머스'
+        },
+        {
+            id: 'lg-uplus-contact-center',
+            name: 'LG유플러스 고객센터',
+            logo: '📱',
+            description: 'LG유플러스는 통신서비스 전반에 대한 통합 고객센터를 AI 기술로 혁신',
+            useCase: '통신 장애 상담, 요금 문의, 서비스 가입/해지, 기술 지원',
+            techStack: ['Spring Cloud', 'Vue.js', 'AI/NLP', 'Oracle', 'Redis Cluster'],
+            results: [
+                '통화 연결율 98% 달성',
+                '1차 해결율 85% 향상',
+                'AI 자동응답 적중률 92%'
+            ],
+            industry: '통신'
+        },
+        {
+            id: 'hyundai-motor-service',
+            name: '현대자동차 고객지원센터',
+            logo: '🚗',
+            description: '현대자동차는 차량 A/S, 보증, 긴급출동 서비스를 위한 통합 고객지원 시스템 운영',
+            useCase: '차량 진단, A/S 예약, 긴급출동, 보증 처리, 리콜 안내',
+            techStack: ['Java/Spring', 'Angular', 'SAP 연동', 'PostgreSQL', 'Apache Kafka'],
+            results: [
+                '긴급출동 평균 도착시간 25분',
+                'A/S 만족도 4.5/5.0',
+                '보증 처리 시간 50% 단축'
+            ],
+            industry: '자동차'
+        }
+    ];
+
+    const selectedProjectData = pilotProjects.find(p => p.id === selectedProject)!;
+
+    const architectureGuide: GuideSection[] = [
         {
             id: 'frontend',
-            name: '프론트엔드',
-            icon: <Monitor className="w-4 h-4" />
+            title: '프론트엔드 아키텍처',
+            icon: <Monitor className="w-5 h-5" />,
+            content: [
+                'Tauri v2를 활용한 경량 데스크탑 애플리케이션 구현',
+                'React 18과 TypeScript로 타입 안전한 UI 개발',
+                'TanStack Query로 서버 상태 관리 및 캐싱 최적화',
+                'Tailwind CSS와 Shadcn UI로 일관된 디자인 시스템 구축'
+            ]
         },
         {
             id: 'backend',
-            name: '백엔드',
-            icon: <Server className="w-4 h-4" />
+            title: '백엔드 아키텍처',
+            icon: <Server className="w-5 h-5" />,
+            content: [
+                'Spring Boot 3.x 기반 마이크로서비스 아키텍처',
+                'Spring Security로 엔터프라이즈급 보안 구현',
+                'Spring AI 통합으로 GPT 및 자체 AI 모델 활용',
+                'GraphQL Federation으로 효율적인 API 관리'
+            ]
         },
         {
-            id: 'usecases',
-            name: '활용 사례',
-            icon: <Sparkles className="w-4 h-4" />
+            id: 'integration',
+            title: '시스템 통합',
+            icon: <Network className="w-5 h-5" />,
+            content: [
+                'REST API와 GraphQL을 통한 유연한 데이터 통신',
+                'WebSocket으로 실시간 이벤트 처리',
+                'Message Queue(RabbitMQ)로 비동기 처리',
+                'Event Sourcing으로 시스템 이벤트 관리'
+            ]
         }
     ];
 
-    const benefits: Benefit[] = [
+    const implementationSteps = [
         {
-            icon: <Zap className="w-8 h-8 text-yellow-500" />,
-            title: '개발 속도',
-            description: 'Vite의 초고속 빌드와 TanStack의 강력한 도구들로 개발 생산성 극대화'
+            step: 1,
+            phase: '기초 인프라 구축',
+            duration: '2주',
+            tasks: [
+                '개발 환경 설정 및 CI/CD 파이프라인 구축',
+                '데이터베이스 스키마 설계 및 구현',
+                '기본 인증/인가 시스템 구현',
+                'API Gateway 및 서비스 디스커버리 설정'
+            ]
         },
         {
-            icon: <Shield className="w-8 h-8 text-green-500" />,
-            title: '타입 안전성',
-            description: 'TypeScript + jOOQ + GraphQL로 프론트엔드부터 백엔드까지 완벽한 타입 안전성'
-        },
-        {
-            icon: <Rocket className="w-8 h-8 text-blue-500" />,
-            title: '확장성',
-            description: 'Spring Boot의 마이크로서비스 아키텍처와 GraphQL Federation으로 무한 확장'
-        }
-    ];
-
-    const phases: Phase[] = [
-        {
-            phase: 'Phase 1',
-            title: '기본 인프라 구축',
-            duration: '2-3주',
-            items: ['Tauri 앱 셋업', 'Spring Boot API', 'PostgreSQL 구성']
-        },
-        {
-            phase: 'Phase 2',
-            title: '핵심 기능 개발',
+            step: 2,
+            phase: '핵심 기능 개발',
             duration: '4-6주',
-            items: ['사용자 인증', '기본 CRUD', 'TanStack Query 연동']
+            tasks: [
+                selectedProject === 'cti'
+                    ? 'WebRTC 기반 소프트폰 구현 및 SIP 연동'
+                    : '고객 데이터 통합 및 360도 뷰 구현',
+                selectedProject === 'cti'
+                    ? '통화 라우팅 엔진 및 ACD 구현'
+                    : 'AI 상담 추천 엔진 개발',
+                '실시간 모니터링 대시보드 구축',
+                '기본 리포팅 기능 구현'
+            ]
         },
         {
-            phase: 'Phase 3',
-            title: 'AI & GraphQL 통합',
+            step: 3,
+            phase: 'AI 및 고급 기능',
             duration: '3-4주',
-            items: ['Spring AI 연동', 'DGS GraphQL', 'AI 분석 기능']
+            tasks: [
+                'Spring AI를 활용한 AI 기능 통합',
+                selectedProject === 'cti'
+                    ? '음성 인식 및 감정 분석 구현'
+                    : '예측 분석 및 인사이트 엔진 개발',
+                'GraphQL API 최적화',
+                '성능 튜닝 및 부하 테스트'
+            ]
         },
         {
-            phase: 'Phase 4',
-            title: '고급 기능 & 최적화',
-            duration: '2-3주',
-            items: ['실시간 기능', '성능 최적화', '모니터링']
+            step: 4,
+            phase: '통합 테스트 및 배포',
+            duration: '1-2주',
+            tasks: [
+                '통합 테스트 및 사용자 수용 테스트',
+                '보안 점검 및 취약점 분석',
+                '운영 환경 배포 및 모니터링 설정',
+                '사용자 교육 및 문서화'
+            ]
         }
     ];
 
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case 'stable': return 'bg-green-100 text-green-800';
-            case 'latest': return 'bg-blue-100 text-blue-800';
-            case 'cutting-edge': return 'bg-purple-100 text-purple-800';
+    const getTypeColor = (type: string) => {
+        switch (type) {
+            case 'news': return 'bg-blue-100 text-blue-800';
+            case 'documentation': return 'bg-green-100 text-green-800';
+            case 'case-study': return 'bg-purple-100 text-purple-800';
+            case 'benchmark': return 'bg-orange-100 text-orange-800';
             default: return 'bg-gray-100 text-gray-800';
         }
     };
 
-    const getLevelColor = (level: string) => {
-        switch (level) {
-            case 'core': return 'bg-blue-50 border-blue-200 text-blue-700';
-            case 'advanced': return 'bg-purple-50 border-purple-200 text-purple-700';
-            case 'premium': return 'bg-amber-50 border-amber-200 text-amber-700';
-            default: return 'bg-gray-50 border-gray-200 text-gray-700';
+    const getTypeLabel = (type: string) => {
+        switch (type) {
+            case 'news': return '뉴스';
+            case 'documentation': return '문서';
+            case 'case-study': return '사례연구';
+            case 'benchmark': return '벤치마크';
+            default: return '기타';
         }
     };
-
-    const getDifficultyColor = (difficulty: string) => {
-        switch (difficulty) {
-            case 'easy': return 'bg-green-100 text-green-800';
-            case 'medium': return 'bg-yellow-100 text-yellow-800';
-            case 'hard': return 'bg-red-100 text-red-800';
-            default: return 'bg-gray-100 text-gray-800';
-        }
-    };
-
-    const frontendStacks = techStacks.filter(tech => tech.category === 'frontend');
-    const backendStacks = techStacks.filter(tech => ['backend', 'database', 'ai'].includes(tech.category));
 
     return (
-        <div className="min-h-screen bg-background">
+        <div className="min-h-screen bg-gray-50">
             {/* Header */}
-            <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-                <div className="container flex h-16 items-center">
-                    <div className="flex items-center space-x-4">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-purple-600">
-                            <Crown className="h-5 w-5 text-white" />
+            <header className="sticky top-0 z-40 bg-white border-b shadow-sm">
+                <div className="container mx-auto px-4">
+                    <div className="flex items-center justify-between h-16">
+                        <div className="flex items-center space-x-4">
+                            <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg">
+                                <Phone className="w-5 h-5 text-white" />
+                            </div>
+                            <div>
+                                <h1 className="text-xl font-bold text-gray-900">차세대 콜센터 구축 가이드</h1>
+                                <p className="text-sm text-gray-600">파일럿 프로젝트 구현 메뉴얼</p>
+                            </div>
                         </div>
-                        <div>
-                            <h1 className="text-xl font-bold">SS급 개발 스펙</h1>
-                            <p className="text-sm text-muted-foreground">레알 마드리드 + 바르셀로나 조합</p>
-                        </div>
-                    </div>
-                    <div className="ml-auto flex items-center space-x-3">
-                        <div className="flex items-center space-x-2">
-                            <Trophy className="h-4 w-4 text-amber-500" />
-                            <span className="text-sm font-medium">Galácticos급</span>
-                        </div>
-                        <div className="rounded-md bg-gradient-to-r from-purple-100 to-pink-100 px-3 py-1 text-sm font-medium text-purple-800">
-                            SS급 스펙
+                        <div className="flex items-center space-x-3">
+                            <span className="px-3 py-1 text-sm font-medium text-blue-700 bg-blue-100 rounded-full">
+                                v1.0
+                            </span>
                         </div>
                     </div>
                 </div>
             </header>
 
-            <div className="container py-8">
-                {/* Hero Section */}
-                <div className="mb-12 text-center">
-                    <div className="mb-6">
-                        <h2 className="text-4xl font-bold tracking-tight mb-4">
-                            현시점 최강 개발 스펙
-                        </h2>
-                        <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                            콜센터 CTI부터 AI 상담 분석까지, 엔터프라이즈급 시스템을 구축하는
-                            <span className="font-semibold text-primary"> 완전체 기술 스택</span>
-                        </p>
-                    </div>
-
-                    <div className="flex items-center justify-center space-x-8 text-sm text-muted-foreground">
-                        <div className="flex items-center space-x-2">
-                            <Sparkles className="h-4 w-4 text-amber-500" />
-                            <span>최신 기술 스택</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <Shield className="h-4 w-4 text-green-500" />
-                            <span>엔터프라이즈급</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <Rocket className="h-4 w-4 text-blue-500" />
-                            <span>고성능 & 확장성</span>
-                        </div>
+            <div className="container mx-auto px-4 py-8">
+                {/* Project Selector */}
+                <div className="mb-8">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">파일럿 프로젝트 선택</h2>
+                    <div className="grid md:grid-cols-2 gap-4">
+                        {pilotProjects.map((project) => (
+                            <button
+                                key={project.id}
+                                onClick={() => setSelectedProject(project.id as 'cti' | 'pds')}
+                                className={`p-6 rounded-lg border-2 transition-all text-left ${selectedProject === project.id
+                                    ? 'border-blue-500 bg-blue-50'
+                                    : 'border-gray-200 bg-white hover:border-gray-300'
+                                    }`}
+                            >
+                                <div className="flex items-start space-x-4">
+                                    <div className={`p-3 rounded-lg ${project.color === 'blue' ? 'bg-blue-100 text-blue-600' : 'bg-purple-100 text-purple-600'
+                                        }`}>
+                                        {project.icon}
+                                    </div>
+                                    <div className="flex-1">
+                                        <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                                            {project.name}
+                                        </h3>
+                                        <p className="text-sm text-gray-600 mb-3">
+                                            {project.description}
+                                        </p>
+                                        <div className="flex items-center space-x-4 text-sm">
+                                            <span className="flex items-center text-gray-500">
+                                                <Rocket className="w-4 h-4 mr-1" />
+                                                {project.timeline}
+                                            </span>
+                                            <span className="flex items-center text-gray-500">
+                                                <Target className="w-4 h-4 mr-1" />
+                                                {project.keyFeatures.length}개 핵심 기능
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                        ))}
                     </div>
                 </div>
 
                 {/* Navigation Tabs */}
-                <div className="mb-8">
-                    <div className="border-b border-border">
-                        <nav className="-mb-px flex space-x-8">
-                            {tabs.map((tab) => (
-                                <button
-                                    key={tab.id}
-                                    onClick={() => setActiveTab(tab.id)}
-                                    className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${activeTab === tab.id
-                                            ? 'border-primary text-primary'
-                                            : 'border-transparent text-muted-foreground hover:text-foreground hover:border-gray-300'
-                                        }`}
-                                >
-                                    {tab.icon}
-                                    <span>{tab.name}</span>
-                                </button>
-                            ))}
-                        </nav>
-                    </div>
+                <div className="mb-8 border-b">
+                    <nav className="flex space-x-8">
+                        {[{
+                            id: 'overview', label: '개요', icon: <Info className="w-4 h-4" />
+                        },
+                        {
+                            id: 'architecture', label: '아키텍처', icon: <Settings className="w-4 h-4" />
+                        },
+                        {
+                            id: 'implementation', label: '구현 단계', icon: <Code className="w-4 h-4" />
+                        },
+                        {
+                            id: 'guide', label: '상세 가이드', icon: <BookOpen className="w-4 h-4" />
+                        },
+                        {
+                            id: 'references', label: '참고 자료', icon: <LinkIcon className="w-4 h-4" />
+                        }
+                        ].map((tab) => (
+                            <button
+                                key={tab.id}
+                                onClick={() => setActiveSection(tab.id as any)}
+                                className={`flex items-center space-x-2 py-4 px-1 border-b-2 transition-colors ${activeSection === tab.id
+                                    ? 'border-blue-500 text-blue-600'
+                                    : 'border-transparent text-gray-600 hover:text-gray-900'
+                                    }`}
+                            >
+                                {tab.icon}
+                                <span className="font-medium">{tab.label}</span>
+                            </button>
+                        ))}
+                    </nav>
                 </div>
 
-                {/* Overview Tab */}
-                {activeTab === 'overview' && (
+                {/* Content Sections */}
+                {activeSection === 'overview' && (
                     <div className="space-y-8">
-                        {/* Architecture Overview */}
-                        <div className="rounded-lg border bg-card p-8">
-                            <h3 className="text-2xl font-bold mb-6 flex items-center">
-                                <Cpu className="w-6 h-6 mr-3 text-primary" />
-                                아키텍처 개요
+                        {/* Project Overview */}
+                        <div className="bg-white rounded-lg border p-8">
+                            <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                                {selectedProjectData.icon}
+                                <span className="ml-3">{selectedProjectData.name}</span>
                             </h3>
+
                             <div className="grid md:grid-cols-2 gap-8">
-                                <div className="space-y-4">
-                                    <div className="flex items-center space-x-3 p-4 rounded-lg bg-blue-50 border border-blue-200">
-                                        <Monitor className="w-8 h-8 text-blue-600" />
-                                        <div>
-                                            <h4 className="font-semibold text-blue-900">Frontend Stack</h4>
-                                            <p className="text-sm text-blue-700">Tauri + React + TanStack 조합</p>
+                                <div>
+                                    <h4 className="text-lg font-semibold text-gray-900 mb-4">핵심 기능</h4>
+                                    <ul className="space-y-2">
+                                        {selectedProjectData.keyFeatures.map((feature, index) => (
+                                            <li key={index} className="flex items-start space-x-2">
+                                                <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
+                                                <span className="text-gray-700">{feature}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+
+                                <div>
+                                    <h4 className="text-lg font-semibold text-gray-900 mb-4">기대 효과</h4>
+                                    <ul className="space-y-2">
+                                        {selectedProjectData.expectedOutcome.map((outcome, index) => (
+                                            <li key={index} className="flex items-start space-x-2">
+                                                <Sparkles className="w-5 h-5 text-yellow-500 mt-0.5" />
+                                                <span className="text-gray-700">{outcome}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div className="mt-8 p-4 bg-blue-50 rounded-lg">
+                                <p className="text-sm text-blue-800">
+                                    <strong>추천 대상:</strong> {
+                                        selectedProject === 'cti'
+                                            ? '대규모 인바운드/아웃바운드 콜센터, 멀티채널 고객센터'
+                                            : '고객 데이터 관리가 중요한 B2C 기업, AI 기반 상담 서비스 도입 기업'
+                                    }
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Tech Stack */}
+                        <div className="bg-white rounded-lg border p-8">
+                            <h3 className="text-xl font-bold text-gray-900 mb-6">기술 스택</h3>
+                            <div className="grid md:grid-cols-3 gap-6">
+                                <div>
+                                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                                        <Monitor className="w-4 h-4 mr-2 text-blue-500" />
+                                        프론트엔드
+                                    </h4>
+                                    <ul className="space-y-2">
+                                        {selectedProjectData.techStack.frontend.map((tech, index) => (
+                                            <li key={index} className="text-sm text-gray-700 bg-gray-100 px-3 py-1 rounded">
+                                                {tech}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                                        <Server className="w-4 h-4 mr-2 text-purple-500" />
+                                        백엔드
+                                    </h4>
+                                    <ul className="space-y-2">
+                                        {selectedProjectData.techStack.backend.map((tech, index) => (
+                                            <li key={index} className="text-sm text-gray-700 bg-gray-100 px-3 py-1 rounded">
+                                                {tech}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                                        <Database className="w-4 h-4 mr-2 text-green-500" />
+                                        데이터베이스
+                                    </h4>
+                                    <ul className="space-y-2">
+                                        {selectedProjectData.techStack.database.map((tech, index) => (
+                                            <li key={index} className="text-sm text-gray-700 bg-gray-100 px-3 py-1 rounded">
+                                                {tech}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {activeSection === 'architecture' && (
+                    <div className="space-y-6">
+                        <div className="bg-white rounded-lg border p-8">
+                            <h3 className="text-xl font-bold text-gray-900 mb-6">시스템 아키텍처</h3>
+                            <div className="space-y-6">
+                                {architectureGuide.map((section) => (
+                                    <div key={section.id} className="border-l-4 border-blue-500 pl-6">
+                                        <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                                            {section.icon}
+                                            <span className="ml-2">{section.title}</span>
+                                        </h4>
+                                        <ul className="space-y-2">
+                                            {section.content.map((item, index) => (
+                                                <li key={index} className="text-gray-700 flex items-start">
+                                                    <span className="text-blue-500 mr-2">•</span>
+                                                    {item}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Architecture Diagram Placeholder */}
+                        <div className="bg-white rounded-lg border p-8">
+                            <h4 className="font-semibold text-gray-900 mb-4">아키텍처 다이어그램</h4>
+                            <div className="bg-gray-100 rounded-lg p-12 text-center">
+                                <Activity className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                                <p className="text-gray-600">
+                                    {selectedProject === 'cti'
+                                        ? 'CTI 시스템 아키텍처 다이어그램'
+                                        : 'PDS 시스템 아키텍처 다이어그램'}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {activeSection === 'implementation' && (
+                    <div className="space-y-6">
+                        <div className="bg-white rounded-lg border p-8">
+                            <h3 className="text-xl font-bold text-gray-900 mb-6">구현 로드맵</h3>
+                            <div className="space-y-4">
+                                {implementationSteps.map((step, index) => (
+                                    <div key={index} className="flex items-start space-x-4">
+                                        <div className="flex-shrink-0">
+                                            <div className="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-semibold">
+                                                {step.step}
+                                            </div>
+                                        </div>
+                                        <div className="flex-1 bg-gray-50 rounded-lg p-6">
+                                            <div className="flex items-center justify-between mb-3">
+                                                <h4 className="font-semibold text-gray-900">{step.phase}</h4>
+                                                <span className="text-sm text-gray-600 bg-white px-3 py-1 rounded">
+                                                    {step.duration}
+                                                </span>
+                                            </div>
+                                            <ul className="space-y-2">
+                                                {step.tasks.map((task, taskIndex) => (
+                                                    <li key={taskIndex} className="text-sm text-gray-700 flex items-start">
+                                                        <ArrowRight className="w-4 h-4 text-gray-400 mr-2 mt-0.5" />
+                                                        {task}
+                                                    </li>
+                                                ))}
+                                            </ul>
                                         </div>
                                     </div>
-                                    <div className="flex items-center space-x-3 p-4 rounded-lg bg-purple-50 border border-purple-200">
-                                        <Server className="w-8 h-8 text-purple-600" />
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Risk Management */}
+                        <div className="bg-amber-50 border border-amber-200 rounded-lg p-6">
+                            <h4 className="font-semibold text-amber-900 mb-3 flex items-center">
+                                <Shield className="w-5 h-5 mr-2" />
+                                주요 리스크 및 대응 방안
+                            </h4>
+                            <ul className="space-y-2 text-sm text-amber-800">
+                                <li>• 레거시 시스템 통합: 단계적 마이그레이션 전략 수립</li>
+                                <li>• 성능 이슈: 초기부터 부하 테스트 및 최적화 진행</li>
+                                <li>• 보안 취약점: 정기적인 보안 감사 및 OWASP 가이드라인 준수</li>
+                                <li>• 사용자 적응: 충분한 교육 기간 및 단계적 전환</li>
+                            </ul>
+                        </div>
+                    </div>
+                )}
+
+                {activeSection === 'guide' && (
+                    <div className="space-y-6">
+                        <div className="bg-white rounded-lg border p-8">
+                            <h3 className="text-xl font-bold text-gray-900 mb-6">상세 구현 가이드</h3>
+
+                            <div className="space-y-8">
+                                {/* CTI Specific Guide */}
+                                {selectedProject === 'cti' && (
+                                    <>
                                         <div>
-                                            <h4 className="font-semibold text-purple-900">Backend Stack</h4>
-                                            <p className="text-sm text-purple-700">Spring Boot + AI + GraphQL</p>
+                                            <h4 className="font-semibold text-gray-900 mb-4">1. WebRTC 소프트폰 구현</h4>
+                                            <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                                                <pre className="text-sm text-gray-700 overflow-x-auto">
+                                                    {`// WebRTC 초기화 예제
+const initializeWebRTC = async () => {
+  const configuration = {
+    iceServers: [
+      { urls: 'stun:stun.l.google.com:19302' }
+    ]
+  };
+  
+  const pc = new RTCPeerConnection(configuration);
+  // SIP 서버와 연동 로직
+};`}
+                                                </pre>
+                                            </div>
+                                            <p className="text-sm text-gray-600">
+                                                Tauri의 보안 컨텍스트에서 WebRTC API를 활용하여 브라우저 기반 소프트폰을 구현합니다.
+                                            </p>
+                                        </div>
+
+                                        <div>
+                                            <h4 className="font-semibold text-gray-900 mb-4">2. 실시간 통화 모니터링</h4>
+                                            <ul className="space-y-2 text-sm text-gray-700">
+                                                <li>• WebSocket을 통한 실시간 상태 업데이트</li>
+                                                <li>• Redis Pub/Sub을 활용한 이벤트 브로드캐스팅</li>
+                                                <li>• React Query의 실시간 쿼리 업데이트 활용</li>
+                                            </ul>
+                                        </div>
+                                    </>
+                                )}
+
+                                {/* PDS Specific Guide */}
+                                {selectedProject === 'pds' && (
+                                    <>
+                                        <div>
+                                            <h4 className="font-semibold text-gray-900 mb-4">1. 고객 360도 뷰 구현</h4>
+                                            <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                                                <pre className="text-sm text-gray-700 overflow-x-auto">
+                                                    {`// GraphQL 스키마 예제
+type Customer {
+  id: ID!
+  profile: CustomerProfile!
+  interactions: [Interaction!]!
+  insights: CustomerInsights!
+}
+
+type CustomerInsights {
+  preferredChannel: String!
+  satisfactionScore: Float!
+  churnRisk: Float!
+}`}
+                                                </pre>
+                                            </div>
+                                            <p className="text-sm text-gray-600">
+                                                DGS GraphQL을 활용하여 다양한 데이터 소스를 통합한 고객 정보를 제공합니다.
+                                            </p>
+                                        </div>
+
+                                        <div>
+                                            <h4 className="font-semibold text-gray-900 mb-4">2. AI 상담 추천 시스템</h4>
+                                            <ul className="space-y-2 text-sm text-gray-700">
+                                                <li>• Spring AI를 활용한 자연어 처리</li>
+                                                <li>• Vector DB를 활용한 유사 상담 검색</li>
+                                                <li>• RAG 패턴으로 컨텍스트 기반 응답 생성</li>
+                                            </ul>
+                                        </div>
+                                    </>
+                                )}
+
+                                {/* Common Implementation Tips */}
+                                <div className="border-t pt-6">
+                                    <h4 className="font-semibold text-gray-900 mb-4">공통 구현 팁</h4>
+                                    <div className="grid md:grid-cols-2 gap-4">
+                                        <div className="bg-blue-50 rounded-lg p-4">
+                                            <h5 className="font-medium text-blue-900 mb-2">성능 최적화</h5>
+                                            <ul className="text-sm text-blue-800 space-y-1">
+                                                <li>• 데이터베이스 인덱싱 전략</li>
+                                                <li>• API 응답 캐싱</li>
+                                                <li>• 프론트엔드 번들 최적화</li>
+                                            </ul>
+                                        </div>
+                                        <div className="bg-green-50 rounded-lg p-4">
+                                            <h5 className="font-medium text-green-900 mb-2">보안 강화</h5>
+                                            <ul className="text-sm text-green-800 space-y-1">
+                                                <li>• JWT 기반 인증</li>
+                                                <li>• API Rate Limiting</li>
+                                                <li>• 데이터 암호화</li>
+                                            </ul>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="space-y-4">
-                                    <div className="p-6 rounded-lg border-2 border-dashed border-amber-300 bg-amber-50">
-                                        <div className="flex items-center space-x-2 mb-3">
-                                            <Crown className="w-5 h-5 text-amber-600" />
-                                            <h4 className="font-bold text-amber-900">SS급 완전체</h4>
+                            </div>
+                        </div>
+
+                        {/* Resources */}
+                        <div className="bg-white rounded-lg border p-6">
+                            <h4 className="font-semibold text-gray-900 mb-4">추가 리소스</h4>
+                            <ul className="space-y-2 text-sm">
+                                <li className="flex items-center space-x-2">
+                                    <BookOpen className="w-4 h-4 text-gray-400" />
+                                    <span className="text-blue-600 hover:underline cursor-pointer">
+                                        기술 스택 상세 문서
+                                    </span>
+                                </li>
+                                <li className="flex items-center space-x-2">
+                                    <Code className="w-4 h-4 text-gray-400" />
+                                    <span className="text-blue-600 hover:underline cursor-pointer">
+                                        샘플 코드 저장소
+                                    </span>
+                                </li>
+                                <li className="flex items-center space-x-2">
+                                    <MessageSquare className="w-4 h-4 text-gray-400" />
+                                    <span className="text-blue-600 hover:underline cursor-pointer">
+                                        개발자 커뮤니티
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                )}
+
+                {/* References Tab */}
+                {activeSection === 'references' && (
+                    <div className="space-y-8">
+                        {/* Technical References */}
+                        <div className="bg-white rounded-lg border p-8">
+                            <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                                <BookOpen className="w-5 h-5 mr-3 text-blue-600" />
+                                기술 자료
+                            </h3>
+                            <div className="grid gap-6">
+                                {references.map((ref) => (
+                                    <div key={ref.id} className="border rounded-lg p-6 hover:shadow-md transition-shadow">
+                                        <div className="flex items-start justify-between mb-4">
+                                            <div className="flex items-center space-x-3">
+                                                <div className="p-2 bg-gray-100 rounded-lg">
+                                                    {ref.icon}
+                                                </div>
+                                                <div>
+                                                    <h4 className="font-semibold text-gray-900">{ref.title}</h4>
+                                                    <div className="flex items-center space-x-3 mt-1">
+                                                        <span className={`text-xs px-2 py-1 rounded-full ${getTypeColor(ref.type)}`}>
+                                                            {getTypeLabel(ref.type)}
+                                                        </span>
+                                                        {ref.date && (
+                                                            <span className="text-xs text-gray-500 flex items-center">
+                                                                <Calendar className="w-3 h-3 mr-1" />
+                                                                {ref.date}
+                                                            </span>
+                                                        )}
+                                                        {ref.source && (
+                                                            <span className="text-xs text-gray-500">{ref.source}</span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <a
+                                                href={ref.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-blue-600 hover:text-blue-800 transition-colors"
+                                            >
+                                                <ExternalLink className="w-4 h-4" />
+                                            </a>
                                         </div>
-                                        <p className="text-sm text-amber-800 leading-relaxed">
-                                            DGS GraphQL까지 추가하면 현시점 최강의 엔터프라이즈 개발 스택이 완성됩니다.
-                                            콜센터부터 AI 분석까지 모든 요구사항을 충족하는 완벽한 조합입니다.
+                                        <p className="text-sm text-gray-600 leading-relaxed">
+                                            {ref.description}
                                         </p>
                                     </div>
-                                </div>
+                                ))}
                             </div>
                         </div>
 
-                        {/* Key Benefits */}
-                        <div className="grid md:grid-cols-3 gap-6">
-                            {benefits.map((benefit, index) => (
-                                <div key={index} className="rounded-lg border bg-card p-6 text-center">
-                                    <div className="flex justify-center mb-4">
-                                        {benefit.icon}
-                                    </div>
-                                    <h4 className="font-semibold mb-2">{benefit.title}</h4>
-                                    <p className="text-sm text-muted-foreground">{benefit.description}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
-
-                {/* Frontend Tab */}
-                {activeTab === 'frontend' && (
-                    <div className="space-y-6">
-                        <div className="rounded-lg border bg-card p-6">
-                            <h3 className="text-xl font-bold mb-4 flex items-center">
-                                <Monitor className="w-5 h-5 mr-2 text-primary" />
-                                프론트엔드 스택
+                        {/* Real-world Implementations */}
+                        <div className="bg-white rounded-lg border p-8">
+                            <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                                <Building className="w-5 h-5 mr-3 text-purple-600" />
+                                실제 적용 사례
                             </h3>
-                            <p className="text-muted-foreground mb-6">
-                                현대적인 데스크탑 앱 개발을 위한 최고의 기술 조합
-                            </p>
-                        </div>
-
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {frontendStacks.map((tech) => (
-                                <div
-                                    key={tech.id}
-                                    className="group rounded-lg border bg-card p-6 transition-all hover:shadow-lg"
-                                    onMouseEnter={() => setHoveredTech(tech.id)}
-                                    onMouseLeave={() => setHoveredTech(null)}
-                                >
-                                    <div className="flex items-start justify-between mb-4">
-                                        <div className="flex items-center space-x-3">
-                                            <div className={`p-2 rounded-md ${getLevelColor(tech.level)}`}>
-                                                {tech.icon}
-                                            </div>
-                                            <div>
-                                                <h4 className="font-semibold">{tech.name}</h4>
-                                                {tech.version && (
-                                                    <span className="text-xs text-muted-foreground">{tech.version}</span>
-                                                )}
-                                            </div>
-                                        </div>
-                                        <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(tech.status)}`}>
-                                            {tech.status}
-                                        </span>
-                                    </div>
-
-                                    <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-                                        {tech.description}
-                                    </p>
-
-                                    <div className="space-y-2">
-                                        <h5 className="text-sm font-medium">주요 기능</h5>
-                                        <div className="flex flex-wrap gap-1">
-                                            {tech.features.map((feature, index) => (
-                                                <span
-                                                    key={index}
-                                                    className="text-xs bg-secondary px-2 py-1 rounded-md text-secondary-foreground"
-                                                >
-                                                    {feature}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
-
-                {/* Backend Tab */}
-                {activeTab === 'backend' && (
-                    <div className="space-y-6">
-                        <div className="rounded-lg border bg-card p-6">
-                            <h3 className="text-xl font-bold mb-4 flex items-center">
-                                <Server className="w-5 h-5 mr-2 text-primary" />
-                                백엔드 스택
-                            </h3>
-                            <p className="text-muted-foreground mb-6">
-                                엔터프라이즈급 백엔드 시스템을 위한 검증된 기술 스택
-                            </p>
-                        </div>
-
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {backendStacks.map((tech) => (
-                                <div
-                                    key={tech.id}
-                                    className="group rounded-lg border bg-card p-6 transition-all hover:shadow-lg"
-                                    onMouseEnter={() => setHoveredTech(tech.id)}
-                                    onMouseLeave={() => setHoveredTech(null)}
-                                >
-                                    <div className="flex items-start justify-between mb-4">
-                                        <div className="flex items-center space-x-3">
-                                            <div className={`p-2 rounded-md ${getLevelColor(tech.level)}`}>
-                                                {tech.icon}
-                                            </div>
-                                            <div>
-                                                <h4 className="font-semibold">{tech.name}</h4>
-                                                {tech.version && (
-                                                    <span className="text-xs text-muted-foreground">{tech.version}</span>
-                                                )}
-                                            </div>
-                                        </div>
-                                        <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(tech.status)}`}>
-                                            {tech.status}
-                                        </span>
-                                    </div>
-
-                                    <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-                                        {tech.description}
-                                    </p>
-
-                                    <div className="space-y-2">
-                                        <h5 className="text-sm font-medium">주요 기능</h5>
-                                        <div className="flex flex-wrap gap-1">
-                                            {tech.features.map((feature, index) => (
-                                                <span
-                                                    key={index}
-                                                    className="text-xs bg-secondary px-2 py-1 rounded-md text-secondary-foreground"
-                                                >
-                                                    {feature}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-
-                        {/* Special Highlight for DGS */}
-                        <div className="rounded-lg border-2 border-dashed border-purple-300 bg-purple-50 p-6">
-                            <div className="flex items-center space-x-3 mb-4">
-                                <Crown className="w-6 h-6 text-purple-600" />
-                                <h4 className="text-lg font-bold text-purple-900">DGS GraphQL - 최종 퍼즐</h4>
-                            </div>
-                            <p className="text-purple-800 mb-4">
-                                넷플릭스가 개발한 Spring 기반 GraphQL 서버 프레임워크입니다.
-                                이 기술을 추가하면 현재 스택이 SS급 완전체가 됩니다.
-                            </p>
-                            <div className="grid md:grid-cols-2 gap-4">
-                                <div>
-                                    <h5 className="font-medium text-purple-900 mb-2">핵심 장점</h5>
-                                    <ul className="text-sm text-purple-800 space-y-1">
-                                        <li>• Spring과 완벽 통합</li>
-                                        <li>• 타입 안전한 GraphQL</li>
-                                        <li>• Federation 지원</li>
-                                        <li>• Subscription 실시간 업데이트</li>
-                                    </ul>
-                                </div>
-                                <div>
-                                    <h5 className="font-medium text-purple-900 mb-2">콜센터 활용</h5>
-                                    <ul className="text-sm text-purple-800 space-y-1">
-                                        <li>• 동적 상담 데이터 쿼리</li>
-                                        <li>• 실시간 상태 업데이트</li>
-                                        <li>• 복합 통계 데이터 조회</li>
-                                        <li>• 효율적인 API 통신</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* Use Cases Tab */}
-                {activeTab === 'usecases' && (
-                    <div className="space-y-6">
-                        <div className="rounded-lg border bg-card p-6">
-                            <h3 className="text-xl font-bold mb-4 flex items-center">
-                                <Sparkles className="w-5 h-5 mr-2 text-primary" />
-                                활용 사례
-                            </h3>
-                            <p className="text-muted-foreground mb-6">
-                                이 기술 스택으로 구현 가능한 엔터프라이즈급 시스템들
-                            </p>
-                        </div>
-
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {useCases.map((usecase) => (
-                                <div key={usecase.id} className="rounded-lg border bg-card p-6 transition-all hover:shadow-lg">
-                                    <div className="flex items-start justify-between mb-4">
-                                        <div className="flex items-center space-x-3">
-                                            <div className="p-3 rounded-lg bg-primary/10 text-primary">
-                                                {usecase.icon}
-                                            </div>
-                                            <div>
-                                                <h4 className="font-semibold">{usecase.title}</h4>
-                                                <span className={`text-xs px-2 py-1 rounded-full ${getDifficultyColor(usecase.difficulty)}`}>
-                                                    {usecase.difficulty}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-                                        {usecase.description}
-                                    </p>
-
-                                    <div className="space-y-2">
-                                        <h5 className="text-sm font-medium">구현 기능</h5>
-                                        <div className="space-y-1">
-                                            {usecase.features.map((feature, index) => (
-                                                <div key={index} className="flex items-center space-x-2 text-xs">
-                                                    <CheckCircle className="w-3 h-3 text-green-500" />
-                                                    <span>{feature}</span>
+                            <div className="grid gap-6">
+                                {companies.map((company) => (
+                                    <div key={company.id} className="border rounded-lg p-6 hover:shadow-md transition-shadow">
+                                        <div className="flex items-start justify-between mb-4">
+                                            <div className="flex items-center space-x-3">
+                                                <div className="text-3xl">
+                                                    {company.logo}
                                                 </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-
-                        {/* Implementation Timeline */}
-                        <div className="rounded-lg border bg-card p-6">
-                            <h4 className="text-lg font-bold mb-4 flex items-center">
-                                <Target className="w-5 h-5 mr-2 text-primary" />
-                                구현 로드맵
-                            </h4>
-                            <div className="space-y-4">
-                                {phases.map((phase, index) => (
-                                    <div key={index} className="flex items-start space-x-4 p-4 rounded-lg bg-secondary/30">
-                                        <div className="flex-shrink-0">
-                                            <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium">
-                                                {index + 1}
+                                                <div>
+                                                    <h4 className="font-semibold text-gray-900">{company.name}</h4>
+                                                    <p className="text-sm text-gray-600 mt-1">
+                                                        {company.description}
+                                                    </p>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div className="flex-1">
-                                            <div className="flex items-center space-x-3 mb-2">
-                                                <h5 className="font-semibold">{phase.title}</h5>
-                                                <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
-                                                    {phase.duration}
-                                                </span>
-                                            </div>
-                                            <div className="flex flex-wrap gap-2">
-                                                {phase.items.map((item, itemIndex) => (
-                                                    <span key={itemIndex} className="text-xs bg-background px-2 py-1 rounded border">
-                                                        {item}
-                                                    </span>
+                                        <div className="mt-4">
+                                            <h5 className="font-semibold text-gray-900 mb-2">적용 기술 스택</h5>
+                                            <ul className="flex flex-wrap gap-2">
+                                                {company.techStack.map((tech, index) => (
+                                                    <li key={index} className="text-xs text-gray-700 bg-gray-100 px-3 py-1 rounded">
+                                                        {tech}
+                                                    </li>
                                                 ))}
-                                            </div>
+                                            </ul>
+                                        </div>
+                                        <div className="mt-4">
+                                            <h5 className="font-semibold text-gray-900 mb-2">주요 성과</h5>
+                                            <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
+                                                {company.results.map((result, index) => (
+                                                    <li key={index}>{result}</li>
+                                                ))}
+                                            </ul>
                                         </div>
                                     </div>
                                 ))}
@@ -747,32 +918,20 @@ const NextDevSpec: React.FC = () => {
                 )}
 
                 {/* Footer CTA */}
-                <div className="mt-12 rounded-lg border bg-gradient-to-br from-blue-50 to-purple-50 p-8 text-center">
-                    <div className="flex justify-center mb-4">
-                        <div className="p-3 rounded-full bg-gradient-to-br from-blue-600 to-purple-600">
-                            <Trophy className="w-8 h-8 text-white" />
-                        </div>
-                    </div>
-                    <h3 className="text-2xl font-bold tracking-tight mb-4">
-                        SS급 개발 스펙으로 시작하세요
+                <div className="mt-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-8 text-white text-center">
+                    <h3 className="text-2xl font-bold mb-4">
+                        차세대 콜센터 구축을 시작하세요
                     </h3>
-                    <p className="text-muted-foreground text-lg mb-6 max-w-2xl mx-auto">
-                        현시점 최강의 기술 스택으로 엔터프라이즈급 시스템을 구축하고,
-                        경쟁사보다 한 발 앞선 솔루션을 제공하세요.
+                    <p className="text-lg mb-6 text-blue-100">
+                        검증된 기술 스택과 단계별 가이드로 성공적인 디지털 전환을 이루세요
                     </p>
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-sm">
-                        <div className="flex items-center space-x-2">
-                            <Star className="w-4 h-4 text-amber-500" />
-                            <span>검증된 엔터프라이즈 기술</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <Rocket className="w-4 h-4 text-blue-500" />
-                            <span>최신 AI 기술 통합</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <Shield className="w-4 w-4 text-green-500" />
-                            <span>확장 가능한 아키텍처</span>
-                        </div>
+                    <div className="flex justify-center space-x-4">
+                        <button className="px-6 py-3 bg-white text-blue-600 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                            프로젝트 시작하기
+                        </button>
+                        <button className="px-6 py-3 bg-blue-700 text-white rounded-lg font-semibold hover:bg-blue-800 transition-colors">
+                            전문가 상담 요청
+                        </button>
                     </div>
                 </div>
             </div>
@@ -780,4 +939,4 @@ const NextDevSpec: React.FC = () => {
     );
 };
 
-export default NextDevSpec;
+export default NextGenCallCenterManual;
