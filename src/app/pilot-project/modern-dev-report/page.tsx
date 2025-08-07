@@ -4,9 +4,9 @@ import { ChevronDown, ChevronRight, Brain, Zap, Shield, Code, Target, Users, Git
 
 const AIDevelopmentManual = () => {
     const [activeSection, setActiveSection] = useState('principles');
-    const [expandedItems, setExpandedItems] = useState({});
+    const [expandedItems, setExpandedItems] = useState<{ [key: string]: boolean }>({});
 
-    const toggleExpanded = (key) => {
+    const toggleExpanded = (key: string) => {
         setExpandedItems(prev => ({
             ...prev,
             [key]: !prev[key]
@@ -352,8 +352,8 @@ const AIDevelopmentManual = () => {
                                 key={key}
                                 onClick={() => setActiveSection(key)}
                                 className={`px-6 py-3 rounded-lg transition-all flex items-center gap-2 ${activeSection === key
-                                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
-                                        : 'text-gray-400 hover:text-white hover:bg-gray-800'
+                                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
+                                    : 'text-gray-400 hover:text-white hover:bg-gray-800'
                                     }`}
                             >
                                 {icon}
