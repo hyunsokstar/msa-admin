@@ -6,7 +6,8 @@ import {
     Building, Plane, BookOpen, Target, Clock, CheckCircle,
     ArrowRight, Zap, Shield, Server, GitBranch, Activity,
     Award, TrendingUp, Package, Layout, MessageSquare,
-    FileText, Search, Bot, Cpu, Cloud, Key
+    FileText, Search, Bot, Cpu, Cloud, Key, Brain,
+    Layers, RefreshCw, Sparkles, Workflow, BarChart
 } from 'lucide-react';
 
 const PilotProjectManual = () => {
@@ -25,11 +26,13 @@ const PilotProjectManual = () => {
     // 메뉴 아이템
     const menuItems = [
         { id: 'overview', title: '프로젝트 개요', icon: Layout },
+        { id: 'concepts', title: '상담 자동화 개념', icon: Brain },
         { id: 'curriculum', title: '학습 커리큘럼', icon: BookOpen },
         { id: 'project1', title: 'DevTeam Brain', icon: Code },
         { id: 'project2', title: 'Policy Assistant', icon: Building },
         { id: 'project3', title: 'Travel Assistant', icon: Plane },
         { id: 'tech-stack', title: '기술 스택', icon: Server },
+        { id: 'trends', title: '최신 기술 트렌드', icon: TrendingUp },
         { id: 'roadmap', title: '개발 로드맵', icon: Target },
         { id: 'resources', title: '학습 리소스', icon: Award }
     ];
@@ -207,6 +210,434 @@ const PilotProjectManual = () => {
                                     <div className="text-3xl font-bold text-orange-600">24/7</div>
                                     <div className="text-sm text-gray-600 mt-1">상시 응답 가능</div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+
+            case 'concepts':
+                return (
+                    <div className="space-y-6">
+                        <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-lg p-6">
+                            <h2 className="text-2xl font-bold text-gray-900 mb-2">🧠 상담 자동화 기본 개념</h2>
+                            <p className="text-gray-700">RAG 기반 지능형 상담 시스템의 핵심 원리와 구현 방법</p>
+                        </div>
+
+                        {/* RAG 프로세스 플로우 */}
+                        <div className="bg-white rounded-lg shadow-lg p-6">
+                            <h3 className="text-xl font-bold text-gray-900 mb-6">RAG 상담 자동화 프로세스</h3>
+
+                            <div className="space-y-6">
+                                {/* Step 1 */}
+                                <div className="flex items-start">
+                                    <div className="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold mr-4">
+                                        1
+                                    </div>
+                                    <div className="flex-1">
+                                        <h4 className="font-semibold text-gray-900 mb-2">데이터 수집 및 전처리</h4>
+                                        <div className="bg-blue-50 rounded-lg p-4">
+                                            <p className="text-gray-700 mb-3">상담 참고 데이터를 카테고리별로 수집하고 정제</p>
+                                            <ul className="space-y-2 text-sm text-gray-600">
+                                                <li>• FAQ, 매뉴얼, 정책 문서 수집</li>
+                                                <li>• 텍스트 청킹 (Chunk Size: 512-1024 tokens)</li>
+                                                <li>• 메타데이터 태깅 (카테고리, 날짜, 중요도)</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Step 2 */}
+                                <div className="flex items-start">
+                                    <div className="bg-green-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold mr-4">
+                                        2
+                                    </div>
+                                    <div className="flex-1">
+                                        <h4 className="font-semibold text-gray-900 mb-2">임베딩 및 벡터 DB 저장</h4>
+                                        <div className="bg-green-50 rounded-lg p-4">
+                                            <p className="text-gray-700 mb-3">텍스트를 벡터로 변환하여 카테고리별 저장</p>
+                                            <ul className="space-y-2 text-sm text-gray-600">
+                                                <li>• 임베딩 모델: OpenAI text-embedding-3-small</li>
+                                                <li>• 벡터 차원: 1536 dimensions</li>
+                                                <li>• pgvector에 카테고리별 인덱싱</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Step 3 */}
+                                <div className="flex items-start">
+                                    <div className="bg-purple-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold mr-4">
+                                        3
+                                    </div>
+                                    <div className="flex-1">
+                                        <h4 className="font-semibold text-gray-900 mb-2">질의 처리 및 검색</h4>
+                                        <div className="bg-purple-50 rounded-lg p-4">
+                                            <p className="text-gray-700 mb-3">사용자 질문을 벡터화하여 유사도 검색</p>
+                                            <ul className="space-y-2 text-sm text-gray-600">
+                                                <li>• 질문 임베딩 생성</li>
+                                                <li>• Cosine Similarity 기반 검색</li>
+                                                <li>• Top-K (K=5) 관련 문서 추출</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Step 4 */}
+                                <div className="flex items-start">
+                                    <div className="bg-orange-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold mr-4">
+                                        4
+                                    </div>
+                                    <div className="flex-1">
+                                        <h4 className="font-semibold text-gray-900 mb-2">LLM 답변 생성</h4>
+                                        <div className="bg-orange-50 rounded-lg p-4">
+                                            <p className="text-gray-700 mb-3">검색된 컨텍스트를 기반으로 자연스러운 답변 생성</p>
+                                            <ul className="space-y-2 text-sm text-gray-600">
+                                                <li>• 검색 결과를 프롬프트에 주입</li>
+                                                <li>• GPT-4 또는 Claude로 답변 생성</li>
+                                                <li>• 답변 품질 검증 및 후처리</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* 카테고리 구조 */}
+                        <div className="bg-white rounded-lg shadow-lg p-6">
+                            <h3 className="text-xl font-bold text-gray-900 mb-4">벡터 DB 카테고리 구조</h3>
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 className="font-semibold text-gray-900 mb-3">계층적 카테고리 설계</h4>
+                                    <div className="bg-gray-50 rounded-lg p-4">
+                                        <pre className="text-sm text-gray-700">
+                                            {`📁 상담 데이터
+├── 📂 기술 지원
+│   ├── 설치/설정
+│   ├── 오류 해결
+│   └── 성능 최적화
+├── 📂 정책/규정
+│   ├── 사내 정책
+│   ├── 법적 요구사항
+│   └── 보안 가이드
+└── 📂 일반 문의
+    ├── 계정 관리
+    ├── 결제/청구
+    └── 서비스 이용`}
+                                        </pre>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 className="font-semibold text-gray-900 mb-3">메타데이터 구조</h4>
+                                    <div className="bg-gray-900 rounded-lg p-4 text-green-400">
+                                        <pre className="text-sm">
+                                            {`{
+  "doc_id": "uuid",
+  "category": "기술지원",
+  "subcategory": "오류해결",
+  "content": "텍스트 내용",
+  "embedding": [0.1, 0.2, ...],
+  "metadata": {
+    "created_at": "2025-01-01",
+    "priority": "high",
+    "tags": ["error", "api"],
+    "source": "confluence"
+  }
+}`}
+                                        </pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* 핵심 구현 코드 */}
+                        <div className="bg-gray-900 rounded-lg p-6 text-green-400">
+                            <h3 className="text-white font-bold mb-4">RAG 상담 자동화 구현</h3>
+                            <pre className="text-sm overflow-x-auto">
+                                {`@Service
+public class ConsultationRAGService {
+    private final VectorStore vectorStore;
+    private final ChatClient chatClient;
+    private final EmbeddingClient embeddingClient;
+    
+    public ConsultationResponse processQuery(String userQuery, String category) {
+        // 1. 질문 임베딩 생성
+        List<Float> queryEmbedding = embeddingClient
+            .embed(userQuery);
+        
+        // 2. 카테고리별 벡터 검색
+        SearchRequest searchRequest = SearchRequest.builder()
+            .query(queryEmbedding)
+            .topK(5)
+            .filter(Filter.eq("category", category))
+            .similarityThreshold(0.7)
+            .build();
+            
+        List<Document> relevantDocs = vectorStore
+            .similaritySearch(searchRequest);
+        
+        // 3. 컨텍스트 구성
+        String context = buildContext(relevantDocs);
+        
+        // 4. 프롬프트 템플릿
+        String prompt = """
+            당신은 전문 상담사입니다.
+            다음 참고 자료를 바탕으로 질문에 답변하세요.
+            
+            참고 자료:
+            %s
+            
+            사용자 질문: %s
+            
+            답변 지침:
+            - 정확하고 도움이 되는 답변 제공
+            - 참고 자료에 없는 내용은 추측하지 말 것
+            - 필요시 추가 정보 요청
+            """.formatted(context, userQuery);
+        
+        // 5. LLM 답변 생성
+        ChatResponse response = chatClient.call(prompt);
+        
+        // 6. 응답 구성
+        return ConsultationResponse.builder()
+            .answer(response.getContent())
+            .sources(relevantDocs)
+            .confidence(calculateConfidence(relevantDocs))
+            .build();
+    }
+    
+    private double calculateConfidence(List<Document> docs) {
+        // 유사도 점수 기반 신뢰도 계산
+        return docs.stream()
+            .mapToDouble(Document::getSimilarityScore)
+            .average()
+            .orElse(0.0);
+    }
+}`}
+                            </pre>
+                        </div>
+                    </div>
+                );
+
+            case 'trends':
+                return (
+                    <div className="space-y-6">
+                        <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-6">
+                            <h2 className="text-2xl font-bold text-gray-900 mb-2">🚀 최신 기술 트렌드</h2>
+                            <p className="text-gray-700">2025년 RAG 시스템의 최신 기술 동향과 구현 패턴</p>
+                        </div>
+
+                        {/* Hybrid Search */}
+                        <div className="bg-white rounded-lg shadow-lg p-6">
+                            <h3 className="text-xl font-bold text-gray-900 mb-4">1. Hybrid Search (하이브리드 검색)</h3>
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 className="font-semibold text-gray-900 mb-3">기술 개요</h4>
+                                    <p className="text-gray-700 mb-3">
+                                        키워드 검색(BM25)과 벡터 검색을 결합하여 검색 정확도 향상
+                                    </p>
+                                    <div className="bg-blue-50 rounded-lg p-4">
+                                        <ul className="space-y-2 text-sm text-gray-700">
+                                            <li>• <strong>BM25</strong>: 정확한 키워드 매칭</li>
+                                            <li>• <strong>Vector Search</strong>: 의미적 유사도</li>
+                                            <li>• <strong>RRF (Reciprocal Rank Fusion)</strong>: 결과 통합</li>
+                                            <li>• 검색 정확도 30% 향상</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 className="font-semibold text-gray-900 mb-3">구현 예제</h4>
+                                    <div className="bg-gray-900 rounded-lg p-4 text-green-400">
+                                        <pre className="text-xs">
+                                            {`// Hybrid Search 구현
+List<Doc> hybridSearch(String query) {
+    // 1. BM25 검색
+    List<Doc> keyword = elasticSearch
+        .search(query);
+    
+    // 2. Vector 검색  
+    List<Doc> semantic = vectorStore
+        .similaritySearch(query);
+    
+    // 3. RRF로 결합
+    return rankFusion(keyword, semantic);
+}`}
+                                        </pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Multi-Query RAG */}
+                        <div className="bg-white rounded-lg shadow-lg p-6">
+                            <h3 className="text-xl font-bold text-gray-900 mb-4">2. Multi-Query RAG</h3>
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 className="font-semibold text-gray-900 mb-3">개념</h4>
+                                    <p className="text-gray-700 mb-3">
+                                        하나의 질문을 여러 관점으로 재구성하여 검색 커버리지 확대
+                                    </p>
+                                    <div className="bg-green-50 rounded-lg p-4">
+                                        <p className="text-sm font-semibold text-gray-900 mb-2">프로세스:</p>
+                                        <ol className="space-y-1 text-sm text-gray-700">
+                                            <li>1. 원본 질문 → 3-5개 변형 생성</li>
+                                            <li>2. 각 변형으로 독립 검색</li>
+                                            <li>3. 결과 통합 및 중복 제거</li>
+                                            <li>4. 최종 컨텍스트 구성</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 className="font-semibold text-gray-900 mb-3">활용 예시</h4>
+                                    <div className="bg-purple-50 rounded-lg p-4">
+                                        <p className="text-sm font-semibold text-gray-900 mb-2">원본 질문:</p>
+                                        <p className="text-sm text-gray-700 mb-3">"Spring Boot 성능 최적화 방법"</p>
+                                        <p className="text-sm font-semibold text-gray-900 mb-2">생성된 변형:</p>
+                                        <ul className="text-sm text-gray-700 space-y-1">
+                                            <li>• "Spring Boot 애플리케이션 속도 향상"</li>
+                                            <li>• "Spring Boot 메모리 사용량 줄이기"</li>
+                                            <li>• "Spring Boot 튜닝 가이드"</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Self-RAG */}
+                        <div className="bg-white rounded-lg shadow-lg p-6">
+                            <h3 className="text-xl font-bold text-gray-900 mb-4">3. Self-RAG (자가 검증 RAG)</h3>
+                            <div className="space-y-4">
+                                <p className="text-gray-700">
+                                    LLM이 스스로 검색 결과의 관련성과 답변 품질을 평가하는 최신 기법
+                                </p>
+                                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6">
+                                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                                        <div className="bg-white rounded-lg p-4">
+                                            <Sparkles className="h-8 w-8 text-blue-600 mb-2" />
+                                            <h5 className="font-semibold text-gray-900 mb-1">Relevance Check</h5>
+                                            <p className="text-xs text-gray-600">검색 결과가 질문과 관련있는지 평가</p>
+                                        </div>
+                                        <div className="bg-white rounded-lg p-4">
+                                            <Shield className="h-8 w-8 text-green-600 mb-2" />
+                                            <h5 className="font-semibold text-gray-900 mb-1">Support Verification</h5>
+                                            <p className="text-xs text-gray-600">답변이 컨텍스트에 의해 지원되는지 검증</p>
+                                        </div>
+                                        <div className="bg-white rounded-lg p-4">
+                                            <BarChart className="h-8 w-8 text-purple-600 mb-2" />
+                                            <h5 className="font-semibold text-gray-900 mb-1">Utility Score</h5>
+                                            <p className="text-xs text-gray-600">답변의 유용성 점수 계산</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Graph RAG */}
+                        <div className="bg-white rounded-lg shadow-lg p-6">
+                            <h3 className="text-xl font-bold text-gray-900 mb-4">4. Graph RAG</h3>
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 className="font-semibold text-gray-900 mb-3">Knowledge Graph 활용</h4>
+                                    <p className="text-gray-700 mb-3">
+                                        엔티티와 관계를 그래프로 구성하여 복잡한 질의 처리
+                                    </p>
+                                    <div className="bg-orange-50 rounded-lg p-4">
+                                        <ul className="space-y-2 text-sm text-gray-700">
+                                            <li>• <strong>Neo4j</strong> + Vector Index</li>
+                                            <li>• 엔티티 관계 기반 검색</li>
+                                            <li>• 다중 홉 추론 가능</li>
+                                            <li>• 복잡한 질의 30% 성능 향상</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 className="font-semibold text-gray-900 mb-3">적용 사례</h4>
+                                    <div className="space-y-3">
+                                        <div className="flex items-center p-3 bg-gray-50 rounded-lg">
+                                            <Workflow className="h-5 w-5 text-blue-600 mr-3" />
+                                            <span className="text-sm text-gray-700">조직도 기반 권한 질의</span>
+                                        </div>
+                                        <div className="flex items-center p-3 bg-gray-50 rounded-lg">
+                                            <Layers className="h-5 w-5 text-green-600 mr-3" />
+                                            <span className="text-sm text-gray-700">제품 간 의존성 분석</span>
+                                        </div>
+                                        <div className="flex items-center p-3 bg-gray-50 rounded-lg">
+                                            <RefreshCw className="h-5 w-5 text-purple-600 mr-3" />
+                                            <span className="text-sm text-gray-700">프로세스 플로우 질의</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* 최적화 기법 */}
+                        <div className="bg-white rounded-lg shadow-lg p-6">
+                            <h3 className="text-xl font-bold text-gray-900 mb-4">5. 성능 최적화 기법</h3>
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                                <div className="bg-blue-50 rounded-lg p-4">
+                                    <h5 className="font-semibold text-gray-900 mb-2">Quantization</h5>
+                                    <p className="text-sm text-gray-700 mb-2">벡터 양자화로 메모리 80% 절감</p>
+                                    <div className="bg-white rounded p-2">
+                                        <code className="text-xs text-gray-600">
+                                            Float32 → Int8<br />
+                                            1536D → 384D (PCA)
+                                        </code>
+                                    </div>
+                                </div>
+                                <div className="bg-green-50 rounded-lg p-4">
+                                    <h5 className="font-semibold text-gray-900 mb-2">Caching Strategy</h5>
+                                    <p className="text-sm text-gray-700 mb-2">다층 캐싱으로 응답 속도 개선</p>
+                                    <div className="bg-white rounded p-2">
+                                        <code className="text-xs text-gray-600">
+                                            L1: Redis (임베딩)<br />
+                                            L2: pgvector (벡터)
+                                        </code>
+                                    </div>
+                                </div>
+                                <div className="bg-purple-50 rounded-lg p-4">
+                                    <h5 className="font-semibold text-gray-900 mb-2">Streaming</h5>
+                                    <p className="text-sm text-gray-700 mb-2">실시간 스트리밍 응답</p>
+                                    <div className="bg-white rounded p-2">
+                                        <code className="text-xs text-gray-600">
+                                            SSE (Server-Sent Events)<br />
+                                            WebSocket for chat
+                                        </code>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* 2025 트렌드 요약 */}
+                        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg p-6 text-white">
+                            <h3 className="text-xl font-bold mb-4">🎯 2025년 핵심 트렌드</h3>
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                <ul className="space-y-2 text-sm">
+                                    <li className="flex items-start">
+                                        <CheckCircle className="h-4 w-4 mr-2 mt-0.5" />
+                                        <span>Small Language Models (SLM) 활용 증가</span>
+                                    </li>
+                                    <li className="flex items-start">
+                                        <CheckCircle className="h-4 w-4 mr-2 mt-0.5" />
+                                        <span>Edge RAG - 로컬 디바이스 RAG 구현</span>
+                                    </li>
+                                    <li className="flex items-start">
+                                        <CheckCircle className="h-4 w-4 mr-2 mt-0.5" />
+                                        <span>Multi-modal RAG (텍스트 + 이미지)</span>
+                                    </li>
+                                </ul>
+                                <ul className="space-y-2 text-sm">
+                                    <li className="flex items-start">
+                                        <CheckCircle className="h-4 w-4 mr-2 mt-0.5" />
+                                        <span>Agentic RAG - 자율 에이전트 시스템</span>
+                                    </li>
+                                    <li className="flex items-start">
+                                        <CheckCircle className="h-4 w-4 mr-2 mt-0.5" />
+                                        <span>Privacy-Preserving RAG 기술</span>
+                                    </li>
+                                    <li className="flex items-start">
+                                        <CheckCircle className="h-4 w-4 mr-2 mt-0.5" />
+                                        <span>실시간 지식 업데이트 시스템</span>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -1073,7 +1504,7 @@ public class TransportService {
                             </div>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">v1.0</span>
+                            <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">v2.0</span>
                             <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">2025</span>
                         </div>
                     </div>
