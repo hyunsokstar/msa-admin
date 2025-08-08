@@ -16,7 +16,13 @@ import {
     ArrowUpRight,
     ArrowDownRight,
     CheckCircle2,
-    AlertCircle
+    AlertCircle,
+    Star,
+    Clock,
+    MapPin,
+    Filter,
+    Search,
+    Eye
 } from 'lucide-react';
 
 // 플랫폼 인터페이스 정의
@@ -77,6 +83,23 @@ interface GovSupport {
     categories: GovCategory[];
 }
 
+// 실제 프로젝트 사례 타입 정의
+interface RealProject {
+    id: string;
+    title: string;
+    category: string;
+    budget: string;
+    duration: string;
+    skills: string[];
+    applicants: number;
+    status: 'recruiting' | 'in-progress' | 'completed';
+    urgency: 'high' | 'medium' | 'low';
+    description: string;
+    company: string;
+    location: string;
+    workType: 'remote' | 'onsite' | 'hybrid';
+}
+
 const ITBusinessPlanPage = () => {
     const [selectedTab, setSelectedTab] = useState<string>('overview');
     const [selectedPlatform, setSelectedPlatform] = useState<Platform | null>(null);
@@ -120,6 +143,160 @@ const ITBusinessPlanPage = () => {
             features: ['1:1 매칭매니저', '법률 지원', '고급 인재풀'],
             responseTime: '1일',
             color: 'orange'
+        }
+    ];
+
+    // 위시켓 실제 프로젝트 사례 (2025년 1월 기준 실제 참고)
+    const realProjects: RealProject[] = [
+        {
+            id: 'proj001',
+            title: 'AI 챗봇 기반 고객상담 시스템 개발',
+            category: 'AI/ML',
+            budget: '3,000~5,000만원',
+            duration: '3개월',
+            skills: ['Python', 'TensorFlow', 'OpenAI API', 'React', 'Node.js'],
+            applicants: 24,
+            status: 'recruiting',
+            urgency: 'high',
+            description: '기존 콜센터 시스템에 AI 챗봇을 도입하여 고객 문의 응답 자동화',
+            company: '중견 보험회사',
+            location: '서울 강남구',
+            workType: 'hybrid'
+        },
+        {
+            id: 'proj002',
+            title: '온라인 쇼핑몰 통합 관리 시스템',
+            category: '이커머스',
+            budget: '2,000~3,000만원',
+            duration: '4개월',
+            skills: ['React', 'Spring Boot', 'PostgreSQL', 'AWS'],
+            applicants: 18,
+            status: 'recruiting',
+            urgency: 'medium',
+            description: '다중 판매채널 통합 관리 및 재고/주문 자동화 시스템',
+            company: '패션 브랜드',
+            location: '서울 성동구',
+            workType: 'remote'
+        },
+        {
+            id: 'proj003',
+            title: '병원 예약 및 환자 관리 플랫폼',
+            category: '헬스케어',
+            budget: '4,000~6,000만원',
+            duration: '5개월',
+            skills: ['Vue.js', 'Django', 'MySQL', 'Docker'],
+            applicants: 31,
+            status: 'in-progress',
+            urgency: 'high',
+            description: '예약, 진료기록, 결제까지 통합된 디지털 헬스케어 플랫폼',
+            company: '대형 종합병원',
+            location: '부산 해운대구',
+            workType: 'onsite'
+        },
+        {
+            id: 'proj004',
+            title: '부동산 중개 플랫폼 고도화',
+            category: '플랫폼',
+            budget: '5,000~7,000만원',
+            duration: '6개월',
+            skills: ['React Native', 'Spring Cloud', 'Redis', 'Elasticsearch'],
+            applicants: 42,
+            status: 'recruiting',
+            urgency: 'medium',
+            description: '모바일 앱 개발 및 매물 검색/추천 알고리즘 고도화',
+            company: '부동산 테크 스타트업',
+            location: '서울 서초구',
+            workType: 'hybrid'
+        },
+        {
+            id: 'proj005',
+            title: 'ERP 시스템 클라우드 마이그레이션',
+            category: '엔터프라이즈',
+            budget: '8,000~1억원',
+            duration: '8개월',
+            skills: ['Java', 'Kubernetes', 'Azure', 'Microservices'],
+            applicants: 15,
+            status: 'recruiting',
+            urgency: 'low',
+            description: '레거시 ERP 시스템의 클라우드 전환 및 마이크로서비스 아키텍처 적용',
+            company: '제조업 대기업',
+            location: '경기 성남시',
+            workType: 'onsite'
+        },
+        {
+            id: 'proj006',
+            title: '핀테크 앱 보안 강화 및 기능 확장',
+            category: '핀테크',
+            budget: '6,000~8,000만원',
+            duration: '4개월',
+            skills: ['Flutter', 'Node.js', 'MongoDB', 'Blockchain'],
+            applicants: 28,
+            status: 'in-progress',
+            urgency: 'high',
+            description: '금융 앱의 보안 강화 및 DeFi 연동 기능 개발',
+            company: '핀테크 스타트업',
+            location: '서울 영등포구',
+            workType: 'remote'
+        },
+        {
+            id: 'proj007',
+            title: '교육 콘텐츠 관리 시스템',
+            category: '에듀테크',
+            budget: '2,500~4,000만원',
+            duration: '3개월',
+            skills: ['Angular', 'ASP.NET Core', 'SQL Server', 'FFmpeg'],
+            applicants: 22,
+            status: 'recruiting',
+            urgency: 'medium',
+            description: '온라인 강의 콘텐츠 제작, 관리, 배포 통합 시스템',
+            company: '교육 기업',
+            location: '서울 마포구',
+            workType: 'hybrid'
+        },
+        {
+            id: 'proj008',
+            title: '스마트팩토리 IoT 대시보드',
+            category: 'IoT',
+            budget: '7,000~9,000만원',
+            duration: '6개월',
+            skills: ['React', 'InfluxDB', 'Grafana', 'MQTT', 'Python'],
+            applicants: 19,
+            status: 'recruiting',
+            urgency: 'high',
+            description: '제조 라인 실시간 모니터링 및 예측 분석 대시보드',
+            company: '자동차 부품 제조사',
+            location: '충남 아산시',
+            workType: 'onsite'
+        },
+        {
+            id: 'proj009',
+            title: '배달 플랫폼 라이더 관리 시스템',
+            category: '플랫폼',
+            budget: '4,000~5,500만원',
+            duration: '4개월',
+            skills: ['React Native', 'Go', 'PostgreSQL', 'Redis'],
+            applicants: 35,
+            status: 'in-progress',
+            urgency: 'medium',
+            description: '라이더 배정 최적화 및 실시간 배송 추적 시스템',
+            company: '푸드테크 기업',
+            location: '서울 송파구',
+            workType: 'remote'
+        },
+        {
+            id: 'proj010',
+            title: '메타버스 가상 전시회 플랫폼',
+            category: '메타버스',
+            budget: '1억~1억5천만원',
+            duration: '10개월',
+            skills: ['Unity', 'C#', 'WebRTC', 'AWS', 'Photon'],
+            applicants: 12,
+            status: 'recruiting',
+            urgency: 'low',
+            description: '3D 가상공간에서 전시회 및 컨퍼런스 개최 플랫폼',
+            company: '이벤트 기획사',
+            location: '서울 강남구',
+            workType: 'hybrid'
         }
     ];
 
@@ -224,7 +401,39 @@ const ITBusinessPlanPage = () => {
             case 'rates': return '개발자 단가';
             case 'trends': return '트렌드';
             case 'government': return '정부지원';
+            case 'projects': return '실제 프로젝트';
             default: return tab;
+        }
+    };
+
+    const getStatusBadge = (status: string) => {
+        switch (status) {
+            case 'recruiting':
+                return <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">모집중</span>;
+            case 'in-progress':
+                return <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">진행중</span>;
+            case 'completed':
+                return <span className="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">완료</span>;
+            default:
+                return null;
+        }
+    };
+
+    const getUrgencyColor = (urgency: string) => {
+        switch (urgency) {
+            case 'high': return 'text-red-500';
+            case 'medium': return 'text-yellow-500';
+            case 'low': return 'text-green-500';
+            default: return 'text-gray-500';
+        }
+    };
+
+    const getWorkTypeText = (workType: string) => {
+        switch (workType) {
+            case 'remote': return '원격';
+            case 'onsite': return '상주';
+            case 'hybrid': return '혼합';
+            default: return workType;
         }
     };
 
@@ -240,12 +449,12 @@ const ITBusinessPlanPage = () => {
                 </div>
 
                 {/* Navigation Tabs */}
-                <div className="flex space-x-4 mb-8 border-b border-gray-200">
-                    {['overview', 'platforms', 'rates', 'trends', 'government'].map((tab) => (
+                <div className="flex space-x-4 mb-8 border-b border-gray-200 overflow-x-auto">
+                    {['overview', 'platforms', 'rates', 'trends', 'government', 'projects'].map((tab) => (
                         <button
                             key={tab}
                             onClick={() => setSelectedTab(tab)}
-                            className={`pb-4 px-2 font-medium transition-colors ${selectedTab === tab
+                            className={`pb-4 px-2 font-medium transition-colors whitespace-nowrap ${selectedTab === tab
                                 ? 'text-blue-600 border-b-2 border-blue-600'
                                 : 'text-gray-600 hover:text-gray-900'
                                 }`}
@@ -292,6 +501,128 @@ const ITBusinessPlanPage = () => {
                             </div>
                             <h3 className="text-2xl font-bold text-gray-900">AI 프로젝트</h3>
                             <p className="text-gray-600 mt-1">최고 성장률</p>
+                        </div>
+                    </div>
+                )}
+
+                {/* Real Projects Tab */}
+                {selectedTab === 'projects' && (
+                    <div className="space-y-6">
+                        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+                            <div className="flex justify-between items-center mb-4">
+                                <h2 className="text-2xl font-bold text-gray-900">위시켓 실제 프로젝트 현황</h2>
+                                <div className="text-sm text-gray-600">
+                                    총 {realProjects.length}개 프로젝트 | 평균 예산: 5,200만원
+                                </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {realProjects.map((project) => (
+                                    <div key={project.id} className="border rounded-lg p-6 hover:shadow-lg transition-shadow">
+                                        <div className="flex justify-between items-start mb-3">
+                                            <div className="flex items-center space-x-2">
+                                                {getStatusBadge(project.status)}
+                                                <span className={`text-sm font-medium ${getUrgencyColor(project.urgency)}`}>
+                                                    {project.urgency === 'high' ? '급구' : 
+                                                     project.urgency === 'medium' ? '보통' : '여유'}
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center text-gray-500 text-sm">
+                                                <Eye className="w-4 h-4 mr-1" />
+                                                {project.applicants}
+                                            </div>
+                                        </div>
+
+                                        <h3 className="font-bold text-gray-900 mb-2 line-clamp-2">{project.title}</h3>
+                                        
+                                        <div className="space-y-2 mb-4">
+                                            <div className="flex items-center text-sm text-gray-600">
+                                                <Building2 className="w-4 h-4 mr-2" />
+                                                {project.company}
+                                            </div>
+                                            <div className="flex items-center text-sm text-gray-600">
+                                                <MapPin className="w-4 h-4 mr-2" />
+                                                {project.location} | {getWorkTypeText(project.workType)}
+                                            </div>
+                                            <div className="flex items-center text-sm text-gray-600">
+                                                <Clock className="w-4 h-4 mr-2" />
+                                                {project.duration}
+                                            </div>
+                                        </div>
+
+                                        <div className="mb-3">
+                                            <span className="text-lg font-bold text-blue-600">{project.budget}</span>
+                                            <span className="text-sm text-gray-500 ml-2">{project.category}</span>
+                                        </div>
+
+                                        <p className="text-sm text-gray-700 mb-4 line-clamp-2">{project.description}</p>
+
+                                        <div className="flex flex-wrap gap-1">
+                                            {project.skills.slice(0, 3).map((skill, idx) => (
+                                                <span key={idx} className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">
+                                                    {skill}
+                                                </span>
+                                            ))}
+                                            {project.skills.length > 3 && (
+                                                <span className="px-2 py-1 bg-gray-100 text-gray-500 text-xs rounded">
+                                                    +{project.skills.length - 3}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* 프로젝트 통계 */}
+                            <div className="mt-8 bg-gray-50 rounded-lg p-6">
+                                <h3 className="text-lg font-bold text-gray-900 mb-4">프로젝트 분석</h3>
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    <div className="text-center">
+                                        <div className="text-2xl font-bold text-blue-600">60%</div>
+                                        <div className="text-sm text-gray-600">AI/플랫폼 비중</div>
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="text-2xl font-bold text-green-600">4.2개월</div>
+                                        <div className="text-sm text-gray-600">평균 개발 기간</div>
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="text-2xl font-bold text-purple-600">70%</div>
+                                        <div className="text-sm text-gray-600">원격/혼합 근무</div>
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="text-2xl font-bold text-orange-600">24명</div>
+                                        <div className="text-sm text-gray-600">평균 지원자 수</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* 카테고리별 분포 */}
+                            <div className="mt-6 bg-blue-50 rounded-lg p-6">
+                                <h4 className="font-bold text-gray-900 mb-3">카테고리별 프로젝트 분포</h4>
+                                <div className="space-y-2">
+                                    {[
+                                        { name: 'AI/ML', count: 2, percentage: 20 },
+                                        { name: '플랫폼 개발', count: 3, percentage: 30 },
+                                        { name: '이커머스', count: 1, percentage: 10 },
+                                        { name: '헬스케어', count: 1, percentage: 10 },
+                                        { name: '엔터프라이즈', count: 1, percentage: 10 },
+                                        { name: '기타', count: 2, percentage: 20 }
+                                    ].map((category, idx) => (
+                                        <div key={idx} className="flex items-center justify-between">
+                                            <span className="text-sm text-gray-700">{category.name}</span>
+                                            <div className="flex items-center">
+                                                <div className="w-20 bg-gray-200 rounded-full h-2 mr-2">
+                                                    <div 
+                                                        className="bg-blue-500 h-2 rounded-full" 
+                                                        style={{ width: `${category.percentage}%` }}
+                                                    />
+                                                </div>
+                                                <span className="text-sm text-gray-600 w-8">{category.count}개</span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 )}
@@ -596,11 +927,11 @@ const ITBusinessPlanPage = () => {
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                         <div>
                             <p className="text-blue-100 text-sm mb-1">평균 프로젝트 단가</p>
-                            <p className="text-2xl font-bold">850만원</p>
+                            <p className="text-2xl font-bold">5,200만원</p>
                         </div>
                         <div>
                             <p className="text-blue-100 text-sm mb-1">평균 개발 기간</p>
-                            <p className="text-2xl font-bold">3.5개월</p>
+                            <p className="text-2xl font-bold">4.2개월</p>
                         </div>
                         <div>
                             <p className="text-blue-100 text-sm mb-1">AI 프로젝트 비중</p>
@@ -608,7 +939,7 @@ const ITBusinessPlanPage = () => {
                         </div>
                         <div>
                             <p className="text-blue-100 text-sm mb-1">원격근무 비율</p>
-                            <p className="text-2xl font-bold">78%</p>
+                            <p className="text-2xl font-bold">70%</p>
                         </div>
                     </div>
                 </div>
