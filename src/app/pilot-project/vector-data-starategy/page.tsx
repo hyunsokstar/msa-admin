@@ -10,6 +10,14 @@ export default function VectorDataStrategyPage() {
         setExpandedSection(expandedSection === section ? null : section);
     };
 
+    const tabs = [
+        { id: 'overview', name: '개요', icon: '📊' },
+        { id: 'cases', name: '실제 사례', icon: '💼' },
+        { id: 'technical', name: '기술 스펙', icon: '⚙️' },
+        { id: 'implementation', name: '구현 가이드', icon: '🚀' },
+        { id: 'bestpractices', name: '베스트 프랙티스', icon: '✨' }
+    ];
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
             {/* Header */}
@@ -35,26 +43,23 @@ export default function VectorDataStrategyPage() {
             </div>
 
             {/* Navigation Tabs */}
-            <div className="bg-white border-b">
+            <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <nav className="flex space-x-8 py-4" aria-label="Tabs">
-                        {[
-                            { id: 'overview', name: '개요', icon: '📊' },
-                            { id: 'cases', name: '실제 사례', icon: '💼' },
-                            { id: 'technical', name: '기술 스펙', icon: '⚙️' },
-                            { id: 'implementation', name: '구현 가이드', icon: '🚀' },
-                            { id: 'bestpractices', name: '베스트 프랙티스', icon: '✨' }
-                        ].map((tab) => (
+                    <nav className="flex space-x-0" aria-label="Tabs">
+                        {tabs.map((tab) => (
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
-                                className={`${activeTab === tab.id
-                                    ? 'border-b-2 border-blue-500 text-blue-600'
-                                    : 'text-gray-600 hover:text-gray-900'
-                                    } px-3 py-2 font-medium text-sm transition-colors duration-200 flex items-center gap-2`}
+                                className={`relative px-6 py-4 font-medium text-sm transition-all duration-200 flex items-center gap-2 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${activeTab === tab.id
+                                        ? 'text-blue-600 bg-blue-50 border-b-2 border-blue-600'
+                                        : 'text-gray-600 hover:text-gray-900'
+                                    }`}
                             >
-                                <span>{tab.icon}</span>
-                                {tab.name}
+                                <span className="text-lg">{tab.icon}</span>
+                                <span className="whitespace-nowrap">{tab.name}</span>
+                                {activeTab === tab.id && (
+                                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600" />
+                                )}
                             </button>
                         ))}
                     </nav>
@@ -65,7 +70,7 @@ export default function VectorDataStrategyPage() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Overview Tab */}
                 {activeTab === 'overview' && (
-                    <div className="space-y-8">
+                    <div className="space-y-8 animate-fadeIn">
                         {/* RAG Architecture */}
                         <div className="bg-white rounded-xl shadow-md p-6">
                             <h2 className="text-2xl font-bold mb-4 text-gray-800">RAG (Retrieval-Augmented Generation) 아키텍처</h2>
@@ -149,7 +154,7 @@ export default function VectorDataStrategyPage() {
 
                 {/* Real Cases Tab */}
                 {activeTab === 'cases' && (
-                    <div className="space-y-6">
+                    <div className="space-y-6 animate-fadeIn">
                         {/* Korean Air Case */}
                         <div className="bg-white rounded-xl shadow-md overflow-hidden">
                             <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4">
@@ -370,7 +375,7 @@ export default function VectorDataStrategyPage() {
 
                 {/* Technical Specs Tab */}
                 {activeTab === 'technical' && (
-                    <div className="space-y-6">
+                    <div className="space-y-6 animate-fadeIn">
                         {/* Database Comparison */}
                         <div className="bg-white rounded-xl shadow-md p-6">
                             <h2 className="text-2xl font-bold mb-4 text-gray-800">주요 벡터 DB 비교</h2>
@@ -570,7 +575,7 @@ export default function VectorDataStrategyPage() {
 
                 {/* Implementation Guide Tab */}
                 {activeTab === 'implementation' && (
-                    <div className="space-y-6">
+                    <div className="space-y-6 animate-fadeIn">
                         {/* Step by Step Guide */}
                         <div className="bg-white rounded-xl shadow-md p-6">
                             <h2 className="text-2xl font-bold mb-4 text-gray-800">단계별 구현 가이드</h2>
@@ -705,7 +710,7 @@ def search_and_generate(query, k=5):
                         <div className="bg-white rounded-xl shadow-md p-6">
                             <h2 className="text-2xl font-bold mb-4 text-gray-800">아키텍처 패턴</h2>
                             <div className="grid md:grid-cols-2 gap-6">
-                                <div className="border rounded-lg p-4">
+                                <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
                                     <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
                                         <span className="text-2xl">🏗️</span> 기본 RAG 패턴
                                     </h3>
@@ -718,7 +723,7 @@ def search_and_generate(query, k=5):
                                         <strong>적합한 경우:</strong> 단순 Q&A, FAQ 챗봇
                                     </p>
                                 </div>
-                                <div className="border rounded-lg p-4">
+                                <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
                                     <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
                                         <span className="text-2xl">🔄</span> 하이브리드 검색 패턴
                                     </h3>
@@ -731,7 +736,7 @@ def search_and_generate(query, k=5):
                                         <strong>적합한 경우:</strong> 기술 문서, 법률 문서
                                     </p>
                                 </div>
-                                <div className="border rounded-lg p-4">
+                                <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
                                     <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
                                         <span className="text-2xl">🎯</span> 멀티 스테이지 패턴
                                     </h3>
@@ -744,7 +749,7 @@ def search_and_generate(query, k=5):
                                         <strong>적합한 경우:</strong> 대규모 문서, 복잡한 도메인
                                     </p>
                                 </div>
-                                <div className="border rounded-lg p-4">
+                                <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
                                     <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
                                         <span className="text-2xl">🔗</span> 에이전트 기반 패턴
                                     </h3>
@@ -764,7 +769,7 @@ def search_and_generate(query, k=5):
 
                 {/* Best Practices Tab */}
                 {activeTab === 'bestpractices' && (
-                    <div className="space-y-6">
+                    <div className="space-y-6 animate-fadeIn">
                         {/* Data Strategy */}
                         <div className="bg-white rounded-xl shadow-md p-6">
                             <h2 className="text-2xl font-bold mb-4 text-gray-800">데이터 전략 베스트 프랙티스</h2>
@@ -815,7 +820,7 @@ def search_and_generate(query, k=5):
                                         ]
                                     }
                                 ].map((section, idx) => (
-                                    <div key={idx} className="border-l-4 border-{section.color}-500 pl-4">
+                                    <div key={idx} className={`border-l-4 border-${section.color}-500 pl-4`}>
                                         <h3 className="font-semibold text-lg flex items-center gap-2">
                                             <span className="text-2xl">{section.icon}</span>
                                             {section.title}
@@ -887,7 +892,7 @@ def search_and_generate(query, k=5):
                             <h2 className="text-2xl font-bold mb-4 text-gray-800">모니터링 및 평가</h2>
                             <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg p-6">
                                 <div className="grid md:grid-cols-3 gap-4">
-                                    <div className="bg-white rounded-lg p-4">
+                                    <div className="bg-white rounded-lg p-4 shadow-sm">
                                         <h3 className="font-semibold mb-2 flex items-center gap-2">
                                             <span className="text-xl">📊</span> 핵심 메트릭
                                         </h3>
@@ -898,7 +903,7 @@ def search_and_generate(query, k=5):
                                             <li>• 응답 시간 (p50, p95, p99)</li>
                                         </ul>
                                     </div>
-                                    <div className="bg-white rounded-lg p-4">
+                                    <div className="bg-white rounded-lg p-4 shadow-sm">
                                         <h3 className="font-semibold mb-2 flex items-center gap-2">
                                             <span className="text-xl">🔍</span> 품질 평가
                                         </h3>
@@ -909,7 +914,7 @@ def search_and_generate(query, k=5):
                                             <li>• A/B 테스트 결과</li>
                                         </ul>
                                     </div>
-                                    <div className="bg-white rounded-lg p-4">
+                                    <div className="bg-white rounded-lg p-4 shadow-sm">
                                         <h3 className="font-semibold mb-2 flex items-center gap-2">
                                             <span className="text-xl">🛠️</span> 운영 모니터링
                                         </h3>
@@ -977,6 +982,24 @@ def search_and_generate(query, k=5):
                     </div>
                 )}
             </div>
+
+            {/* Custom CSS for animations */}
+            <style jsx>{`
+                @keyframes fadeIn {
+                    from {
+                        opacity: 0;
+                        transform: translateY(20px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+                
+                .animate-fadeIn {
+                    animation: fadeIn 0.3s ease-in-out;
+                }
+            `}</style>
         </div>
     );
 }
