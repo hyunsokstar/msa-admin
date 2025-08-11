@@ -70,8 +70,7 @@ function TabButton({
             aria-selected={active}
             tabIndex={active ? 0 : -1}
             onClick={() => onClick(id)}
-            className={`px-4 sm:px-5 py-2.5 rounded-lg transition-colors flex items-center gap-2 whitespace-nowrap ${active ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100'
-                }`}
+            className={`w-full justify-center px-4 sm:px-5 py-2.5 rounded-lg transition-colors flex items-center gap-2 ${active ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100'}`}
         >
             <Icon className="w-4 h-4" />
             <span className="text-sm font-medium">{children}</span>
@@ -130,7 +129,7 @@ export default function ModernDevReportPage() {
                         <div
                             role="tablist"
                             aria-label="Modern Dev Report Sections"
-                            className="flex gap-2 overflow-x-auto"
+                            className="grid gap-2 grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-7"
                             onKeyDown={onTabsKeyDown}
                         >
                             {tabs.map((t) => (
