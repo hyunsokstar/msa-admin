@@ -445,3 +445,6 @@ export default function ModernDevReportPage() {
                     </div>
                 )}
             </main>
+        </div>
+    );
+}
