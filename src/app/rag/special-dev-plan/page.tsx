@@ -472,6 +472,7 @@ const projects: Project[] = [
         difficulty: "Expert",
         duration: "16-20주",
         priority: "High",
+        isPilot: true, // 이 라인 추가
         techStack: ["Tauri", "Rust", "React", "Spring Boot", "Spring Security", "WebSocket", "PostgreSQL", "JWT", "OAuth2"],
         deliverables: [
             "크로스플랫폼 콜센터 데스크톱 앱",
@@ -554,10 +555,10 @@ export default function SpecialDevPlanPage() {
                                 key={level.key}
                                 onClick={() => setFilter(level.key as any)}
                                 className={`px-4 py-2 rounded-lg border transition-colors ${filter === level.key
-                                        ? level.key === 'pilot'
-                                            ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white border-purple-600'
-                                            : 'bg-blue-600 text-white border-blue-600'
-                                        : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                                    ? level.key === 'pilot'
+                                        ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white border-purple-600'
+                                        : 'bg-blue-600 text-white border-blue-600'
+                                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
                                     } ${level.key === 'pilot' ? 'font-semibold shadow-lg' : ''}`}
                             >
                                 {level.label}
@@ -580,15 +581,25 @@ export default function SpecialDevPlanPage() {
                                     }`}
                             >
                                 <div className="flex items-start gap-4">
-                                    <div className={`p-3 rounded-lg ${project.isPilot ? 'bg-purple-100' : 'bg-slate-100'}`}>
-                                        <project.icon className="w-6 h-6 text-slate-600" />
+                                    <div className={`p-3 rounded-lg ${project.isPilot ? 'bg-gradient-to-br from-purple-500 to-blue-600' : 'bg-slate-100'
+                                        }`}>
+                                        <project.icon className={`w-6 h-6 ${project.isPilot ? 'text-white' : 'text-slate-600'
+                                            }`} />
                                     </div>
                                     <div className="flex-1">
                                         <div className="flex items-center gap-3 mb-2">
-                                            <h3 className="text-lg font-semibold text-slate-900">{project.title}</h3>
+                                            <h3 className="text-lg font-semibold text-slate-900">
+                                                {project.isPilot && '🚀 '}
+                                                {project.title}
+                                            </h3>
                                             <span className={`px-2 py-1 text-xs rounded-full border ${difficultyColors[project.difficulty]}`}>
                                                 {project.difficulty}
                                             </span>
+                                            {project.isPilot && (
+                                                <span className="px-2 py-1 text-xs rounded-full bg-gradient-to-r from-purple-100 to-blue-100 text-purple-800 border border-purple-200 font-semibold">
+                                                    대표 파일럿
+                                                </span>
+                                            )}
                                         </div>
                                         <p className="text-slate-600 mb-3">{project.description}</p>
                                         <div className="flex items-center gap-4 text-sm text-slate-500">
@@ -611,10 +622,25 @@ export default function SpecialDevPlanPage() {
                     <div className="space-y-6">
                         {selectedProject ? (
                             <>
-                                <div className="bg-white rounded-xl border border-slate-200 p-6">
+                                <div className={`bg-white rounded-xl border border-slate-200 p-6 ${selectedProject.isPilot ? 'ring-2 ring-purple-200 bg-gradient-to-br from-purple-50 to-blue-50' : ''
+                                    }`}>
                                     <div className="flex items-center gap-3 mb-4">
-                                        <selectedProject.icon className="w-6 h-6 text-blue-600" />
-                                        <h2 className="text-xl font-bold text-slate-900">{selectedProject.title}</h2>
+                                        <div className={`p-2 rounded-lg ${selectedProject.isPilot ? 'bg-gradient-to-br from-purple-500 to-blue-600' : 'bg-blue-100'
+                                            }`}>
+                                            <selectedProject.icon className={`w-6 h-6 ${selectedProject.isPilot ? 'text-white' : 'text-blue-600'
+                                                }`} />
+                                        </div>
+                                        <div className="flex-1">
+                                            <h2 className="text-xl font-bold text-slate-900">
+                                                {selectedProject.isPilot && '🚀 '}
+                                                {selectedProject.title}
+                                            </h2>
+                                            {selectedProject.isPilot && (
+                                                <span className="inline-block mt-1 px-3 py-1 text-xs rounded-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold">
+                                                    ⭐ 대표 파일럿 프로젝트
+                                                </span>
+                                            )}
+                                        </div>
                                     </div>
                                     <p className="text-slate-600 mb-4">{selectedProject.description}</p>
 
@@ -635,7 +661,13 @@ export default function SpecialDevPlanPage() {
                                         <h3 className="font-semibold text-slate-900 mb-2">기술 스택</h3>
                                         <div className="flex flex-wrap gap-2">
                                             {selectedProject.techStack.map((tech, idx) => (
-                                                <span key={idx} className="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded border border-blue-200">
+                                                <span
+                                                    key={idx}
+                                                    className={`px-2 py-1 text-xs rounded border ${selectedProject.isPilot
+                                                            ? 'bg-gradient-to-r from-purple-50 to-blue-50 text-purple-700 border-purple-200'
+                                                            : 'bg-blue-50 text-blue-700 border-blue-200'
+                                                        }`}
+                                                >
                                                     {tech}
                                                 </span>
                                             ))}
@@ -687,7 +719,10 @@ export default function SpecialDevPlanPage() {
                                                         href={ref.url}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800"
+                                                        className={`flex items-center gap-2 text-sm hover:underline ${selectedProject.isPilot
+                                                                ? 'text-purple-600 hover:text-purple-800'
+                                                                : 'text-blue-600 hover:text-blue-800'
+                                                            }`}
                                                     >
                                                         <ExternalLink className="w-4 h-4" />
                                                         {ref.name}
@@ -721,6 +756,10 @@ export default function SpecialDevPlanPage() {
                                 <div className="flex justify-between items-center">
                                     <span className="text-sm text-slate-600">Expert 레벨</span>
                                     <span className="font-semibold text-orange-600">{projects.filter(p => p.difficulty === 'Expert').length}개</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-sm text-slate-600">🚀 대표 파일럿</span>
+                                    <span className="font-semibold text-purple-600">{projects.filter(p => p.isPilot).length}개</span>
                                 </div>
                                 <div className="flex justify-between items-center">
                                     <span className="text-sm text-slate-600">예상 총 기간</span>
