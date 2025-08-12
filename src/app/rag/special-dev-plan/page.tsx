@@ -40,6 +40,7 @@ interface Project {
     references: { name: string; url: string }[];
     prerequisites: string[];
     learningGoals: string[];
+    isPilot?: boolean; // 추가
 }
 
 const projects: Project[] = [
@@ -517,9 +518,13 @@ const priorityColors = {
 
 export default function SpecialDevPlanPage() {
     const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-    const [filter, setFilter] = useState<'all' | 'Basic' | 'Intermediate' | 'Advanced' | 'Expert'>('all');
+    const [filter, setFilter] = useState<'all' | 'Basic' | 'Intermediate' | 'Advanced' | 'Expert' | 'pilot'>('all');
 
-    const filteredProjects = filter === 'all' ? projects : projects.filter(p => p.difficulty === filter);
+    const filteredProjects = filter === 'all'
+        ? projects
+        : filter === 'pilot'
+            ? projects.filter(p => p.isPilot)
+            : projects.filter(p => p.difficulty === filter);
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
@@ -537,16 +542,25 @@ export default function SpecialDevPlanPage() {
 
                     {/* 필터 */}
                     <div className="flex gap-2 flex-wrap">
-                        {['all', 'Basic', 'Intermediate', 'Advanced', 'Expert'].map((level) => (
+                        {[
+                            { key: 'all', label: '전체' },
+                            { key: 'Basic', label: 'Basic' },
+                            { key: 'Intermediate', label: 'Intermediate' },
+                            { key: 'Advanced', label: 'Advanced' },
+                            { key: 'Expert', label: 'Expert' },
+                            { key: 'pilot', label: '🚀 대표 파일럿' }
+                        ].map((level) => (
                             <button
-                                key={level}
-                                onClick={() => setFilter(level as any)}
-                                className={`px-4 py-2 rounded-lg border transition-colors ${filter === level
-                                    ? 'bg-blue-600 text-white border-blue-600'
-                                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
-                                    }`}
+                                key={level.key}
+                                onClick={() => setFilter(level.key as any)}
+                                className={`px-4 py-2 rounded-lg border transition-colors ${filter === level.key
+                                        ? level.key === 'pilot'
+                                            ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white border-purple-600'
+                                            : 'bg-blue-600 text-white border-blue-600'
+                                        : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                                    } ${level.key === 'pilot' ? 'font-semibold shadow-lg' : ''}`}
                             >
-                                {level === 'all' ? '전체' : level}
+                                {level.label}
                             </button>
                         ))}
                     </div>
@@ -562,10 +576,11 @@ export default function SpecialDevPlanPage() {
                                 key={project.id}
                                 onClick={() => setSelectedProject(project)}
                                 className={`bg-white rounded-xl border p-6 cursor-pointer transition-all hover:shadow-md ${priorityColors[project.priority]
-                                    } ${selectedProject?.id === project.id ? 'ring-2 ring-blue-500' : ''}`}
+                                    } ${selectedProject?.id === project.id ? 'ring-2 ring-blue-500' : ''} ${project.isPilot ? 'ring-2 ring-purple-300 bg-gradient-to-r from-purple-50 to-blue-50' : ''
+                                    }`}
                             >
                                 <div className="flex items-start gap-4">
-                                    <div className="p-3 bg-slate-100 rounded-lg">
+                                    <div className={`p-3 rounded-lg ${project.isPilot ? 'bg-purple-100' : 'bg-slate-100'}`}>
                                         <project.icon className="w-6 h-6 text-slate-600" />
                                     </div>
                                     <div className="flex-1">
