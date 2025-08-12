@@ -154,29 +154,38 @@ const projects: Project[] = [
     },
     {
         id: 5,
-        title: "AI 콜봇 시스템",
-        description: "실시간 통화 분석 및 자동 응답 시스템",
+        title: "엔터프라이즈 콜센터 플랫폼",
+        description: "대기업급 옴니채널 콜센터 - Genesys/Avaya 스타일 통합 솔루션",
         icon: Phone,
         difficulty: "Expert",
-        duration: "10-12주",
-        priority: "Low",
-        techStack: ["Asterisk", "WebRTC", "Whisper", "TTS", "Python FastAPI"],
+        duration: "14-16주",
+        priority: "High",
+        techStack: ["FreeSWITCH", "Kamailio", "Spring Boot", "OpenAI Whisper", "Azure Speech", "Redis Cluster", "PostgreSQL", "Kafka"],
         deliverables: [
-            "VoIP 통화 시스템",
-            "실시간 STT/TTS",
-            "감정 분석 엔진",
-            "통화 품질 리포트"
+            "SIP 기반 VoIP 인프라",
+            "ACD (Automatic Call Distribution)",
+            "IVR (Interactive Voice Response)",
+            "CTI (Computer Telephony Integration)",
+            "실시간 통화 녹음/분석",
+            "상담사 스킬 기반 라우팅",
+            "Workforce Management",
+            "Real-time Dashboard & Analytics"
         ],
-        prerequisites: ["VoIP 기초", "음성 처리 이해", "실시간 AI 모델"],
+        prerequisites: ["SIP 프로토콜", "VoIP 아키텍처", "대용량 시스템 설계", "텔레포니 기초"],
         learningGoals: [
-            "VoIP 프로토콜 이해",
-            "실시간 AI 추론",
-            "음성 신호 처리"
+            "엔터프라이즈 VoIP 아키텍처",
+            "SIP/RTP 프로토콜 마스터",
+            "대용량 동시 통화 처리",
+            "통신사 연동 (SIP Trunk)",
+            "컴플라이언스 및 보안 (HIPAA/PCI)",
+            "고가용성 통신 시스템"
         ],
         references: [
-            { name: "Asterisk Documentation", url: "https://docs.asterisk.org/" },
-            { name: "OpenAI Whisper", url: "https://github.com/openai/whisper" },
-            { name: "WebRTC Samples", url: "https://webrtc.github.io/samples/" }
+            { name: "FreeSWITCH Documentation", url: "https://freeswitch.org/confluence/" },
+            { name: "Kamailio SIP Server", url: "https://www.kamailio.org/w/documentation/" },
+            { name: "RFC 3261 - SIP Protocol", url: "https://tools.ietf.org/html/rfc3261" },
+            { name: "Genesys Architecture Guide", url: "https://docs.genesys.com/" },
+            { name: "Enterprise VoIP Design", url: "https://www.cisco.com/c/en/us/solutions/enterprise/design-zone-collaboration/index.html" }
         ]
     },
     {
@@ -496,8 +505,8 @@ export default function SpecialDevPlanPage() {
                                 key={level}
                                 onClick={() => setFilter(level as any)}
                                 className={`px-4 py-2 rounded-lg border transition-colors ${filter === level
-                                        ? 'bg-blue-600 text-white border-blue-600'
-                                        : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                                    ? 'bg-blue-600 text-white border-blue-600'
+                                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
                                     }`}
                             >
                                 {level === 'all' ? '전체' : level}
