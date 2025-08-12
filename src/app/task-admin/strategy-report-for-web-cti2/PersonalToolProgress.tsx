@@ -1,172 +1,3 @@
-// import React, { useState } from 'react';
-// import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-// import { Badge } from '@/components/ui/badge';
-// import { CheckCircle, Clock, AlertCircle, Target, TrendingUp, Calendar } from 'lucide-react';
-
-// const CTITaskMasterProgress = () => {
-//     const [completedTasks] = useState([
-//         'Tauri + Vite + TailwindCSS + ShadCN UI 개발 환경 구축',
-//         '기본 네이티브 메뉴 및 다이얼로그 팝업 테스트 완료',
-//         'FSD 기반 폴더 구조 설계 및 Zustand 스토어 셋업',
-//         'TanStack Router 기반 페이지 라우터 구성',
-//         '사용자 바/패널 모드 설정 → 로컬 파일 시스템 저장 기능 구현'
-//     ]);
-
-//     const [todoTasks] = useState([
-//         '상담사 실시간 데이터 polling 테스트 (TanStack Query, REST or Redis 연동)',
-//         '웹 로그인 후 개인화 툴 자동 실행 연계',
-//         '배포 및 설치 자동화 프로세스 구축 (예: .msi or .exe)',
-//         '전체 UI 메뉴 시스템 구성 및 파일 기반 설정 저장',
-//         '기타 고도화 작업 (테마, 다국어 등)'
-//     ]);
-
-//     const totalTasks = completedTasks.length + todoTasks.length;
-//     const completionRate = Math.round((completedTasks.length / totalTasks) * 100);
-
-//     return (
-//         <section className="mt-24">
-//             {/* 헤더 섹션 */}
-//             <div className="mb-6">
-//                 <div className="flex items-center justify-between mb-4">
-//                     <h2 className="text-3xl font-bold text-blue-700 flex items-center gap-3">
-//                         <Target className="h-8 w-8" />
-//                         CTI Task Master 진행 현황
-//                     </h2>
-//                 </div>
-
-//                 {/* 프로그레스 바 */}
-//                 <div className="w-full bg-gray-200 rounded-full h-3 mb-3 overflow-hidden">
-//                     <div
-//                         className="bg-gradient-to-r from-green-500 to-blue-500 h-3 rounded-full transition-all duration-500 ease-out shadow-sm"
-//                         style={{ width: `${completionRate}%` }}
-//                     />
-//                 </div>
-
-//                 <div className="flex items-center justify-between text-sm text-gray-600">
-//                     <span className="flex items-center gap-2">
-//                         <CheckCircle className="h-4 w-4 text-green-500" />
-//                         완료: {completedTasks.length}개
-//                     </span>
-//                     <span className="flex items-center gap-2">
-//                         <Clock className="h-4 w-4 text-orange-500" />
-//                         할일: {todoTasks.length}개
-//                     </span>
-//                 </div>
-//             </div>
-
-//             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-//                 {/* 완료된 기능 */}
-//                 <Card className="shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-l-green-500 bg-gradient-to-br from-green-50 to-white">
-//                     <CardHeader className="pb-3">
-//                         <CardTitle className="flex items-center gap-3 text-green-700">
-//                             <div className="p-2 bg-green-100 rounded-lg">
-//                                 <CheckCircle className="h-6 w-6" />
-//                             </div>
-//                             완료된 기능
-//                         </CardTitle>
-//                         <CardDescription className="text-green-600">
-//                             개발 환경 구축 및 기본 기능 구현 완료
-//                         </CardDescription>
-//                     </CardHeader>
-//                     <CardContent>
-//                         <div className="space-y-3">
-//                             {completedTasks.map((item, index) => (
-//                                 <div key={index} className="group flex items-start gap-3 p-2 rounded-lg hover:bg-green-50 transition-colors">
-//                                     <div className="flex-shrink-0 mt-1">
-//                                         <div className="w-5 h-5 bg-green-500 rounded border-2 border-green-500 flex items-center justify-center">
-//                                             <CheckCircle className="h-3 w-3 text-white" />
-//                                         </div>
-//                                     </div>
-//                                     <span className="text-sm text-gray-700 leading-relaxed group-hover:text-green-800 transition-colors">
-//                                         {item}
-//                                     </span>
-//                                 </div>
-//                             ))}
-//                         </div>
-
-//                         <div className="mt-4 p-3 bg-green-100 rounded-lg border border-green-200">
-//                             <div className="flex items-center gap-2 text-green-700">
-//                                 <Calendar className="h-4 w-4" />
-//                                 <span className="font-medium text-sm">완료 현황</span>
-//                             </div>
-//                             <p className="text-sm text-green-600 mt-1">
-//                                 기본 개발 환경과 핵심 기능들이 성공적으로 구현되었습니다.
-//                             </p>
-//                         </div>
-//                     </CardContent>
-//                 </Card>
-
-//                 {/* TODO 리스트 */}
-//                 <Card className="shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-l-orange-500 bg-gradient-to-br from-orange-50 to-white">
-//                     <CardHeader className="pb-3">
-//                         <CardTitle className="flex items-center gap-3 text-orange-700">
-//                             <div className="p-2 bg-orange-100 rounded-lg">
-//                                 <AlertCircle className="h-6 w-6" />
-//                             </div>
-//                             TODO 리스트
-//                         </CardTitle>
-//                         <CardDescription className="text-orange-600">
-//                             향후 개발 예정 기능 및 개선 사항
-//                         </CardDescription>
-//                     </CardHeader>
-//                     <CardContent>
-//                         <div className="space-y-3">
-//                             {todoTasks.map((item, index) => (
-//                                 <div key={index} className="group flex items-start gap-3 p-2 rounded-lg hover:bg-orange-50 transition-colors">
-//                                     <div className="flex-shrink-0 mt-1">
-//                                         <div className="w-5 h-5 bg-white border-2 border-orange-300 rounded flex items-center justify-center group-hover:border-orange-400 transition-colors">
-//                                             <div className="w-2 h-2 bg-transparent rounded-sm" />
-//                                         </div>
-//                                     </div>
-//                                     <span className="text-sm text-gray-700 leading-relaxed group-hover:text-orange-800 transition-colors">
-//                                         {item}
-//                                     </span>
-//                                 </div>
-//                             ))}
-//                         </div>
-
-//                         <div className="mt-4 p-3 bg-orange-100 rounded-lg border border-orange-200">
-//                             <div className="flex items-center gap-2 text-orange-700">
-//                                 <Clock className="h-4 w-4" />
-//                                 <span className="font-medium text-sm">다음 단계</span>
-//                             </div>
-//                             <p className="text-sm text-orange-600 mt-1">
-//                                 실시간 데이터 연동과 배포 자동화가 우선 진행 예정입니다.
-//                             </p>
-//                         </div>
-//                     </CardContent>
-//                 </Card>
-//             </div>
-
-//             {/* 하단 요약 정보 */}
-//             <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-//                 <Card className="text-center bg-gradient-to-br from-blue-50 to-white border-blue-200">
-//                     <CardContent className="pt-4">
-//                         <div className="text-2xl font-bold text-blue-600 mb-1">{totalTasks}</div>
-//                         <div className="text-sm text-gray-600">전체 작업</div>
-//                     </CardContent>
-//                 </Card>
-
-//                 <Card className="text-center bg-gradient-to-br from-green-50 to-white border-green-200">
-//                     <CardContent className="pt-4">
-//                         <div className="text-2xl font-bold text-green-600 mb-1">{completedTasks.length}</div>
-//                         <div className="text-sm text-gray-600">완료된 작업</div>
-//                     </CardContent>
-//                 </Card>
-
-//                 <Card className="text-center bg-gradient-to-br from-orange-50 to-white border-orange-200">
-//                     <CardContent className="pt-4">
-//                         <div className="text-2xl font-bold text-orange-600 mb-1">{todoTasks.length}</div>
-//                         <div className="text-sm text-gray-600">남은 작업</div>
-//                     </CardContent>
-//                 </Card>
-//             </div>
-//         </section>
-//     );
-// };
-
-// export default CTITaskMasterProgress;
-
 import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -188,16 +19,12 @@ interface WeekData {
     tasks: Task[];
 }
 
-type WeeklyDataArray = WeekData[];
-
-interface WeeklyTodoManagerProps { }
-
-const WeeklyTodoManager: React.FC<WeeklyTodoManagerProps> = () => {
+const WeeklyTodoManager: React.FC = () => {
     // 현재 날짜 (6월 20일, 2025년)
-    const currentDate: Date = new Date(2025, 5, 20);
+    const currentDate = new Date(2025, 5, 20);
 
-    // 주차별 데이터 구조 - 기존 CTITaskMasterProgress 내용 충실 반영
-    const [weeklyData, setWeeklyData] = useState<WeeklyDataArray>([
+    // 주차별 데이터 구조
+    const [weeklyData, setWeeklyData] = useState<WeekData[]>([
         {
             weekNumber: 1,
             startDate: new Date(2025, 5, 20),
@@ -383,31 +210,31 @@ const WeeklyTodoManager: React.FC<WeeklyTodoManagerProps> = () => {
 
     // 현재 주차 계산
     const getCurrentWeek = (): number => {
-        const now: Date = new Date();
-        return weeklyData.findIndex((week: WeekData) =>
+        const now = new Date();
+        return weeklyData.findIndex(week =>
             now >= week.startDate && now <= week.endDate
         );
     };
 
     // 전체 진행률 계산
-    const overallProgress: number = useMemo(() => {
-        const totalTasks: number = weeklyData.reduce((sum: number, week: WeekData) => sum + week.tasks.length, 0);
-        const completedTasks: number = weeklyData.reduce((sum: number, week: WeekData) =>
-            sum + week.tasks.filter((task: Task) => task.completed).length, 0);
+    const overallProgress = useMemo(() => {
+        const totalTasks = weeklyData.reduce((sum, week) => sum + week.tasks.length, 0);
+        const completedTasks = weeklyData.reduce((sum, week) =>
+            sum + week.tasks.filter(task => task.completed).length, 0);
         return totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
     }, [weeklyData]);
 
     // 주차별 진행률 계산
     const getWeekProgress = (week: WeekData): number => {
-        const completedTasks: number = week.tasks.filter((task: Task) => task.completed).length;
+        const completedTasks = week.tasks.filter(task => task.completed).length;
         return week.tasks.length > 0 ? Math.round((completedTasks / week.tasks.length) * 100) : 0;
     };
 
     // 작업 완료 토글
-    const toggleTaskCompletion = (weekIndex: number, taskId: number): void => {
-        setWeeklyData((prev: WeeklyDataArray) => {
-            const newData: WeeklyDataArray = [...prev];
-            const taskIndex: number = newData[weekIndex].tasks.findIndex((task: Task) => task.id === taskId);
+    const toggleTaskCompletion = (weekIndex: number, taskId: number) => {
+        setWeeklyData(prev => {
+            const newData = [...prev];
+            const taskIndex = newData[weekIndex].tasks.findIndex(task => task.id === taskId);
             if (taskIndex !== -1) {
                 newData[weekIndex].tasks[taskIndex].completed = !newData[weekIndex].tasks[taskIndex].completed;
             }
@@ -416,12 +243,12 @@ const WeeklyTodoManager: React.FC<WeeklyTodoManagerProps> = () => {
     };
 
     // 새 작업 추가
-    const addNewTask = (weekIndex: number): void => {
-        const newTaskText: string | null = prompt("새 작업을 입력하세요:");
+    const addNewTask = (weekIndex: number) => {
+        const newTaskText = prompt("새 작업을 입력하세요:");
         if (newTaskText && newTaskText.trim()) {
-            setWeeklyData((prev: WeeklyDataArray) => {
-                const newData: WeeklyDataArray = [...prev];
-                const maxId: number = Math.max(...newData.flatMap((week: WeekData) => week.tasks.map((task: Task) => task.id)));
+            setWeeklyData(prev => {
+                const newData = [...prev];
+                const maxId = Math.max(...newData.flatMap(week => week.tasks.map(task => task.id)), 0);
                 const newTask: Task = {
                     id: maxId + 1,
                     text: newTaskText.trim(),
@@ -434,15 +261,14 @@ const WeeklyTodoManager: React.FC<WeeklyTodoManagerProps> = () => {
     };
 
     // 작업 수정
-    const editTask = (weekIndex: number, taskId: number): void => {
-        const task: Task | undefined = weeklyData[weekIndex].tasks.find((t: Task) => t.id === taskId);
+    const editTask = (weekIndex: number, taskId: number) => {
+        const task = weeklyData[weekIndex].tasks.find(t => t.id === taskId);
         if (!task) return;
-
-        const newText: string | null = prompt("작업 내용을 수정하세요:", task.text);
+        const newText = prompt("작업 내용을 수정하세요:", task.text);
         if (newText && newText.trim()) {
-            setWeeklyData((prev: WeeklyDataArray) => {
-                const newData: WeeklyDataArray = [...prev];
-                const taskIndex: number = newData[weekIndex].tasks.findIndex((t: Task) => t.id === taskId);
+            setWeeklyData(prev => {
+                const newData = [...prev];
+                const taskIndex = newData[weekIndex].tasks.findIndex(t => t.id === taskId);
                 if (taskIndex !== -1) {
                     newData[weekIndex].tasks[taskIndex].text = newText.trim();
                 }
@@ -455,10 +281,8 @@ const WeeklyTodoManager: React.FC<WeeklyTodoManagerProps> = () => {
         return `${date.getMonth() + 1}/${date.getDate()}`;
     };
 
-    const currentWeek: number = getCurrentWeek();
-    const selectedWeekData: WeekData = weeklyData[selectedWeek];
-    const completedTasks: Task[] = selectedWeekData.tasks.filter((task: Task) => task.completed);
-    const incompleteTasks: Task[] = selectedWeekData.tasks.filter((task: Task) => !task.completed);
+    const currentWeek = getCurrentWeek();
+    const selectedWeekData = weeklyData[selectedWeek];
 
     return (
         <div className="p-6 bg-gray-50 min-h-screen">
@@ -489,7 +313,6 @@ const WeeklyTodoManager: React.FC<WeeklyTodoManagerProps> = () => {
                         onClick={() => setSelectedWeek(Math.max(0, selectedWeek - 1))}
                         disabled={selectedWeek === 0}
                         className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                        type="button"
                     >
                         <ChevronLeft className="h-5 w-5" />
                     </button>
@@ -512,7 +335,6 @@ const WeeklyTodoManager: React.FC<WeeklyTodoManagerProps> = () => {
                         onClick={() => setSelectedWeek(Math.min(weeklyData.length - 1, selectedWeek + 1))}
                         disabled={selectedWeek === weeklyData.length - 1}
                         className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                        type="button"
                     >
                         <ChevronRight className="h-5 w-5" />
                     </button>
@@ -521,8 +343,8 @@ const WeeklyTodoManager: React.FC<WeeklyTodoManagerProps> = () => {
 
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
                 {/* 메인 주차 상세 정보 */}
-                <div className="xl:col-span-2">
-                    <Card className="shadow-xl bg-white border-0">
+                <div className="xl:col-span-2 h-full">
+                    <Card className="shadow-xl bg-white border-0 h-full flex flex-col">
                         <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-lg">
                             <div className="flex items-center justify-between">
                                 <CardTitle className="text-2xl text-blue-800 flex items-center gap-3">
@@ -534,7 +356,6 @@ const WeeklyTodoManager: React.FC<WeeklyTodoManagerProps> = () => {
                                         onClick={() => addNewTask(selectedWeek)}
                                         className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
                                         title="새 작업 추가"
-                                        type="button"
                                     >
                                         <Plus className="h-4 w-4" />
                                     </button>
@@ -559,16 +380,16 @@ const WeeklyTodoManager: React.FC<WeeklyTodoManagerProps> = () => {
                                 />
                             </div>
                         </CardHeader>
-                        <CardContent className="p-6">
+                        <CardContent className="p-6 max-h-96 overflow-y-auto flex-1">
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                 {/* 완료된 작업 */}
-                                <div className="space-y-4">
-                                    <h3 className="text-lg font-semibold text-green-700 flex items-center gap-2">
+                                <div>
+                                    <h3 className="text-lg font-semibold text-green-700 mb-4 flex items-center gap-2">
                                         <CheckCircle className="h-5 w-5" />
-                                        완료된 작업 ({completedTasks.length}개)
+                                        완료된 작업 ({selectedWeekData.tasks.filter(task => task.completed).length}개)
                                     </h3>
-                                    <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
-                                        {completedTasks.map((task: Task) => (
+                                    <div className="space-y-3">
+                                        {selectedWeekData.tasks.filter(task => task.completed).map((task) => (
                                             <div
                                                 key={task.id}
                                                 className="group flex items-start gap-3 p-3 rounded-lg border bg-green-50 border-green-200 hover:bg-green-100 transition-all duration-200"
@@ -576,23 +397,21 @@ const WeeklyTodoManager: React.FC<WeeklyTodoManagerProps> = () => {
                                                 <button
                                                     onClick={() => toggleTaskCompletion(selectedWeek, task.id)}
                                                     className="flex-shrink-0 mt-1"
-                                                    type="button"
                                                 >
                                                     <div className="w-5 h-5 rounded-lg border-2 bg-green-500 border-green-500 flex items-center justify-center">
                                                         <CheckCircle className="h-3 w-3 text-white" />
                                                     </div>
                                                 </button>
 
-                                                <div className="flex-1 min-w-0">
+                                                <div className="flex-1">
                                                     <div className="flex items-start justify-between gap-2">
-                                                        <span className="text-sm leading-relaxed text-green-800 break-words">
+                                                        <span className="text-sm leading-relaxed text-green-800">
                                                             {task.text}
                                                         </span>
                                                         <button
                                                             onClick={() => editTask(selectedWeek, task.id)}
-                                                            className="p-1 text-gray-400 hover:text-gray-600 transition-colors opacity-0 group-hover:opacity-100 flex-shrink-0"
+                                                            className="p-1 text-gray-400 hover:text-gray-600 transition-colors opacity-0 group-hover:opacity-100"
                                                             title="작업 수정"
-                                                            type="button"
                                                         >
                                                             <Edit className="h-3 w-3" />
                                                         </button>
@@ -600,8 +419,8 @@ const WeeklyTodoManager: React.FC<WeeklyTodoManagerProps> = () => {
                                                 </div>
                                             </div>
                                         ))}
-                                        {completedTasks.length === 0 && (
-                                            <div className="text-center text-gray-500 py-8">
+                                        {selectedWeekData.tasks.filter(task => task.completed).length === 0 && (
+                                            <div className="text-center text-gray-500 py-4">
                                                 완료된 작업이 없습니다.
                                             </div>
                                         )}
@@ -609,13 +428,13 @@ const WeeklyTodoManager: React.FC<WeeklyTodoManagerProps> = () => {
                                 </div>
 
                                 {/* 진행 중인 작업 */}
-                                <div className="space-y-4">
-                                    <h3 className="text-lg font-semibold text-orange-700 flex items-center gap-2">
+                                <div>
+                                    <h3 className="text-lg font-semibold text-orange-700 mb-4 flex items-center gap-2">
                                         <Clock className="h-5 w-5" />
-                                        진행 중인 작업 ({incompleteTasks.length}개)
+                                        진행 중인 작업 ({selectedWeekData.tasks.filter(task => !task.completed).length}개)
                                     </h3>
-                                    <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
-                                        {incompleteTasks.map((task: Task) => (
+                                    <div className="space-y-3">
+                                        {selectedWeekData.tasks.filter(task => !task.completed).map((task) => (
                                             <div
                                                 key={task.id}
                                                 className="group flex items-start gap-3 p-3 rounded-lg border bg-white border-gray-200 hover:bg-gray-50 transition-all duration-200"
@@ -623,23 +442,21 @@ const WeeklyTodoManager: React.FC<WeeklyTodoManagerProps> = () => {
                                                 <button
                                                     onClick={() => toggleTaskCompletion(selectedWeek, task.id)}
                                                     className="flex-shrink-0 mt-1"
-                                                    type="button"
                                                 >
                                                     <div className="w-5 h-5 rounded-lg border-2 bg-white border-gray-300 hover:border-green-400 transition-colors flex items-center justify-center">
                                                         <div className="w-2 h-2 bg-transparent rounded-sm" />
                                                     </div>
                                                 </button>
 
-                                                <div className="flex-1 min-w-0">
+                                                <div className="flex-1">
                                                     <div className="flex items-start justify-between gap-2">
-                                                        <span className="text-sm leading-relaxed text-gray-700 group-hover:text-gray-900 transition-colors break-words">
+                                                        <span className="text-sm leading-relaxed text-gray-700 group-hover:text-gray-900 transition-colors">
                                                             {task.text}
                                                         </span>
                                                         <button
                                                             onClick={() => editTask(selectedWeek, task.id)}
-                                                            className="p-1 text-gray-400 hover:text-gray-600 transition-colors opacity-0 group-hover:opacity-100 flex-shrink-0"
+                                                            className="p-1 text-gray-400 hover:text-gray-600 transition-colors opacity-0 group-hover:opacity-100"
                                                             title="작업 수정"
-                                                            type="button"
                                                         >
                                                             <Edit className="h-3 w-3" />
                                                         </button>
@@ -647,8 +464,8 @@ const WeeklyTodoManager: React.FC<WeeklyTodoManagerProps> = () => {
                                                 </div>
                                             </div>
                                         ))}
-                                        {incompleteTasks.length === 0 && (
-                                            <div className="text-center text-gray-500 py-8">
+                                        {selectedWeekData.tasks.filter(task => !task.completed).length === 0 && (
+                                            <div className="text-center text-gray-500 py-4">
                                                 모든 작업이 완료되었습니다! 🎉
                                             </div>
                                         )}
@@ -678,14 +495,14 @@ const WeeklyTodoManager: React.FC<WeeklyTodoManagerProps> = () => {
                                 <div className="flex justify-between items-center">
                                     <span className="text-gray-600">총 작업</span>
                                     <span className="font-semibold">
-                                        {weeklyData.reduce((sum: number, week: WeekData) => sum + week.tasks.length, 0)}개
+                                        {weeklyData.reduce((sum, week) => sum + week.tasks.length, 0)}개
                                     </span>
                                 </div>
                                 <div className="flex justify-between items-center">
                                     <span className="text-gray-600">완료 작업</span>
                                     <span className="font-semibold text-green-600">
-                                        {weeklyData.reduce((sum: number, week: WeekData) =>
-                                            sum + week.tasks.filter((task: Task) => task.completed).length, 0)}개
+                                        {weeklyData.reduce((sum, week) =>
+                                            sum + week.tasks.filter(task => task.completed).length, 0)}개
                                     </span>
                                 </div>
                                 <div className="flex justify-between items-center">
@@ -699,7 +516,7 @@ const WeeklyTodoManager: React.FC<WeeklyTodoManagerProps> = () => {
                     </Card>
 
                     {/* 주차별 미니 뷰 */}
-                    <Card className="shadow-lg">
+                    <Card className="shadow-lg max-h-96 overflow-y-auto">
                         <CardHeader>
                             <CardTitle className="text-lg flex items-center gap-2">
                                 <Calendar className="h-5 w-5" />
@@ -707,8 +524,8 @@ const WeeklyTodoManager: React.FC<WeeklyTodoManagerProps> = () => {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="space-y-3 max-h-96 overflow-y-auto">
-                                {weeklyData.map((week: WeekData, index: number) => (
+                            <div className="space-y-3">
+                                {weeklyData.map((week, index) => (
                                     <div
                                         key={week.weekNumber}
                                         className={`p-3 rounded-lg border cursor-pointer transition-all ${selectedWeek === index
