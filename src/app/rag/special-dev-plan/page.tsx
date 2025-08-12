@@ -462,6 +462,43 @@ const projects: Project[] = [
             { name: "Real-Time Rendering", url: "https://www.realtimerendering.com/" },
             { name: "Game Engine Architecture", url: "https://www.gameenginebook.com/" }
         ]
+    },
+    {
+        id: 16,
+        title: "Nexus Call Hub - 통합 콜센터 데스크톱",
+        description: "Tauri + Spring Boot + Spring Security를 활용한 엔터프라이즈급 콜센터 데스크톱 애플리케이션",
+        icon: Phone,
+        difficulty: "Expert",
+        duration: "16-20주",
+        priority: "High",
+        techStack: ["Tauri", "Rust", "React", "Spring Boot", "Spring Security", "WebSocket", "PostgreSQL", "JWT", "OAuth2"],
+        deliverables: [
+            "크로스플랫폼 콜센터 데스크톱 앱",
+            "Spring Security 기반 인증/인가 시스템",
+            "실시간 통화 상태 모니터링",
+            "상담사 워크플로우 관리",
+            "고객 정보 통합 뷰",
+            "통화 기록 및 분석 도구",
+            "오프라인 모드 지원",
+            "자동 업데이트 시스템"
+        ],
+        prerequisites: ["Rust 중급", "Spring Boot", "Spring Security", "Tauri 기초", "데스크톱 앱 아키텍처"],
+        learningGoals: [
+            "Hybrid 앱 아키텍처 설계",
+            "네이티브-웹 브릿지 최적화",
+            "엔터프라이즈 보안 패턴",
+            "멀티스레드 실시간 처리",
+            "크로스플랫폼 배포 전략",
+            "시스템 리소스 최적화"
+        ],
+        references: [
+            { name: "Nexus Call Hub Repository", url: "https://github.com/hyunsokstar/nexus-call-hub/releases" },
+            { name: "Spring Security Study", url: "https://github.com/hyunsokstar/study-spring-security.git" },
+            { name: "Tauri Security Guide", url: "https://tauri.app/v1/guides/building/app-security/" },
+            { name: "Spring Boot Desktop Integration", url: "https://spring.io/guides/gs/serving-web-content/" },
+            { name: "Rust-Java Interop", url: "https://github.com/jni-rs/jni-rs" },
+            { name: "Enterprise Desktop Apps", url: "https://www.electronjs.org/docs/latest/tutorial/security" }
+        ]
     }
 ];
 

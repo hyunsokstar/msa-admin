@@ -3,8 +3,8 @@
 import React, { useState } from 'react';
 import {
     Copy, Check, ExternalLink, Code, Terminal, Database,
-    Search, MessageCircle, /* ArrowDown, */ ArrowRight, BookOpen,
-    Video, FileText, /* Globe, */ Layers, Brain, Zap, FileCode
+    Search, MessageCircle, ArrowRight, BookOpen,
+    Video, FileText, Layers, Brain, Zap, FileCode
 } from 'lucide-react';
 
 // 상태/섹션 아이디 타입 명시
@@ -28,6 +28,7 @@ const CodeBlock = ({ code, language = 'bash' }: { code: string; language?: strin
                 type="button"
                 onClick={handleCopy}
                 className="absolute top-2 right-2 p-1.5 bg-white border border-black opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black hover:text-white"
+                aria-label="Copy code"
             >
                 {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
             </button>
@@ -128,34 +129,44 @@ export default function RAGSystemGuide() {
             </header>
 
             {/* Navigation */}
-            <nav className="border-b border-black">
+            <nav className="border-b border-black sticky top-0 z-10 bg-white">
                 <div className="max-w-6xl mx-auto px-6">
                     <div className="flex overflow-x-auto">
                         <button
+                            type="button"
+                            aria-pressed={activeSection === 'overview'}
                             onClick={() => setActiveSection('overview')}
                             className={`px-6 py-3 border-r border-black font-medium transition-colors whitespace-nowrap ${activeSection === 'overview' ? 'bg-black text-white' : 'hover:bg-gray-50'}`}
                         >
                             시스템 개요
                         </button>
                         <button
+                            type="button"
+                            aria-pressed={activeSection === 'architecture'}
                             onClick={() => setActiveSection('architecture')}
                             className={`px-6 py-3 border-r border-black font-medium transition-colors whitespace-nowrap ${activeSection === 'architecture' ? 'bg-black text-white' : 'hover:bg-gray-50'}`}
                         >
                             아키텍처
                         </button>
                         <button
+                            type="button"
+                            aria-pressed={activeSection === 'implementation'}
                             onClick={() => setActiveSection('implementation')}
                             className={`px-6 py-3 border-r border-black font-medium transition-colors whitespace-nowrap ${activeSection === 'implementation' ? 'bg-black text-white' : 'hover:bg-gray-50'}`}
                         >
                             코드 구현
                         </button>
                         <button
+                            type="button"
+                            aria-pressed={activeSection === 'database'}
                             onClick={() => setActiveSection('database')}
                             className={`px-6 py-3 border-r border-black font-medium transition-colors whitespace-nowrap ${activeSection === 'database' ? 'bg-black text-white' : 'hover:bg-gray-50'}`}
                         >
                             DB 구조
                         </button>
                         <button
+                            type="button"
+                            aria-pressed={activeSection === 'resources'}
                             onClick={() => setActiveSection('resources')}
                             className={`px-6 py-3 font-medium transition-colors whitespace-nowrap ${activeSection === 'resources' ? 'bg-black text-white' : 'hover:bg-gray-50'}`}
                         >
@@ -166,7 +177,6 @@ export default function RAGSystemGuide() {
             </nav>
 
             <main className="max-w-6xl mx-auto px-6 py-8">
-
                 {/* 시스템 개요 */}
                 {activeSection === 'overview' && (
                     <div className="space-y-6">
@@ -438,7 +448,7 @@ WITH (lists = 100);`} language="sql" />
                                     <h3 className="font-bold p-3 border-b border-black bg-gray-100">
                                         💾 실제 저장된 데이터 예시
                                     </h3>
-                                    <div className="p-4">
+                                    <div className="p-4 space-y-2">
                                         <CodeBlock code={`{
   "id": "9108b3b7-7a47-48a0-8dbb-95c4c02e14c8",
   "content": "Next.js 15와 Shadcn/ui를 사용한 최신 인증 보일러플레이트입니다...",
