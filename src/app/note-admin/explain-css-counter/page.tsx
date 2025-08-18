@@ -1,258 +1,603 @@
-'use client'
-
-import React, { useState } from 'react'
-
-const Page: React.FC = () => {
-    const [tab, setTab] = useState<'before' | 'after' | 'guide' | 'summary'>('before')
-
-    return (
-        <div className="min-h-screen bg-gray-50 py-8">
-            <div className="container mx-auto px-4 max-w-6xl">
-                {/* Header */}
-                <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-                    <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
-                        목록 삭제 성능 리팩토링: JavaScript 배열 방식 → CSS Counter 방식
-                    </h1>
-                    <p className="text-gray-600">
-                        대용량(1k~20k) 리스트에서 삭제 성능을 확보하는 방법 — before/after 비교와 단계별 구현 가이드
-                    </p>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Counter 완벽 정리 - 존나 쉬운 3단계</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            color: rgba(255,255,255,0.9);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.2em;
+        }
+        
+        /* 핵심 3단계 카드 */
+        .core-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .step-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+        }
+        
+        .step-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+        
+        .step-title {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        .step-code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            margin-bottom: 10px;
+        }
+        
+        .step-desc {
+            color: #666;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+        
+        /* 완성 코드 섹션 */
+        .complete-code {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .section-title {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .code-label {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #667eea;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+        
+        /* 라이브 데모 */
+        .demo-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .demo-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .demo-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .btn-add {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-add:hover {
+            background: #218838;
+        }
+        
+        .btn-reset {
+            background: #ffc107;
+            color: #333;
+        }
+        
+        .btn-reset:hover {
+            background: #e0a800;
+        }
+        
+        .btn-load {
+            background: #007bff;
+            color: white;
+        }
+        
+        .btn-load:hover {
+            background: #0056b3;
+        }
+        
+        /* CSS Counter 실제 적용 */
+        .counter-container {
+            counter-reset: item-counter;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+        
+        .counter-item {
+            counter-increment: item-counter;
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin: 8px 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        
+        .counter-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .counter-item::before {
+            content: counter(item-counter) ". ";
+            font-weight: bold;
+            color: #667eea;
+            font-size: 18px;
+            margin-right: 15px;
+            background: #f0f0ff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            min-width: 40px;
+            text-align: center;
+        }
+        
+        .user-info {
+            flex: 1;
+        }
+        
+        .delete-btn {
+            padding: 6px 12px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .delete-btn:hover {
+            background: #c82333;
+        }
+        
+        /* 성능 정보 */
+        .performance-info {
+            background: linear-gradient(135deg, #f5f5f5, #e9ecef);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        
+        .perf-item {
+            text-align: center;
+        }
+        
+        .perf-label {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .perf-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        /* 핵심 포인트 */
+        .key-point {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 1.1em;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .highlight {
+            background: yellow;
+            padding: 2px 5px;
+            color: #333;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        
+        /* 비교 테이블 */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .comparison-table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .comparison-table td {
+            padding: 12px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .good {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .bad {
+            color: #dc3545;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 CSS Counter 완벽 정리</h1>
+        <p class="subtitle">JSP 20,000명 유저 관리 - "존나 쉬운" 3단계</p>
+        
+        <!-- 핵심 3단계 -->
+        <div class="core-steps">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <div class="step-title">CSS로 Counter 설정</div>
+                <div class="step-code">.counter-container {
+    counter-reset: item-counter;
+}
+.counter-item {
+    counter-increment: item-counter;
+}
+.counter-item::before {
+    content: counter(item-counter) ". ";
+}</div>
+                <div class="step-desc">
+                    딱 3줄! CSS 예약어로 자동 번호 시스템 완성<br>
+                    • counter-reset: 카운터 생성<br>
+                    • counter-increment: 자동 +1<br>
+                    • content: 번호 출력
                 </div>
-
-                {/* Tabs */}
-                <div className="bg-white rounded-lg shadow-md mb-8">
-                    <div className="border-b border-gray-200">
-                        <nav className="flex flex-wrap">
-                            {[
-                                { id: 'before', label: 'Before (JS 배열)' },
-                                { id: 'after', label: 'After (CSS Counter)' },
-                                { id: 'guide', label: '단계별 구현 가이드' },
-                                { id: 'summary', label: '요약 / 권장' }
-                            ].map((t) => (
-                                <button
-                                    key={t.id}
-                                    onClick={() => setTab(t.id as any)}
-                                    className={`px-4 py-3 text-sm font-medium ${tab === t.id ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-600 hover:text-gray-800'}`}
-                                >
-                                    {t.label}
-                                </button>
-                            ))}
-                        </nav>
-                    </div>
-
-                    <div className="p-6 space-y-6">
-                        {tab === 'before' && (
-                            <section className="space-y-6">
-                                <h2 className="text-xl font-semibold">Before: 전형적 JavaScript 배열 기반 구현 (문제점)</h2>
-
-                                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                                    <h3 className="font-semibold text-red-800 mb-2">핵심 문제</h3>
-                                    <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1">
-                                        <li>삭제 시 배열을 filter한 뒤 전체 리스트를 innerHTML로 재렌더링 — O(n) DOM 재생성</li>
-                                        <li>대량 데이터(수천~만건)에서 브라우저 일시 정지 및 높은 메모리 사용</li>
-                                        <li>번호(순번)를 JS에서 재계산하므로 추가 비용 발생</li>
-                                    </ul>
-                                </div>
-
-                                <div>
-                                    <h3 className="font-semibold mb-2">대표 코드 (문제의 핵심)</h3>
-                                    <div className="bg-gray-900 text-gray-100 rounded p-4 overflow-x-auto text-xs">
-                                        {`// 전역 users 배열 유지
-users = users.filter(u => u.id !== userId);
-
-// 전체 재렌더링 (성능 병목)
-function renderUserList() {
-  let html = '';
-  users.forEach((user, index) => {
-    html += \`
-      <div class="user-item" id="user-\${user.id}">
-        <span class="user-number">\${index + 1}.</span>
-        <div class="user-info">\${user.name} - \${user.email}</div>
-        <button onclick="deleteUser(\${user.id})">삭제</button>
-      </div>\`;
-  });
-  document.getElementById('userList').innerHTML = html;
-}`}
-                                    </div>
-                                </div>
-
-                                <div className="bg-red-100 rounded p-3 text-sm text-red-800">
-                                    측정 예: 10,000건에서 개별 삭제 평균 3~5초, 전체 브라우저 블로킹 보고
-                                </div>
-                            </section>
-                        )}
-
-                        {tab === 'after' && (
-                            <section className="space-y-6">
-                                <h2 className="text-xl font-semibold">After: CSS Counter + DOM.remove() 접근</h2>
-
-                                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                                    <h3 className="font-semibold text-green-800 mb-2">핵심 아이디어</h3>
-                                    <ul className="list-disc pl-5 text-sm text-gray-700 space-y-1">
-                                        <li>번호는 CSS counter가 자동으로 관리 (JS로 재계산 불필요)</li>
-                                        <li>삭제 시 서버 호출 후 해당 DOM 요소만 제거 (element.remove())</li>
-                                        <li>리렌더링 제거로 삭제 처리 시간이 실질적으로 O(1) 수준</li>
-                                    </ul>
-                                </div>
-
-                                <div>
-                                    <h3 className="font-semibold mb-2">대표 코드 (핵심)</h3>
-                                    <div className="bg-gray-900 text-gray-100 rounded p-4 overflow-x-auto text-xs">
-                                        {`/* CSS */
-.counter-container { counter-reset: item-counter 0; }
-.counter-item { counter-increment: item-counter; display:flex; align-items:center; padding:12px; border-bottom:1px solid #e0e0e0; }
-.counter-item::before { content: counter(item-counter) ". "; font-weight:bold; color:#007bff; margin-right:12px; }
-
-/* JavaScript: delete */
-async function deleteUser(userId, btn) {
-  // 1) 서버 삭제 요청
-  const res = await fetch(\`/api/users/\${userId}\`, { method: 'DELETE' });
-  if (!res.ok) throw new Error('삭제 실패');
-
-  // 2) DOM에서 해당 요소만 즉시 제거
-  const userItem = btn.closest('.user-item');
-  userItem.remove(); // CSS가 자동으로 번호 재정렬
-}`}
-                                    </div>
-                                </div>
-
-                                <div className="bg-green-100 rounded p-3 text-sm text-green-800">
-                                    측정 예: 10,000건에서 개별 삭제 & 번호 갱신 & UI 반영 & 메모리 사용량 대폭 감소 (삭제 & 반응성 & 메모리 모두 개선)
-                                </div>
-                            </section>
-                        )}
-
-                        {tab === 'guide' && (
-                            <section className="space-y-6">
-                                <h2 className="text-xl font-semibold">단계별 구현 가이드 (완전 리팩토링)</h2>
-
-                                <ol className="list-decimal pl-5 space-y-4 text-sm text-gray-700">
-                                    <li>
-                                        <strong>설계(1일)</strong>
-                                        <div className="mt-2">
-                                            - 번호(순번)를 UI 표시용으로만 사용: DB나 API로 번호를 의존하지 않음.<br />
-                                            - 삭제는 서버에서 데이터만 지우고 클라이언트는 DOM만 제거.
-                                        </div>
-                                    </li>
-
-                                    <li>
-                                        <strong>CSS 준비(0.5일)</strong>
-                                        <div className="mt-2">
-                                            - container에 <code>counter-reset</code>, 각 아이템에 <code>counter-increment</code>와 <code>::before</code>로 번호 표시.
-                                        </div>
-                                    </li>
-
-                                    <li>
-                                        <strong>DOM 구조 및 초기 로드(1일)</strong>
-                                        <div className="mt-2">
-                                            - 대량 로딩시 DocumentFragment로 일괄 삽입.<br />
-                                            - 각 아이템에 <code>data-id</code>와 삭제 버튼(온클릭에 this 전달) 포함.
-                                        </div>
-                                    </li>
-
-                                    <li>
-                                        <strong>삭제 로직(0.5일)</strong>
-                                        <div className="mt-2">
-                                            - 비동기로 API 삭제 요청, 성공 시 <code>button.closest('.user-item').remove()</code> 호출.<br />
-                                            - UI 카운트는 <code>document.querySelectorAll('.user-item').length</code>로 계산하여 표시.
-                                        </div>
-                                    </li>
-
-                                    <li>
-                                        <strong>대량 최적화(1일)</strong>
-                                        <div className="mt-2">
-                                            - 가상화(virtualization)가 필요하면 IntersectionObserver 또는 windowing 적용 고려.<br />
-                                            - DocumentFragment, requestIdleCallback/queueMicrotask로 초기 렌더링 분할.
-                                        </div>
-                                    </li>
-
-                                    <li>
-                                        <strong>테스트 & 모니터링(1일)</strong>
-                                        <div className="mt-2">
-                                            - 100 / 1,000 / 10,000 / 20,000 건에서 삭제 측정(각 10회 평균).<br />
-                                            - 성능 지표: 삭제 응답시간, 메모리 사용, CPU spike, UI jank 여부.
-                                        </div>
-                                    </li>
-
-                                    <li>
-                                        <strong>폴리필 & 호환성</strong>
-                                        <div className="mt-2">
-                                            - IE11 등 구형 지원 필요 시 <code>closest</code>와 <code>remove</code> 폴리필 추가.
-                                        </div>
-                                    </li>
-                                </ol>
-
-                                <div className="bg-gray-100 rounded p-3 text-sm">
-                                    핵심 구현 스니펫(HTML + CSS + JS)은 아래와 같습니다.
-                                    <div className="mt-3 bg-gray-900 text-gray-100 rounded p-3 overflow-x-auto text-xs">
-                                        {`<!-- HTML -->
-<div id="user-list" class="counter-container">
-  <div class="counter-item user-item" data-id="1">
-    <div class="user-info"><strong>이름</strong> - email@example.com</div>
-    <button onclick="deleteUser(1, this)">삭제</button>
-  </div>
-  <!-- ... -->
-</div>
-
-/* CSS (위와 동일) */
-.counter-container { counter-reset: item-counter 0; }
-.counter-item { counter-increment: item-counter; }
-.counter-item::before { content: counter(item-counter) ". "; }
-
-/* JS */
-async function deleteUser(userId, btn) {
-  const res = await fetch(\`/api/users/\${userId}\`, { method:'DELETE' });
-  if (!res.ok) { alert('삭제 실패'); return; }
-  btn.closest('.user-item').remove();
-  document.getElementById('user-count').textContent = document.querySelectorAll('.user-item').length;
-}`}
-                                    </div>
-                                </div>
-                            </section>
-                        )}
-
-                        {tab === 'summary' && (
-                            <section className="space-y-6">
-                                <h2 className="text-xl font-semibold">요약 및 권장</h2>
-
-                                <div className="bg-blue-50 border border-blue-200 rounded p-4 text-sm text-gray-700">
-                                    <ul className="list-disc pl-5 space-y-2">
-                                        <li>간단한 순번 표시와 삭제 동작만 필요한 관리 UI라면 CSS Counter + DOM.remove()가 최적.</li>
-                                        <li>데이터가 반드시 순번을 기반으로 정렬/참조해야 한다면 서버/DB에서 정합성 유지 — UI는 표시 전용으로 유지.</li>
-                                        <li>초기 로드나 가시성(virtualization)이 필요한 경우, CSS Counter 패턴과 virtualized list를 병행 적용.</li>
-                                    </ul>
-                                </div>
-
-                                <div className="bg-white rounded shadow p-4 text-sm">
-                                    <div className="grid md:grid-cols-3 gap-4">
-                                        <div className="text-center">
-                                            <div className="font-bold text-red-600">Before</div>
-                                            <div className="text-2xl font-bold">~3-9s</div>
-                                            <div className="text-xs text-gray-500">10k 삭제(평균)</div>
-                                        </div>
-                                        <div className="text-center">
-                                            <div className="font-bold text-green-600">After</div>
-                                            <div className="text-2xl font-bold">&lt;0.1s</div>
-                                            <div className="text-xs text-gray-500">DOM.remove + CSS Counter</div>
-                                        </div>
-                                        <div className="text-center">
-                                            <div className="font-bold text-gray-800">권장</div>
-                                            <div className="text-2xl font-bold">CSS Counter</div>
-                                            <div className="text-xs text-gray-500">대부분 관리자 목록에 적합</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
-                        )}
-                    </div>
+            </div>
+            
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <div class="step-title">삭제 시 this의 부모 찾아서 날리기</div>
+                <div class="step-code">function deleteUser(userId, buttonElement) {
+    // this(버튼)의 부모 찾아서 삭제
+    buttonElement.closest('.user-item').remove();
+}</div>
+                <div class="step-desc">
+                    딱 1줄! closest()로 부모 찾고 remove()로 삭제<br>
+                    • this = 클릭한 삭제 버튼<br>
+                    • closest = 부모 중 .user-item 찾기<br>
+                    • remove = 찾은 부모 전체 삭제
                 </div>
-
-                {/* Footer note */}
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm">
-                    <strong>주의:</strong> CSS Counter는 표시용 번호에 최적화되어 있습니다. 번호 값을 비즈니스 로직(예: 순번 기반 검색, 외래 키 등)으로 사용하려면 서버측 정합성 및 별도 번호 필드를 유지하세요.
+            </div>
+            
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <div class="step-title">CSS가 알아서 번호 재정렬</div>
+                <div class="step-code">// JavaScript가 할 일: 없음!
+// CSS 엔진이 자동으로:
+// 1. 남은 요소 감지
+// 2. counter 재계산
+// 3. ::before 내용 업데이트</div>
+                <div class="step-desc">
+                    딱 0줄! CSS 엔진(C++)이 자동 처리<br>
+                    • DOM 변경 감지<br>
+                    • 번호 자동 재계산<br>
+                    • 화면에 즉시 반영
                 </div>
             </div>
         </div>
-    )
+        
+        <div class="key-point">
+            💡 핵심: JavaScript는 DOM 제거만, <span class="highlight">CSS가 번호를 다시 그린다!</span>
+        </div>
+        
+        <!-- 완성 코드 -->
+        <div class="complete-code">
+            <h2 class="section-title">📝 JSP 완성 코드</h2>
+            
+            <div class="code-block">
+                <span class="code-label">CSS</span>
+                <pre><code>/* 핵심 CSS - 이게 전부입니다! */
+.counter-container {
+    counter-reset: item-counter;     /* 1. 카운터 초기화 */
 }
 
-export default Page
+.counter-item {
+    counter-increment: item-counter; /* 2. 각 아이템마다 +1 */
+}
+
+.counter-item::before {
+    content: counter(item-counter) ". ";  /* 3. 번호 출력 */
+    font-weight: bold;
+    color: #007bff;
+    margin-right: 5px;
+}</code></pre>
+            </div>
+            
+            <div class="code-block">
+                <span class="code-label">HTML</span>
+                <pre><code>&lt;div id="user-list" class="user-list counter-container"&gt;
+    &lt;!-- 유저 데이터가 여기에 렌더링 --&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+            
+            <div class="code-block">
+                <span class="code-label">JavaScript</span>
+                <pre><code>// 유저 렌더링
+data.users.forEach((user) => {
+    const userDiv = document.createElement('div');
+    userDiv.className = 'counter-item user-item';  // CSS Counter 적용
+    userDiv.innerHTML = 
+        '&lt;div class="user-info"&gt;' +
+            '&lt;strong&gt;' + user.username + '&lt;/strong&gt; - ' + user.email +
+        '&lt;/div&gt;' +
+        '&lt;button onclick="deleteUser(' + user.id + ', this)"&gt;삭제&lt;/button&gt;';
+    container.appendChild(userDiv);
+});
+
+// 삭제 함수 - 핵심!
+async function deleteUser(userId, buttonElement) {
+    // 서버 삭제 요청
+    const response = await fetch('/api/users/' + userId, {
+        method: 'DELETE'
+    });
+    
+    if (response.ok) {
+        // this의 부모 찾아서 삭제 - 끝!
+        buttonElement.closest('.user-item').remove();
+        // CSS가 알아서 번호 재정렬함
+    }
+}</code></pre>
+            </div>
+        </div>
+        
+        <!-- 라이브 데모 -->
+        <div class="demo-section">
+            <h2 class="section-title">🎮 라이브 데모</h2>
+            
+            <div class="demo-controls">
+                <button class="demo-btn btn-add" onclick="addUser()">➕ 유저 추가</button>
+                <button class="demo-btn btn-load" onclick="loadUsers(10)">👥 10명 로드</button>
+                <button class="demo-btn btn-load" onclick="loadUsers(100)">👥 100명 로드</button>
+                <button class="demo-btn btn-load" onclick="loadUsers(1000)">👥 1000명 로드</button>
+                <button class="demo-btn btn-reset" onclick="clearUsers()">🔄 초기화</button>
+            </div>
+            
+            <div class="counter-container" id="userList">
+                <!-- 유저가 여기에 표시됨 -->
+            </div>
+            
+            <div class="performance-info">
+                <div class="perf-item">
+                    <div class="perf-label">유저 수</div>
+                    <div class="perf-value" id="userCount">0</div>
+                </div>
+                <div class="perf-item">
+                    <div class="perf-label">렌더링 시간</div>
+                    <div class="perf-value"><span id="renderTime">0</span>ms</div>
+                </div>
+                <div class="perf-item">
+                    <div class="perf-label">삭제 시간</div>
+                    <div class="perf-value"><span id="deleteTime">0</span>ms</div>
+                </div>
+                <div class="perf-item">
+                    <div class="perf-label">CSS 재계산</div>
+                    <div class="perf-value good">자동</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 비교 -->
+        <div class="complete-code">
+            <h2 class="section-title">⚡ 성능 비교</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>구분</th>
+                        <th>JavaScript 방식</th>
+                        <th>CSS Counter 방식</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>삭제 시 동작</strong></td>
+                        <td class="bad">모든 요소 순회하며 번호 업데이트</td>
+                        <td class="good">DOM 제거만 (번호는 CSS가 처리)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>코드량</strong></td>
+                        <td class="bad">번호 관리 로직 필요</td>
+                        <td class="good">CSS 3줄 + remove() 1줄</td>
+                    </tr>
+                    <tr>
+                        <td><strong>성능 (20,000명)</strong></td>
+                        <td class="bad">O(n) - 느림</td>
+                        <td class="good">O(1) - 빠름 (C++ 엔진)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DOM 조작</strong></td>
+                        <td class="bad">모든 요소 textContent 변경</td>
+                        <td class="good">제거할 요소만 remove()</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="key-point">
+            🎯 결론: CSS Counter = <span class="highlight">코드 적고, 빠르고, 자동화!</span><br>
+            "CSS가 다시 그린다" = JavaScript 없이 CSS 엔진이 ::before 내용을 자동 업데이트
+        </div>
+    </div>
+    
+    <script>
+        let userIdCounter = 1;
+        
+        function loadUsers(count) {
+            const startTime = performance.now();
+            const container = document.getElementById('userList');
+            container.innerHTML = '';
+            
+            for (let i = 1; i <= count; i++) {
+                const userDiv = document.createElement('div');
+                userDiv.className = 'counter-item user-item';
+                userDiv.innerHTML = `
+                    <div class="user-info">
+                        <strong>user${i}</strong> - user${i}@example.com (ID: ${i})
+                    </div>
+                    <button class="delete-btn" onclick="deleteUser(this)">삭제</button>
+                `;
+                container.appendChild(userDiv);
+            }
+            
+            const endTime = performance.now();
+            document.getElementById('renderTime').textContent = (endTime - startTime).toFixed(2);
+            updateCount();
+        }
+        
+        function addUser() {
+            const container = document.getElementById('userList');
+            const userDiv = document.createElement('div');
+            userDiv.className = 'counter-item user-item';
+            userDiv.innerHTML = `
+                <div class="user-info">
+                    <strong>user${userIdCounter}</strong> - user${userIdCounter}@example.com
+                </div>
+                <button class="delete-btn" onclick="deleteUser(this)">삭제</button>
+            `;
+            container.appendChild(userDiv);
+            userIdCounter++;
+            updateCount();
+        }
+        
+        function deleteUser(buttonElement) {
+            const startTime = performance.now();
+            
+            // 핵심: this의 부모 찾아서 삭제
+            buttonElement.closest('.counter-item').remove();
+            
+            const endTime = performance.now();
+            document.getElementById('deleteTime').textContent = (endTime - startTime).toFixed(2);
+            updateCount();
+        }
+        
+        function clearUsers() {
+            document.getElementById('userList').innerHTML = '';
+            document.getElementById('renderTime').textContent = '0';
+            document.getElementById('deleteTime').textContent = '0';
+            userIdCounter = 1;
+            updateCount();
+        }
+        
+        function updateCount() {
+            const count = document.querySelectorAll('.counter-item').length;
+            document.getElementById('userCount').textContent = count;
+        }
+        
+        // 초기 데이터 로드
+        window.onload = function() {
+            loadUsers(5);
+        };
+    </script>
+</body>
+</html>
