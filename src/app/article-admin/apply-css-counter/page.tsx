@@ -342,7 +342,7 @@ import { Button } from '@/components/ui/button'
 
 const OptimizationStepsManual = () => {
     return (
-        <div className="min-h-screen bg-background p-8">
+        <div className="min-h-screen bg-muted/20 p-8">
             {/* Header */}
             <div className="max-w-7xl mx-auto mb-8">
                 <div className="flex items-center justify-between mb-6">
