@@ -83,7 +83,7 @@
     cursor : pointer
 }
 
-/* Simple CSS Counter - 최적화된 성능 */
+/* CSS Counter for row numbers - performance optimization */
 #myTable_cust tbody {
     counter-reset: row-number;
 }
@@ -93,7 +93,7 @@
 }
 
 #myTable_cust tbody tr td:first-child p {
-    display: none !important; /* Hide manual row numbers */
+    display: none; /* Hide manual row numbers */
 }
 
 #myTable_cust tbody tr td:first-child::before {
@@ -184,4 +184,1707 @@
 
 
 </style>
-<!-- 이하 모달, 페이지, 스크립트 (이전 코드 전체) -->
+<div id="modal">
+    <div class='modal modal1' tabindex='-1' role='dialog' aria-labelledby='mySmallModalLabel' aria-hidden='true' id='vscdncmodal'>
+        <div class='modal-dialog modal-lg modal-dialog-centered'>
+        	<div class='modal-content'>
+        		<div class='modal-header'>
+        			<h5 class='modal-title mt-0' id='mySmallModalLabel'>발신금지</h5>
+        			<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>×</button>
+        		</div>
+            	<div class='modal-body'>
+            		<div class="row">
+            		
+                		<h4 class="header-title leftStick"><spr:message code="camp.campList" /></h4>
+                        <div class="table-responsive">
+                        	<table id="myTable2" class="table mb-0">
+                        		<thead class="thead-light"></thead>
+                        	</table>
+                        </div>
+            		</div>
+            		
+            		<div class="row">
+                            <div class="col-md-4">
+                                <label for="phone_num" class="col-form-label">전화번호 
+                                    <input type="text" class="form-control" name="phone_num" id="phone_num" value="" >
+                                </label>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="dnc_type_clsf" class="col-form-label">타입
+                                    <select class="form-control" id="dnc_type_clsf" name="dnc_type_clsf">
+                                    	<option value="101">폭언</option>
+                                    	<option value="102">성희롱</option>
+                                    	<option value="103">기타</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <div class="col-md">
+                                <label for="remark" class="col-form-label">사유 
+                                    <input type="text" class="form-control" name="remark" id="remark" value="" >
+                                </label>
+                            </div>
+<!-- 							<div class="col-md-2"> -->
+<!-- 								<button type="button" class="btn btn-primary ml-2">저장</button> -->
+<!-- 							</div> -->
+                    </div>
+                    
+                    <div class="row">
+                        <div class="button_box_0">
+                            <div class="float-left d-flex align-items-center">
+                                <button type="button" class="btn btn-info" id="dnc_cancle_btn" data-mode="read">취소</button>
+                            </div>
+                            <div class="float-right d-flex align-items-center">
+                            	<button type="button" class="btn btn-primary ml-2" id="dnc_update_btn">수정</button>
+                                <button type="button" class="btn btn-primary ml-2" id="dnc_save_btn">저장</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                        
+                    
+                    
+            	</div><!-- modal-body -->
+            </div><!-- modal-content -->
+        </div><!-- modal-dialog -->
+    </div><!-- modal -->
+</div>
+
+
+<div id="api_modal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div id="modal-user-ctrl" class="modal-content">
+            <div id="modal-f-header" class="modal-header">
+                <h5 class='modal-title mt-0'>API Synchronization Settings</h5>
+                <button type='button' id='api_modal_close' class='close' data-dismiss='modal' aria-hidden='true'>×</button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                       <div class="col-12">
+                           <div class="form-group mb-0">
+                               <label for="modal_api_url" class="col-form-label">API Endpoint URL</label>
+                            <input type="text" class="form-control" name="modal_api_url" id="modal_api_url" placeholder="" value="">
+                           </div>
+                       </div>
+                       <div class="col-12">
+                           <div class="form-group mb-0">
+                               <label for="modal_api_token" class="col-form-label">API Token</label>
+                            <input type="text" class="form-control" name="modal_api_token" id="modal_api_token" placeholder="" value="">
+                           </div>
+                       </div>
+                      <div class="col-12" style="margin-top : 15px; margin-bottom : 15px;">
+                        <div class="form-group mb-0">
+                               <label for="api_flag">Enable Auto-Synchronization</label>
+                            <input type="checkbox" name="api_flag" id="api_flag" value="">
+                        </div>
+                    </div>
+                      <div class="col-12">
+                        <div class="form-group mb-0">
+                               <label for="api_date">Sync Frequency</label>
+                            <select class="form-control" id="api_date" name="api_date">
+                                <option value="1">1 hour</option>
+                                <option value="24">24 hour</option>
+                                <option value="168">weekly</option>
+                                <option value="720">month</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <input type="text" name="modal_api_job_uuid" id="modal_api_job_uuid" value="" style="display:none;">
+                </div>
+                <div class="row" style="margin-top:10px;">
+                    <div class="col-12 justify-content-end d-flex">
+                        <div class="button-items">
+                            <button type="button" class="btn btn-info " id="api_modal_cancle_btn">취소</button>
+                             <button type="button" class="btn btn-primary" id="api_modal_save_btn">저장</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="page-content">
+    <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="page-title-box">
+                        <h4 class="page-title" onclick="history.go(0)">
+                            <spr:message code="vsccacv" />
+                        </h4>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                </div>
+                <div class="col-md-2">
+                    <div class="page-title-box" style="display: block;">
+                        <div class="page-side d-flex align-items-center float-right">
+                            <div class="form-inline">
+                                <label for="cmb_branch_code" class="mr-3">그룹&nbsp </label> <select
+                                    class="form-control" name="cmb_branch_code" id="cmb_branch_code"
+                                    aria-haspoup="true" aria-expended="false">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4" >
+                <div id="vsccacv_card" class="card report-card">
+                    <div class="card-header bg-white">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="search_keyword" data-target="camp_search" onkeydown="search_enterKey(this);" id="search_keyword" placeholder="<spr:message code="common.search"/>" value="${search.search_keyword }">
+                                    <span class="input-group-append">
+                                        <button type="button" class="btn btn-primary" id="camp_search"><spr:message code="common.search"/></button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="header-title leftStick"><spr:message code="camp.campList" /></h4>
+                        <div class="table-responsive">
+                            <table id="myTable" class="table mb-0">
+                                <thead class="thead-light"></thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <a href="javascript:goMenu2('vsccama')">
+                    <button type="button" id="gotovsccama" class="btn btn-purple mr-2 mb-2 float-left">1.해피콜 관리</button>
+                </a>
+                <a href="javascript:goMenu2('vsccaim')">
+                    <button type="button" id="gotovsccaim" class="btn btn-purple mr-2 mb-2 float-left">3.문항 관리</button>
+                </a>
+                <a href="javascript:goMenu2('vsccaimTalk')">
+                    <button type="button" id="gotovsccacv"
+                        class="btn btn-purple mr-2 mb-2 float-left">4.알림 톡 문항 관리</button>
+                </a>
+            </div>
+            <div class="col-sm-8" id="dataTransfer_target">
+                <div id="loading" class="wrap-loading2 display-none">
+                    <div class="text">
+                        <h3></h3>
+                    </div>
+                  	<div class="spinner-border2" role="status" style="margin-left: 49%; margin-top: 25%;">
+                        <span class="sr-only"></span>
+                    </div>
+                </div>
+                <div class="card report-card">
+                    <div class="card-header tablist bg-white" style="height: 64px">
+                        <div class="button_box_0" style="display: inline-block; width:100%;">
+                            <button type="button" class="btn btn-success float-right mr-1" id="vrblval_file_btn"  >엑셀 다운로드 </button>
+                        </div>
+                        <div class="button_box_1" style="display: inline-block; width:100%;">
+                            <button type="button" id="updatable" class="btn btn-info toggle_btn" data-mode="update">수정</button>
+                            <button type="button" class="btn btn-success float-right mr-1" id="vrblval_file_btn"  >엑셀 다운로드 </button>
+                            <span>* 현재 페이지에서 조회 중인 대상자만 수정 가능합니다. 일괄 수정은 엑셀 업로드를 이용해 주세요.</span>
+                        </div>
+                        <div class="button_box_2" style="display: inline-block; width:100%;">
+                            <button type="button" class="btn btn-info toggle_btn" data-mode="read">읽기</button>  
+                            <button type="button" class="btn btn-primary" id="btnAddRow">행 추가</button>
+                            <button type="button" class="btn btn-primary" id="btnAddCol">열 추가</button>
+                            <button type="button" class="btn btn-success float-right mr-1" id="vrblval_file_btn"  >엑셀 다운로드 </button>
+                            <button type="button" class="btn btn-success float-right mr-1" id="vrblval_reg_file_btn" >엑셀 업로드</button>
+                            <input id ="vrblval_reg_file_input" type="file" class="custom-file-input" style="display:none;">
+                        </div>
+                    </div>
+                    <div class="card-body"> 
+                        <div class="table-responsive">
+                            <div class="row m-0">
+                                <div class="col">
+                                    <h4 class="header-title leftStick float-left">대상자 목록2</h4>
+                                </div>
+                            </div>
+                            <table id="myTable_cust" class="table mb-0 myTable_style"></table>
+                        </div> 
+                    </div>
+                    <div class="card-footer" style="min-height: 63px;">
+                        <div class="button_box_2">
+                            <div class="float-left d-flex align-items-center">
+                                <button type="button" class="btn btn-info" id="dncBtn">발신금지</button>
+<!-- 				                <button type="button" id="api_update" class="btn btn-info" style="margin-left:10px;">대상자 가져오기</button> -->
+                                <button type="button" id="get_cust_data_api" class="btn btn-info" style="margin-left:10px;">API 연동</button>
+                            </div>
+                            <div class="float-right d-flex align-items-center">
+                                <button type="button" class="btn btn-info toggle_btn" data-mode="read">취소</button>
+                                <button type="button" class="btn btn-primary ml-2" onclick="saveDT(true)" >저장</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script type="text/javascript" src="/resource/plugins/excel_sheet/xlsx.full.min.js"></script>
+<script type="text/javascript" src="/resource/plugins/excel_sheet/FileSaver.min.js"></script>
+<script type="text/javascript" src="/resource/plugins/excel_sheet/ResizeSensor.min.js"></script>
+<script type="text/javascript">
+
+let vsccacv_dnc_row_data = {};
+let dnc_mode = 'I';
+
+let vsccacv_camp_row_data = {};
+let vsccacv_cust_data = {};
+    vsccacv_cust_data.data_table = {};
+    vsccacv_cust_data.iter = 0;
+    vsccacv_cust_data.cust_cols_basic = [
+        { mDataProp: "no", sTitle: "<p class='text_head no'><spr:message code='common.no'/></p>", sType : "numeric", width : '10%', vrbl_name:"<spr:message code='common.no'/>"}
+        ,{ mDataProp: "created_datetime", sTitle: "<p class='text_head no'>등록 일시</p>", sType : "numeric", width : '15%', vrbl_name:"등록 일시"}
+        ,{ mDataProp: "alarm_status", sTitle: "<p class='text_head no'>알림톡</p>", sType : "numeric", width : '5%', vrbl_name:"알림톡"}
+        ,{ mDataProp: "phone" , sTitle: "<p class='text_head'><span style='color: #ed3540;'>*</span><spr:message code='camp.phonenum'/><span style='font-size: x-small;'>(필수)</span> </p>", sType : "string", width : '10%', vrbl_name:"<spr:message code='camp.phonenum'/>"}
+        ,{ mDataProp: "name" , sTitle: "<p class='text_head'><spr:message code='common.name'/></p>", sType : "string", width : '10%', vrbl_name:"<spr:message code='common.name'/>"}
+    ];
+    vsccacv_cust_data.cust_cols = [];
+    vsccacv_cust_data.cust_rows = [];
+    vsccacv_cust_data.cust_chunk = [];
+    vsccacv_cust_data.cust_chunk_b = [];
+// 참고 : http://jsfiddle.net/4nil/zq7j97c4/
+
+let agent = navigator.userAgent.toLowerCase();
+toggle_button_box(0);
+
+let currentPage = 0;
+
+$(document).ready(function(){
+// 	vscdnclist();
+
+    $('#dnc_update_btn').hide();
+    
+    // $('#api_modal').show();
+    
+    $(document).on('click', "#dncBtn", () => vscdnclist());
+    
+    selectbox_autority_f();
+    $(document).on('click', "#camp_search", () => vsccacv_camp_list());
+    $(document).on('change', "#cmb_branch_code", () => vsccacv_camp_list());
+    
+    $(document).on('click', ".toggle_btn", function() {	// 읽기, 수정 버튼 클릭으로 모드 변경.
+        
+        $('#loading .text h3').text('대상자 정보를 가져오고 있습니다...');
+        $('#loading').show();
+        
+        if(this.dataset.mode === 'update'){
+            setTimeout(() => {	// loading show가 늦게되어서 넣음. 0.01초 후 실행
+                toggle_button_box(2);
+                initDT(true);
+            },10);
+        }else if(this.dataset.mode === 'read'){
+            if(!selected_click()) return false;
+        }
+    });
+    
+    $(document).on('click', '#myTable tbody tr', function() {
+        
+        $('#loading .text h3').text('대상자 정보를 가져오고 있습니다...');
+        $('#loading').show();
+        
+        let camp_table = $('#myTable').DataTable();
+        vsccacv_camp_row_data = camp_table.row(this).data();
+        vsccacv_camp_row_data.current_page = camp_table.page.info().page+1;
+        vsccacv_camp_row_data.start = camp_table.page.info().start;
+        
+        
+// 		console.log(vsccacv_camp_row_data);
+        $("#myTable tbody tr").removeClass('selected');
+        camp_table.row(this).selector.rows.className += ' selected';
+        
+        // 등록 상태이고 회차 1인 경우 변수 변경가능
+        if(vsccacv_camp_row_data.regi_seq == '1' && vsccacv_camp_row_data.camp_status_clsf == '010201' ){	
+            $('#btnAddCol,  #cols_num').show();
+        } else {
+            $('#btnAddCol,  #cols_num').hide();
+        }
+        
+        // 등록 중지 종료 상태인 경우 수정 가능 
+        if( vsccacv_camp_row_data.camp_status_clsf == '010201' || vsccacv_camp_row_data.camp_status_clsf == '010202' || vsccacv_camp_row_data.camp_status_clsf == '010205' ) {
+            
+            if( vsccacv_camp_row_data.acs_active_flag=='N' && vsccacv_camp_row_data.redial_run_flag=='N' ) {
+                $('#updatable').show();
+            } else {
+                $('#updatable').hide();
+            }
+            
+        }
+        
+        vsccacv_cust_vrbl();
+    });
+    
+    
+    
+    // 발신금지 리스트 클릭
+    $(document).on('click', '#myTable2 tbody tr', function() {
+        
+        $('#dnc_update_btn').show();
+        $('#dnc_save_btn').hide();
+        
+        dnc_mode = 'U';
+        
+        let dnc_table = $('#myTable2').DataTable();
+        vsccacv_dnc_row_data = dnc_table.row(this).data();
+        
+        
+        $("#myTable2 tbody tr").removeClass('selected');
+        dnc_table.row(this).selector.rows.className += ' selected';
+        
+// 		console.log(dnc_table.row(this).data());
+        
+        
+        $('#phone_num').val(vsccacv_dnc_row_data.phone_num);
+        $('#dnc_type_clsf').val(vsccacv_dnc_row_data.dnc_type_clsf);
+        $('#remark').val(vsccacv_dnc_row_data.remark);
+        
+        
+// 		vsccacv_cust_vrbl();
+    });
+    
+    // 발신금지 취소 클릭
+    $(document).on('click', '#dnc_cancle_btn', function() {
+        
+        $('#dnc_update_btn').hide();
+        $('#dnc_save_btn').show();
+        
+        dnc_mode = 'I';
+        
+        let dnc_table = $('#myTable2').DataTable();
+        
+        $("#myTable2 tbody tr").removeClass('selected');
+        
+        $('#phone_num').val("");
+        $('#dnc_type_clsf').val("");
+        $('#remark').val("");
+        
+        
+// 		vsccacv_cust_vrbl();
+    });
+    
+    // 발신금지 삭제 클릭
+    $(document).on('click', ".dnc_del_btn", function() {
+        
+        $('#dnc_update_btn').hide();
+        $('#dnc_save_btn').show();
+        
+        dnc_mode = "I";
+        
+        let params = {
+            'branch_code' : $('#cmb_branch_code').val()
+            ,'camp_uid_seq' : vsccacv_camp_row_data.camp__seq
+            ,'dnc__seq' : vsccacv_dnc_row_data.dnc__seq
+        }
+        
+        $.ajax({
+     		method: 'POST'
+            ,url: "/admin/vscsycabr_dnc_delete"
+            ,dataType : 'json'
+            ,contentType: 'application/json;charset=UTF-8'
+            ,data: JSON.stringify(params)
+            ,beforeSend: function(xhr) {
+           		xhr.setRequestHeader(header, token);
+            }
+            ,success: function (data) {
+            	
+            	if(data.status == '200') {
+            		alert(data.msg);
+            	}
+            	
+            	$('#phone_num').val("");
+            	$('#dnc_type_clsf').val("");
+            	$('#remark').val("");
+            	
+            	vscdnclist();
+            	$('#dnc_update_btn').hide();
+        		$('#dnc_save_btn').show();
+        		dnc_mode = "I";	        	
+     	    }
+            ,error : function(jqXHR, textStatus, errorThrown){
+                if(confirm("Refresh? \n<spr:message code='info.exception'/> js:vsccacv_cust_vrbl \n"
+                        +errorMsgMaker(jqXHR, textStatus, errorThrown))){
+                     location.reload(true);
+                 }
+            }
+        });
+        vscdnclist();
+        dnc_mode = "I";
+    });
+    
+    
+    // 발신금지 저장 클릭
+    $(document).on('click', "#dnc_save_btn, #dnc_update_btn", function() {
+        
+        
+        let params = {
+            'branch_code' : $('#cmb_branch_code').val()
+            ,'phone_num' : $('#phone_num').val()
+            ,'dnc_type_clsf' : $('#dnc_type_clsf').val()
+            ,'remark' : $('#remark').val()
+            ,'email' : '${login_email}'
+            ,'camp_uid_seq' : vsccacv_camp_row_data.camp__seq
+            ,'mode' : dnc_mode
+            ,'dnc__seq' : vsccacv_dnc_row_data.dnc__seq
+        }
+        
+        $.ajax({
+     		method: 'POST'
+            ,url: "/admin/vscsycabr_dnc_insert"
+            ,dataType : 'json'
+            ,contentType: 'application/json;charset=UTF-8'
+            ,data: JSON.stringify(params)
+            ,beforeSend: function(xhr) {
+           		xhr.setRequestHeader(header, token);
+            }
+            ,success: function (data) {
+            	
+            	if(data.status == '200') {
+            		alert(data.msg);
+            	}
+            	vscdnclist();
+            	
+     	    }
+            ,error : function(jqXHR, textStatus, errorThrown){
+                if(confirm("Refresh? \n<spr:message code='info.exception'/> js:vsccacv_cust_vrbl \n"
+                        +errorMsgMaker(jqXHR, textStatus, errorThrown))){
+                     location.reload(true);
+                 }
+            }
+        });
+        
+    });
+    
+    
+    $(document).on('click', '#api_modal_close api_modal_cancle_btn', function() {
+        
+        $('#api_modal').hide();
+    });
+    
+    
+    // 대상자 등록 API(happy call에서 대상자 가져오기)
+    $(document).on('click', '#api_update', function() {
+        
+        
+        let params = {
+                'branch_code' : $('#cmb_branch_code').val()
+                ,'camp_uid_seq' : vsccacv_camp_row_data.camp__seq
+            }
+            
+            $.ajax({
+         		method: 'POST'
+                ,url: "/admin/vsccacv_check_camp"
+                ,dataType : 'json'
+                ,contentType: 'application/json;charset=UTF-8'
+                ,data: JSON.stringify(params)
+                ,beforeSend: function(xhr) {
+               		xhr.setRequestHeader(header, token);
+                }
+                ,success: function (data) {
+                	
+                	
+// 		        	vscdnclist();
+                	
+         	    }
+                ,error : function(jqXHR, textStatus, errorThrown){
+                    if(confirm("Refresh? \n<spr:message code='info.exception'/> js:vsccacv_cust_vrbl \n"
+                            +errorMsgMaker(jqXHR, textStatus, errorThrown))){
+                         location.reload(true);
+                     }
+                }
+            });
+        
+        
+        
+        
+        
+        
+        
+    
+    });
+    
+    
+    
+    
+    // 해피콜 관리 바로가기
+    $(document).on('click', "#gotovsccama", function() {
+        if(!isEmptyCheck(vsccacv_camp_row_data.camp__seq)){
+            vsccacv_camp_row_data.search_keyword = $('#search_keyword').val();
+            vsccacv_camp_row_data.columns = getDootaStorage("vsccacv.columns");
+            vsccacv_camp_row_data.order = getDootaStorage("vsccacv.order");
+            
+            setDootaStorage("vsccacv.gotovsccama", vsccacv_camp_row_data);
+        }
+    });
+    
+    // 문항 관리 바로가기
+    $(document).on('click', "#gotovsccaim", function() {
+        if(vsccacv_camp_row_data.camp__seq){
+            vsccacv_camp_row_data.search_keyword = $('#search_keyword').val();
+            vsccacv_camp_row_data.columns = getDootaStorage("vsccacv.columns");
+            vsccacv_camp_row_data.order = getDootaStorage("vsccacv.order");
+            
+            setDootaStorage("vsccacv.gotovsccaim", vsccacv_camp_row_data);
+        }
+    });
+    
+    $("#btnAddRow").click(() =>	addRows(1));	// 행 추가
+    $('#btnAddCol').click(() => addCols(1));	// 열 추가
+    
+    $(document).on('click', "button.remove_row_btn", function() {	// 행 제거 - 최적화
+        
+        var $row = $(this).closest('tr');
+        var rmvIdx = $row.index();
+        
+        // 데이터 배열에서 제거
+        if(!isEmptyCheck(vsccacv_cust_data.cust_chunk[currentPage]))  {
+            vsccacv_cust_data.cust_chunk[currentPage].splice(rmvIdx, 1);
+        }
+        vsccacv_cust_data.cust_rows_input.splice(rmvIdx, 1);
+        vsccacv_cust_data.cust_rows.splice(rmvIdx, 1);
+        
+        // Modern DataTable API 사용 - 성능 개선
+        if ($.fn.DataTable.isDataTable('#myTable_cust')) {
+            var table = $('#myTable_cust').DataTable();
+            table.row($row).remove().draw(false); // draw(false)로 페이지 유지
+        } else {
+            // 레거시 지원
+            vsccacv_cust_data.data_table.fnDeleteRow($row);
+        }
+        
+        // CSS counter가 자동으로 번호 재계산 - 수동 DOM 조작 불필요
+        
+    } );
+     
+    $(document).on('click', "button.remove_col_btn", function() {	// 열 제거
+        
+        var rmvIdx = $(this).parent().index();
+    
+        vsccacv_cust_data.cust_cols_input.splice(rmvIdx, 1);
+        vsccacv_cust_data.cust_cols.splice(rmvIdx, 1);
+        saveDT(false, rmvIdx);
+        initDT(true);
+        tmpReadDT();
+        
+    });
+    
+    $(document).on('click', "#vrblval_file_btn", function() {	// 엑셀 다운로드 
+        if($('#myTable tbody tr').hasClass('selected')) {
+            exportExcel_vrblval_list();
+        } else {
+            alert('해피콜을 선택해 주세요.');
+            return false;
+        }
+    });
+    
+    $(document).on('click', "#vrblval_reg_file_btn", function() {	// 엑셀 업로드
+        if($('#myTable tbody tr').hasClass('selected')) {
+            vrblval_reg_file_input_click();
+        } else {
+            alert('해피콜을 선택해 주세요.');
+            return false;
+        }
+    });
+    
+    $(document).on('change', "#vrblval_reg_file_input", () => vsccacv_cust_vrbl_val_read_excel());	// 엑셀 업로드
+    
+    
+    
+    $(document).on('click', '#get_cust_data_api', function(){
+        $('#api_modal').show();
+    });
+    
+    $(document).on('click', '#get_cust_data_api', function(){
+        $('#api_modal').show();
+    });
+    
+});
+
+function vrblval_reg_file_input_click(){	// 엑셀 업로드
+    vrblval_file_clear();
+    $('#vrblval_reg_file_input').click();
+}
+
+function vrblval_file_clear(){	// 엑셀 업로드
+    if ( (navigator.appName == 'Netscape' && navigator.userAgent.search('Trident') != -1) || (agent.indexOf("msie") != -1) ){ //출처: https://daydreamer-92.tistory.com/60 [아는게1도없다]
+        // ie 일때 input[type=file] init.
+        $("#vrblval_reg_file_input").replaceWith( $("#excelFile").clone(true) );
+    } else {
+        //other browser 일때 input[type=file] init.
+        $("#vrblval_reg_file_input").val("");
+    }
+}
+
+function vsccacv_cust_vrbl_val_read_excel(){	// 엑셀 업로드
+    
+    if(!$('myTable_vrblval tbody tr td').hasClass('dataTables_empty')){
+        if(confirm('기존 데이터(이전 회차 제외)는 삭제됩니다.\n계속 진행하시겠습니까?')==false) return false ;
+    }
+    
+    $('#loading .text h3').text('대상자 정보를 저장하고 있습니다...');
+    $('#loading').show();
+    
+    
+    let input = $('#vrblval_reg_file_input')[0];
+    let reader = new FileReader();
+    reader.onload = function(){
+        const fileData = reader.result;
+        const wb = XLSX.read(fileData, { type: 'binary', cellText: false, cellDates: true});
+        const temp = {};
+        
+        const header =XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1 , raw: false ,dateNF: 'yyyy-mm-dd hh:mm' ,defval:"" })[0];
+        const trimmedHeader = header.map((item) => {
+            return item.replace(/\s/g, '');
+        });
+        
+        if(checkDuplicates(trimmedHeader)) {
+            _valid_alert('hide','#`ing','중복된 변수명이 존재합니다.');
+            return false;
+        }
+        
+        const rowObj =XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {raw: false , dateNF: 'yyyy-mm-dd hh:mm' ,defval:""}); // 날짜 시간 데이터 핸들링
+        vsccacv_val_excel_ck(rowObj);
+    };
+    reader.readAsBinaryString(input.files[0]);
+}
+
+function vsccacv_val_excel_ck(req_params){	// 엑셀 업로드 validation
+    if(isEmptyCheck(req_params)){
+        if(!confirm('저장할 대상자가 없습니다. 모든 대상자를 삭제합니다.')){
+            return alert('저장이 취소되었습니다.');
+        }else{
+            return cust_vrbl_save();
+        }
+    }
+    let key_data = vsccacv_cust_data.cust_cols.map((_v, _i) => _v.vrbl_name);
+    let head_data = Object.keys(req_params[0]);
+    let table_body = [];
+    let table_head = [];
+    let head_flag = "N";	// 변수 변경 유무
+    let body_flag = "Y";	// 대상자 변경 유무
+    let vrbl_flag = "N";	// 대상자 변수 값 변경 유무
+    let bool = true;
+    if(head_data.length-3 > 50) return _valid_alert('hide','#loading','변수는 50개까지 사용 할 수 있습니다.');
+    // head값 중 변수에 빈값 있으면 빼버림.
+    head_data = head_data.filter((_v) => !_v.includes("__EMPTY"));
+
+    // head_data 재정렬
+    // 변수명에 숫자가 포함되는 경우 정렬 이상해짐 
+    head_data.sort(function(a, b) {
+      if (a === "순번") {
+            return -1;
+          } else if (b === "순번") {
+            return 1;
+          } else if (a === "전화번호") {
+            return -1;
+          } else if (b === "전화번호") {
+            return 1;
+          } else if (a === "이름") {
+            return -1;
+          } else if (b === "이름") {
+            return 1;
+          } else {
+            return parseInt(a) - parseInt(b); // 숫자로 정렬
+          }
+    });
+    
+    
+    if(head_data[0] == "순번" && head_data[1] == "전화번호" && head_data[2] == "이름"){
+        if(vsccacv_camp_row_data.regi_seq == '1'){ // 회차 1 = 변수 변경 가능
+            if(JSON.stringify(key_data) != JSON.stringify(head_data)) {
+                head_flag = "Y"; // 기존 테이블의 헤더와 엑셀 헤더의 값이 다르다.
+                // 값이 비어있지 않고, 특정 특수문자만 사용 가능.
+                for(let i=0;i<head_data.length;i++){
+                    if(!_valid.is_vrbl_name(head_data[i])) return _valid_alert('hide','#loading','허용하지 않는 형태의 변수명입니다. ['+head_data[i]+']');
+                    if(head_data[i] != '순번' && head_data[i] != '전화번호' && head_data[i] != '이름' && head_data[i].replace(/\s+/g, '') != '등록일시' && head_data[i] != '알림톡'){
+                        table_head.push(head_data[i]);
+                    }
+                }
+            }
+        } else {	// 회차 != 1 변수 변경 불가능 
+            if(JSON.stringify(key_data) != JSON.stringify(head_data)) {
+                return _valid_alert('hide','#loading','해피콜 상태가 [등록]인 경우에만 변수 변경이 가능합니다.');
+            }
+        }
+        
+        if(head_data.length > 3) vrbl_flag = "Y";
+        for(let i=0;i<req_params.length;i++){
+            let tmp_rows = [];
+            for(let j=1;j<head_data.length;j++){
+                let tmp_val = req_params[i][head_data[j]];
+                // 바디값을 검증한다. 전화번호 체크 필요.
+                if(j == 1 && !_valid.is_phone_num(tmp_val)) return _valid_alert('hide','#loading','전화번호의 형식이 다릅니다. ['+tmp_val+']');
+                if(j == 2 && !isEmptyCheck(tmp_val) && !_valid.is_vrbl_name(tmp_val) ) return _valid_alert('hide','#loading','허용하지 않는 형태의 이름입니다. ['+tmp_val+']');
+                if(j == 2 && isEmptyCheck(tmp_val)) tmp_val = 'null'; // 이름 null값 허용 
+                if(j == 3 && isEmptyCheck(tmp_val)) tmp_val = 'null'; // 등록일시 null값 허용
+                if(j == 4 && isEmptyCheck(tmp_val)) tmp_val = 'null'; // 알림톡 전송 null값 허용
+                if(j >= 5 && !_valid.is_vrbl_val(tmp_val))  return _valid_alert('hide','#loading','허용하지 않는 형태의 변수값입니다. ['+tmp_val+']');
+                // 요소 추출하여 body rows 저장
+                // 날짜 및 시간 변수값 핸들링 
+                
+                if(j != 3 && j != 4) { // 등록일시 제외
+                    if(tmp_val.includes('1900-01-00 ')){	// 시간 
+                        let new_tmp_val = tmp_val.replace('1900-01-00', '');
+                        tmp_rows.push(new_tmp_val); 
+                    } else if(tmp_val.includes(' 00:00')){	// 날짜
+                        let new_tmp_val = tmp_val.replace(' 00:00', '');
+                        tmp_rows.push(new_tmp_val); 
+                    } else {
+                        tmp_rows.push(tmp_val); 
+                    }
+                    
+                    
+                }
+                
+            }
+            table_body.push(tmp_rows)
+        }
+        
+        let params = {
+            'camp__seq' : vsccacv_camp_row_data.camp__seq
+            ,'camp_regi_seq' : vsccacv_camp_row_data.regi_seq
+            ,'head_data' : table_head
+            ,'body_data' : table_body
+            ,'head_flag' : head_flag
+            ,'body_flag' : body_flag
+            ,'vrbl_flag' : vrbl_flag
+            ,'branch_code' : $('#cmb_branch_code').val()
+            ,'email': '${login_email}'
+        }
+        cust_vrbl_save(params);
+    }else{
+        // 기본 대상자 정보가 없다.
+        return _valid_alert('hide','#loading','양식에 맞게 작성 바랍니다.');
+    }
+}
+const _valid_alert = (_action, _target, _msg) => {
+    if(_action === 'hide') $(_target).hide();
+    alert(_msg);
+};
+const _valid = {	// 데이터 목적 별 검증
+    // 이름 및 변수명
+    is_vrbl_name : (value) => (/^[가-힣a-zA-Z0-9-_:,.%\s()]{1,30}$/).test(value)	// 문자,공백 허용,특수문자 허용 - _ : . ,
+    ,is_vrbl_name_empty : (value) => (/^[\s]{1,30}$/).test(value)	// 공백 체크 
+    ,is_default_vrbl_name : (value) => (/^(이름|전화번호)$/).test(value)	// 기본 변수명인지
+    // 변수 값
+// 	, is_vrbl_val: (value) => (/^[가-힣a-zA-Z0-9-_:,.%\s()]{1,500}$/).test(value) // 문자,특수문자,공백 허용 - _ : . ,
+    , is_vrbl_val: (value) => (/^.{1,500}$/).test(value) // 문자,특수문자,공백 허용 - _ : . ,
+    // 전화번호
+    , is_phone_num : (value) => (/^[0-9]{2,3}[0-9]{4}[0-9]{4}$/).test(value)
+}
+
+
+function exportExcel_vrblval_list(){	// 엑셀 다운로드
+    let ex_rows = vsccacv_cust_data.cust_rows;
+    let ex_cols = vsccacv_cust_data.cust_cols;
+    let ex_datas = [];
+    
+    columnOrder = ["순번", "전화번호", "이름"]; // 컬럼 변수 초기화
+    
+    
+    for(let i=0;i<ex_rows.length;i++){
+        let tmp_rows = {};
+        for(let j=0;j<ex_cols.length;j++){
+            
+            if(ex_cols[j].mData === 'no'){
+                
+                tmp_rows[ex_cols[j].vrbl_name] = i+1;
+                
+            } else if(ex_cols[j].mData === 'name' || ex_cols[j].mData === 'phone' ){
+                
+                tmp_rows[ex_cols[j].vrbl_name] = ex_rows[i][ex_cols[j].mData+'_ori'];
+                
+            } else {
+                
+                tmp_rows[ex_cols[j].vrbl_name] = ex_rows[i][ex_cols[j].mData];
+            }
+            
+        }
+        ex_datas.push(tmp_rows);
+    }
+    
+    let obj = ex_datas[0];
+    
+    for (const key in obj) {
+         if(key!='순번'&&key!='전화번호'&&key!='이름') {
+             columnOrder.push(key);
+         }
+    }
+     
+    let wb = XLSX.utils.book_new();
+    
+    let newWorksheet = excelHandler_vrblval_list.getWorksheet(ex_datas);
+    XLSX.utils.book_append_sheet(wb, newWorksheet, excelHandler_vrblval_list.getSheetName());
+    
+    let guide = excelHandler_vrblval_list.getWorksheet_guide();
+    XLSX.utils.book_append_sheet(wb, guide, "작성 방법");
+    
+    let example = excelHandler_vrblval_list.getWorksheet_example();
+    XLSX.utils.book_append_sheet(wb, example, "작성 예시");
+    
+    let wbout = XLSX.write(wb, {bookType:'xlsx',  type: 'binary'});
+    saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), excelHandler_vrblval_list.getExcelFileName());
+}
+
+let excelHandler_vrblval_list = {	// 엑셀 다운로드
+        getExcelFileName : function(){
+            return vsccacv_camp_row_data.camp_name + '_대상자 목록.xlsx';
+        },
+        getSheetName : function(){
+            return vsccacv_camp_row_data.camp_name;
+        },
+        getExcelData : function(params){
+            return params;
+        },
+        getWorksheet : function(params){
+//             return XLSX.utils.json_to_sheet(this.getExcelData(params));
+            return XLSX.utils.json_to_sheet(this.getExcelData(params) ,{ header: columnOrder });
+        },
+        getExcelData_guide : function(){
+            let arr = [
+                {
+                    "유형": "순번"
+                    ,"작성방법":"대상자의 순서를 입력합니다. (선택)"
+                },
+                {
+                       "유형": "전화번호"
+                       ,"작성방법":"대상자의 전화번호를 하이픈(-) 없이 입력합니다. (필수)"
+                   },
+                {
+                       "유형": "이름"
+                       ,"작성방법":"대상자의 이름을 입력합니다. (선택)"
+                   },
+                {
+                       "유형": "변수명"
+                       ,"작성방법":"전화번호 다음 열부터 문항에 사용할 변수를 입력합니다. 날짜는 '연도(yyyy)-월(mm)-일(dd)'," 
+                                    +" 시간은 시(hh):분(mm) 형식을 지켜주세요."
+                   }
+            ]
+            return arr;
+        },
+        getWorksheet_guide : function(){
+            return XLSX.utils.json_to_sheet(this.getExcelData_guide());
+        },
+        getExcelData_example : function(){
+            let arr = [
+                {
+                    "순번": "1"
+                       ,"전화번호": "01012345678"
+                       ,"이름": "홍길동"
+                       ,"예약일자": "2022-09-01"
+                       ,"예약시간": "15:00"
+                },
+                {
+                       "순번": "2"
+                       ,"전화번호": "01045671234"
+                       ,"이름": "김하늘"
+                       ,"예약일자": "2022-09-02"
+                       ,"예약시간": "09:00"
+                   }
+            ]
+            return arr;
+        },
+        getWorksheet_example : function() {
+            return XLSX.utils.json_to_sheet(this.getExcelData_example());
+        }
+}
+
+function s2ab(s) {	// 엑셀 다운로드
+      let buf = new ArrayBuffer(s.length); //convert s to arrayBuffer
+      let view = new Uint8Array(buf);  //create uint8array as viewer
+      for (let i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; //convert to octet
+      return buf;    
+    }
+
+
+function selectbox_autority_f(){
+    $.ajax({
+         method: "POST"
+        ,url: "/admin/vsccama_selectbox_autority"
+        ,beforeSend: function(xhr) {
+        	xhr.setRequestHeader(header, token);
+         }			
+        ,success: function(data){
+             for(let i=0;i<data.length;i++){
+                 $('#cmb_branch_code').append('<option value=""></option>');
+                 $('#cmb_branch_code option:eq('+i+')').replaceWith("<option value='"+data[i].code+"'>"+data[i].name+"</option>");
+             }
+        }
+        ,error: function(jqXHR, textStatus, errorThrown){
+            if(confirm("Refresh? \n<spr:message code='info.exception'/> js:vsccama_selectbox_autority \n"
+                +errorMsgMaker(jqXHR, textStatus, errorThrown))){
+                location.reload(true);
+            }
+        }
+        ,complete: () => {
+            $('#cmb_branch_code').select2();
+// 			setDootaStorage("vsccama.cmb_branch_code", $('#cmb_branch_code option:first').val());
+            vsccacv_camp_list();
+        }
+    }); 
+}
+
+function vsccacv_camp_list() {
+    
+    let param_func = (params) => {
+        if(!isEmptyCheck(getDootaStorage('vsccama.gotovsccacv'))){
+            params.start = getDootaStorage('vsccama.gotovsccacv').start;
+            $('#cmb_branch_code').val(getDootaStorage('vsccama.gotovsccacv').branch_code);
+            $('#search_keyword').val(getDootaStorage('vsccama.gotovsccacv').search_keyword);
+            params.columns = getDootaStorage('vsccama.gotovsccacv').columns;
+            params.order = getDootaStorage('vsccama.gotovsccacv').order;
+        } else if(!isEmptyCheck(getDootaStorage('vsccaim.gotovsccacv'))){
+            params.start = getDootaStorage('vsccaim.gotovsccacv').start;
+            $('#cmb_branch_code').val(getDootaStorage('vsccaim.gotovsccacv').branch_code);
+            $('#search_keyword').val(getDootaStorage('vsccaim.gotovsccacv').search_keyword);
+            params.columns = getDootaStorage('vsccaim.gotovsccacv').columns;
+            params.order = getDootaStorage('vsccaim.gotovsccacv').order;
+        }
+        
+        params.search_keyword = $('#search_keyword').val();
+        params.branch_code = $('#cmb_branch_code').val();
+        params.cmb_search_key = '';
+        
+        $('#select2-cmb_branch_code-container').text($('#cmb_branch_code option[value='+ $('#cmb_branch_code').val() +']').text());
+        
+        setDootaStorage("vsccacv.columns", params.columns);
+        setDootaStorage("vsccacv.order", params.order);
+        
+        return JSON.stringify(params);
+    }
+    
+    let myTable = $('#myTable').DataTable({
+        destroy: true
+        ,processing: true
+        ,ordering: true
+        ,orderMulti: false // 다중 정렬 선택 안되도록 막아두는 옵션
+        ,bPaginate: true
+        ,autoWidth: true
+        ,searching: false
+        ,lengthMenu: [10,25,50,100]
+        ,order:[[0, "ASC"]]
+        ,serverSide: true
+        ,bStateSave : false
+        ,responsive: true
+        ,paging: true
+        ,info : true
+        ,select: false
+        ,scrollY: "560.19px"
+        ,language: doota_dataTable_lang
+        ,dom: doota_dataTable_dom
+        ,ajax : {
+            url : "/admin/vsccama_camp_list"
+            ,type : "POST"
+            ,data : param_func
+            ,contentType: "application/json;charset=UTF-8"
+            ,beforeSend: function(xhr) {
+                xhr.setRequestHeader(header, token);
+            }
+            ,complete : function(){	}
+            ,error : function(jqXHR, textStatus, errorThrown){
+                if(confirm("Refresh? \n<spr:message code='info.exception'/> js:vsccowt \n"
+                            +errorMsgMaker(jqXHR, textStatus, errorThrown))){
+                    location.reload(true);
+                }
+            }		
+        }
+        ,columnDefs : [
+            {"targets":0, "orderable": false 
+                ,"className": "table-center-middle-pd text-center"
+                ,"render" : function (data, type, row, meta){
+                    var totalCount = meta.settings.json.recordsTotal;
+                    var curRowNum = meta.row + meta.settings._iDisplayStart; 
+                    var rowNum = curRowNum + 1;
+                    return rowNum;
+                }
+            }
+            ,{targets: "_all", className : "table-center-middle-pd text-center"}
+            , {targets: 1, render: $.fn.dataTable.render.ellipsis(21, false)}
+            ]
+            ,columns : [
+                {data : "Number", title: "<spr:message code='common.no'/>", name : "number", width : "20%"}
+                ,{data : "camp_name", title: "<spr:message code='common.name'/>", class:"text-center px-0", width : "60%"}
+                ,{data : "camp_status_name", title: "<spr:message code='camp.status'/>", width : "60%"}
+             ]
+        ,drawCallback : function(data){
+            let temp = {};
+            temp.table_data = data.aoData;
+            
+            if(temp.table_data.length==0&&isEmptyCheck($('#search_keyword').val())){	
+                alert("등록된 해피콜이 없습니다. 해피콜 관리 화면으로 이동합니다.")
+                goMenu2('vsccama')
+            }
+            
+            if(getDootaStorage("vsccama.gotovsccacv")){
+                temp.go_data = getDootaStorage('vsccama.gotovsccacv');
+                
+                if(data.aoColumns.filter(x => x.data == getDootaStorage('vsccacv.columns')[getDootaStorage('vsccacv.order')[0].column].data).length > 0) {
+                    $(".sorting:eq(" + (data.aoColumns.filter(x => x.data == getDootaStorage('vsccacv.columns')[getDootaStorage('vsccacv.order')[0].column].data)[0].idx - 1) 
+                            + ")").removeClass("sorting").addClass("sorting_" + getDootaStorage('vsccacv.order')[0].dir);
+                }
+            } else if(getDootaStorage("vsccaim.gotovsccacv")){
+                temp.go_data = getDootaStorage('vsccaim.gotovsccacv');
+                
+                if(data.aoColumns.filter(x => x.data == getDootaStorage('vsccacv.columns')[getDootaStorage('vsccacv.order')[0].column].data).length > 0) {
+                    $(".sorting:eq(" + (data.aoColumns.filter(x => x.data == getDootaStorage('vsccacv.columns')[getDootaStorage('vsccacv.order')[0].column].data)[0].idx - 1) 
+                            + ")").removeClass("sorting").addClass("sorting_" + getDootaStorage('vsccacv.order')[0].dir);
+                }
+            }
+            
+            if(!isEmptyCheck(temp.go_data)) {
+                setDootaStorage("vsccama.gotovsccacv", '');
+                setDootaStorage("vsccaim.gotovsccacv", '');
+                vsccacv_go_btn(temp);
+            }
+            
+            if(!$('#myTable tbody tr td').hasClass('dataTables_empty')){
+                if($('#myTable tbody tr.selected').length == 0){
+                    $('#myTable tbody tr:eq(0)').click();
+                    let camp_table = $('#myTable').DataTable();
+                    vsccacv_camp_row_data = camp_table.row(0).data();
+                    vsccacv_camp_row_data.current_page = camp_table.page.info().page+1;
+                    vsccacv_camp_row_data.start = camp_table.page.info().start;
+                }
+            }
+            
+        }
+    });
+}
+
+function vsccacv_go_btn(data){
+    $( ".paginate_button  [data-dt-idx='"+data.go_data.current_page+"']" ).trigger("click");
+    for(let i = 0; i < data.table_data.length; i++){
+        if(data.table_data[i]._aData.camp__seq == data.go_data.camp__seq){
+            $(data.table_data[i].nTr).trigger("click");
+        }
+    }
+}
+
+function saveDT(mode, remove_col_len){	// datatable 데이터 저장.
+    // mode : true = 실제 데이터를 통해 저장을 하는 경우. valid 필요.
+    //		: false = 고객,변수 추가 시 입력중인 값을 이전하는 임시데이터. valid 미 필요. remove_col_len 사용
+    
+    let tr = $('#myTable_cust tbody tr').not('.vsccacv_before_data');
+    let table_body = [];
+    let th = $('#myTable_cust_wrapper .dataTables_scrollHead .form_input_head ');
+    let table_head = [];
+    let head_flag = "Y";	// 변수 변경 유무
+    let body_flag = "Y";	// 대상자 변경 유무
+    let vrbl_flag = "N";	// 대상자 변수 값 변경 유무
+    
+    if(!mode && !isEmptyCheck(remove_col_len)) th.splice(remove_col_len-3, 1);
+    
+    for(let i = 0; i < th.length; i++){
+        let col_val = th.eq(i).val().replace(/\s/g, '');
+        if(mode && _valid.is_vrbl_name_empty(col_val)) return alert('허용하지 않는 형태의 변수명입니다. ['+col_val+']');
+        if(mode && !_valid.is_vrbl_name(col_val)) return alert('허용하지 않는 형태의 변수명입니다. ['+col_val+']');
+        if(mode && _valid.is_default_vrbl_name(col_val)) return alert('['+col_val+']은(는) 기본 변수로, 추가 저장이 불가능합니다.');
+        table_head.push(col_val);
+    }
+    
+    // 변수명 중복체크
+    if(checkDuplicates(table_head)){
+        alert('중복된 변수명이 존재합니다.');
+        return false;
+    }
+    
+    
+    for(let i = 0; i < tr.length; i++){
+        let rowData = tr.eq(i).children('td');
+        if(rowData.length > 3) vrbl_flag = "Y"
+// 		console.log("rowData - " + JSON.stringify(rowData));
+        // 열 제거시 오류 발생 
+// 		if(!mode && !isEmptyCheck(remove_col_len)) rowData.splice(remove_col_len-3, 1);
+        if(!mode && !isEmptyCheck(remove_col_len)) rowData.splice(remove_col_len, 1);
+        
+        let tmp_row = [];
+        
+        for( let j = 1 ; j <= rowData.length; j++){
+            
+            let row_val = rowData.eq(j).find('input').val();
+// 			console.log("row_val -  " + JSON.stringify(rowData.eq(j).find('input')));
+
+// 			if(j == 3) console.log("row_val - " + row_val);
+// 			if(j == 4) console.log("row_val2 - " + row_val);
+// 			if(j == 5) console.log("row_val3 - " + row_val);
+
+            if(mode){
+                if(j == 3 && !_valid.is_phone_num(row_val)) return alert('전화번호의 형식이 다릅니다. ['+row_val+']')
+                if(j == 4 && !isEmptyCheck(row_val) && !_valid.is_vrbl_name(row_val)) return alert('허용하지 않는 형태의 이름입니다. ['+row_val+']');
+                if(j >= 5 && !_valid.is_vrbl_val(row_val)) return alert('허용하지 않는 형태의 변수값입니다. ['+row_val+']');
+            }
+            
+            if(j==4 && isEmptyCheck(row_val)) row_val = 'null'; // 이름 입력하지 않은 경우 
+            
+            tmp_row.push(row_val);
+        
+        }
+        
+        table_body.push(tmp_row);
+        
+    }
+    if(mode){	// db에 저장
+        if(isEmptyCheck(table_body)){
+            if(!confirm('저장할 대상자가 없습니다. 모든 대상자를 삭제합니다.')){
+                return alert('저장이 취소되었습니다.');
+            }else{
+                body_flag = "N";
+            }
+        }
+    
+        console.log("vsccacv_cust_data.cust_cols" +  vsccacv_cust_data.cust_cols);
+        if(isEmptyCheck(table_head) &&  vsccacv_cust_data.cust_cols.length > 6) head_flag = "N"; 
+        let params = {
+            'camp__seq' : vsccacv_camp_row_data.camp__seq
+            ,'camp_regi_seq' : vsccacv_camp_row_data.regi_seq
+            ,'head_data' : table_head
+            ,'body_data' : table_body
+            ,'head_flag' : head_flag
+            ,'body_flag' : body_flag
+            ,'vrbl_flag' : vrbl_flag
+            ,'branch_code': $('#cmb_branch_code').val()
+            ,'cust_ori_data': []
+            ,'email': '${login_email}'
+        }
+        
+        if(!isEmptyCheck(vsccacv_cust_data.cust_chunk_b[currentPage])) {
+            params['cust_ori_data'] = vsccacv_cust_data.cust_chunk_b[currentPage].map(_v => _v['cust__seq']);
+            alert('수정된 데이터는 마지막 페이지에 저장됩니다.');
+        }
+        
+        cust_vrbl_save(params);
+        
+    }else{	// 임시 저장 (로드용) 이후 tmpReadDT()를 연계하여 로드한다.
+        vsccacv_cust_data.tmp_data_body = table_body;
+        vsccacv_cust_data.tmp_data_head = table_head;
+    }
+}
+
+function cust_vrbl_save(req_params){
+    
+    
+    console.log("req_params - " + JSON.stringify(req_params));
+    for(let i=0, max = req_params.body_data.length ; i<max ; i++){
+        let item = req_params.body_data[i];
+        let body_data_filter = [];
+        for(let j=0, max_j = item.length ; j<max_j ; j++){
+            if(!isEmptyCheck(item[j])){
+                body_data_filter.push(item[j])
+            }
+        }
+        req_params.body_data[i] = body_data_filter;
+    }
+    
+    if(isEmptyCheck(req_params)){
+        req_params = {
+            'camp__seq' : vsccacv_camp_row_data.camp__seq
+            ,'camp_regi_seq' : vsccacv_camp_row_data.regi_seq
+            ,'head_data' : []
+            ,'body_data' : []
+            ,'head_flag' : 'N'
+            ,'body_flag' : 'N'
+            ,'vrbl_flag' : 'N'
+            ,'branch_code' : $('#cmb_branch_code').val()
+            ,'email': '${login_email}'
+        }
+    }
+    
+    $.ajax({
+         method: 'POST'
+        ,url: "/admin/vsccacv_cust_vrbl_save"
+        ,dataType : 'json'
+        ,contentType: 'application/json;charset=UTF-8'
+        ,data: JSON.stringify(req_params)
+        ,beforeSend: function(xhr) {
+       		xhr.setRequestHeader(header, token);
+        }
+        ,success: function (data) {
+            if(data.status != '000'){
+            	alert(data.msg)
+            }else{
+                alert(data.msg)
+                vsccacv_cust_vrbl();
+            }
+         }
+        ,error : function(jqXHR, textStatus, errorThrown){
+            if(confirm("Refresh? \n<spr:message code='info.exception'/> js:vsccacv_cust_vrbl \n"
+                    +errorMsgMaker(jqXHR, textStatus, errorThrown))){
+                 location.reload(true);
+             }
+        }
+    });
+}
+
+function vsccacv_cust_vrbl(){
+    
+    $('#loading .text h3').text('대상자 정보를 가져오고 있습니다...');
+    $('#loading').show();
+    
+    if(vsccacv_camp_row_data.camp_status_clsf=='010203'){  // 진행중(실행) ,완료 변경 불가
+        toggle_button_box(0);
+    } else {
+        toggle_button_box(1);
+    }
+    
+    let params = {
+        'camp__seq' : vsccacv_camp_row_data.camp__seq
+        ,'cust_search_keyword' : $('#cust_search_keyword').val()
+        ,'cmb_search_key' : $('#cmb_search_key_cust option:selected').val()
+    }
+    
+    $.ajax({
+         method: 'POST'
+        ,url: "/admin/vsccacv_cust_vrbl"
+        ,dataType : 'json'
+        ,contentType: 'application/json;charset=UTF-8'
+        ,data: JSON.stringify(params)
+        ,beforeSend: function(xhr) {
+       		xhr.setRequestHeader(header, token);
+        }
+        ,success: function (data) {
+            if(data.status =='000'){
+                data.head_data = vsccacv_cust_data.cust_cols_basic.concat(data.head_data)
+                vsccacv_cust_data.cust_cols = data.head_data;
+                vsccacv_cust_data.cust_rows = data.body_data;
+                if(data.body_data.length>4000) {  //********
+                    vsccacv_cust_data.cust_chunk = chunkArray(data.body_data,4000);
+                    vsccacv_cust_data.cust_chunk_b = chunkArray(data.body_data,4000);
+                } else {
+                    vsccacv_cust_data.cust_chunk = [];
+                    vsccacv_cust_data.cust_chunk_b = [];
+                }
+            }else{
+                alert(data.msg);
+            }
+         }
+        ,error : function(jqXHR, textStatus, errorThrown){
+            if(confirm("Refresh? \n<spr:message code='info.exception'/> js:vsccacv_cust_vrbl \n"
+                    +errorMsgMaker(jqXHR, textStatus, errorThrown))){
+                 location.reload(true);
+             }
+        }
+        ,complete : function(_opt, _status, c){
+            
+            $('#loading').hide();
+            
+            if(_status == 'success'){
+                if(vsccacv_cust_data.cust_rows.length === 0){
+                    // 등록된 고객이 없는 경우.
+                    toggle_button_box(2);
+                    initDT(true);
+                    addRows(1);
+                }else{
+                    console.log("고객 있음")
+                    initDT(false);
+                    toggle_button_box(1);
+                }
+            } 
+            
+            if(vsccacv_camp_row_data.camp_status_clsf=='010203'){  // 진행중(실행) ,완료 변경 불가
+                toggle_button_box(0);
+            }
+//         	toggle_button_box(2);
+        }
+    });
+}
+
+function initDT(mode){
+    
+    
+    // mode : true = 수정 가능 row 데이터를 input으로 변경함. 암호화 해제.
+    //		: false = 읽기전용
+    
+    
+    let tableBool = $.fn.DataTable.isDataTable('#myTable_cust');
+    if(tableBool) {
+        let dataTable = $('#myTable_cust').DataTable();
+        let pageInfo = dataTable.page.info();
+     	currentPage = pageInfo.page;
+// 	 	console.log(currentPage)
+    }
+    console.log("?")
+    clearDT('#myTable_cust');
+
+    if(isEmptyCheck(vsccacv_cust_data.cust_cols)) vsccacv_cust_data.cust_cols = vsccacv_cust_data.cust_cols_basic
+    
+    if(mode){
+        console.log("??")
+        vsccacv_cust_data.cust_rows_input = [];
+        vsccacv_cust_data.cust_cols_input = [];
+        
+        let rows = [];
+        
+        if(vsccacv_cust_data.cust_chunk.length>0) {
+            rows = vsccacv_cust_data.cust_chunk[currentPage];
+        } else {
+            rows = vsccacv_cust_data.cust_rows;
+        }
+// 		console.log("123122222222 - " + JSON.stringify(vsccacv_cust_data.cust_rows))
+        for(let _v of rows ){
+            let tmp_obj = {};
+            if(_v.regi_seq == vsccacv_camp_row_data.regi_seq && _v.read_flag == 'N' && _v.alarm_send_flag == 'N'){
+                console.log("123123123123");
+                for(let _k in _v){
+// 					console.log("_k - " + _k);
+                    if(_k == 'regi_seq' || _k == 'created_datetime' || _k == 'alarm_status'){
+                        tmp_obj[_k] = _v[_k];
+                    }else{
+                        if((_v[_k]+'').startsWith('<input')){	// 이미 인풋폼인 변수들
+                            tmp_obj[_k] = _v[_k];
+                        }else{
+                            if(_k == 'name' || _k == 'phone'){
+                                if(isEmptyCheck(_v[_k+'_ori'])){
+// 									tmp_obj[_k] = _v[_k];
+                                    tmp_obj[_k] = '<input class="form_input" value="">';
+                                }else{
+                                    tmp_obj[_k] = '<input class="form_input" value="'+_v[_k+"_ori"]+'">';
+                                }
+                            }else{
+                                tmp_obj[_k] = '<input class="form_input" value="'+_v[_k]+'">';
+                            }
+                        }
+                    }
+                }
+            }else{
+                
+                console.log("1111111111111112222222223333333333333333ㅁㅁㅁㅁㅁㅁ");
+                tmp_obj = _v
+// 				console.log("tmp_obj - " + JSON.stringify(tmp_obj));
+            }
+// 			console.log("tmp_obj - " + JSON.stringify(tmp_obj));
+            vsccacv_cust_data.cust_rows_input.push(tmp_obj);
+        }
+        
+        let _i = 0
+        if(vsccacv_camp_row_data.regi_seq == '1' && vsccacv_camp_row_data.camp_status_clsf == '010201'){ // 등록 상태이고 회차 1인 경우 변수 변경가능
+            for(let _v of vsccacv_cust_data.cust_cols){
+                let tmp_obj = {};
+                if(_v['mDataProp'].startsWith('vrbl_field')){
+                    let tmp_str = '<input class="form_input_head " id="'+_v['mDataProp']+'" value="'+_v['sTitle']+'" >'
+                        tmp_str	+= ' <button type="button" class="remove_col_btn form_button" data-colnum="'+_i+'"><i class="ri-close-line ri-lg"></i></button>'
+                    tmp_obj['sTitle'] = tmp_str;
+                    tmp_obj['mDataProp'] = _v['mDataProp']
+                    tmp_obj['sType'] = _v['sType']
+                }else{
+                    tmp_obj = _v
+                }
+                _i++;
+                vsccacv_cust_data.cust_cols_input.push(tmp_obj)
+            }
+            optionDT["aoColumns"] = vsccacv_cust_data.cust_cols_input;
+        }else{
+            optionDT["aoColumns"] = vsccacv_cust_data.cust_cols;
+        }
+        
+        
+        optionDT["aaData"] = vsccacv_cust_data.cust_rows_input;
+        optionDT["paging"] = false;
+        optionDT["bInfo"] = false;
+        
+        vsccacv_cust_data.data_table = $('#myTable_cust').dataTable(optionDT);
+        
+// 		console.log(currentPage)
+// 		if(currentPage>1) {
+// 			let dataTable = $('#myTable_cust').DataTable();
+// 			dataTable.page(currentPage).draw(false);	// 페이지 이동
+// 		}
+        
+    }else{
+        
+        optionDT["aaData"] = vsccacv_cust_data.cust_rows;
+        optionDT["aoColumns"] = vsccacv_cust_data.cust_cols;
+        optionDT["paging"] = true;
+        optionDT["bInfo"] = true;
+        
+        vsccacv_cust_data.data_table = $('#myTable_cust').dataTable(optionDT);
+        
+    }
+    
+    
+    $('#loading').hide();
+}
+
+let optionDT = {	// dt 생성 옵션. aaData, aoColumns만 추가해서 생성하면 됨.
+        "bJQueryUI": true,
+        "bDeferRender": true,
+        "bSort" : false,
+        "bDestroy" : true,
+        "bFilter" : false,
+        "bPagination" : false,
+        "pagination" : false,
+        "lengthMenu": [4000], //********
+        "scrollX": true,
+        "scrollY": "542px",
+        "language": doota_dataTable_lang,
+        "dom": doota_dataTable_dom,
+        "scrollCollapse": false,
+        "columnDefs": [
+            {"targets":0, "orderable": false 
+                ,"className": "table-center-middle-pd text-center"
+                ,"render" : function (data, type, row, meta){
+                    var curRowNum = meta.row ;
+                    var rowNum = (curRowNum + 1);
+                    if(!isEmptyCheck(row.no) || ( vsccacv_camp_row_data.toggle_mode == 2 && vsccacv_camp_row_data.regi_seq == row.regi_seq ) ){
+// 						console.log("row.alarm_send_flag - " + row.alarm_send_flag)
+                        if(row.read_flag!='Y' && row.alarm_send_flag!='Y') {
+                            rowNum = '<button type="button" class="remove_row_btn form_button float-left mt-1" data-rowNum="'+curRowNum+'"><i class="ri-close-line ri-lg"></i></button><p class="text_head">'+rowNum+'</p>';
+                        }
+                    }
+// 					console.log("rowNum - " + rowNum);
+                    return rowNum;
+                }
+            }
+            ,{targets: 3, className : "cust-right-line"}
+            ,{targets: "_all", className : "table-center-middle-pd text-center vtca-m"}
+// 			,{targets: "_all", render: $.fn.dataTable.render.ellipsis(20, false)}
+        ],
+        "createdRow": function(row, data, dataIndex){
+            $('td:eq(0)', row).css('min-width', '80px');	// name
+            $('td:eq(1)', row).css('min-width', '100px');	// name
+            $('td:eq(2)', row).css('min-width', '120px');	// Phone
+         }
+        ,"rowCallback" : function(row, data, index){
+            console.log("data - " + JSON.stringify(data));
+            if(!isEmptyCheck(data.regi_seq)){
+                if(data.regi_seq != vsccacv_camp_row_data.regi_seq||data.read_flag=='Y'||data.alarm_send_flag=='Y'){
+                    $(row).addClass('vsccacv_before_data');	
+                    // 미응답, 알림톡 전송, 알림톡 전송 후 응답, 콜
+                    if(data.read_flag=='Y' && data.call_status_clsf != '104' && data.alarm_fin_flag =='N') { // 콜
+                        $(row).addClass('vsccacv_send_call_coler');	
+                    } else if(data.read_flag=='Y' && data.call_status_clsf == '104' && data.alarm_fin_flag == 'N') { // 미응답
+                        $(row).addClass('vsccacv_no_response_color');
+                    } else if(data.alarm_send_flag=='Y' && data.alarm_fin_flag == 'N') { // 알림톡 전송
+                        $(row).addClass('vsccacv_send_alarm_color');
+                    } else if(data.alarm_send_flag=='Y' && data.alarm_fin_flag == 'Y') { // 알림톡 전송 후 응답
+                        $(row).addClass('vsccacv_send_alarm_ok_color');
+                    } 
+                    
+                    
+                }
+            }
+        }
+    }
+    
+function selected_click(){
+    if(confirm('수정중인 모든 데이터가 초기화됩니다.')){
+        $('#myTable tbody tr.selected').click();
+    }else{
+        $('#loading').hide();
+    }
+    return false;
+}
+
+function toggle_button_box(mode){	// mode : 0 = readonly, 1 = read/update, 2 = updatable
+    
+    for(let i=0; i<=2; i++){	// .button_box_(mode)
+        if(i == mode){
+            $('#dataTransfer_target .button_box_'+i).show();
+        }else{
+            $('#dataTransfer_target .button_box_'+i).hide();
+        }
+    }
+    
+    vsccacv_camp_row_data.toggle_mode = mode;
+}
+
+function clearDT(table_id){
+    if(!isEmptyCheck(vsccacv_cust_data.data_table)){	// redraw table. clear data & elements
+        $(table_id).DataTable().clear().destroy();
+        $(table_id).empty();
+    }
+}
+
+function addRows(iterCnt){	// 고객 추가 기능
+    
+    if(isEmptyCheck(iterCnt)) iterCnt = 1;
+    
+    saveDT(false);
+    
+    for(let i=1;i<=iterCnt;i++){
+        
+        var aoCols = 0, aoDataLen = 0, newRow = new Object();
+        
+        if(!isEmptyCheck(vsccacv_cust_data.data_table)){
+        	aoCols = vsccacv_cust_data.data_table.fnSettings().aoColumns;
+        	aoDataLen = vsccacv_cust_data.data_table.fnSettings().aoData.length;
+        }
+        
+        for(var iRec=0; iRec<aoCols.length; iRec++){
+            let vrbl_id = aoCols[iRec].mDataProp;
+            
+            if(aoCols[iRec]._sManualType === "numeric"){
+                
+            	if(aoDataLen+1>100) {
+            		alert('한 페이지에 최대 100명의 대상자까지 저장 가능합니다.');
+            		return false;
+            	}
+            	
+            	newRow[vrbl_id] = aoDataLen+1;
+                
+            	
+            }else if(aoCols[iRec]._sManualType === "string"){
+                newRow[vrbl_id] = '<input id="'+vrbl_id+'_'+aoDataLen+'"  class="form_input" placeholder="값을 입력하세요." role="r-'+aoDataLen+'-'+iRec+'">';
+            }
+        }
+        
+        
+        vsccacv_cust_data.cust_rows.splice(aoDataLen, 0, newRow);
+        
+        if(!isEmptyCheck(vsccacv_cust_data.cust_chunk[currentPage]))  {
+        	vsccacv_cust_data.cust_chunk[currentPage].splice(aoDataLen, 0, newRow);
+        }
+       
+        
+    }
+    initDT(true);
+    $('.dataTables_scrollBody').scrollTop($('.dataTables_scrollBody')[1].scrollHeight)
+    return tmpReadDT(); // tmp 데이터 불러오기.
+}
+
+function addCols(iterCnt){	// 변수 추가 기능
+    if(isEmptyCheck(iterCnt)) iterCnt = 1;
+    saveDT(false)
+    for(let i=1;i<=iterCnt;i++){
+        let vrbl_id = "new_field_"+vsccacv_cust_data.iter;
+        let newCols = {"mDataProp": vrbl_id, sTitle: '<input id="'+vrbl_id+'" class="form_input_head " placeholder="변수를 입력하세요."> <button type="button" class="remove_col_btn form_button " data-colnum="'+vsccacv_cust_data.cust_cols.length+'"><i class="ri-close-line ri-lg"></i></button>', sType : "string"};
+        if(vsccacv_cust_data.cust_cols.length-3 > 50) return alert('변수는 50개까지 사용 할 수 있습니다.');
+        vsccacv_cust_data.cust_cols.splice(vsccacv_cust_data.cust_cols.length, 0, newCols);
+        for(var iRes=0; iRes<vsccacv_cust_data.cust_rows.length ;iRes++){
+            vsccacv_cust_data.cust_rows[iRes][vrbl_id] = '<input id="'+vrbl_id+'_'+iRes+'"  class="form_input" placeholder="값을 입력하세요." role="c-'+iRes+'-'+(vsccacv_cust_data.cust_cols.length-1)+'">';
+        }
+        vsccacv_cust_data.iter++;
+    }
+    initDT(true);
+    $('.dataTables_scrollBody').scrollLeft($('.dataTables_scrollBody')[1].scrollWidth)
+    return tmpReadDT(); // tmp 데이터 불러오기.
+}
+
+function tmpReadDT(){	// 임시 저장된 데이터 saveDT(false)를 불러오는 기능
+    if(!isEmptyCheck(vsccacv_cust_data.tmp_data_body)){
+        let tr = $('#myTable_cust tbody tr').not('.vsccacv_before_data');
+        let tmp_body = vsccacv_cust_data.tmp_data_body;
+        for(let i = 0; i < tmp_body.length; i++){
+            let row_data = tmp_body[i];
+            for(let j = 0; j < tr.eq(i).children().length-1; j++){
+                if(isEmptyCheck(row_data[j])||row_data[j]=='null') {
+                    tr.eq(i).children('td').eq(j+1).find('input').val('')
+                } else {
+                    tr.eq(i).children('td').eq(j+1).find('input').val(row_data[j])
+                }
+            }
+        }
+        let th = $('#myTable_cust_wrapper .dataTables_scrollHead .form_input_head');
+        for(let i = 0; i < th.length; i++)	{
+            th.eq(i).val(vsccacv_cust_data.tmp_data_head[i]);
+        }
+    }
+}
+
+// 중복체크 
+function checkDuplicates(array) {
+    let set = new Set(array);
+    return set.size !== array.length; // 중복이 있으면 true, 중복이 없으면 false 반환
+}
+
+// 배열 분할 
+function chunkArray(array, chunkSize) {
+      return array.reduce((result, item, index) => {
+        if (index % chunkSize === 0) {
+          result.push(array.slice(index, index + chunkSize));
+        }
+        return result;
+      }, []);
+}
+
+
+
+function vscdnclist() {
+// 	var param = {};
+// 	param.branch_code = $('#cmb_branch_code').val();
+// 	console.log(vsccacv_camp_row_data.camp__seq);
+    let param_func = (params) => {
+        
+// 		params.search_keyword = $('#search_keyword').val();
+        params.branch_code = $('#cmb_branch_code').val();
+        params.camp_uid = vsccacv_camp_row_data.camp__seq;
+// 		params.cmb_search_key = '';
+        
+// 		$('#select2-cmb_branch_code-container').text($('#cmb_branch_code option[value='+ $('#cmb_branch_code').val() +']').text());
+        
+// 		setDootaStorage("vsccacv.columns", params.columns);
+// 		setDootaStorage("vsccacv.order", params.order);
+        
+        return JSON.stringify(params);
+    }
+    let role_clsf ="${role_clsf}";
+    
+    
+    let myTable2 = $('#myTable2').DataTable({
+        destroy: true
+        ,processing: true
+        ,ordering: true
+        ,orderMulti: false // 다중 정렬 선택 안되도록 막아두는 옵션
+        ,bPaginate: true
+        ,autoWidth: true
+        ,searching: false
+        ,lengthMenu: [10,25,50,100]
+        ,order:[[0, "ASC"]]
+        ,serverSide: true
+        ,bStateSave : false
+        ,responsive: true
+        ,paging: true
+        ,info : true
+        ,select: false
+        ,scrollY: "560.19px"
+        ,language: doota_dataTable_lang
+        ,dom: doota_dataTable_dom
+        ,ajax : {
+            url : "/admin/vscsycabr_dnc_list"
+            ,type : "POST"
+            ,data : param_func
+            ,contentType: "application/json;charset=UTF-8"
+            ,beforeSend: function(xhr) {
+                xhr.setRequestHeader(header, token);
+            }
+            ,complete : function(){	}
+            ,error : function(jqXHR, textStatus, errorThrown){
+                if(confirm("Refresh? \n<spr:message code='info.exception'/> js:vsccowt \n"
+                            +errorMsgMaker(jqXHR, textStatus, errorThrown))){
+                    location.reload(true);
+                }
+            }		
+        }
+        ,columnDefs : [
+            {"targets":0, "orderable": false 
+                ,"className": "table-center-middle-pd text-center"
+                ,"render" : function (data, type, row, meta){
+                    var totalCount = meta.settings.json.recordsTotal;
+                    var curRowNum = meta.row + meta.settings._iDisplayStart; 
+                    var rowNum = curRowNum + 1;
+                    return rowNum;
+                }
+            }
+            ,{targets: "_all", className : "table-center-middle-pd text-center"}
+            , {targets: 1, render: $.fn.dataTable.render.ellipsis(21, false)}
+        ]
+        ,columns : [
+            {data : "Number", title: "<spr:message code='common.no'/>", name : "number", width : "5%"}
+            ,{data : "phone_num", title: "전화번호", class:"text-center px-0", width : "20%"}
+            ,{data : "dnc_type", title: "타입", width : "15%"}
+            ,{data : "remark", title: "사유", width : "20%"}
+            ,{data : "dnc__seq", title: "편집",  orderable: false, className: "text-center dnc_del_btn", width : "10%"
+                ,"render" : function(data){
+                    let makeBtn = "x";
+                    return makeBtn;
+                } 
+            }
+        ]
+    });
+    
+    $('#vscdncmodal').modal();
+}
+
+</script>
