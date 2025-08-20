@@ -342,7 +342,7 @@ import { Button } from '@/components/ui/button'
 
 const OptimizationStepsManual = () => {
     return (
-        <div className="min-h-screen bg-muted/20 p-8">
+        <div className="min-h-screen bg-muted/30 p-8">
             {/* Header */}
             <div className="max-w-7xl mx-auto mb-8">
                 <div className="flex items-center justify-between mb-6">
@@ -405,14 +405,14 @@ const OptimizationStepsManual = () => {
             </div>
 
             {/* 단계별 최적화 과정 */}
-            <div className="max-w-7xl mx-auto space-y-6">
+            <div className="max-w-7xl mx-auto space-y-6 divide-y divide-border/50 py-2">
                 <h2 className="text-2xl font-bold text-foreground mb-4 flex items-center">
                     <Sparkles className="w-6 h-6 mr-2 text-foreground/60" />
                     단계별 최적화 과정
                 </h2>
 
                 {/* Step 1 */}
-                <Card className="border border-border/60 transition-colors">
+                <Card className="border border-border transition-colors">
                     <CardHeader className="bg-muted/30">
                         <CardTitle className="flex items-center justify-between">
                             <div className="flex items-center">
@@ -456,7 +456,7 @@ const OptimizationStepsManual = () => {
                 </Card>
 
                 {/* Step 2 */}
-                <Card className="border border-border/60 transition-colors">
+                <Card className="border border-border transition-colors">
                     <CardHeader className="bg-muted/30">
                         <CardTitle className="flex items-center justify-between">
                             <div className="flex items-center">
@@ -510,7 +510,7 @@ $row.remove(); // 즉시 제거!`}</code>
                 </Card>
 
                 {/* Step 3 */}
-                <Card className="border border-border/60 transition-colors">
+                <Card className="border border-border transition-colors">
                     <CardHeader className="bg-muted/30">
                         <CardTitle className="flex items-center justify-between">
                             <div className="flex items-center">
@@ -531,7 +531,7 @@ $row.remove(); // 즉시 제거!`}</code>
                 </Card>
 
                 {/* 최종 코드 */}
-                <Card className="border border-border/60">
+                <Card className="border border-border">
                     <CardHeader className="bg-muted/40">
                         <CardTitle className="flex items-center">
                             <Rocket className="w-5 h-5 mr-2 text-foreground/70" />
@@ -562,7 +562,7 @@ $row.remove(); // 즉시 제거!`}</code>
                 </Card>
 
                 {/* 성능 비교 */}
-                <Card className="border border-border/60 bg-background">
+                <Card className="border border-border bg-background">
                     <CardHeader>
                         <CardTitle className="flex items-center">
                             <Clock className="w-5 h-5 mr-2 text-foreground/70" />
