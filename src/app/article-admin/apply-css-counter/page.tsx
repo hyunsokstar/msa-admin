@@ -342,7 +342,7 @@ import { Button } from '@/components/ui/button'
 
 const OptimizationStepsManual = () => {
     return (
-        <div className="min-h-screen bg-muted/30 p-8">
+        <div className="min-h-screen bg-slate-100 p-8">
             {/* Header */}
             <div className="max-w-7xl mx-auto mb-8">
                 <div className="flex items-center justify-between mb-6">
@@ -370,13 +370,13 @@ const OptimizationStepsManual = () => {
             {/* 원본 코드 */}
             <div className="max-w-7xl mx-auto mb-8">
                 <Card className="border border-border/60">
-                    <CardHeader className="bg-muted/40">
+                    <CardHeader className="bg-muted/40 border-b border-border/60">
                         <CardTitle className="flex items-center">
                             <Code2 className="w-5 h-5 mr-2 text-foreground/70" />
                             원본 코드 (최적화 전)
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="pt-6">
+                    <CardContent className="pt-6 space-y-6">
                         <pre className="bg-slate-900 text-white p-6 rounded-lg overflow-x-auto">
                             <code className="text-sm">{`$(document).on('click', "button.remove_row_btn", function() {
     
@@ -413,7 +413,7 @@ const OptimizationStepsManual = () => {
 
                 {/* Step 1 */}
                 <Card className="border border-border transition-colors">
-                    <CardHeader className="bg-muted/30">
+                    <CardHeader className="bg-muted/30 border-b border-border/60">
                         <CardTitle className="flex items-center justify-between">
                             <div className="flex items-center">
                                 <div className="w-8 h-8 bg-muted text-foreground rounded-full flex items-center justify-center font-bold mr-3">
@@ -424,7 +424,7 @@ const OptimizationStepsManual = () => {
                             <Badge variant="outline" className="text-foreground/70">CSS</Badge>
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="pt-6">
+                    <CardContent className="pt-6 space-y-6">
                         <div className="space-y-4">
                             <p className="text-muted-foreground mb-4">자동 번호 매기기를 위한 CSS 추가 (JavaScript 번호 갱신 제거)</p>
                             <pre className="bg-slate-900 text-white p-4 rounded-lg">
@@ -447,7 +447,8 @@ const OptimizationStepsManual = () => {
     display: none !important; /* 기존 번호 숨김 */
 }`}</code>
                             </pre>
-                            <div className="flex items-center gap-2 mt-4 text-foreground/70">
+                            <div className="h-px bg-border/60 my-2" />
+                            <div className="flex items-center gap-2 mt-2 text-foreground/70">
                                 <CheckCircle2 className="w-5 h-5 text-foreground/70" />
                                 <span className="text-sm font-medium">효과: JavaScript 번호 갱신 로직 제거</span>
                             </div>
@@ -457,7 +458,7 @@ const OptimizationStepsManual = () => {
 
                 {/* Step 2 */}
                 <Card className="border border-border transition-colors">
-                    <CardHeader className="bg-muted/30">
+                    <CardHeader className="bg-muted/30 border-b border-border/60">
                         <CardTitle className="flex items-center justify-between">
                             <div className="flex items-center">
                                 <div className="w-8 h-8 bg-muted text-foreground rounded-full flex items-center justify-center font-bold mr-3">
@@ -468,7 +469,7 @@ const OptimizationStepsManual = () => {
                             <Badge variant="outline" className="text-foreground/70">핵심 개선</Badge>
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="pt-6">
+                    <CardContent className="pt-6 space-y-6">
                         <div className="space-y-4">
                             <p className="text-muted-foreground mb-4">성능 병목인 draw() 메서드를 제거하고 직접 DOM 조작</p>
 
@@ -491,8 +492,8 @@ $row.remove(); // 즉시 제거!`}</code>
                                     </pre>
                                 </div>
                             </div>
-
-                            <div className="bg-muted/30 p-4 rounded-lg border border-border/60 mt-4">
+                            <div className="h-px bg-border/60 my-2" />
+                            <div className="bg-muted/30 p-4 rounded-lg border border-border/60 mt-2">
                                 <div className="flex items-start gap-2">
                                     <Zap className="w-5 h-5 text-foreground/70 flex-shrink-0 mt-0.5" />
                                     <div>
@@ -511,7 +512,7 @@ $row.remove(); // 즉시 제거!`}</code>
 
                 {/* Step 3 */}
                 <Card className="border border-border transition-colors">
-                    <CardHeader className="bg-muted/30">
+                    <CardHeader className="bg-muted/30 border-b border-border/60">
                         <CardTitle className="flex items-center justify-between">
                             <div className="flex items-center">
                                 <div className="w-8 h-8 bg-muted text-foreground rounded-full flex items-center justify-center font-bold mr-3">
@@ -522,7 +523,7 @@ $row.remove(); // 즉시 제거!`}</code>
                             <Badge variant="outline" className="text-foreground/70">문서화</Badge>
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="pt-6">
+                    <CardContent className="pt-6 space-y-6">
                         <p className="text-slate-600 mb-4">CSS counter 동작 설명 주석 추가</p>
                         <pre className="bg-slate-900 text-white p-4 rounded-lg">
                             <code className="text-sm">{`// CSS counter가 자동으로 번호 재계산 - 수동 DOM 조작 불필요`}</code>
@@ -532,13 +533,13 @@ $row.remove(); // 즉시 제거!`}</code>
 
                 {/* 최종 코드 */}
                 <Card className="border border-border">
-                    <CardHeader className="bg-muted/40">
+                    <CardHeader className="bg-muted/40 border-b border-border/60">
                         <CardTitle className="flex items-center">
                             <Rocket className="w-5 h-5 mr-2 text-foreground/70" />
                             최종 최적화 코드
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="pt-6">
+                    <CardContent className="pt-6 space-y-6">
                         <pre className="bg-slate-900 text-white p-6 rounded-lg overflow-x-auto">
                             <code className="text-sm">{`$(document).on('click', "button.remove_row_btn", function() {
     
@@ -563,14 +564,14 @@ $row.remove(); // 즉시 제거!`}</code>
 
                 {/* 성능 비교 */}
                 <Card className="border border-border bg-background">
-                    <CardHeader>
+                    <CardHeader className="border-b border-border/60">
                         <CardTitle className="flex items-center">
                             <Clock className="w-5 h-5 mr-2 text-foreground/70" />
                             성능 비교 요약
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:divide-x md:divide-border/60">
                             <div className="text-center">
                                 <p className="text-sm text-muted-foreground mb-2">응답 시간</p>
                                 <div className="flex items-center justify-center gap-3">
