@@ -306,6 +306,24 @@ $row.remove();
                 </Card>
             </div>
 
+            {/* 최종 결과 */}
+            <div className="max-w-7xl mx-auto mt-8">
+
+                {/* 바로 보기 링크 */}
+                <div className="mt-4 flex items-center gap-3">
+                    <Button asChild variant="outline">
+                        <a href="/samples/apply-css-counter/before.jsp.txt" target="_blank" rel="noreferrer">
+                            이전 JSP 코드 보기
+                        </a>
+                    </Button>
+                    <Button asChild variant="outline">
+                        <a href="/samples/apply-css-counter/after.jsp.txt" target="_blank" rel="noreferrer">
+                            이후 JSP 코드 보기
+                        </a>
+                    </Button>
+                </div>
+                <p className="mt-2 text-xs text-muted-foreground">새 탭에서 텍스트 파일로 열립니다.</p>
+            </div>
         </div>
     )
 }
