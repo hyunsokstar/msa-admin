@@ -473,23 +473,34 @@ const OptimizationStepsManual = () => {
                         <div className="space-y-4">
                             <p className="text-muted-foreground mb-4">성능 병목인 draw() 메서드를 제거하고 직접 DOM 조작</p>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <p className="text-sm font-semibold text-muted-foreground mb-2">❌ Before (느림)</p>
-                                    <pre className="bg-muted/30 p-3 rounded-lg border border-border/60">
-                                        <code className="text-xs text-foreground/80">{`// DataTable API 사용
+                            {/* 비교 테이블 */}
+                            <div className="overflow-hidden border border-border/60 rounded-lg">
+                                <div className="grid grid-cols-2 min-h-0">
+                                    <div className="border-r border-border/60 bg-red-50/30">
+                                        <div className="p-3 border-b border-border/60 bg-red-100/40">
+                                            <p className="text-sm font-semibold text-red-700/80">❌ Before (느림)</p>
+                                        </div>
+                                        <div className="p-3">
+                                            <pre className="bg-slate-900 text-white p-3 rounded text-xs overflow-x-auto">
+                                                <code>{`// DataTable API 사용
 if ($.fn.DataTable.isDataTable('#myTable_cust')) {
     var table = $('#myTable_cust').DataTable();
     table.row($row).remove().draw(false);
 }`}</code>
-                                    </pre>
-                                </div>
-                                <div>
-                                    <p className="text-sm font-semibold text-muted-foreground mb-2">✅ After (빠름)</p>
-                                    <pre className="bg-muted/30 p-3 rounded-lg border border-border/60">
-                                        <code className="text-xs text-foreground/80">{`// 직접 DOM 조작
+                                            </pre>
+                                        </div>
+                                    </div>
+                                    <div className="bg-green-50/30">
+                                        <div className="p-3 border-b border-border/60 bg-green-100/40">
+                                            <p className="text-sm font-semibold text-green-700/80">✅ After (빠름)</p>
+                                        </div>
+                                        <div className="p-3">
+                                            <pre className="bg-slate-900 text-white p-3 rounded text-xs overflow-x-auto">
+                                                <code>{`// 직접 DOM 조작
 $row.remove(); // 즉시 제거!`}</code>
-                                    </pre>
+                                            </pre>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div className="h-px bg-border/60 my-2" />
@@ -540,7 +551,7 @@ $row.remove(); // 즉시 제거!`}</code>
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="pt-6 space-y-6">
-                        <pre className="bg-slate-900 text-white p-6 rounded-lg overflow-x-auto">
+                        <pre className="bg-slate-900 text-white p-6 rounded-lg overflow-x-auto border border-slate-700">
                             <code className="text-sm">{`$(document).on('click', "button.remove_row_btn", function() {
     
     var $row = $(this).closest('tr');
@@ -571,29 +582,38 @@ $row.remove(); // 즉시 제거!`}</code>
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:divide-x md:divide-border/60">
-                            <div className="text-center">
-                                <p className="text-sm text-muted-foreground mb-2">응답 시간</p>
-                                <div className="flex items-center justify-center gap-3">
-                                    <span className="text-2xl font-bold text-foreground">2,000ms</span>
-                                    <ArrowRight className="w-5 h-5 text-slate-400" />
-                                    <span className="text-2xl font-bold text-foreground">50ms</span>
+                        {/* 성능 비교 테이블 */}
+                        <div className="overflow-hidden border border-border/60 rounded-lg bg-slate-50/50">
+                            <div className="grid grid-cols-3 min-h-0 divide-x divide-border/60">
+                                <div className="text-center p-4 bg-blue-50/40">
+                                    <div className="border-b border-border/60 pb-2 mb-3">
+                                        <p className="text-sm font-medium text-slate-600">응답 시간</p>
+                                    </div>
+                                    <div className="flex flex-col items-center gap-2">
+                                        <span className="text-xl font-bold text-red-600">2,000ms</span>
+                                        <ArrowRight className="w-4 h-4 text-slate-400" />
+                                        <span className="text-xl font-bold text-green-600">50ms</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="text-center">
-                                <p className="text-sm text-muted-foreground mb-2">DOM Reflow</p>
-                                <div className="flex items-center justify-center gap-3">
-                                    <span className="text-2xl font-bold text-foreground">100회</span>
-                                    <ArrowRight className="w-5 h-5 text-slate-400" />
-                                    <span className="text-2xl font-bold text-foreground">0회</span>
+                                <div className="text-center p-4 bg-purple-50/40">
+                                    <div className="border-b border-border/60 pb-2 mb-3">
+                                        <p className="text-sm font-medium text-slate-600">DOM Reflow</p>
+                                    </div>
+                                    <div className="flex flex-col items-center gap-2">
+                                        <span className="text-xl font-bold text-red-600">100회</span>
+                                        <ArrowRight className="w-4 h-4 text-slate-400" />
+                                        <span className="text-xl font-bold text-green-600">0회</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="text-center">
-                                <p className="text-sm text-muted-foreground mb-2">코드 라인</p>
-                                <div className="flex items-center justify-center gap-3">
-                                    <span className="text-2xl font-bold text-foreground">15줄</span>
-                                    <ArrowRight className="w-5 h-5 text-slate-400" />
-                                    <span className="text-2xl font-bold text-foreground">10줄</span>
+                                <div className="text-center p-4 bg-amber-50/40">
+                                    <div className="border-b border-border/60 pb-2 mb-3">
+                                        <p className="text-sm font-medium text-slate-600">코드 라인</p>
+                                    </div>
+                                    <div className="flex flex-col items-center gap-2">
+                                        <span className="text-xl font-bold text-red-600">15줄</span>
+                                        <ArrowRight className="w-4 h-4 text-slate-400" />
+                                        <span className="text-xl font-bold text-green-600">10줄</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
