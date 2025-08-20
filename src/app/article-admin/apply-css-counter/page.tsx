@@ -342,7 +342,7 @@ import { Button } from '@/components/ui/button'
 
 const OptimizationStepsManual = () => {
     return (
-        <div className="min-h-screen bg-slate-100 p-8">
+        <div className="min-h-screen bg-slate-50 p-8">
             {/* Header */}
             <div className="max-w-7xl mx-auto mb-8">
                 <div className="flex items-center justify-between mb-6">
@@ -369,8 +369,8 @@ const OptimizationStepsManual = () => {
 
             {/* 원본 코드 */}
             <div className="max-w-7xl mx-auto mb-8">
-                <Card className="border border-border/60">
-                    <CardHeader className="bg-muted/40 border-b border-border/60">
+                <Card className="border border-border/60 bg-red-50/60">
+                    <CardHeader className="bg-red-100/50 border-b border-border/60">
                         <CardTitle className="flex items-center">
                             <Code2 className="w-5 h-5 mr-2 text-foreground/70" />
                             원본 코드 (최적화 전)
@@ -412,8 +412,8 @@ const OptimizationStepsManual = () => {
                 </h2>
 
                 {/* Step 1 */}
-                <Card className="border border-border transition-colors">
-                    <CardHeader className="bg-muted/30 border-b border-border/60">
+                <Card className="border border-border transition-colors bg-blue-50/60">
+                    <CardHeader className="bg-blue-100/50 border-b border-border/60">
                         <CardTitle className="flex items-center justify-between">
                             <div className="flex items-center">
                                 <div className="w-8 h-8 bg-muted text-foreground rounded-full flex items-center justify-center font-bold mr-3">
@@ -457,8 +457,8 @@ const OptimizationStepsManual = () => {
                 </Card>
 
                 {/* Step 2 */}
-                <Card className="border border-border transition-colors">
-                    <CardHeader className="bg-muted/30 border-b border-border/60">
+                <Card className="border border-border transition-colors bg-green-50/60">
+                    <CardHeader className="bg-green-100/50 border-b border-border/60">
                         <CardTitle className="flex items-center justify-between">
                             <div className="flex items-center">
                                 <div className="w-8 h-8 bg-muted text-foreground rounded-full flex items-center justify-center font-bold mr-3">
@@ -522,8 +522,8 @@ $row.remove(); // 즉시 제거!`}</code>
                 </Card>
 
                 {/* Step 3 */}
-                <Card className="border border-border transition-colors">
-                    <CardHeader className="bg-muted/30 border-b border-border/60">
+                <Card className="border border-border transition-colors bg-purple-50/60">
+                    <CardHeader className="bg-purple-100/50 border-b border-border/60">
                         <CardTitle className="flex items-center justify-between">
                             <div className="flex items-center">
                                 <div className="w-8 h-8 bg-muted text-foreground rounded-full flex items-center justify-center font-bold mr-3">
@@ -543,8 +543,8 @@ $row.remove(); // 즉시 제거!`}</code>
                 </Card>
 
                 {/* 최종 코드 */}
-                <Card className="border border-border">
-                    <CardHeader className="bg-muted/40 border-b border-border/60">
+                <Card className="border border-border bg-emerald-50/60">
+                    <CardHeader className="bg-emerald-100/50 border-b border-border/60">
                         <CardTitle className="flex items-center">
                             <Rocket className="w-5 h-5 mr-2 text-foreground/70" />
                             최종 최적화 코드
@@ -574,8 +574,8 @@ $row.remove(); // 즉시 제거!`}</code>
                 </Card>
 
                 {/* 성능 비교 */}
-                <Card className="border border-border bg-background">
-                    <CardHeader className="border-b border-border/60">
+                <Card className="border border-border bg-slate-50/60">
+                    <CardHeader className="border-b border-border/60 bg-slate-100/50">
                         <CardTitle className="flex items-center">
                             <Clock className="w-5 h-5 mr-2 text-foreground/70" />
                             성능 비교 요약
@@ -583,7 +583,7 @@ $row.remove(); // 즉시 제거!`}</code>
                     </CardHeader>
                     <CardContent>
                         {/* 성능 비교 테이블 */}
-                        <div className="overflow-hidden border border-border/60 rounded-lg bg-slate-50/50">
+                        <div className="overflow-hidden border border-border/60 rounded-lg bg-slate-50/70">
                             <div className="grid grid-cols-3 min-h-0 divide-x divide-border/60">
                                 <div className="text-center p-4 bg-blue-50/40">
                                     <div className="border-b border-border/60 pb-2 mb-3">
