@@ -1,0 +1,187 @@
+<%@ page language="java" contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spr" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="sf" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %> 
+<%@ page import="com.slescb.core.util.ConstantsWeb" %>
+<%@ page import="com.slescb.admin.util.SessionUtil" %>
+<jsp:include page="/WEB-INF/jsp/common/header.jsp" />
+<style>
+.form_input{
+    font-size: 13px;
+    border: 1px solid #eaf0f7;
+    border-radius: 5px;
+    height: calc(2rem + 0.8px);
+    color: #2f5275;
+    vertical-align: middle;
+}
+/* style="width: 80%; display: inline-block;" */
+.form_input_head{ 
+    font-size: 13px;
+    border: 1px solid #eaf0f7;
+    border-radius: 5px;
+    height: calc(2rem + 0.8px);
+    color: #2f5275;
+    vertical-align: middle;
+    width: 75%;
+}
+
+.form_button{
+    font-size: 13px;
+    border-radius: 5px;
+    height: calc(1.5rem + 0.8px);
+    vertical-align: middle;
+    background-color: #ff5da0;
+    border: 1px solid #ff5da0;
+    color: #ffffff;
+    -webkit-box-shadow: 0 2px 6px 0 rgb(255 93 160 / 50%);
+    box-shadow: 0 2px 6px 0 rgb(255 93 160 / 50%);
+}
+
+.vtca-m{
+    vertical-align: middle !important;
+}
+
+/* #myTable_cust.table td, #myTable_cust.table th { */
+/*     padding: 0; */
+/* } */
+
+.myTable_style th{
+     padding: 0.05rem 0.7rem;
+}
+
+.text_head{
+    margin: 0.376rem;
+}
+
+.cust-right-line {
+    border-right: 2px dashed #f1f5fa;
+}
+
+.spinner-border2 {
+    display: inline-block;
+    width: 4rem;
+    height: 4rem;
+    vertical-align: text-bottom;
+    border: 0.3em solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    -webkit-animation: spinner-border .75s linear infinite;
+    animation: spinner-border .75s linear infinite;
+}
+
+.wrap-loading2 {
+     z-index: 1; 
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.2);
+}
+
+.dnc_del_btn {
+    cursor : pointer
+}
+
+/* Simple CSS Counter - 최적화된 성능 */
+#myTable_cust tbody {
+    counter-reset: row-number;
+}
+
+#myTable_cust tbody tr {
+    counter-increment: row-number;
+}
+
+#myTable_cust tbody tr td:first-child p {
+    display: none !important; /* Hide manual row numbers */
+}
+
+#myTable_cust tbody tr td:first-child::before {
+    content: counter(row-number);
+    font-weight: normal;
+    color: #2f5275;
+}
+
+
+/* Basic styling */
+
+[type=checkbox] {
+  width: 1.8rem;
+  height: 1.8rem;
+  color: dodgerblue;
+  vertical-align: middle;
+  -webkit-appearance: none;
+  background: none;
+  border: 0;
+  outline: 0;
+  flex-grow: 0;
+  border-radius: 50%;
+  background-color: #FFFFFF;
+  transition: background 300ms;
+  cursor: pointer;
+}
+
+
+/* Pseudo element for check styling */
+
+[type=checkbox]::before {
+  content: "";
+  color: transparent;
+  display: block;
+  width: inherit;
+  height: inherit;
+  border-radius: inherit;
+  border: 0;
+  background-color: transparent;
+  background-size: contain;
+  box-shadow: inset 0 0 0 1px #CCD3D8;
+}
+
+
+/* Checked */
+
+
+
+[type=checkbox]:checked {
+  background-color: currentcolor;
+}
+
+[type=checkbox]:checked::before {
+  box-shadow: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E %3Cpath d='M15.88 8.29L10 14.17l-1.88-1.88a.996.996 0 1 0-1.41 1.41l2.59 2.59c.39.39 1.02.39 1.41 0L17.3 9.7a.996.996 0 0 0 0-1.41c-.39-.39-1.03-.39-1.42 0z' fill='%23fff'/%3E %3C/svg%3E");
+}
+
+
+/* Disabled */
+
+[type=checkbox]:disabled {
+  background-color: #CCD3D8;
+  opacity: 0.84;
+  cursor: not-allowed;
+}
+
+
+/* IE */
+
+[type=checkbox]::-ms-check {
+  content: "";
+  color: transparent;
+  display: block;
+  width: inherit;
+  height: inherit;
+  border-radius: inherit;
+  border: 0;
+  background-color: transparent;
+  background-size: contain;
+  box-shadow: inset 0 0 0 1px #CCD3D8;
+}
+
+
+[type=checkbox]:checked::-ms-check {
+  box-shadow: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E %3Cpath d='M15.88 8.29L10 14.17l-1.88-1.88a.996.996 0 1 0-1.41 1.41l2.59 2.59c.39.39 1.02.39 1.41 0L17.3 9.7a.996.996 0 0 0 0-1.41c-.39-.39-1.03-.39-1.42 0z' fill='%23fff'/%3E %3C/svg%3E");
+}
+
+
+</style>
+<!-- 이하 모달, 페이지, 스크립트 (이전 코드 전체) -->
