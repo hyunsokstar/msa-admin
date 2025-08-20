@@ -342,7 +342,7 @@ import { Button } from '@/components/ui/button'
 
 const OptimizationStepsManual = () => {
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-8">
+        <div className="min-h-screen bg-background p-8">
             {/* Header */}
             <div className="max-w-7xl mx-auto mb-8">
                 <div className="flex items-center justify-between mb-6">
@@ -352,16 +352,16 @@ const OptimizationStepsManual = () => {
                         </h1>
                         <p className="text-lg text-slate-600">DataTable 2초 지연 문제 해결 과정</p>
                     </div>
-                    <Badge className="bg-green-500 text-white px-4 py-2 text-lg">
-                        <TrendingUp className="w-5 h-5 mr-2" />
+                    <Badge variant="outline" className="px-3 py-1.5 text-sm rounded-full border-border/60 text-foreground/80">
+                        <TrendingUp className="w-5 h-5 mr-2 text-foreground/70" />
                         97.5% 성능 개선
                     </Badge>
                 </div>
 
                 {/* 핵심 문제 */}
-                <Alert className="mb-8 border-red-200 bg-red-50">
-                    <AlertTriangle className="h-5 w-5 text-red-600" />
-                    <AlertDescription className="text-slate-700">
+                <Alert className="mb-8 border-border bg-muted/30">
+                    <AlertTriangle className="h-5 w-5 text-foreground/70" />
+                    <AlertDescription className="text-muted-foreground">
                         <span className="font-semibold">문제 상황:</span> 100개 행 삭제 시 2초 지연 발생 → DataTable의 draw() 메서드가 원인
                     </AlertDescription>
                 </Alert>
@@ -369,10 +369,10 @@ const OptimizationStepsManual = () => {
 
             {/* 원본 코드 */}
             <div className="max-w-7xl mx-auto mb-8">
-                <Card className="border-2 border-slate-300">
-                    <CardHeader className="bg-slate-100">
+                <Card className="border border-border/60">
+                    <CardHeader className="bg-muted/40">
                         <CardTitle className="flex items-center">
-                            <Code2 className="w-5 h-5 mr-2 text-slate-600" />
+                            <Code2 className="w-5 h-5 mr-2 text-foreground/70" />
                             원본 코드 (최적화 전)
                         </CardTitle>
                     </CardHeader>
@@ -406,27 +406,27 @@ const OptimizationStepsManual = () => {
 
             {/* 단계별 최적화 과정 */}
             <div className="max-w-7xl mx-auto space-y-6">
-                <h2 className="text-2xl font-bold text-slate-800 mb-4 flex items-center">
-                    <Sparkles className="w-6 h-6 mr-2 text-yellow-500" />
+                <h2 className="text-2xl font-bold text-foreground mb-4 flex items-center">
+                    <Sparkles className="w-6 h-6 mr-2 text-foreground/60" />
                     단계별 최적화 과정
                 </h2>
 
                 {/* Step 1 */}
-                <Card className="border-2 hover:shadow-lg transition-shadow">
-                    <CardHeader className="bg-blue-50">
+                <Card className="border border-border/60 transition-colors">
+                    <CardHeader className="bg-muted/30">
                         <CardTitle className="flex items-center justify-between">
                             <div className="flex items-center">
-                                <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold mr-3">
+                                <div className="w-8 h-8 bg-muted text-foreground rounded-full flex items-center justify-center font-bold mr-3">
                                     1
                                 </div>
                                 <span>CSS Counter 추가</span>
                             </div>
-                            <Badge className="bg-blue-100 text-blue-700">CSS</Badge>
+                            <Badge variant="outline" className="text-foreground/70">CSS</Badge>
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="pt-6">
                         <div className="space-y-4">
-                            <p className="text-slate-600 mb-4">자동 번호 매기기를 위한 CSS 추가 (JavaScript 번호 갱신 제거)</p>
+                            <p className="text-muted-foreground mb-4">자동 번호 매기기를 위한 CSS 추가 (JavaScript 번호 갱신 제거)</p>
                             <pre className="bg-slate-900 text-white p-4 rounded-lg">
                                 <code className="text-sm">{`/* 새로 추가된 CSS */
 #myTable_cust tbody {
@@ -447,8 +447,8 @@ const OptimizationStepsManual = () => {
     display: none !important; /* 기존 번호 숨김 */
 }`}</code>
                             </pre>
-                            <div className="flex items-center gap-2 mt-4 text-green-600">
-                                <CheckCircle2 className="w-5 h-5" />
+                            <div className="flex items-center gap-2 mt-4 text-foreground/70">
+                                <CheckCircle2 className="w-5 h-5 text-foreground/70" />
                                 <span className="text-sm font-medium">효과: JavaScript 번호 갱신 로직 제거</span>
                             </div>
                         </div>
@@ -456,27 +456,27 @@ const OptimizationStepsManual = () => {
                 </Card>
 
                 {/* Step 2 */}
-                <Card className="border-2 hover:shadow-lg transition-shadow">
-                    <CardHeader className="bg-green-50">
+                <Card className="border border-border/60 transition-colors">
+                    <CardHeader className="bg-muted/30">
                         <CardTitle className="flex items-center justify-between">
                             <div className="flex items-center">
-                                <div className="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center font-bold mr-3">
+                                <div className="w-8 h-8 bg-muted text-foreground rounded-full flex items-center justify-center font-bold mr-3">
                                     2
                                 </div>
                                 <span>DataTable API 제거 & DOM 직접 조작</span>
                             </div>
-                            <Badge className="bg-green-100 text-green-700">핵심 개선</Badge>
+                            <Badge variant="outline" className="text-foreground/70">핵심 개선</Badge>
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="pt-6">
                         <div className="space-y-4">
-                            <p className="text-slate-600 mb-4">성능 병목인 draw() 메서드를 제거하고 직접 DOM 조작</p>
+                            <p className="text-muted-foreground mb-4">성능 병목인 draw() 메서드를 제거하고 직접 DOM 조작</p>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <p className="text-sm font-semibold text-red-600 mb-2">❌ Before (느림)</p>
-                                    <pre className="bg-red-50 p-3 rounded-lg border border-red-200">
-                                        <code className="text-xs text-red-800">{`// DataTable API 사용
+                                    <p className="text-sm font-semibold text-muted-foreground mb-2">❌ Before (느림)</p>
+                                    <pre className="bg-muted/30 p-3 rounded-lg border border-border/60">
+                                        <code className="text-xs text-foreground/80">{`// DataTable API 사용
 if ($.fn.DataTable.isDataTable('#myTable_cust')) {
     var table = $('#myTable_cust').DataTable();
     table.row($row).remove().draw(false);
@@ -484,20 +484,20 @@ if ($.fn.DataTable.isDataTable('#myTable_cust')) {
                                     </pre>
                                 </div>
                                 <div>
-                                    <p className="text-sm font-semibold text-green-600 mb-2">✅ After (빠름)</p>
-                                    <pre className="bg-green-50 p-3 rounded-lg border border-green-200">
-                                        <code className="text-xs text-green-800">{`// 직접 DOM 조작
+                                    <p className="text-sm font-semibold text-muted-foreground mb-2">✅ After (빠름)</p>
+                                    <pre className="bg-muted/30 p-3 rounded-lg border border-border/60">
+                                        <code className="text-xs text-foreground/80">{`// 직접 DOM 조작
 $row.remove(); // 즉시 제거!`}</code>
                                     </pre>
                                 </div>
                             </div>
 
-                            <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200 mt-4">
+                            <div className="bg-muted/30 p-4 rounded-lg border border-border/60 mt-4">
                                 <div className="flex items-start gap-2">
-                                    <Zap className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                                    <Zap className="w-5 h-5 text-foreground/70 flex-shrink-0 mt-0.5" />
                                     <div>
-                                        <p className="text-sm font-semibold text-yellow-800">성능 개선 효과</p>
-                                        <ul className="text-sm text-yellow-700 mt-1 space-y-1">
+                                        <p className="text-sm font-semibold text-foreground">성능 개선 효과</p>
+                                        <ul className="text-sm text-muted-foreground mt-1 space-y-1">
                                             <li>• draw() 호출 제거 → 테이블 재렌더링 없음</li>
                                             <li>• 2,000ms → 50ms (97.5% 개선)</li>
                                             <li>• DOM Reflow 100회 → 0회</li>
@@ -510,16 +510,16 @@ $row.remove(); // 즉시 제거!`}</code>
                 </Card>
 
                 {/* Step 3 */}
-                <Card className="border-2 hover:shadow-lg transition-shadow">
-                    <CardHeader className="bg-purple-50">
+                <Card className="border border-border/60 transition-colors">
+                    <CardHeader className="bg-muted/30">
                         <CardTitle className="flex items-center justify-between">
                             <div className="flex items-center">
-                                <div className="w-8 h-8 bg-purple-500 text-white rounded-full flex items-center justify-center font-bold mr-3">
+                                <div className="w-8 h-8 bg-muted text-foreground rounded-full flex items-center justify-center font-bold mr-3">
                                     3
                                 </div>
                                 <span>주석 추가 및 정리</span>
                             </div>
-                            <Badge className="bg-purple-100 text-purple-700">문서화</Badge>
+                            <Badge variant="outline" className="text-foreground/70">문서화</Badge>
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="pt-6">
@@ -531,10 +531,10 @@ $row.remove(); // 즉시 제거!`}</code>
                 </Card>
 
                 {/* 최종 코드 */}
-                <Card className="border-2 border-green-400 shadow-lg">
-                    <CardHeader className="bg-gradient-to-r from-green-100 to-emerald-100">
+                <Card className="border border-border/60">
+                    <CardHeader className="bg-muted/40">
                         <CardTitle className="flex items-center">
-                            <Rocket className="w-5 h-5 mr-2 text-green-600" />
+                            <Rocket className="w-5 h-5 mr-2 text-foreground/70" />
                             최종 최적화 코드
                         </CardTitle>
                     </CardHeader>
@@ -562,37 +562,37 @@ $row.remove(); // 즉시 제거!`}</code>
                 </Card>
 
                 {/* 성능 비교 */}
-                <Card className="bg-gradient-to-r from-blue-50 to-indigo-50">
+                <Card className="border border-border/60 bg-background">
                     <CardHeader>
                         <CardTitle className="flex items-center">
-                            <Clock className="w-5 h-5 mr-2 text-indigo-600" />
+                            <Clock className="w-5 h-5 mr-2 text-foreground/70" />
                             성능 비교 요약
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div className="text-center">
-                                <p className="text-sm text-slate-600 mb-2">응답 시간</p>
+                                <p className="text-sm text-muted-foreground mb-2">응답 시간</p>
                                 <div className="flex items-center justify-center gap-3">
-                                    <span className="text-2xl font-bold text-red-500">2,000ms</span>
+                                    <span className="text-2xl font-bold text-foreground">2,000ms</span>
                                     <ArrowRight className="w-5 h-5 text-slate-400" />
-                                    <span className="text-2xl font-bold text-green-500">50ms</span>
+                                    <span className="text-2xl font-bold text-foreground">50ms</span>
                                 </div>
                             </div>
                             <div className="text-center">
-                                <p className="text-sm text-slate-600 mb-2">DOM Reflow</p>
+                                <p className="text-sm text-muted-foreground mb-2">DOM Reflow</p>
                                 <div className="flex items-center justify-center gap-3">
-                                    <span className="text-2xl font-bold text-red-500">100회</span>
+                                    <span className="text-2xl font-bold text-foreground">100회</span>
                                     <ArrowRight className="w-5 h-5 text-slate-400" />
-                                    <span className="text-2xl font-bold text-green-500">0회</span>
+                                    <span className="text-2xl font-bold text-foreground">0회</span>
                                 </div>
                             </div>
                             <div className="text-center">
-                                <p className="text-sm text-slate-600 mb-2">코드 라인</p>
+                                <p className="text-sm text-muted-foreground mb-2">코드 라인</p>
                                 <div className="flex items-center justify-center gap-3">
-                                    <span className="text-2xl font-bold text-red-500">15줄</span>
+                                    <span className="text-2xl font-bold text-foreground">15줄</span>
                                     <ArrowRight className="w-5 h-5 text-slate-400" />
-                                    <span className="text-2xl font-bold text-green-500">10줄</span>
+                                    <span className="text-2xl font-bold text-foreground">10줄</span>
                                 </div>
                             </div>
                         </div>
@@ -600,12 +600,12 @@ $row.remove(); // 즉시 제거!`}</code>
                 </Card>
 
                 {/* 핵심 포인트 */}
-                <Alert className="border-green-200 bg-green-50">
-                    <CheckCircle2 className="h-5 w-5 text-green-600" />
+                <Alert className="border-border bg-muted/30">
+                    <CheckCircle2 className="h-5 w-5 text-foreground/70" />
                     <AlertDescription>
                         <span className="font-semibold">핵심 변경사항:</span> DataTable의 <code className="bg-white px-1 py-0.5 rounded text-xs">draw()</code> 메서드를 제거하고
                         직접 DOM 조작(<code className="bg-white px-1 py-0.5 rounded text-xs">$row.remove()</code>)으로 변경한 것이
-                        <span className="font-bold text-green-600"> 전체 성능 개선의 95% 이상</span>을 차지합니다.
+                        <span className="font-bold text-foreground"> 전체 성능 개선의 95% 이상</span>을 차지합니다.
                     </AlertDescription>
                 </Alert>
             </div>
