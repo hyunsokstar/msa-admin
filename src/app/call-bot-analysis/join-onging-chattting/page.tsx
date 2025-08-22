@@ -188,23 +188,6 @@ function onMessage(msg){
                     </CardContent>
                 </Card>
 
-                {/* 개선 아이디어 */}
-                <Card id="improve" className="group relative overflow-hidden border border-border bg-white/70 dark:bg-slate-900/60 backdrop-blur-sm shadow-sm hover:shadow-md transition">
-                    <span aria-hidden className="absolute inset-y-0 left-0 w-1 bg-emerald-400/80 group-hover:bg-emerald-500" />
-                    <CardHeader className="pb-3">
-                        <CardTitle className="flex items-center gap-2 text-lg"><Activity className="h-5 w-5" />더 좋게 만들 수 있는 방법들</CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-xs space-y-3">
-                        <ul className="list-disc pl-5 space-y-1 text-muted-foreground">
-                            <li>변경된 부분만 업데이트하기 (전체 목록 다시 로드 대신)</li>
-                            <li>React로 바꿔서 더 빠르게 만들기</li>
-                            <li>팝업 대신 같은 페이지에서 채팅하기</li>
-                            <li>여러 상담사가 동시에 들어가지 못하게 막기</li>
-                            <li>연결이 끊어졌는지 더 정확하게 감지하기</li>
-                        </ul>
-                    </CardContent>
-                </Card>
-
                 {/* 참고 자료 */}
                 <Card id="legacy" className="group relative overflow-hidden border border-border bg-white/70 dark:bg-slate-900/60 backdrop-blur-sm shadow-sm hover:shadow-md transition">
                     <span aria-hidden className="absolute inset-y-0 left-0 w-1 bg-slate-400/70 group-hover:bg-slate-500" />
