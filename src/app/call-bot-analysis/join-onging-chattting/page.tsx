@@ -20,7 +20,7 @@ export default function Page() {
             <div aria-hidden className="absolute -z-10 bottom-10 right-0 h-72 w-72 translate-x-1/3 bg-[radial-gradient(circle_at_center,rgba(14,165,233,0.18),transparent_70%)]" />
             <div className="max-w-5xl mx-auto space-y-10">
                 <header className="space-y-2">
-                    <h1 className="text-3xl font-bold tracking-tight">상담 채팅 중간 참여(개입) 프로세스</h1>
+                    <h1 className="text-3xl font-bold tracking-tight">상담 채팅 중간 참여(개입) 프로세스 사전 조사</h1>
                     <p className="text-muted-foreground">콜봇 자동응답 진행 중인 채널에 상담사가 실시간 합류(Step-In)하여 대화를 승계 / 지원하는 전체 흐름</p>
                 </header>
 
