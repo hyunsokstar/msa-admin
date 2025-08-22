@@ -55,7 +55,7 @@ export default function Page() {
                             return steps.map((s, i) => (
                                 <div
                                     key={s.no}
-                                    className="relative group rounded-xl border border-slate-300/70 dark:border-slate-700/70 bg-white/90 dark:bg-slate-950/60 px-4 pt-4 pb-5 shadow-sm hover:shadow-md transition-all duration-200"
+                                    className="relative group rounded-lg border border-slate-300/60 dark:border-slate-700/60 bg-slate-50/70 dark:bg-slate-900/55 px-4 py-4 shadow-sm transition-colors duration-200 hover:bg-slate-100/80 dark:hover:bg-slate-800/60 hover:border-slate-400/70 dark:hover:border-slate-600/70"
                                 >
                                     <span aria-hidden className="absolute inset-y-0 left-0 w-[3px] rounded-r bg-gradient-to-b from-slate-300/70 to-slate-200/70 dark:from-slate-700 dark:to-slate-600 group-hover:from-slate-400/80 group-hover:to-slate-300/70 transition-colors" />
                                     <div className="relative space-y-2">
