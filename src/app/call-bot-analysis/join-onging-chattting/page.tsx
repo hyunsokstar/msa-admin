@@ -6,9 +6,8 @@ import { Code2, Activity, MessageSquare, PlugZap, Rocket, FileText, ArrowRight, 
 import Link from 'next/link'
 
 /**
- * 상담 채팅 중간 개입(중간 참여 / Step-In) 프로세스 매뉴얼
- * - 기존 JSP 기반 SockJS + jQuery(DataTables) 흐름을 문서화 & React 마이그레이션 가이드 관점 정리
- * - 실시간 채널 상태 모니터링 + 채팅 개입 팝업 + 종료(leave) 시 stepInOut 업데이트
+ * 상담사 채팅 중간 참여 가이드
+ * - 고객-챗봇 대화 중에 상담사가 중간에 들어가는 방법
  */
 export default function Page() {
     return (
@@ -19,6 +18,17 @@ export default function Page() {
             <div aria-hidden className="absolute -z-10 top-0 left-1/2 h-[420px] w-[720px] -translate-x-1/2 bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.18),transparent_70%)]" />
             <div aria-hidden className="absolute -z-10 bottom-10 right-0 h-72 w-72 translate-x-1/3 bg-[radial-gradient(circle_at_center,rgba(14,165,233,0.18),transparent_70%)]" />
             <div className="max-w-5xl mx-auto space-y-10">
+                <header className="space-y-2">
+                    <h1 className="text-3xl font-bold tracking-tight">상담사 채팅 중간 참여 가이드</h1>
+                    <p className="text-muted-foreground">고객이 챗봇과 대화 중일 때 상담사가 중간에 들어가서 직접 응답하는 방법</p>
+                </header>
+
+                <Alert className="border-border bg-muted/40">
+                    <Activity className="h-4 w-4" />
+                    <AlertDescription>
+                        <strong>핵심:</strong> 웹소켓은 "데이터가 바뀌었다"는 알림만 보내고, 실제 목록은 서버에서 다시 가져옵니다.
+                    </AlertDescription>
+                </Alert>
                 <header className="space-y-2">
                     <h1 className="text-3xl font-bold tracking-tight">상담 채팅 중간 참여(개입) 프로세스 사전 조사</h1>
                     <p className="text-muted-foreground">콜봇 자동응답 진행 중인 채널에 상담사가 실시간 합류(Step-In)하여 대화를 승계 / 지원하는 전체 흐름</p>
@@ -41,10 +51,10 @@ export default function Page() {
                     <CardContent className="relative z-10 grid gap-5 md:grid-cols-4">
                         {(() => {
                             const steps = [
-                                { no: '0', label: '연결 & 핸들러 등록', desc: 'SockJS 세션 생성 후 onopen/onmessage/onclose 바인딩' },
-                                { no: '1', label: '목록 + 카운트 초기 조회', desc: 'getSocketData() 실행 → 표 데이터 & getSystemChannels() 카운트' },
-                                { no: '2', label: '실시간 트리거', desc: "서버 'on' 메시지 → getSocketData() 재호출" },
-                                { no: '3', label: '채팅 개입', desc: '상담상태 클릭 → 팝업 열고 stepInOut 상태 관리' },
+                                { no: '0', label: '연결 준비', desc: '시스템에 연결하고 메시지 받을 준비하기' },
+                                { no: '1', label: '목록 가져오기', desc: '현재 진행 중인 채팅 목록과 개수 확인하기' },
+                                { no: '2', label: '실시간 업데이트', desc: '변경사항이 있으면 목록 새로고침하기' },
+                                { no: '3', label: '채팅 참여', desc: '상담상태를 클릭해서 채팅창 열기' },
                             ];
                             const numColors = [
                                 'bg-indigo-600/70 dark:bg-indigo-400/60',
@@ -79,10 +89,10 @@ export default function Page() {
                 <Card id="step-1" className="group relative overflow-hidden border border-border bg-white/70 dark:bg-slate-900/60 backdrop-blur-sm shadow-sm hover:shadow-md transition">
                     <span aria-hidden className="absolute inset-y-0 left-0 w-1 bg-indigo-400/80 group-hover:bg-indigo-500" />
                     <CardHeader className="pb-3">
-                        <CardTitle className="flex items-center gap-2 text-lg"><Code2 className="h-5 w-5" />Step 1. 채널 목록 + 시스템 카운트 초기 조회</CardTitle>
+                        <CardTitle className="flex items-center gap-2 text-lg"><Code2 className="h-5 w-5" />Step 1. 채팅 목록 가져오기</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4 text-sm leading-relaxed">
-                        <p><code>getSocketData()</code> 가 최초 실행되면 테이블(채널 목록) AJAX 조회와 함께 내부적으로 <code>getSystemChannels()</code> 를 호출하거나 <code>drawCallback</code> 에서 행 수를 이용해 카운트를 보정합니다. 즉 <strong>목록 조회가 주(Primary) 액션</strong>이고 카운트는 그 결과(행 수) + 별도 API 로 확정됩니다.</p>
+                        <p>화면을 처음 열거나 새로고침할 때 <code>getSocketData()</code> 함수가 실행됩니다. 이 함수는 현재 진행 중인 채팅 목록을 서버에서 가져와서 화면에 표시합니다.</p>
                         <pre className="bg-slate-950 text-slate-100 text-xs p-4 rounded-lg overflow-x-auto">
                             {`function getSocketData(){
                 getSystemChannels(); // 카운트 선 조회 (전체/사용/대기)
@@ -103,9 +113,9 @@ export default function Page() {
                 });
             }`}</pre>
                         <ul className="list-disc pl-5 space-y-1 text-xs text-muted-foreground">
-                            <li>카운트 API(<code>getSystemChannels</code>) 는 전체 채널 허용 수 기준 + 현재 표시 행 수로 사용/대기 계산</li>
-                            <li>표 데이터 AJAX: <code>/admin/getSocketData_channel</code></li>
-                            <li>재호출 조건: 웹소켓 on 신호, 지점 변경, 수동/주기 새로고침</li>
+                            <li>목록 데이터: <code>/admin/getSocketData_channel</code></li>
+                            <li>카운트 데이터: <code>getSystemChannels()</code> 함수</li>
+                            <li>언제 실행: 페이지 로드, 지점 변경, 새로고침</li>
                         </ul>
                     </CardContent>
                 </Card>
@@ -114,10 +124,10 @@ export default function Page() {
                 <Card id="step-2" className="group relative overflow-hidden border border-border bg-white/70 dark:bg-slate-900/60 backdrop-blur-sm shadow-sm hover:shadow-md transition">
                     <span aria-hidden className="absolute inset-y-0 left-0 w-1 bg-amber-400/80 group-hover:bg-amber-500" />
                     <CardHeader className="pb-3">
-                        <CardTitle className="flex items-center gap-2 text-lg"><PlugZap className="h-5 w-5" />Step 2. 실시간 갱신 트리거 (SockJS onMessage)</CardTitle>
+                        <CardTitle className="flex items-center gap-2 text-lg"><PlugZap className="h-5 w-5" />Step 2. 실시간 업데이트 받기</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4 text-sm leading-relaxed">
-                        <p>SockJS 는 채널 상세 데이터 대신 <code>'on'</code> 문자열이 포함된 메시지로 <em>재조회 필요</em>만 알립니다.</p>
+                        <p>서버에서 "목록이 바뀌었어요"라는 신호를 보내면, 목록을 다시 가져와서 화면을 업데이트합니다.</p>
                         <pre className="bg-slate-950 text-slate-100 text-xs p-4 rounded-lg overflow-x-auto">
                             {`sockJs.onopen = onOpen;      // 연결 직후 서버에 최초 on 신호
 sockJs.onmessage = onMessage;  // 'on' 메시지 수신 시 재조회
@@ -131,11 +141,11 @@ function onMessage(msg){
     }
 }`}</pre>
                         <div className="rounded-md border bg-muted/40 p-3 text-xs space-y-1">
-                            <p className="font-medium">디자인 원칙</p>
+                            <p className="font-medium">간단히 말하면</p>
                             <ul className="list-disc pl-5 space-y-0.5 text-muted-foreground">
-                                <li>웹소켓은 <strong>변경 신호 최소화</strong> (경량)</li>
-                                <li>데이터 정합성은 <code>getSocketData()</code> 단일 경로</li>
-                                <li>Diff push 대비 단순 / 안정성↑</li>
+                                <li>웹소켓: "업데이트 있어요!" 알림만</li>
+                                <li>실제 데이터: 별도로 다시 가져오기</li>
+                                <li>장점: 빠르고 안정적</li>
                             </ul>
                         </div>
                     </CardContent>
@@ -145,10 +155,10 @@ function onMessage(msg){
                 <Card id="step-3" className="group relative overflow-hidden border border-border bg-white/70 dark:bg-slate-900/60 backdrop-blur-sm shadow-sm hover:shadow-md transition">
                     <span aria-hidden className="absolute inset-y-0 left-0 w-1 bg-rose-400/80 group-hover:bg-rose-500" />
                     <CardHeader className="pb-3">
-                        <CardTitle className="flex items-center gap-2 text-lg"><Rocket className="h-5 w-5" />Step 3. 상담 상태 클릭 → 채팅 개입 팝업 & 종료 처리</CardTitle>
+                        <CardTitle className="flex items-center gap-2 text-lg"><Rocket className="h-5 w-5" />Step 3. 채팅창 열어서 참여하기</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4 text-sm leading-relaxed">
-                        <p>8번째 컬럼(상담상태) 클릭 시 새 창을 열어 해당 세션에 Step-In. 새 창 닫힘(<code>beforeunload</code>) 시 서버에 stepInOut 상태 전송.</p>
+                        <p>목록에서 "상담상태" 컬럼을 클릭하면 새 창이 열리고, 그 고객과 직접 채팅할 수 있습니다. 창을 닫으면 자동으로 참여 종료됩니다.</p>
                         <pre className="bg-slate-950 text-slate-100 text-xs p-4 rounded-lg overflow-x-auto">
                             {`$(document).on('click', '#channelTable tbody tr td:nth-child(8)', function(){
     const rowData = channelTable.row($(this).closest('tr')).data();
@@ -168,13 +178,30 @@ function onMessage(msg){
     });
 });`}</pre>
                         <div className="rounded-md border bg-muted/40 p-3 text-xs space-y-1">
-                            <p className="font-medium">팁 / 주의</p>
+                            <p className="font-medium">주의사항</p>
                             <ul className="list-disc pl-5 space-y-0.5 text-muted-foreground">
-                                <li>Concurrent 개입 방지: 서버 단에서 <code>stepInYn</code> / session lock 검증</li>
-                                <li>팝업 차단 해제 안내 필요 (사용자 최초 상호작용 이후 open)</li>
-                                <li>장시간 유휴 시 keep-alive or timeout 안내</li>
+                                <li>다른 상담사가 이미 참여 중이면 막힐 수 있음</li>
+                                <li>팝업 차단 설정 해제 필요</li>
+                                <li>오래 방치하면 자동 종료될 수 있음</li>
                             </ul>
                         </div>
+                    </CardContent>
+                </Card>
+
+                {/* 개선 아이디어 */}
+                <Card id="improve" className="group relative overflow-hidden border border-border bg-white/70 dark:bg-slate-900/60 backdrop-blur-sm shadow-sm hover:shadow-md transition">
+                    <span aria-hidden className="absolute inset-y-0 left-0 w-1 bg-emerald-400/80 group-hover:bg-emerald-500" />
+                    <CardHeader className="pb-3">
+                        <CardTitle className="flex items-center gap-2 text-lg"><Activity className="h-5 w-5" />더 좋게 만들 수 있는 방법들</CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-xs space-y-3">
+                        <ul className="list-disc pl-5 space-y-1 text-muted-foreground">
+                            <li>변경된 부분만 업데이트하기 (전체 목록 다시 로드 대신)</li>
+                            <li>React로 바꿔서 더 빠르게 만들기</li>
+                            <li>팝업 대신 같은 페이지에서 채팅하기</li>
+                            <li>여러 상담사가 동시에 들어가지 못하게 막기</li>
+                            <li>연결이 끊어졌는지 더 정확하게 감지하기</li>
+                        </ul>
                     </CardContent>
                 </Card>
 
@@ -182,10 +209,10 @@ function onMessage(msg){
                 <Card id="legacy" className="group relative overflow-hidden border border-border bg-white/70 dark:bg-slate-900/60 backdrop-blur-sm shadow-sm hover:shadow-md transition">
                     <span aria-hidden className="absolute inset-y-0 left-0 w-1 bg-slate-400/70 group-hover:bg-slate-500" />
                     <CardHeader className="pb-3">
-                        <CardTitle className="flex items-center gap-2 text-lg"><FileText className="h-5 w-5" />JSP 참고</CardTitle>
+                        <CardTitle className="flex items-center gap-2 text-lg"><FileText className="h-5 w-5" />기존 코드 참고</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4 text-sm">
-                        <p className="text-muted-foreground">기존 JSP 원문 일부를 경량 텍스트로 보관. 마이그레이션 시 이벤트 흐름 / 보안 헤더 / 토큰 처리 참고.</p>
+                        <p className="text-muted-foreground">예전에 JSP로 만든 코드를 텍스트 파일로 저장해뒀습니다. 새로 만들 때 참고하세요.</p>
                         <Link className="text-primary text-sm inline-flex items-center gap-1 hover:underline" href="/samples/chat-mid-join/legacy.jsp.txt" target="_blank" rel="noreferrer">legacy.jsp.txt 열기<ArrowRight className="h-3 w-3" /></Link>
                     </CardContent>
                 </Card>
